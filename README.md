@@ -3,4 +3,4 @@
 # Installation
 
 pnpm i
-pnpm devs
+pnpm dev
