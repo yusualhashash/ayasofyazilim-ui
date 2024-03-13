@@ -1,5 +1,6 @@
-export * from './Example';
+import '../app/globals.css';
 
+export * from './Example';
 export * from '@/components/ui/accordion';
 export * from '@/components/ui/alert-dialog';
 export * from '@/components/ui/alert';
