@@ -1,4 +1,4 @@
-import '../app/globals.css';
+import '../app/globals-build.css';
 
 export * from './Example';
 export * from '@/components/ui/accordion';
