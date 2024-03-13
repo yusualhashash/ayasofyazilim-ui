@@ -1,3 +1,5 @@
+import '../app/globals-build.css';
+
 export * from './Example';
 export * from './ShadcnButton';
 export * from './Login';
