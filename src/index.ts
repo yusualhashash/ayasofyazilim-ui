@@ -1,4 +1,5 @@
 export * from './Example';
+export * from './ShadcnButton';
 
 export * from '@/components/ui/accordion';
 export * from '@/components/ui/alert-dialog';
