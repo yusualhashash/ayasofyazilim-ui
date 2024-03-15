@@ -110,13 +110,14 @@ npx create-turbo@latest -e with-tailwind
 # Changes to do;
 
 ## Adding ayasofyazilim-ui submodule
-
-1. cd packages
-2. git submodule add <ayasofyazilim-ui repo url> [Ayasofyazilim-UI](https://github.com/ayasofyazilim-clomerce/ayasofyazilim-ui.git)
-
+```sh
+cd packages
+git submodule add https://github.com/ayasofyazilim-clomerce/ayasofyazilim-ui.git
+```
 ## Adding ayasofyazilim-ui to nextjs app
-
-1. pnpm add @repo/ayasofyazilim-ui --filter web
+```sh
+pnpm add @repo/ayasofyazilim-ui --filter web
+```
 
 ## Configuring tailwindcss
 
