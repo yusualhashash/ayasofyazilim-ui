@@ -69,12 +69,3 @@ https://ui.shadcn.com/themes
     --ring: 240 4.9% 83.9%;
   }
 }
-
-@layer base {
-  * {
-    @apply ay-border-border;
-  }
-  body {
-    @apply ay-bg-background ay-text-foreground;
-  }
-}
