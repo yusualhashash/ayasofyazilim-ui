@@ -1,7 +1,7 @@
 import '../app/globals-build.css';
 
 export * from './Example';
-export * from './ShadcnButton';
+// export * from './ShadcnButton';
 export * from './Login';
 
 export * from '@/components/ui/accordion';

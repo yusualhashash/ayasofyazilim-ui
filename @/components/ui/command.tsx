@@ -3,7 +3,7 @@ import { type DialogProps } from '@radix-ui/react-dialog';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { Command as CommandPrimitive } from 'cmdk';
 
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 const Command = React.forwardRef<
@@ -13,7 +13,7 @@ const Command = React.forwardRef<
   <CommandPrimitive
     ref={ref}
     className={cn(
-      'ay-flex ay-h-full ay-w-full ay-flex-col ay-overflow-hidden ay-rounded-md ay-bg-popover ay-text-popover-foreground',
+      'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
       className
     )}
     {...props}
@@ -26,8 +26,8 @@ interface CommandDialogProps extends DialogProps {}
 const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   return (
     <Dialog {...props}>
-      <DialogContent className="ay-overflow-hidden ay-p-0">
-        <Command className="[&_[cmdk-group-heading]]:ay-px-2 [&_[cmdk-group-heading]]:ay-font-medium [&_[cmdk-group-heading]]:ay-text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:ay-pt-0 [&_[cmdk-group]]:ay-px-2 [&_[cmdk-input-wrapper]_svg]:ay-h-5 [&_[cmdk-input-wrapper]_svg]:ay-w-5 [&_[cmdk-input]]:ay-h-12 [&_[cmdk-item]]:ay-px-2 [&_[cmdk-item]]:ay-py-3 [&_[cmdk-item]_svg]:ay-h-5 [&_[cmdk-item]_svg]:ay-w-5">
+      <DialogContent className="overflow-hidden p-0">
+        <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
           {children}
         </Command>
       </DialogContent>
@@ -39,15 +39,12 @@ const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
-  <div
-    className="ay-flex ay-items-center ay-border-b ay-px-3"
-    cmdk-input-wrapper=""
-  >
-    <MagnifyingGlassIcon className="ay-mr-2 ay-h-4 ay-w-4 ay-shrink-0 ay-opacity-50" />
+  <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
+    <MagnifyingGlassIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
-        'ay-flex ay-h-10 ay-w-full ay-rounded-md ay-bg-transparent ay-py-3 ay-text-sm ay-outline-none placeholder:ay-text-muted-foreground disabled:ay-cursor-not-allowed disabled:ay-opacity-50',
+        'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}
       {...props}
@@ -63,10 +60,7 @@ const CommandList = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CommandPrimitive.List
     ref={ref}
-    className={cn(
-      'ay-max-h-[300px] ay-overflow-y-auto ay-overflow-x-hidden',
-      className
-    )}
+    className={cn('max-h-[300px] overflow-y-auto overflow-x-hidden', className)}
     {...props}
   />
 ));
@@ -79,7 +73,7 @@ const CommandEmpty = React.forwardRef<
 >((props, ref) => (
   <CommandPrimitive.Empty
     ref={ref}
-    className="ay-py-6 ay-text-center ay-text-sm"
+    className="py-6 text-center text-sm"
     {...props}
   />
 ));
@@ -93,7 +87,7 @@ const CommandGroup = React.forwardRef<
   <CommandPrimitive.Group
     ref={ref}
     className={cn(
-      'ay-overflow-hidden ay-p-1 ay-text-foreground [&_[cmdk-group-heading]]:ay-px-2 [&_[cmdk-group-heading]]:ay-py-1.5 [&_[cmdk-group-heading]]:ay-text-xs [&_[cmdk-group-heading]]:ay-font-medium [&_[cmdk-group-heading]]:ay-text-muted-foreground',
+      'overflow-hidden p-1 text-foreground [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground',
       className
     )}
     {...props}
@@ -108,7 +102,7 @@ const CommandSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CommandPrimitive.Separator
     ref={ref}
-    className={cn('ay--mx-1 ay-h-px ay-bg-border', className)}
+    className={cn('-mx-1 h-px bg-border', className)}
     {...props}
   />
 ));
@@ -121,7 +115,7 @@ const CommandItem = React.forwardRef<
   <CommandPrimitive.Item
     ref={ref}
     className={cn(
-      'ay-relative ay-flex ay-cursor-default ay-select-none ay-items-center ay-rounded-sm ay-px-2 ay-py-1.5 ay-text-sm ay-outline-none aria-selected:ay-bg-accent aria-selected:ay-text-accent-foreground data-[disabled]:ay-pointer-events-none data-[disabled]:ay-opacity-50',
+      'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className
     )}
     {...props}
@@ -137,7 +131,7 @@ const CommandShortcut = ({
   return (
     <span
       className={cn(
-        'ay-ml-auto ay-text-xs ay-tracking-widest ay-text-muted-foreground',
+        'ml-auto text-xs tracking-widest text-muted-foreground',
         className
       )}
       {...props}

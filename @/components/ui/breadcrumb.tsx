@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ChevronRightIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Slot } from '@radix-ui/react-slot';
 
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 const Breadcrumb = React.forwardRef<
   HTMLElement,
@@ -19,7 +19,7 @@ const BreadcrumbList = React.forwardRef<
   <ol
     ref={ref}
     className={cn(
-      'ay-flex ay-flex-wrap ay-items-center ay-gap-1.5 ay-break-words ay-text-sm ay-text-muted-foreground sm:ay-gap-2.5',
+      'flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5',
       className
     )}
     {...props}
@@ -33,7 +33,7 @@ const BreadcrumbItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <li
     ref={ref}
-    className={cn('ay-inline-flex ay-items-center ay-gap-1.5', className)}
+    className={cn('inline-flex items-center gap-1.5', className)}
     {...props}
   />
 ));
@@ -50,7 +50,7 @@ const BreadcrumbLink = React.forwardRef<
   return (
     <Comp
       ref={ref}
-      className={cn('ay-transition-colors hover:ay-text-foreground', className)}
+      className={cn('transition-colors hover:text-foreground', className)}
       {...props}
     />
   );
@@ -66,7 +66,7 @@ const BreadcrumbPage = React.forwardRef<
     role="link"
     aria-disabled="true"
     aria-current="page"
-    className={cn('ay-font-normal ay-text-foreground', className)}
+    className={cn('font-normal text-foreground', className)}
     {...props}
   />
 ));
@@ -80,7 +80,7 @@ const BreadcrumbSeparator = ({
   <li
     role="presentation"
     aria-hidden="true"
-    className={cn('[&>svg]:ay-size-3.5', className)}
+    className={cn('[&>svg]:size-3.5', className)}
     {...props}
   >
     {children ?? <ChevronRightIcon />}
@@ -95,14 +95,11 @@ const BreadcrumbEllipsis = ({
   <span
     role="presentation"
     aria-hidden="true"
-    className={cn(
-      'ay-flex ay-h-9 ay-w-9 ay-items-center ay-justify-center',
-      className
-    )}
+    className={cn('flex h-9 w-9 items-center justify-center', className)}
     {...props}
   >
-    <DotsHorizontalIcon className="ay-h-4 ay-w-4" />
-    <span className="ay-sr-only">More</span>
+    <DotsHorizontalIcon className="h-4 w-4" />
+    <span className="sr-only">More</span>
   </span>
 );
 BreadcrumbEllipsis.displayName = 'BreadcrumbElipssis';

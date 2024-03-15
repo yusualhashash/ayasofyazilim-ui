@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as SwitchPrimitives from '@radix-ui/react-switch';
 
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 const Switch = React.forwardRef<
   React.ElementRef<typeof SwitchPrimitives.Root>,
@@ -9,7 +9,7 @@ const Switch = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SwitchPrimitives.Root
     className={cn(
-      'ay-peer ay-inline-flex ay-h-5 ay-w-9 ay-shrink-0 ay-cursor-pointer ay-items-center ay-rounded-full ay-border-2 ay-border-transparent ay-shadow-sm ay-transition-colors focus-visible:ay-outline-none focus-visible:ay-ring-2 focus-visible:ay-ring-ring focus-visible:ay-ring-offset-2 focus-visible:ay-ring-offset-background disabled:ay-cursor-not-allowed disabled:ay-opacity-50 data-[state=checked]:ay-bg-primary data-[state=unchecked]:ay-bg-input',
+      'peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input',
       className
     )}
     {...props}
@@ -17,7 +17,7 @@ const Switch = React.forwardRef<
   >
     <SwitchPrimitives.Thumb
       className={cn(
-        'ay-pointer-events-none ay-block ay-h-4 ay-w-4 ay-rounded-full ay-bg-background ay-shadow-lg ay-ring-0 ay-transition-transform data-[state=checked]:ay-translate-x-4 data-[state=unchecked]:ay-translate-x-0'
+        'pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-4 data-[state=unchecked]:translate-x-0'
       )}
     />
   </SwitchPrimitives.Root>

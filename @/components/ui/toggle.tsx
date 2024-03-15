@@ -2,21 +2,21 @@ import * as React from 'react';
 import * as TogglePrimitive from '@radix-ui/react-toggle';
 import { cva, type VariantProps } from 'class-variance-authority';
 
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 const toggleVariants = cva(
-  'ay-inline-flex ay-items-center ay-justify-center ay-rounded-md ay-text-sm ay-font-medium ay-transition-colors hover:ay-bg-muted hover:ay-text-muted-foreground focus-visible:ay-outline-none focus-visible:ay-ring-1 focus-visible:ay-ring-ring disabled:ay-pointer-events-none disabled:ay-opacity-50 data-[state=on]:ay-bg-accent data-[state=on]:ay-text-accent-foreground',
+  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-muted hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground',
   {
     variants: {
       variant: {
-        default: 'ay-bg-transparent',
+        default: 'bg-transparent',
         outline:
-          'ay-border ay-border-input ay-bg-transparent ay-shadow-sm hover:ay-bg-accent hover:ay-text-accent-foreground',
+          'border border-input bg-transparent shadow-sm hover:bg-accent hover:text-accent-foreground',
       },
       size: {
-        default: 'ay-h-9 ay-px-3',
-        sm: 'ay-h-8 ay-px-2',
-        lg: 'ay-h-10 ay-px-3',
+        default: 'h-9 px-3',
+        sm: 'h-8 px-2',
+        lg: 'h-10 px-3',
       },
     },
     defaultVariants: {

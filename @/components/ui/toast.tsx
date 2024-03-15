@@ -3,7 +3,7 @@ import { Cross2Icon } from '@radix-ui/react-icons';
 import * as ToastPrimitives from '@radix-ui/react-toast';
 import { cva, type VariantProps } from 'class-variance-authority';
 
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 const ToastProvider = ToastPrimitives.Provider;
 
@@ -14,7 +14,7 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={cn(
-      'ay-fixed ay-top-0 ay-z-[100] ay-flex ay-max-h-screen ay-w-full ay-flex-col-reverse ay-p-4 sm:ay-bottom-0 sm:ay-right-0 sm:ay-top-auto sm:ay-flex-col md:ay-max-w-[420px]',
+      'fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]',
       className
     )}
     {...props}
@@ -23,13 +23,13 @@ const ToastViewport = React.forwardRef<
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
 const toastVariants = cva(
-  'ay-group ay-pointer-events-auto ay-relative ay-flex ay-w-full ay-items-center ay-justify-between ay-space-x-2 ay-overflow-hidden ay-rounded-md ay-border ay-p-4 ay-pr-6 ay-shadow-lg ay-transition-all data-[swipe=cancel]:ay-translate-x-0 data-[swipe=end]:ay-translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:ay-translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:ay-transition-none data-[state=open]:ay-animate-in data-[state=closed]:ay-animate-out data-[swipe=end]:ay-animate-out data-[state=closed]:ay-fade-out-80 data-[state=closed]:ay-slide-out-to-right-full data-[state=open]:ay-slide-in-from-top-full data-[state=open]:sm:ay-slide-in-from-bottom-full',
+  'group pointer-events-auto relative flex w-full items-center justify-between space-x-2 overflow-hidden rounded-md border p-4 pr-6 shadow-lg transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full',
   {
     variants: {
       variant: {
-        default: 'ay-border ay-bg-background ay-text-foreground',
+        default: 'border bg-background text-foreground',
         destructive:
-          'ay-destructive ay-group ay-border-destructive ay-bg-destructive ay-text-destructive-foreground',
+          'destructive group border-destructive bg-destructive text-destructive-foreground',
       },
     },
     defaultVariants: {
@@ -60,7 +60,7 @@ const ToastAction = React.forwardRef<
   <ToastPrimitives.Action
     ref={ref}
     className={cn(
-      'ay-inline-flex ay-h-8 ay-shrink-0 ay-items-center ay-justify-center ay-rounded-md ay-border ay-bg-transparent ay-px-3 ay-text-sm ay-font-medium ay-transition-colors hover:ay-bg-secondary focus:ay-outline-none focus:ay-ring-1 focus:ay-ring-ring disabled:ay-pointer-events-none disabled:ay-opacity-50 group-[.destructive]:ay-border-muted/40 group-[.destructive]:hover:ay-border-destructive/30 group-[.destructive]:hover:ay-bg-destructive group-[.destructive]:hover:ay-text-destructive-foreground group-[.destructive]:focus:ay-ring-destructive',
+      'inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent px-3 text-sm font-medium transition-colors hover:bg-secondary focus:outline-none focus:ring-1 focus:ring-ring disabled:pointer-events-none disabled:opacity-50 group-[.destructive]:border-muted/40 group-[.destructive]:hover:border-destructive/30 group-[.destructive]:hover:bg-destructive group-[.destructive]:hover:text-destructive-foreground group-[.destructive]:focus:ring-destructive',
       className
     )}
     {...props}
@@ -75,13 +75,13 @@ const ToastClose = React.forwardRef<
   <ToastPrimitives.Close
     ref={ref}
     className={cn(
-      'ay-absolute ay-right-1 ay-top-1 ay-rounded-md ay-p-1 ay-text-foreground/50 ay-opacity-0 ay-transition-opacity hover:ay-text-foreground focus:ay-opacity-100 focus:ay-outline-none focus:ay-ring-1 group-hover:ay-opacity-100 group-[.destructive]:ay-text-red-300 group-[.destructive]:hover:ay-text-red-50 group-[.destructive]:focus:ay-ring-red-400 group-[.destructive]:focus:ay-ring-offset-red-600',
+      'absolute right-1 top-1 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus:ring-1 group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600',
       className
     )}
     toast-close=""
     {...props}
   >
-    <Cross2Icon className="ay-h-4 ay-w-4" />
+    <Cross2Icon className="h-4 w-4" />
   </ToastPrimitives.Close>
 ));
 ToastClose.displayName = ToastPrimitives.Close.displayName;
@@ -92,7 +92,7 @@ const ToastTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Title
     ref={ref}
-    className={cn('ay-text-sm ay-font-semibold [&+div]:ay-text-xs', className)}
+    className={cn('text-sm font-semibold [&+div]:text-xs', className)}
     {...props}
   />
 ));
@@ -104,7 +104,7 @@ const ToastDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Description
     ref={ref}
-    className={cn('ay-text-sm ay-opacity-90', className)}
+    className={cn('text-sm opacity-90', className)}
     {...props}
   />
 ));

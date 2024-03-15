@@ -6,7 +6,7 @@ import {
 } from '@radix-ui/react-icons';
 import * as MenubarPrimitive from '@radix-ui/react-menubar';
 
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 const MenubarMenu = MenubarPrimitive.Menu;
 
@@ -25,7 +25,7 @@ const Menubar = React.forwardRef<
   <MenubarPrimitive.Root
     ref={ref}
     className={cn(
-      'ay-flex ay-h-9 ay-items-center ay-space-x-1 ay-rounded-md ay-border ay-bg-background ay-p-1 ay-shadow-sm',
+      'flex h-9 items-center space-x-1 rounded-md border bg-background p-1 shadow-sm',
       className
     )}
     {...props}
@@ -40,7 +40,7 @@ const MenubarTrigger = React.forwardRef<
   <MenubarPrimitive.Trigger
     ref={ref}
     className={cn(
-      'ay-flex ay-cursor-default ay-select-none ay-items-center ay-rounded-sm ay-px-3 ay-py-1 ay-text-sm ay-font-medium ay-outline-none focus:ay-bg-accent focus:ay-text-accent-foreground data-[state=open]:ay-bg-accent data-[state=open]:ay-text-accent-foreground',
+      'flex cursor-default select-none items-center rounded-sm px-3 py-1 text-sm font-medium outline-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
       className
     )}
     {...props}
@@ -57,14 +57,14 @@ const MenubarSubTrigger = React.forwardRef<
   <MenubarPrimitive.SubTrigger
     ref={ref}
     className={cn(
-      'ay-flex ay-cursor-default ay-select-none ay-items-center ay-rounded-sm ay-px-2 ay-py-1.5 ay-text-sm ay-outline-none focus:ay-bg-accent focus:ay-text-accent-foreground data-[state=open]:ay-bg-accent data-[state=open]:ay-text-accent-foreground',
-      inset && 'ay-pl-8',
+      'flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
+      inset && 'pl-8',
       className
     )}
     {...props}
   >
     {children}
-    <ChevronRightIcon className="ay-ml-auto ay-h-4 ay-w-4" />
+    <ChevronRightIcon className="ml-auto h-4 w-4" />
   </MenubarPrimitive.SubTrigger>
 ));
 MenubarSubTrigger.displayName = MenubarPrimitive.SubTrigger.displayName;
@@ -76,7 +76,7 @@ const MenubarSubContent = React.forwardRef<
   <MenubarPrimitive.SubContent
     ref={ref}
     className={cn(
-      'ay-z-50 ay-min-w-[8rem] ay-overflow-hidden ay-rounded-md ay-border ay-bg-popover ay-p-1 ay-text-popover-foreground ay-shadow-lg data-[state=open]:ay-animate-in data-[state=closed]:ay-animate-out data-[state=closed]:ay-fade-out-0 data-[state=open]:ay-fade-in-0 data-[state=closed]:ay-zoom-out-95 data-[state=open]:ay-zoom-in-95 data-[side=bottom]:ay-slide-in-from-top-2 data-[side=left]:ay-slide-in-from-right-2 data-[side=right]:ay-slide-in-from-left-2 data-[side=top]:ay-slide-in-from-bottom-2',
+      'z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
       className
     )}
     {...props}
@@ -99,7 +99,7 @@ const MenubarContent = React.forwardRef<
         alignOffset={alignOffset}
         sideOffset={sideOffset}
         className={cn(
-          'ay-z-50 ay-min-w-[12rem] ay-overflow-hidden ay-rounded-md ay-border ay-bg-popover ay-p-1 ay-text-popover-foreground ay-shadow-md data-[state=open]:ay-animate-in data-[state=closed]:ay-fade-out-0 data-[state=open]:ay-fade-in-0 data-[state=closed]:ay-zoom-out-95 data-[state=open]:ay-zoom-in-95 data-[side=bottom]:ay-slide-in-from-top-2 data-[side=left]:ay-slide-in-from-right-2 data-[side=right]:ay-slide-in-from-left-2 data-[side=top]:ay-slide-in-from-bottom-2',
+          'z-50 min-w-[12rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
           className
         )}
         {...props}
@@ -118,8 +118,8 @@ const MenubarItem = React.forwardRef<
   <MenubarPrimitive.Item
     ref={ref}
     className={cn(
-      'ay-relative ay-flex ay-cursor-default ay-select-none ay-items-center ay-rounded-sm ay-px-2 ay-py-1.5 ay-text-sm ay-outline-none focus:ay-bg-accent focus:ay-text-accent-foreground data-[disabled]:ay-pointer-events-none data-[disabled]:ay-opacity-50',
-      inset && 'ay-pl-8',
+      'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      inset && 'pl-8',
       className
     )}
     {...props}
@@ -134,15 +134,15 @@ const MenubarCheckboxItem = React.forwardRef<
   <MenubarPrimitive.CheckboxItem
     ref={ref}
     className={cn(
-      'ay-relative ay-flex ay-cursor-default ay-select-none ay-items-center ay-rounded-sm ay-py-1.5 ay-pl-8 ay-pr-2 ay-text-sm ay-outline-none focus:ay-bg-accent focus:ay-text-accent-foreground data-[disabled]:ay-pointer-events-none data-[disabled]:ay-opacity-50',
+      'relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className
     )}
     checked={checked}
     {...props}
   >
-    <span className="ay-absolute ay-left-2 ay-flex ay-h-3.5 ay-w-3.5 ay-items-center ay-justify-center">
+    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <MenubarPrimitive.ItemIndicator>
-        <CheckIcon className="ay-h-4 ay-w-4" />
+        <CheckIcon className="h-4 w-4" />
       </MenubarPrimitive.ItemIndicator>
     </span>
     {children}
@@ -157,14 +157,14 @@ const MenubarRadioItem = React.forwardRef<
   <MenubarPrimitive.RadioItem
     ref={ref}
     className={cn(
-      'ay-relative ay-flex ay-cursor-default ay-select-none ay-items-center ay-rounded-sm ay-py-1.5 ay-pl-8 ay-pr-2 ay-text-sm ay-outline-none focus:ay-bg-accent focus:ay-text-accent-foreground data-[disabled]:ay-pointer-events-none data-[disabled]:ay-opacity-50',
+      'relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className
     )}
     {...props}
   >
-    <span className="ay-absolute ay-left-2 ay-flex ay-h-3.5 ay-w-3.5 ay-items-center ay-justify-center">
+    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <MenubarPrimitive.ItemIndicator>
-        <DotFilledIcon className="ay-h-4 ay-w-4 ay-fill-current" />
+        <DotFilledIcon className="h-4 w-4 fill-current" />
       </MenubarPrimitive.ItemIndicator>
     </span>
     {children}
@@ -181,8 +181,8 @@ const MenubarLabel = React.forwardRef<
   <MenubarPrimitive.Label
     ref={ref}
     className={cn(
-      'ay-px-2 ay-py-1.5 ay-text-sm ay-font-semibold',
-      inset && 'ay-pl-8',
+      'px-2 py-1.5 text-sm font-semibold',
+      inset && 'pl-8',
       className
     )}
     {...props}
@@ -196,7 +196,7 @@ const MenubarSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <MenubarPrimitive.Separator
     ref={ref}
-    className={cn('ay--mx-1 ay-my-1 ay-h-px ay-bg-muted', className)}
+    className={cn('-mx-1 my-1 h-px bg-muted', className)}
     {...props}
   />
 ));
@@ -209,7 +209,7 @@ const MenubarShortcut = ({
   return (
     <span
       className={cn(
-        'ay-ml-auto ay-text-xs ay-tracking-widest ay-text-muted-foreground',
+        'ml-auto text-xs tracking-widest text-muted-foreground',
         className
       )}
       {...props}

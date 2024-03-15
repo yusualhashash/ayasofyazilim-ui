@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 const Dialog = DialogPrimitive.Root;
 
@@ -19,7 +19,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'ay-fixed ay-inset-0 ay-z-50 ay-bg-black/80 ay- data-[state=open]:ay-animate-in data-[state=closed]:ay-animate-out data-[state=closed]:ay-fade-out-0 data-[state=open]:ay-fade-in-0',
+      'fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
       className
     )}
     {...props}
@@ -36,15 +36,15 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'ay-fixed ay-left-[50%] ay-top-[50%] ay-z-50 ay-grid ay-w-full ay-max-w-lg ay-translate-x-[-50%] ay-translate-y-[-50%] ay-gap-4 ay-border ay-bg-background ay-p-6 ay-shadow-lg ay-duration-200 data-[state=open]:ay-animate-in data-[state=closed]:ay-animate-out data-[state=closed]:ay-fade-out-0 data-[state=open]:ay-fade-in-0 data-[state=closed]:ay-zoom-out-95 data-[state=open]:ay-zoom-in-95 data-[state=closed]:ay-slide-out-to-left-1/2 data-[state=closed]:ay-slide-out-to-top-[48%] data-[state=open]:ay-slide-in-from-left-1/2 data-[state=open]:ay-slide-in-from-top-[48%] sm:ay-rounded-lg',
+        'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg',
         className
       )}
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="ay-absolute ay-right-4 ay-top-4 ay-rounded-sm ay-opacity-70 ay-ring-offset-background ay-transition-opacity hover:ay-opacity-100 focus:ay-outline-none focus:ay-ring-2 focus:ay-ring-ring focus:ay-ring-offset-2 disabled:ay-pointer-events-none data-[state=open]:ay-bg-accent data-[state=open]:ay-text-muted-foreground">
-        <Cross2Icon className="ay-h-4 ay-w-4" />
-        <span className="ay-sr-only">Close</span>
+      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+        <Cross2Icon className="h-4 w-4" />
+        <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </DialogPortal>
@@ -57,7 +57,7 @@ const DialogHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'ay-flex ay-flex-col ay-space-y-1.5 ay-text-center sm:ay-text-left',
+      'flex flex-col space-y-1.5 text-center sm:text-left',
       className
     )}
     {...props}
@@ -71,7 +71,7 @@ const DialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'ay-flex ay-flex-col-reverse sm:ay-flex-row sm:ay-justify-end sm:ay-space-x-2',
+      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
       className
     )}
     {...props}
@@ -86,7 +86,7 @@ const DialogTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      'ay-text-lg ay-font-semibold ay-leading-none ay-tracking-tight',
+      'text-lg font-semibold leading-none tracking-tight',
       className
     )}
     {...props}
@@ -100,7 +100,7 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn('ay-text-sm ay-text-muted-foreground', className)}
+    className={cn('text-sm text-muted-foreground', className)}
     {...props}
   />
 ));

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { CheckIcon } from '@radix-ui/react-icons';
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 const RadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
@@ -10,7 +10,7 @@ const RadioGroup = React.forwardRef<
 >(({ className, ...props }, ref) => {
   return (
     <RadioGroupPrimitive.Root
-      className={cn('ay-grid ay-gap-2', className)}
+      className={cn('grid gap-2', className)}
       {...props}
       ref={ref}
     />
@@ -26,13 +26,13 @@ const RadioGroupItem = React.forwardRef<
     <RadioGroupPrimitive.Item
       ref={ref}
       className={cn(
-        'ay-aspect-square ay-h-4 ay-w-4 ay-rounded-full ay-border ay-border-primary ay-text-primary ay-shadow focus:ay-outline-none focus-visible:ay-ring-1 focus-visible:ay-ring-ring disabled:ay-cursor-not-allowed disabled:ay-opacity-50',
+        'aspect-square h-4 w-4 rounded-full border border-primary text-primary shadow focus:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}
       {...props}
     >
-      <RadioGroupPrimitive.Indicator className="ay-flex ay-items-center ay-justify-center">
-        <CheckIcon className="ay-h-3.5 ay-w-3.5 ay-fill-primary" />
+      <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
+        <CheckIcon className="h-3.5 w-3.5 fill-primary" />
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
   );
