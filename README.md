@@ -101,25 +101,22 @@ pnpm publish
 
 Run the following command:
 
-```sh
-npx create-turbo@latest -e with-tailwind
--package-name
--pnpm workspaces
+```console
+pnpm dlx create-turbo@latest -e with-tailwind my-package pnpm
 ```
 
 # Changes to do;
 
-## Adding ayasofyazilim-ui submodule
-```sh
+### Adding ayasofyazilim-ui submodule
+```console
 cd packages
 git submodule add https://github.com/ayasofyazilim-clomerce/ayasofyazilim-ui.git
 ```
-## Adding ayasofyazilim-ui to nextjs app
-```sh
+### Adding ayasofyazilim-ui to app
+```console
 pnpm add @repo/ayasofyazilim-ui --filter web
 ```
-
-## Configuring tailwindcss
+### Configuring tailwindcss
 
 1. Update apps/web/tailwind.config.ts
 
