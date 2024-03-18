@@ -73,7 +73,9 @@
     "./toast": "./@/components/ui/toast.tsx",
     "./toggle": "./@/components/ui/toggle.tsx",
     "./toggle-group": "./@/components/ui/toggle-group.tsx",
-    "./tooltip": "./@/components/ui/tooltip.tsx"
+    "./tooltip": "./@/components/ui/tooltip.tsx",
+    "./templates/login": "./src/templates/login.tsx",
+    "./components/input": "./src/components/input.tsx"
   },
   "exports_deprecated": {
     ".": {
