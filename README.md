@@ -260,5 +260,7 @@ export default config;
 
 ```tsx
 import { Button } from '@repo/ayasofyazilim-ui/button';
-<Button variant={'destructive'}>Test</Button>;
+```
+```tsx
+<Button variant={'destructive'}>Test</Button>
 ```
