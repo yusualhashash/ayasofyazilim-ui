@@ -91,8 +91,8 @@ function CountrySelector({
                 <CommandItem
                   key={country.value}
                   value={country.value}
-                  onSelect={(currentValue: CountrySelectItem) => {
-                    setValue(currentValue.value);
+                  onSelect={(currentValue: string) => {
+                    setValue(currentValue);
                     setOpen(false);
                     if (onValueChange) onValueChange();
                   }}

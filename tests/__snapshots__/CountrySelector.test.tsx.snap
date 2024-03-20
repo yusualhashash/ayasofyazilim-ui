@@ -1,0 +1,28 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renders correctly 1`] = `
+<button
+  aria-controls="radix-:r0:"
+  aria-expanded={false}
+  aria-haspopup="dialog"
+  className="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 py-2 justify-between border-none bg-transparent px-2 gap-2 flex-row-reverse"
+  data-state="closed"
+  onClick={[Function]}
+  role="combobox"
+  type="button"
+>
+  <div
+    className="  flex w-full justify-between gap-2 overflow-hidden"
+  >
+    <div
+      className="border  rounded-sm overflow-hidden"
+    >
+      <img
+        alt=""
+        className="w-6"
+        src="https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/4x3/.svg"
+      />
+    </div>
+  </div>
+</button>
+`;
