@@ -116,18 +116,9 @@ dependencies:
   next-themes:
     specifier: ^0.2.1
     version: 0.2.1(next@14.1.3)(react-dom@18.2.0)(react@18.2.0)
-  react-country-flag:
-    specifier: ^3.1.0
-    version: 3.1.0(react@18.2.0)
   react-day-picker:
     specifier: ^8.10.0
     version: 8.10.0(date-fns@3.4.0)(react@18.2.0)
-  react-flag-icon-css:
-    specifier: ^1.0.25
-    version: 1.0.25(react-dom@18.2.0)(react@18.2.0)
-  react-flags-select:
-    specifier: ^2.2.3
-    version: 2.2.3(react-dom@18.2.0)(react@18.2.0)
   react-hook-form:
     specifier: ^7.51.0
     version: 7.51.0(react@18.2.0)
@@ -6628,10 +6619,6 @@ packages:
       clsx: 2.0.0
     dev: false
 
-  /classnames@2.5.1:
-    resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
-    dev: false
-
   /clean-css@5.3.3:
     resolution: {integrity: sha512-D5J+kHaVb/wKSFcyyV75uCn8fiY4sV38XJoe4CUyGQ+mOU/fMVYUdH1hJC+CJQ5uY3EnW27SbJYS4X8BiLrAFg==}
     engines: {node: '>= 10.0'}
@@ -8404,11 +8391,6 @@ packages:
       resolve-dir: 1.0.1
     dev: true
 
-  /flag-icon-css@3.5.0:
-    resolution: {integrity: sha512-pgJnJLrtb0tcDgU1fzGaQXmR8h++nXvILJ+r5SmOXaaL/2pocunQo2a8TAXhjQnBpRLPtZ1KCz/TYpqeNuE2ew==}
-    deprecated: The project has been renamed to flag-icons
-    dev: false
-
   /flat-cache@3.2.0:
     resolution: {integrity: sha512-CYcENa+FtcUKLmhhqyctpclsq7QF38pKjZHsGNiSQF5r4FtoKDWabFDl3hzaEQMvT1LHEysw5twgLvpYYb4vbw==}
     engines: {node: ^10.12.0 || >=12.0.0}
@@ -9106,10 +9088,6 @@ packages:
     resolution: {integrity: sha512-5Fytz/IraMjqpwfd34ke28PTVMjZjJG2MPn5t7OE4eUCUNf8BAa7b5WUS9/Qvr6mwOQS7Mk6vdsMno5he+T8Xw==}
     engines: {node: '>= 4'}
     dev: true
-
-  /immutable@4.3.5:
-    resolution: {integrity: sha512-8eabxkth9gZatlwl5TBuJnCsoTADlL6ftEr7A4qgdaTsPyreilDSnUk57SO+jfKcNtxPa22U5KK6DSeAYhpBJw==}
-    dev: false
 
   /import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
@@ -11345,6 +11323,7 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
+    dev: true
 
   /proto-list@1.2.4:
     resolution: {integrity: sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA==}
@@ -11495,15 +11474,6 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: true
 
-  /react-country-flag@3.1.0(react@18.2.0):
-    resolution: {integrity: sha512-JWQFw1efdv9sTC+TGQvTKXQg1NKbDU2mBiAiRWcKM9F1sK+/zjhP2yGmm8YDddWyZdXVkR8Md47rPMJmo4YO5g==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      react: '>=16'
-    dependencies:
-      react: 18.2.0
-    dev: false
-
   /react-day-picker@8.10.0(date-fns@3.4.0)(react@18.2.0):
     resolution: {integrity: sha512-mz+qeyrOM7++1NCb1ARXmkjMkzWVh2GL9YiPbRjKe0zHccvekk4HE+0MPOZOrosn8r8zTHIIeOUXTmXRqmkRmg==}
     peerDependencies:
@@ -11562,32 +11532,6 @@ packages:
       react-is: 18.1.0
     dev: true
 
-  /react-flag-icon-css@1.0.25(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-UJll3zpmbZvkwZvu4HI00iGF8ya4OdFzMR5k3cAluIwdHn8l5cB3CPYt+hw0tt7fLKaYIfncxNEO/qTtvBw2qw==}
-    engines: {node: '>=6'}
-    peerDependencies:
-      react: ^0.14 || ^15.0 || ^16.0
-      react-dom: ^0.14 || ^15.0 || ^16.0
-    dependencies:
-      classnames: 2.5.1
-      flag-icon-css: 3.5.0
-      prop-types: 15.8.1
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    dev: false
-
-  /react-flags-select@2.2.3(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-HuO0H5/r6gdPwh9HyxUoYrqzjCPMZcZQmSjKd3CRSIeHnexX5crRdiS/ZxSNaMIw4SFEG0dctToFlibhfOv+6A==}
-    peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
-    dependencies:
-      classnames: 2.5.1
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      sass: 1.72.0
-    dev: false
-
   /react-hook-form@7.51.0(react@18.2.0):
     resolution: {integrity: sha512-BggOy5j58RdhdMzzRUHGOYhSz1oeylFAv6jUSG86OvCIvlAvS7KvnRY7yoAf2pfEiPN7BesnR0xx73nEk3qIiw==}
     engines: {node: '>=12.22.0'}
@@ -11599,6 +11543,7 @@ packages:
 
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+    dev: true
 
   /react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
@@ -12147,16 +12092,6 @@ packages:
   /safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
     dev: true
-
-  /sass@1.72.0:
-    resolution: {integrity: sha512-Gpczt3WA56Ly0Mn8Sl21Vj94s1axi9hDIzDFn9Ph9x3C3p4nNyvsqJoQyVXKou6cBlfFWEgRW4rT8Tb4i3XnVA==}
-    engines: {node: '>=14.0.0'}
-    hasBin: true
-    dependencies:
-      chokidar: 3.6.0
-      immutable: 4.3.5
-      source-map-js: 1.0.2
-    dev: false
 
   /saxes@6.0.0:
     resolution: {integrity: sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==}
