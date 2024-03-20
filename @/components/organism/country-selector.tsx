@@ -43,15 +43,15 @@ const countries = [
   },
 ];
 
-export type CountrySelectorProps = {
-  defaultValue: CountrySelectItem;
+type CountrySelectorProps = {
+  defaultValue?: CountrySelectItem;
   direction: 'ltr' | 'rtl';
   menuAlign: 'start' | 'center' | 'end';
-  onValueChange: () => {};
-  searchEmptyValue: string;
-  searchText: string;
+  onValueChange?: () => {};
+  searchEmptyValue?: string;
+  searchText?: string;
 };
-export default function CountrySelector({
+function CountrySelector({
   searchText,
   searchEmptyValue,
   defaultValue,
@@ -60,14 +60,14 @@ export default function CountrySelector({
   onValueChange,
 }: CountrySelectorProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState('');
+  const [value, setValue] = React.useState<string | undefined>('');
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="ghost"
           role="combobox"
+          variant={'ghost'}
           aria-expanded={open}
           className={`justify-between border-none bg-transparent px-2 gap-2 ${direction === 'rtl' ? 'flex-row-reverse' : ''}`}
         >
@@ -91,10 +91,10 @@ export default function CountrySelector({
                 <CommandItem
                   key={country.value}
                   value={country.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue);
+                  onSelect={(currentValue: CountrySelectItem) => {
+                    setValue(currentValue.value);
                     setOpen(false);
-                    onValueChange();
+                    if (onValueChange) onValueChange();
                   }}
                 >
                   <SelectedCountry {...country} />
@@ -127,3 +127,5 @@ const SelectedCountry = ({
     </div>
   </div>
 );
+
+export { CountrySelectItem, CountrySelector };

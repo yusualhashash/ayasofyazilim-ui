@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
 
-import CountrySelector from '../components/country-selector';
+import CountrySelector from '../../@/components/organism/country-selector';
 
 export default {
   title: 'Components/CountrySelector',
@@ -23,6 +23,6 @@ CountrySelectorTemplate.args = {
   searchEmptyValue: 'No country found.',
   defaultValue: {
     label: 'Test',
-    value: 'tur',
+    value: 'tr',
   },
 };

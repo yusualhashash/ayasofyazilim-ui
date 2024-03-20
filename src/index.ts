@@ -1,4 +1,4 @@
 export * from './Example';
-export * from './templates/Auth';
-export * from './pages/Login';
-export * from './pages/Register';
+export * from '../@/components/template/Auth';
+export * from '../@/components/pages/Login';
+export * from '../@/components/pages/Register';
