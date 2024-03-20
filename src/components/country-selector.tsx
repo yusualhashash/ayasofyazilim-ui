@@ -1,8 +1,7 @@
 'use client';
 
-import { CaretSortIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-import Flag from 'react-world-flags';
+
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -21,23 +20,24 @@ import {
 type CountrySelectItem = {
   label?: string;
   rtl?: boolean;
+  showLabel?: boolean;
   value?: string;
 };
 const countries = [
   {
-    value: 'tur',
+    value: 'tr',
     label: 'Türkçe',
   },
   {
-    value: 'ita',
+    value: 'it',
     label: 'Italiano',
   },
   {
-    value: 'jpn',
+    value: 'jp',
     label: '日本語',
   },
   {
-    value: 'sau',
+    value: 'sa',
     label: 'عربي',
     rtl: true,
   },
@@ -66,22 +66,22 @@ export default function CountrySelector({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant="ghost"
           role="combobox"
           aria-expanded={open}
-          className={`justify-between px-2 gap-2 ${direction === 'rtl' ? 'flex-row-reverse' : ''}`}
+          className={`justify-between border-none bg-transparent px-2 gap-2 ${direction === 'rtl' ? 'flex-row-reverse' : ''}`}
         >
           {value ? (
             <SelectedCountry
               {...countries.find((country) => country.value === value)}
+              showLabel={false}
             />
           ) : (
-            <SelectedCountry {...defaultValue} />
+            <SelectedCountry {...defaultValue} showLabel={false} />
           )}
-          <CaretSortIcon className="h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[100px] p-0" align={menuAlign}>
+      <PopoverContent className="w-[160px] p-0" align={menuAlign}>
         <Command>
           <CommandList>
             <CommandInput placeholder={searchText} className="h-9 text-xs" />
@@ -108,9 +108,22 @@ export default function CountrySelector({
   );
 }
 
-const SelectedCountry = ({ value, label, rtl }: CountrySelectItem) => (
-  <div className={`${rtl ? 'flex-row-reverse' : ''} flex w-full gap-2`}>
-    <Flag code={value} className="w-4" />
-    <span className="text-xs">{label}</span>
+const SelectedCountry = ({
+  value = '',
+  label,
+  rtl,
+  showLabel = true,
+}: CountrySelectItem) => (
+  <div
+    className={`${rtl ? 'flex-row-reverse' : ''}  flex w-full justify-between gap-2 overflow-hidden`}
+  >
+    {showLabel && <span className="text-xs">{label}</span>}
+    <div className="border  rounded-sm overflow-hidden">
+      <img
+        className="w-6"
+        src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/4x3/${value}.svg`}
+        alt={label}
+      />
+    </div>
   </div>
 );
