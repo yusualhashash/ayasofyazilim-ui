@@ -26,7 +26,7 @@
   },
   "types": "./dist/index.d.ts",
   "exports": {
-    "./country-selector": "./src/components/country-selector.tsx",
+    "./country-selector": "./@/components/organism/country-selector.tsx",
     "./accordion": "./@/components/ui/accordion.tsx",
     "./alert": "./@/components/ui/alert.tsx",
     "./alert-dialog": "./@/components/ui/alert-dialog.tsx",
