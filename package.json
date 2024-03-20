@@ -26,6 +26,7 @@
   },
   "types": "./dist/index.d.ts",
   "exports": {
+    "./country-selector": "./src/components/country-selector.tsx",
     "./accordion": "./@/components/ui/accordion.tsx",
     "./alert": "./@/components/ui/alert.tsx",
     "./alert-dialog": "./@/components/ui/alert-dialog.tsx",
@@ -166,6 +167,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-test-renderer": "18.2.0",
+    "react-world-flags": "^1.6.0",
     "release-it": "17.1.1",
     "storybook": "8.0.0",
     "style-loader": "^3.3.4",
@@ -223,6 +225,7 @@
     "react-day-picker": "^8.10.0",
     "react-hook-form": "^7.51.0",
     "react-resizable-panels": "^2.0.12",
+    "react-world-flags": "^1.6.0",
     "sonner": "^1.4.3",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
