@@ -4,7 +4,7 @@ import { expect, it } from 'vitest';
 import {
   CountrySelector,
   CountrySelectItem,
-} from '../@/components/organism/country-selector';
+} from '../src/organisms/country-selector/country-selector';
 
 it('renders correctly', () => {
   const defaults: CountrySelectItem = {

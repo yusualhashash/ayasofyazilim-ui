@@ -1,3 +1,3 @@
-export * from '../@/components/template/Auth';
-export * from '../@/components/pages/Login';
-export * from '../@/components/pages/Register';
+export * from './templates/auth/auth';
+export * from './pages/login/login';
+export * from './pages/register/register';

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { Button } from '../ui/button';
+import { Button } from '../../../@/components/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -10,8 +10,12 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '../ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+} from '../../../@/components/ui/command';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '../../../@/components/ui/popover';
 
 type CountrySelectItem = {
   label?: string;
@@ -63,7 +67,7 @@ function CountrySelector({
       <PopoverTrigger asChild>
         <Button
           role="combobox"
-          variant={'ghost'}
+          variant="ghost"
           aria-expanded={open}
           className={`justify-between border-none bg-transparent px-2 gap-2 ${direction === 'rtl' ? 'flex-row-reverse' : ''}`}
         >

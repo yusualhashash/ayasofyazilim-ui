@@ -1,17 +1,17 @@
 import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
 
-import { Login } from '..';
+import { Register } from '../..';
 
 export default {
   title: 'Pages',
-  component: Login,
+  component: Register,
   argTypes: {},
-} as Meta<typeof Login>;
+} as Meta<typeof Register>;
 
-const Template: StoryFn<typeof Login> = (args) => <Login {...args} />;
+const Template: StoryFn<typeof Register> = (args) => <Register {...args} />;
 
-export const LoginPage = Template.bind({});
+export const RegisterPage = Template.bind({});
 
 const Company = (
   <div>
@@ -19,7 +19,7 @@ const Company = (
   </div>
 );
 const onSubmit = (): Promise<string> => new Promise(() => {});
-LoginPage.args = {
+RegisterPage.args = {
   company: Company,
   variant: 'ayasofyazilim',
   onSubmitFunction: onSubmit,
