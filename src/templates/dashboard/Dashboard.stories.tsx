@@ -9,6 +9,8 @@ export default {
   argTypes: {},
 } as Meta<typeof Dashboard>;
 
-const Template: StoryFn<typeof Dashboard> = (args) => <Dashboard {...args} />;
+const Template: StoryFn<typeof Dashboard> = () => <Dashboard />;
 
-export const CardListStory = Template.bind({});
+export const DashboardTemplate = Template.bind({});
+
+DashboardTemplate.args = {};
