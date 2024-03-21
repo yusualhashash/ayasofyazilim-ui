@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import CardList from '../../organisms/cardList/CardList';
+import CardList from '../../organisms/card-list/card-list';
 import DashboardHeader from '../../organisms/header/header';
 
 export type DashboardProps = {

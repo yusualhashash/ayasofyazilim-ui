@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
 
-import CardList from './CardList';
+import CardList from './card-list';
 
 export default {
   title: 'Organism/Card list',

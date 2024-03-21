@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
-import { Input as DefaultInput } from '../ui/input';
-import { cn } from '../../lib/utils';
+import { Input as DefaultInput } from '../../../@/components/ui/input';
+import { cn } from '../../../@/lib/utils';
 
 export type Props = {};
 

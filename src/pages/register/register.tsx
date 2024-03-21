@@ -3,21 +3,31 @@
 import React, { useRef } from 'react';
 
 import { ExclamationTriangleIcon, ReloadIcon } from '@radix-ui/react-icons';
-import { Button } from '../ui/button';
-import { Auth } from '../template/Auth';
+import { Button } from '../../../@/components/ui/button';
+import { Auth } from '../../templates/auth/auth';
 
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
-import { Label } from '../ui/label';
-import { Input } from '../organism/input';
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from '../../../@/components/ui/alert';
+import { Label } from '../../../@/components/ui/label';
+import { Input } from '../../organisms/input/input';
 
-export type LoginProps = {
+export type RegisterProps = {
   company: React.ReactNode;
   onSubmitFunction: (email: string) => Promise<string>;
   variant: 'ayasofyazilim' | 'abc1';
 };
-export const Login = ({ variant, onSubmitFunction, company }: LoginProps) => {
+export const Register = ({
+  variant,
+  onSubmitFunction,
+  company,
+}: RegisterProps) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>('');
+  const [signInWithEmailSelected, setSignInWithEmailSelected] =
+    React.useState<boolean>(false);
 
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -25,7 +35,11 @@ export const Login = ({ variant, onSubmitFunction, company }: LoginProps) => {
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
 
-    if (!emailRef.current?.value || !passwordRef.current?.value) return;
+    if (!emailRef.current?.value) return;
+    if (!passwordRef.current?.value) {
+      setSignInWithEmailSelected(true);
+      return;
+    }
     setIsLoading(true);
 
     onSubmitFunction(emailRef.current.value)
@@ -53,18 +67,31 @@ export const Login = ({ variant, onSubmitFunction, company }: LoginProps) => {
             autoFocus
           />
         </div>
-
-        <div className="grid gap-1">
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            placeholder="password"
-            type="password"
-            autoComplete="no"
-            ref={passwordRef}
-          />
-        </div>
-
+        {signInWithEmailSelected && (
+          <>
+            <div className="grid gap-1">
+              <Label htmlFor="name">Name & Surname</Label>
+              <Input
+                id="name"
+                placeholder="John Doe"
+                type="name"
+                autoComplete="name"
+                ref={emailRef}
+                autoFocus
+              />
+            </div>
+            <div className="grid gap-1">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                placeholder="password"
+                type="password"
+                autoComplete="no"
+                ref={passwordRef}
+              />
+            </div>
+          </>
+        )}
         {error && (
           <Alert variant="destructive">
             <ExclamationTriangleIcon className="h-4 w-4" />
@@ -76,7 +103,7 @@ export const Login = ({ variant, onSubmitFunction, company }: LoginProps) => {
           {isLoading ? (
             <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
           ) : (
-            'Log in with Email'
+            'Sign in with Email'
           )}
         </Button>
       </div>
@@ -88,10 +115,10 @@ export const Login = ({ variant, onSubmitFunction, company }: LoginProps) => {
       variant={variant}
       formComponent={formComponent}
       isLoading={isLoading}
-      title="Log in"
+      title="Create an account"
       description={
-        <a href="/register" className="text-slate-500 text-center text-sm">
-          Don&apos;t you have an account?
+        <a href="/login" className="text-slate-500 text-center text-sm">
+          Do you have an account?
         </a>
       }
     />

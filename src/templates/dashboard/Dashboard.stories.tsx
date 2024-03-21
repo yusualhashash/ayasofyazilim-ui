@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
 
-import Dashboard from './Dashboard';
+import Dashboard from './dashboard';
 
 export default {
   title: 'Template/Dashboard',
