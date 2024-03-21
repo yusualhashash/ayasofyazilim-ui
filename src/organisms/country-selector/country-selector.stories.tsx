@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
 
-import { CountrySelector } from '../organisms/country-selector/country-selector';
+import { CountrySelector } from './country-selector';
 
 export default {
   title: 'Components/CountrySelector',
