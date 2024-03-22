@@ -4,7 +4,6 @@ import { Meta, StoryFn } from '@storybook/react';
 import DashboardHeader from './header';
 
 export default {
-  title: 'Organism/Header',
   component: DashboardHeader,
   argTypes: {},
 } as Meta<typeof DashboardHeader>;

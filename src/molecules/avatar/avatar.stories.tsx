@@ -4,7 +4,6 @@ import { Meta, StoryFn } from '@storybook/react';
 import Avatar from './avatar';
 
 export default {
-  title: 'Molecules/Avatar',
   component: Avatar,
   argTypes: {},
   parameters: {

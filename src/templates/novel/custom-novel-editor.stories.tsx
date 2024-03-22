@@ -4,7 +4,6 @@ import React from 'react';
 import CustomNovelEditor from './custom-novel-editor';
 
 export default {
-  title: 'Template/Custom Novel Editor',
   component: CustomNovelEditor,
   argTypes: {},
 } as Meta<typeof CustomNovelEditor>;

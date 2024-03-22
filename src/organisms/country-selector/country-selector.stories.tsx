@@ -4,7 +4,6 @@ import { Meta, StoryFn } from '@storybook/react';
 import { CountrySelector } from './country-selector';
 
 export default {
-  title: 'Components/CountrySelector',
   component: CountrySelector,
   argTypes: {},
   parameters: {

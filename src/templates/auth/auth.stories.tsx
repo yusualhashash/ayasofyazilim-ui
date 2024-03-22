@@ -4,7 +4,6 @@ import { Meta, StoryFn } from '@storybook/react';
 import { Auth } from '../..';
 
 export default {
-  title: 'Auth Template',
   component: Auth,
   argTypes: {},
 } as Meta<typeof Auth>;
