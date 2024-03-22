@@ -1,27 +1,44 @@
 import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
 
-import { CountrySelector } from './country-selector';
+import { CountrySelector as CS } from './country-selector';
 
 export default {
-  component: CountrySelector,
+  component: CS,
   argTypes: {},
   parameters: {
     layout: 'centered',
   },
-} as Meta<typeof CountrySelector>;
+} as Meta<typeof CS>;
 
-const Template: StoryFn<typeof CountrySelector> = (args) => (
-  <CountrySelector {...args} />
-);
+const Template: StoryFn<typeof CS> = (args) => <CS {...args} />;
 
-export const CountrySelectorTemplate = Template.bind({});
+export const CountrySelector = Template.bind({});
 
-CountrySelectorTemplate.args = {
+CountrySelector.args = {
   searchText: 'Find',
   searchEmptyValue: 'No country found.',
   defaultValue: {
     label: 'Test',
     value: 'tr',
   },
+  countries: [
+    {
+      value: 'tr',
+      label: 'Türkçe',
+    },
+    {
+      value: 'it',
+      label: 'Italiano',
+    },
+    {
+      value: 'jp',
+      label: '日本語',
+    },
+    {
+      value: 'sa',
+      label: 'عربي',
+      rtl: true,
+    },
+  ],
 };
