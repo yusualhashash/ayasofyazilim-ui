@@ -19,7 +19,7 @@
     "test:ci": "vitest run --coverage",
     "prepare": "husky",
     "commit": "git add . && tsc && npx cz && git push && git pull",
-    "prep": "git add . && tsc && npx cz",
+    "prep": "git add . && tsc && pnpm test:ci && npx cz && gh pr create",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "release": "pnpm build && pnpm release-it",
