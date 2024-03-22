@@ -4,7 +4,6 @@ import { Meta, StoryFn } from '@storybook/react';
 import { Register } from '../..';
 
 export default {
-  title: 'Pages',
   component: Register,
   argTypes: {},
 } as Meta<typeof Register>;

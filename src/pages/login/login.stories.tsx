@@ -4,7 +4,6 @@ import { Meta, StoryFn } from '@storybook/react';
 import { Login } from '../..';
 
 export default {
-  title: 'Pages',
   component: Login,
   argTypes: {},
 } as Meta<typeof Login>;

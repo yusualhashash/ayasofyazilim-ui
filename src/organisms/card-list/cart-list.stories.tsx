@@ -4,7 +4,6 @@ import { Meta, StoryFn } from '@storybook/react';
 import CardList from './card-list';
 
 export default {
-  title: 'Organism/Card list',
   component: CardList,
   argTypes: {},
   parameters: {

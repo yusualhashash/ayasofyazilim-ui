@@ -4,7 +4,6 @@ import { Meta, StoryFn } from '@storybook/react';
 import InfoCard from './infocard';
 
 export default {
-  title: 'Molecules/info Card',
   component: InfoCard,
   argTypes: {},
   parameters: {
