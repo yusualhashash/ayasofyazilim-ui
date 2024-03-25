@@ -38,6 +38,8 @@ jobs:
             git add .
             git commit -m "fix:linting"
             git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
         
       - name: Check linting
         run: pnpm lint
