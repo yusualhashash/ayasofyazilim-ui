@@ -2,9 +2,9 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { expect, it } from 'vitest';
 import {
-  CountrySelector,
   CountrySelectItem,
-} from '../src/organisms/country-selector/country-selector';
+  CountrySelector,
+} from '../src/organisms/country-selector';
 
 it('renders correctly', () => {
   const defaults: CountrySelectItem = {

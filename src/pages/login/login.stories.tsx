@@ -1,7 +1,7 @@
-import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
+import React from 'react';
 
-import { Login } from '../..';
+import { Login } from '../login';
 
 export default {
   component: Login,
