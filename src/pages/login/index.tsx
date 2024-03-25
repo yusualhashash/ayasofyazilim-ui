@@ -3,6 +3,7 @@
 import React, { useRef } from 'react';
 
 import { ExclamationTriangleIcon, ReloadIcon } from '@radix-ui/react-icons';
+
 import { Button } from '../../../@/components/ui/button';
 import { Auth } from '../../templates/auth';
 
@@ -11,8 +12,8 @@ import {
   AlertDescription,
   AlertTitle,
 } from '../../../@/components/ui/alert';
+import { Input } from '../../../@/components/ui/input';
 import { Label } from '../../../@/components/ui/label';
-import { Input } from '../../organisms/input';
 
 export type LoginProps = {
   company: React.ReactNode;

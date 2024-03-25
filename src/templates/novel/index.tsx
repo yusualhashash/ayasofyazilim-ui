@@ -12,7 +12,7 @@ import {
 import { ImageResizer, handleCommandNavigation } from 'novel/extensions';
 import { handleImageDrop, handleImagePaste } from 'novel/plugins';
 
-import './prosemirror.css';
+import './novel/prosemirror.css';
 
 import React from 'react';
 import { extensions, suggestionItems } from '../../organisms/novel/extensions';
