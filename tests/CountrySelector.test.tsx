@@ -13,13 +13,7 @@ it('renders correctly', () => {
     value: '',
   };
   const tree = renderer
-    .create(
-      <CountrySelector
-        direction="rtl"
-        menuAlign="end"
-        defaultValue={defaults}
-      />
-    )
+    .create(<CountrySelector menuAlign="end" defaultValue={defaults} />)
     .toJSON();
   expect(tree).toMatchSnapshot();
 });

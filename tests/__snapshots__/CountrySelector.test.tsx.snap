@@ -20,11 +20,11 @@ exports[`renders correctly 1`] = `
   >
     <button
       aria-expanded={false}
-      className="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 py-2 justify-between border-none bg-transparent px-2 gap-2 true"
+      className="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 py-2 justify-between border-none bg-transparent px-2 gap-2 rtl:flex-row-reverse"
       role="combobox"
     >
       <div
-        className="false  flex w-full justify-between gap-2 overflow-hidden items-center"
+        className="false rtl:flex-row-reverse flex w-full justify-between gap-2 overflow-hidden items-center"
       >
         <div
           className="border  rounded-sm overflow-hidden"
