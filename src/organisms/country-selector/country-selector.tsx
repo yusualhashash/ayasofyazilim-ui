@@ -32,9 +32,8 @@ type CountrySelectItem = {
 type CountrySelectorProps = {
   countries?: Array<CountrySelectItem>;
   defaultValue?: CountrySelectItem;
-  direction: 'ltr' | 'rtl';
   menuAlign: 'start' | 'center' | 'end';
-  onValueChange?: () => {};
+  onValueChange?: (value: string) => void;
   searchEmptyValue?: string;
   searchText?: string;
   showLabel?: boolean;
@@ -46,14 +45,13 @@ function CountrySelector({
   searchEmptyValue,
   defaultValue,
   menuAlign,
-  direction,
   tooltipText,
   showLabel = false,
   countries = [],
   onValueChange,
 }: CountrySelectorProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState<string | undefined>('');
+  const [value, setValue] = React.useState<string>('');
 
   return (
     <TooltipProvider>
@@ -65,7 +63,7 @@ function CountrySelector({
                 role="combobox"
                 variant="ghost"
                 aria-expanded={open}
-                className={`justify-between border-none bg-transparent px-2 gap-2 ${direction === 'rtl' ?? 'flex-row-reverse'}`}
+                className="justify-between border-none bg-transparent px-2 gap-2 rtl:flex-row-reverse"
               >
                 {value ? (
                   <SelectedCountry
@@ -95,7 +93,7 @@ function CountrySelector({
                       onSelect={(currentValue: string) => {
                         setValue(currentValue);
                         setOpen(false);
-                        if (onValueChange) onValueChange();
+                        if (onValueChange) onValueChange(value);
                       }}
                     >
                       <SelectedCountry {...country} />
@@ -117,11 +115,11 @@ type SelectedCountryProps = CountrySelectItem & {
 const SelectedCountry = ({
   value = '',
   label,
-  rtl,
+  rtl = false,
   showLabel = true,
 }: SelectedCountryProps) => (
   <div
-    className={`${rtl ?? 'flex-row-reverse'}  flex w-full justify-between gap-2 overflow-hidden items-center`}
+    className={`${rtl ?? 'flex-row-reverse'} rtl:flex-row-reverse flex w-full justify-between gap-2 overflow-hidden items-center`}
   >
     {showLabel && <span className="text-xs">{label}</span>}
     <div className="border  rounded-sm overflow-hidden">
