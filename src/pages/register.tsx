@@ -3,16 +3,16 @@
 import React, { useRef } from 'react';
 
 import { ExclamationTriangleIcon, ReloadIcon } from '@radix-ui/react-icons';
-import { Button } from '../../../@/components/ui/button';
-import { Auth } from '../../templates/auth/auth';
+import { Button } from '../../@/components/ui/button';
+import { Auth } from '../templates/auth';
 
 import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from '../../../@/components/ui/alert';
-import { Label } from '../../../@/components/ui/label';
-import { Input } from '../../organisms/input/input';
+} from '../../@/components/ui/alert';
+import { Label } from '../../@/components/ui/label';
+import { Input } from '../organisms/input';
 
 export type RegisterProps = {
   company: React.ReactNode;

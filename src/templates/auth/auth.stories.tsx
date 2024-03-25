@@ -1,7 +1,6 @@
-import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
-
-import { Auth } from '../..';
+import React from 'react';
+import { Auth } from '../auth';
 
 export default {
   component: Auth,

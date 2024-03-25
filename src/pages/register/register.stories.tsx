@@ -1,7 +1,6 @@
-import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
-
-import { Register } from '../..';
+import React from 'react';
+import { Register } from '../register';
 
 export default {
   component: Register,

@@ -1,7 +1,7 @@
-import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
+import React from 'react';
 
-import CardList from './card-list';
+import CardList from '../card-list';
 
 export default {
   component: CardList,
