@@ -27,7 +27,7 @@
   },
   "types": "./dist/index.d.ts",
   "exports": {
-    "./country-selector": "./@/components/organism/country-selector.tsx",
+    "./country-selector": "./src/organisms/country-selector/country-selector.tsx",
     "./accordion": "./@/components/ui/accordion.tsx",
     "./alert": "./@/components/ui/alert.tsx",
     "./alert-dialog": "./@/components/ui/alert-dialog.tsx",
@@ -81,12 +81,6 @@
     "./pages/login": "./src/pages/login.tsx",
     "./pages/register": "./src/pages/register.tsx",
     "./components/input": "./src/components/input.tsx"
-  },
-  "exports_deprecated": {
-    ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs"
-    }
   },
   "files": [
     "dist"
