@@ -115,7 +115,7 @@ type SelectedCountryProps = CountrySelectItem & {
 const SelectedCountry = ({
   value = '',
   label,
-  rtl = false,
+  rtl,
   showLabel = true,
 }: SelectedCountryProps) => (
   <div
