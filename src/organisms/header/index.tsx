@@ -1,11 +1,11 @@
-import React from 'react';
-import AvatarWrapper from '../../molecules/avatar/avatar';
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
+import React from 'react';
+import AvatarWrapper from '../../molecules/avatar';
 
 interface DashboardHeaderProps {
   // heading: string

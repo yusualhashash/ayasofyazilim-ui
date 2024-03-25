@@ -4,7 +4,7 @@ import React, { useRef } from 'react';
 
 import { ExclamationTriangleIcon, ReloadIcon } from '@radix-ui/react-icons';
 import { Button } from '../../../@/components/ui/button';
-import { Auth } from '../../templates/auth/auth';
+import { Auth } from '../../templates/auth';
 
 import {
   Alert,
@@ -12,7 +12,7 @@ import {
   AlertTitle,
 } from '../../../@/components/ui/alert';
 import { Label } from '../../../@/components/ui/label';
-import { Input } from '../../organisms/input/input';
+import { Input } from '../../organisms/input';
 
 export type LoginProps = {
   company: React.ReactNode;
