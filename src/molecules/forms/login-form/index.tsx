@@ -86,7 +86,7 @@ export default function LoginForm({
           </a>
         </p>
       </div>
-      <div className="grid gap-6">
+      <div className="grid gap-4 my-1">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {allowTenantChange && (
