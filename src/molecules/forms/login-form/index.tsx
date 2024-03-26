@@ -1,13 +1,5 @@
 'use client';
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ExclamationTriangleIcon, ReloadIcon } from '@radix-ui/react-icons';
 import React from 'react';
@@ -17,15 +9,26 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from '../../../@/components/ui/alert';
-import { Button } from '../../../@/components/ui/button';
-import { Input } from '../../../@/components/ui/input';
+} from '../../../../@/components/ui/alert';
+import { Button } from '../../../../@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../../@/components/ui/form';
+import { Input } from '../../../../@/components/ui/input';
 
-const formSchema = z.object({
+const formSchemaToTest = z.object({
   email: z.string().email(),
   password: z.string().min(8).max(32),
 });
-const onSubmitFunction = (values: { [key: string]: any }): Promise<string> => {
+
+const onSubmitFunctionToTest = (values: {
+  [key: string]: any;
+}): Promise<string> => {
   return new Promise(async (resolve, reject) => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
     console.log(values);
@@ -38,15 +41,24 @@ const onSubmitFunction = (values: { [key: string]: any }): Promise<string> => {
 
 export type LoginProps = {
   onSubmitFunction: (values: { [key: string]: any }) => Promise<string>;
+  formSchema: z.ZodObject<any>;
+  allowTenantChange: boolean;
+  registerPath: string;
 };
 
-export default function LoginForm({ onSubmitFunction }: LoginProps) {
+export default function LoginForm({
+  onSubmitFunction,
+  formSchema,
+  allowTenantChange,
+  registerPath,
+}: LoginProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>('');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      tenant: '',
       email: '',
       password: '',
     },
@@ -56,7 +68,7 @@ export default function LoginForm({ onSubmitFunction }: LoginProps) {
     onSubmitFunction(values)
       .then(() => {
         setError('');
-        //redirect
+        //redirect from the server
       })
       .catch((result) => {
         setError(result);
@@ -65,24 +77,43 @@ export default function LoginForm({ onSubmitFunction }: LoginProps) {
   }
 
   return (
-    <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+    <div className="mx-auto flex w-full flex-col justify-center space-y-4 sm:w-[350px]">
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">Log in</h1>
         <p className="text-sm text-muted-foreground">
-          <a href="/register" className="text-slate-500 text-center text-sm">
-            Don&apos;t you have an account?
+          <a href={registerPath} className="text-slate-500 text-center text-sm">
+            Log into your account.
           </a>
         </p>
       </div>
       <div className="grid gap-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {allowTenantChange && (
+              <FormField
+                control={form.control}
+                name="tenant"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tenant</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isLoading}
+                        placeholder="Tenant"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Email or username</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isLoading}
@@ -133,27 +164,28 @@ export default function LoginForm({ onSubmitFunction }: LoginProps) {
             <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
-            </span>
+            <span className="bg-background px-2 text-muted-foreground">Or</span>
           </div>
         </div>
-        <Button disabled={isLoading} variant="outline">
-          {isLoading ? (
-            <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
-          ) : (
-            <>
-              <img
-                src="https://cdn.e-devlet.gov.tr/themes/izmir/images/favicons/favicon-196x196.1.8.0.png"
-                width={20}
-                className="mx-1"
-                alt="E-devlet"
-              />
-              <span className="mx-1">E-devlet</span>
-            </>
-          )}
+
+        <Button
+          variant={'default'}
+          disabled={isLoading}
+          className="bg-blue-800 hover:bg-blue-950"
+          asChild
+        >
+          <a
+            href={registerPath}
+            className="text-center text-sm w-full text-white"
+          >
+            {isLoading ? (
+              <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
+            ) : (
+              'Create Account'
+            )}
+          </a>
         </Button>
-      </div>{' '}
+      </div>
       <p className="px-8 text-center text-sm text-muted-foreground">
         By clicking continue, you agree to our{' '}
         <a
