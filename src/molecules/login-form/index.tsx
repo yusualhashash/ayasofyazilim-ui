@@ -1,13 +1,5 @@
 'use client';
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ExclamationTriangleIcon, ReloadIcon } from '@radix-ui/react-icons';
 import React from 'react';
@@ -19,6 +11,14 @@ import {
   AlertTitle,
 } from '../../../@/components/ui/alert';
 import { Button } from '../../../@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../@/components/ui/form';
 import { Input } from '../../../@/components/ui/input';
 
 const formSchema = z.object({
@@ -128,7 +128,7 @@ export default function LoginForm({ onSubmitFunction }: LoginProps) {
             </Button>
           </form>
         </Form>
-        <div className="relative">
+        {/* <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t" />
           </div>
@@ -142,7 +142,7 @@ export default function LoginForm({ onSubmitFunction }: LoginProps) {
           {isLoading ? (
             <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
           ) : (
-            <>
+            <div className="flex justify-center">
               <img
                 src="https://cdn.e-devlet.gov.tr/themes/izmir/images/favicons/favicon-196x196.1.8.0.png"
                 width={20}
@@ -150,10 +150,10 @@ export default function LoginForm({ onSubmitFunction }: LoginProps) {
                 alt="E-devlet"
               />
               <span className="mx-1">E-devlet</span>
-            </>
+            </div>
           )}
-        </Button>
-      </div>{' '}
+        </Button> */}
+      </div>
       <p className="px-8 text-center text-sm text-muted-foreground">
         By clicking continue, you agree to our{' '}
         <a
