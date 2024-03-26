@@ -21,11 +21,14 @@ import {
 } from '../../../@/components/ui/form';
 import { Input } from '../../../@/components/ui/input';
 
-const formSchema = z.object({
+const formSchemaToTest = z.object({
   email: z.string().email(),
   password: z.string().min(8).max(32),
 });
-const onSubmitFunction = (values: { [key: string]: any }): Promise<string> => {
+
+const onSubmitFunctionToTest = (values: {
+  [key: string]: any;
+}): Promise<string> => {
   return new Promise(async (resolve, reject) => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
     console.log(values);
@@ -38,15 +41,22 @@ const onSubmitFunction = (values: { [key: string]: any }): Promise<string> => {
 
 export type LoginProps = {
   onSubmitFunction: (values: { [key: string]: any }) => Promise<string>;
+  formSchema: z.ZodObject<any>;
+  allowTenantChange: boolean;
 };
 
-export default function LoginForm({ onSubmitFunction }: LoginProps) {
+export default function LoginForm({
+  onSubmitFunction,
+  formSchema,
+  allowTenantChange,
+}: LoginProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>('');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      tenant: '',
       email: '',
       password: '',
     },
@@ -56,7 +66,7 @@ export default function LoginForm({ onSubmitFunction }: LoginProps) {
     onSubmitFunction(values)
       .then(() => {
         setError('');
-        //redirect
+        //redirect from the server
       })
       .catch((result) => {
         setError(result);
@@ -76,13 +86,32 @@ export default function LoginForm({ onSubmitFunction }: LoginProps) {
       </div>
       <div className="grid gap-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {allowTenantChange && (
+              <FormField
+                control={form.control}
+                name="tenant"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tenant</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isLoading}
+                        placeholder="Tenant"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Email or username</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isLoading}
