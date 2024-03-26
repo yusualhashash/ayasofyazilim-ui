@@ -3,15 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ExclamationTriangleIcon, ReloadIcon } from '@radix-ui/react-icons';
 
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from '../../../../@/components/ui/alert';
-import { Button } from '../../../../@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -19,8 +12,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../../../../@/components/ui/form';
-import { Input } from '../../../../@/components/ui/input';
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 const formSchemaToTest = z.object({
   email: z.string().email(),
