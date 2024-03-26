@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import {
   BoldIcon,
   CodeIcon,
@@ -7,8 +9,6 @@ import {
 } from 'lucide-react';
 import { EditorBubbleItem, useEditor } from 'novel';
 import React from 'react';
-import { Button } from '../../../../@/components/ui/button';
-import { cn } from '../../../../@/lib/utils';
 import type { SelectorItem } from './node-selector';
 
 export const TextButtons = () => {

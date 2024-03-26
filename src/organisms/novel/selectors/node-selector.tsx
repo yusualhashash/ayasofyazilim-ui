@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button';
+import { PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Popover } from '@radix-ui/react-popover';
 import {
   Check,
@@ -14,11 +16,6 @@ import {
 } from 'lucide-react';
 import { EditorBubbleItem, useEditor } from 'novel';
 import React from 'react';
-import { Button } from '../../../../@/components/ui/button';
-import {
-  PopoverContent,
-  PopoverTrigger,
-} from '../../../../@/components/ui/popover';
 
 export type SelectorItem = {
   command: (editor: ReturnType<typeof useEditor>['editor']) => void;
