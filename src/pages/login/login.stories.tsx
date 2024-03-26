@@ -12,7 +12,7 @@ const Template: StoryFn<typeof Login> = (args) => <Login {...args} />;
 
 export const LoginPage = Template.bind({});
 
-const Company = (
+const children = (
   <div className="bg-zinc-800 flex flex-auto justify-center items-center">
     <div>
       <img src="https://i.imgur.com/z5WQB9B.png" alt="logo" />
@@ -21,6 +21,6 @@ const Company = (
 );
 const onSubmit = (): Promise<string> => new Promise(() => {});
 LoginPage.args = {
-  children: Company,
+  children: children,
   onSubmitFunction: onSubmit,
 };
