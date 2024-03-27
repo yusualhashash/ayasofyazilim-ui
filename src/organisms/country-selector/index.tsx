@@ -16,12 +16,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 
 type CountrySelectItem = {
   label?: string;
@@ -32,7 +26,7 @@ type CountrySelectItem = {
 type CountrySelectorProps = {
   countries?: Array<CountrySelectItem>;
   defaultValue?: CountrySelectItem;
-  menuAlign: 'start' | 'center' | 'end';
+  menuAlign?: 'start' | 'center' | 'end';
   onValueChange?: (value: string) => void;
   searchEmptyValue?: string;
   searchText?: string;
@@ -44,8 +38,7 @@ function CountrySelector({
   searchText,
   searchEmptyValue,
   defaultValue,
-  menuAlign,
-  tooltipText,
+  menuAlign = 'end',
   showLabel = false,
   countries = [],
   onValueChange,
@@ -53,59 +46,51 @@ function CountrySelector({
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState<string>('');
 
+  function onSelect(currentValue: string) {
+    setValue(currentValue);
+    setOpen(false);
+    if (onValueChange) onValueChange(currentValue);
+  }
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger>
-            <TooltipTrigger>
-              <Button
-                role="combobox"
-                variant="ghost"
-                aria-expanded={open}
-                className="justify-between border-none bg-transparent px-2 gap-2 rtl:flex-row-reverse"
-              >
-                {value ? (
-                  <SelectedCountry
-                    {...countries.find((country) => country.value === value)}
-                    showLabel={showLabel}
-                  />
-                ) : (
-                  <SelectedCountry {...defaultValue} showLabel={showLabel} />
-                )}
-              </Button>
-            </TooltipTrigger>
-            {tooltipText ? <TooltipContent>{tooltipText}</TooltipContent> : ''}
-          </PopoverTrigger>
-          <PopoverContent className="w-[160px] p-0" align={menuAlign}>
-            <Command>
-              <CommandList>
-                <CommandInput
-                  placeholder={searchText}
-                  className="h-9 text-xs"
-                />
-                <CommandEmpty>{searchEmptyValue}</CommandEmpty>
-                <CommandGroup>
-                  {countries.map((country) => (
-                    <CommandItem
-                      key={country.value}
-                      value={country.value}
-                      onSelect={(currentValue: string) => {
-                        setValue(currentValue);
-                        setOpen(false);
-                        if (onValueChange) onValueChange(value);
-                      }}
-                    >
-                      <SelectedCountry {...country} />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-      </Tooltip>
-    </TooltipProvider>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger>
+        <Button
+          asChild
+          role="combobox"
+          variant="ghost"
+          aria-expanded={open}
+          className="justify-between border-none bg-transparent px-2 gap-2 rtl:flex-row-reverse"
+        >
+          {value ? (
+            <SelectedCountry
+              {...countries.find((country) => country.value === value)}
+              showLabel={showLabel}
+            />
+          ) : (
+            <SelectedCountry {...defaultValue} showLabel={showLabel} />
+          )}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[160px] p-0" align={menuAlign}>
+        <Command>
+          <CommandList>
+            <CommandInput placeholder={searchText} className="h-9 text-xs" />
+            <CommandEmpty>{searchEmptyValue}</CommandEmpty>
+            <CommandGroup>
+              {countries.map((country) => (
+                <CommandItem
+                  key={country.value}
+                  value={country.value}
+                  onSelect={(currentValue: string) => onSelect(currentValue)}
+                >
+                  <SelectedCountry {...country} />
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }
 
