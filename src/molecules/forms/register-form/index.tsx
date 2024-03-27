@@ -18,52 +18,60 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-const formSchemaToTest = z.object({
-  email: z.string().email(),
-  password: z.string().min(8).max(32),
-});
-
-const onSubmitFunctionToTest = (values: {
-  [key: string]: any;
-}): Promise<string> => {
+const onSubmitFunctionToTest = (
+  values: RegisterFormDataType
+): Promise<string> => {
   return new Promise(async (resolve, reject) => {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    console.log(values);
-    if (values.email === 'a@a.com') {
-      resolve('success');
+    const result = 'Success'; //await handler(values);
+    if (result !== 'Success') {
+      return reject(result);
     }
-    reject('User does not exist.');
+    resolve(result);
+    //router.push("/profile");
   });
 };
+export const defaultRegisterFormSchema = z.object({
+  userName: z.string().min(5),
+  email: z.string().email(),
+  password: z.string().min(4).max(32),
+  tenantId: z.string(),
+});
 
-export type RegisterProps = {
-  onSubmitFunction: (values: { [key: string]: any }) => Promise<string>;
+export type RegisterFormDataType = {
+  userName: string;
+  email: string;
+  password: string;
+  tenantId: string;
+};
+
+export type RegisterPropsType = {
+  onSubmitFunction: (values: RegisterFormDataType) => Promise<string>;
   formSchema: z.ZodObject<any>;
   loginPath: string;
+  locale?: { [key: string]: any };
 };
 
 export default function RegisterForm({
   onSubmitFunction,
   formSchema,
   loginPath,
-}: RegisterProps) {
+}: RegisterPropsType) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>('');
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<RegisterFormDataType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      tenant: '',
+      tenantId: '',
       email: '',
       password: '',
     },
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: RegisterFormDataType) {
     setIsLoading(true);
     onSubmitFunction(values)
       .then(() => {
         setError('');
-        //redirect from the server
       })
       .catch((result) => {
         setError(result);
@@ -139,7 +147,11 @@ export default function RegisterForm({
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            <Button disabled={isLoading} type="submit" className="w-full">
+            <Button
+              variant={'default'}
+              disabled={isLoading}
+              className="bg-blue-800 hover:bg-blue-950 w-full text-white"
+            >
               {isLoading ? (
                 <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
               ) : (
@@ -160,7 +172,7 @@ export default function RegisterForm({
         <Button
           variant={'default'}
           disabled={isLoading}
-          className="bg-blue-800 hover:bg-blue-950"
+          className="bg-slate-700 hover:bg-slate-600"
           asChild
         >
           <a href={loginPath} className="text-center text-sm w-full text-white">
