@@ -13,7 +13,7 @@ exports[`renders correctly 1`] = `
     className="false rtl:flex-row-reverse flex w-full justify-between gap-2 overflow-hidden items-center"
   >
     <div
-      className="border  rounded-sm overflow-hidden"
+      className="border rounded-sm overflow-hidden w-[24px] min-h-[18.5px] block"
     >
       <img
         alt=""

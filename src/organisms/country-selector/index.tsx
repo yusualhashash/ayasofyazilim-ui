@@ -17,15 +17,25 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 
-type CountrySelectItem = {
-  label?: string;
-  rtl?: boolean;
-  value?: string;
+type CountryItem = {
+  concurrencyStamp?: string;
+  creationTime?: string;
+  creatorId?: string | null;
+  cultureName?: string | null;
+  direction?: 'rtl' | 'ltr' | null;
+  displayName?: string | null;
+  extraProperties?: object | null;
+  flagIcon?: string | null;
+  id?: string | null;
+  isDefaultLanguage?: boolean;
+  isEnabled?: boolean;
+  twoLetterISOLanguageName?: string | null;
+  uiCultureName?: string | null;
 };
 
 type CountrySelectorProps = {
-  countries?: Array<CountrySelectItem>;
-  defaultValue?: CountrySelectItem;
+  countries?: Array<CountryItem>;
+  defaultValue?: string;
   menuAlign?: 'start' | 'center' | 'end';
   onValueChange?: (value: string) => void;
   searchEmptyValue?: string;
@@ -59,15 +69,22 @@ function CountrySelector({
           role="combobox"
           variant="ghost"
           aria-expanded={open}
-          className="justify-between border-none bg-transparent px-2 gap-2 rtl:flex-row-reverse"
+          className="justify-between border-none bg-transparent px-2 gap-2 rtl:flex-row-reverse min-h-8 bg-red-300"
         >
           {value ? (
             <SelectedCountry
-              {...countries.find((country) => country.value === value)}
+              {...countries.find(
+                (country) => country.cultureName?.toLowerCase() === value
+              )}
               showLabel={showLabel}
             />
           ) : (
-            <SelectedCountry {...defaultValue} showLabel={showLabel} />
+            <SelectedCountry
+              {...countries.find(
+                (country) => country.cultureName?.toLowerCase() === defaultValue
+              )}
+              showLabel={showLabel}
+            />
           )}
         </Button>
       </PopoverTrigger>
@@ -79,8 +96,8 @@ function CountrySelector({
             <CommandGroup>
               {countries.map((country) => (
                 <CommandItem
-                  key={country.value}
-                  value={country.value}
+                  key={country.cultureName}
+                  value={country.cultureName || ''}
                   onSelect={(currentValue: string) => onSelect(currentValue)}
                 >
                   <SelectedCountry {...country} />
@@ -94,27 +111,27 @@ function CountrySelector({
   );
 }
 
-type SelectedCountryProps = CountrySelectItem & {
+type SelectedCountryProps = Partial<CountryItem> & {
   showLabel?: boolean;
 };
 const SelectedCountry = ({
-  value = '',
-  label,
-  rtl,
+  displayName,
+  flagIcon = '',
+  direction,
   showLabel = true,
 }: SelectedCountryProps) => (
   <div
-    className={`${rtl ?? 'flex-row-reverse'} rtl:flex-row-reverse flex w-full justify-between gap-2 overflow-hidden items-center`}
+    className={`${direction === 'rtl' ?? 'flex-row-reverse'} rtl:flex-row-reverse flex w-full justify-between gap-2 overflow-hidden items-center`}
   >
-    {showLabel && <span className="text-xs">{label}</span>}
-    <div className="border  rounded-sm overflow-hidden">
+    {showLabel && <span className="text-xs text-black">{displayName}</span>}
+    <div className="border rounded-sm overflow-hidden w-[24px] min-h-[18.5px] block">
       <img
         className="w-6"
-        src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/4x3/${value}.svg`}
-        alt={label}
+        src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/4x3/${flagIcon}.svg`}
+        alt={displayName || ''}
       />
     </div>
   </div>
 );
 
-export { CountrySelectItem, CountrySelector };
+export { CountryItem, CountrySelector };
