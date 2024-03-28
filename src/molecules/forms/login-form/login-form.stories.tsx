@@ -16,5 +16,5 @@ export const Default = template.bind({});
 Default.args = {
   formSchema: defaultLoginFormSchema,
   registerPath: 'asd',
-  locale: locale.resources,
+  resources: locale.resources,
 };
