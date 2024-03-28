@@ -205,8 +205,9 @@ export type LoginPropsType = {
   formSchema: z.ZodObject<any>;
   allowTenantChange: boolean;
   registerPath: string;
-  locale: { [key: string]: any };
-  onLangChange: () => void;
+  resources: { [key: string]: any };
+  cultureName: string;
+  onLangChange: (cultureName: string) => void;
 };
 
 export const Login = ({
@@ -215,7 +216,8 @@ export const Login = ({
   allowTenantChange,
   children,
   registerPath,
-  locale,
+  resources,
+  cultureName,
   onLangChange,
 }: LoginPropsType) => {
   return (
@@ -227,7 +229,7 @@ export const Login = ({
             <CountrySelector
               menuAlign={'end'}
               countries={lang.countries}
-              defaultValue={'tr'}
+              defaultValue={cultureName}
               onValueChange={onLangChange}
             />
           </div>
@@ -236,7 +238,7 @@ export const Login = ({
             formSchema={formSchema}
             allowTenantChange={allowTenantChange}
             registerPath={registerPath}
-            locale={locale}
+            resources={resources}
           />
         </div>
       }

@@ -47,7 +47,7 @@ export type LoginPropsType = {
   formSchema: z.ZodObject<any>;
   allowTenantChange: boolean;
   registerPath: string;
-  locale?: { [key: string]: any };
+  resources?: { [key: string]: any };
 };
 
 export default function LoginForm({
@@ -55,7 +55,7 @@ export default function LoginForm({
   formSchema,
   allowTenantChange,
   registerPath,
-  locale = localeTr.resources,
+  resources = localeTr.resources,
 }: LoginPropsType) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>('');
@@ -85,7 +85,7 @@ export default function LoginForm({
     <div className="mx-auto flex w-full flex-col justify-center space-y-4 sm:w-[350px]">
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
-          {locale?.AbpUi?.texts?.Login}
+          {resources?.AbpUi?.texts?.Login}
         </h1>
       </div>
       <div className="grid gap-4 my-1">
@@ -97,7 +97,9 @@ export default function LoginForm({
                 name="tenantId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{locale?.AbpIdentity?.texts?.Tenant}</FormLabel>
+                    <FormLabel>
+                      {resources?.AbpIdentity?.texts?.Tenant}
+                    </FormLabel>
                     <FormControl>
                       <Input
                         disabled={isLoading}
@@ -116,7 +118,7 @@ export default function LoginForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {locale?.AbpAccount?.texts?.UserNameOrEmailAddress}
+                    {resources?.AbpAccount?.texts?.UserNameOrEmailAddress}
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -134,7 +136,9 @@ export default function LoginForm({
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{locale?.AbpIdentity?.texts?.Password}</FormLabel>
+                  <FormLabel>
+                    {resources?.AbpIdentity?.texts?.Password}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       disabled={isLoading}
@@ -151,10 +155,10 @@ export default function LoginForm({
               <Alert variant="destructive">
                 <ExclamationTriangleIcon className="h-4 w-4" />
                 <AlertTitle>
-                  {locale?.AbpExceptionHandling?.texts?.DefaultErrorMessage}
+                  {resources?.AbpExceptionHandling?.texts?.DefaultErrorMessage}
                 </AlertTitle>
                 <AlertDescription>
-                  {locale?.AbpAccount?.texts?.[error]}
+                  {resources?.AbpAccount?.texts?.[error]}
                 </AlertDescription>
               </Alert>
             )}
@@ -167,7 +171,7 @@ export default function LoginForm({
               {isLoading ? (
                 <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
               ) : (
-                locale?.AbpUi?.texts?.Login
+                resources?.AbpUi?.texts?.Login
               )}
             </Button>
           </form>
@@ -178,7 +182,7 @@ export default function LoginForm({
           </div>
           <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-background px-2 text-muted-foreground">
-              {locale?.AbpAccount?.texts?.OrSignInWith}
+              {resources?.AbpAccount?.texts?.OrSignInWith}
             </span>
           </div>
         </div>
@@ -196,7 +200,7 @@ export default function LoginForm({
             {isLoading ? (
               <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
             ) : (
-              locale?.AbpUi?.texts?.Register
+              resources?.AbpUi?.texts?.Register
             )}
           </a>
         </Button>
