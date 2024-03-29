@@ -1,13 +1,3 @@
-import {
-  Home,
-  ListVideo,
-  Mic2,
-  Music,
-  Play,
-  RadioIcon,
-  SquareStack,
-  User,
-} from 'lucide-react';
 import Link from 'next/link';
 import * as React from 'react';
 import {
@@ -19,7 +9,29 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
-type MenuProps = {
+// const exampleMenus: MenuProps[] = [
+//   {
+//     label: 'Discover',
+//     name: 'Radio',
+//     icon: <RadioIcon size={15} className="mr-2" />,
+//     href: '/home/',
+//   },
+//   {
+//     label: 'Library',
+//     name: 'Playlist',
+//     icon: <Play size={15} className="mr-2" />,
+//     href: '/home/playlist',
+//     submenu: [
+//       {
+//         name: 'Playlist 1',
+//         icon: <ListVideo size={15} className="mr-2" />,
+//         href: '/home/',
+//       },
+//     ],
+//   },
+// ];
+
+export type MenuProps = {
   href: string;
   icon: React.ReactNode;
   label: string;
@@ -33,70 +45,12 @@ type Submenu = {
   name: string;
 };
 
-export default function SidebarMenu() {
-  const menus: MenuProps[] = [
-    {
-      label: 'Discover',
-      name: 'Home',
-      icon: <Home size={15} className="mr-2" />,
-      href: '/home',
-    },
-    {
-      label: 'Discover',
-      name: 'Browse',
-      icon: <SquareStack size={15} className="mr-2" />,
-      href: '/home',
-    },
-    {
-      label: 'Discover',
-      name: 'Radio',
-      icon: <RadioIcon size={15} className="mr-2" />,
-      href: '/home/',
-    },
-    {
-      label: 'Library',
-      name: 'Playlist',
-      icon: <Play size={15} className="mr-2" />,
-      href: '/home/playlist',
-      submenu: [
-        {
-          name: 'Playlist 1',
-          icon: <ListVideo size={15} className="mr-2" />,
-          href: '/home/',
-        },
-        {
-          name: 'Playlist 2',
-          icon: <ListVideo size={15} className="mr-2" />,
-          href: '/home/',
-        },
-        {
-          name: 'Playlist 3',
-          icon: <ListVideo size={15} className="mr-2" />,
-          href: '/home/',
-        },
-      ],
-    },
-    {
-      label: 'Library',
-      name: 'Songs',
-      icon: <Music size={15} className="mr-2" />,
-      href: '/home/',
-    },
-    {
-      label: 'Library',
-      name: 'Made for You',
-      icon: <User size={15} className="mr-2" />,
-      href: '/home/',
-    },
-    {
-      label: 'Library',
-      name: 'Artist',
-      icon: <Mic2 size={15} className="mr-2" />,
-      href: '/home/',
-    },
-  ];
-
-  const uniqueLabels = Array.from(new Set(menus.map((menu) => menu.label)));
+export default function SidebarMenu({
+  menus,
+}: {
+  menus: MenuProps[] | undefined;
+}) {
+  const uniqueLabels = Array.from(new Set(menus?.map((menu) => menu.label)));
 
   return (
     <ScrollArea className="h-100 lg:w-48 sm:w-full rounded-md">
@@ -111,7 +65,7 @@ export default function SidebarMenu() {
               </p>
             )}
             {menus
-              .filter((menu) => menu.label === label)
+              ?.filter((menu) => menu.label === label)
               .map((menu) => (
                 <React.Fragment key={menu.name}>
                   {menu.submenu && menu.submenu.length > 0 ? (
