@@ -40,6 +40,15 @@ const config: StorybookConfig = {
     name: '@storybook/react-webpack5',
     options: {},
   },
+  swc: (config, options) => ({
+    jsc: {
+      transform: {
+        react: {
+          runtime: 'automatic',
+        },
+      },
+    },
+  }),
   async webpackFinal(config) {
     if (config.resolve) {
       config.resolve.alias = {
