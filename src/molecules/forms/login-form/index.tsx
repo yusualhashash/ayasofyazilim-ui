@@ -1,7 +1,11 @@
 'use client';
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ExclamationTriangleIcon, ReloadIcon } from '@radix-ui/react-icons';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Input } from '@/components/ui/input';
 import {
   Form,
   FormControl,
@@ -10,25 +14,24 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { ExclamationTriangleIcon, ReloadIcon } from '@radix-ui/react-icons';
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 import localeTr from '../../../locale_tr.json';
 
-const onSubmitFunctionToTest = (values: LoginFormDataType): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
-    const result = 'Success'; //await handler(values);
-    if (result !== 'Success') {
-      return reject(result);
-    }
-    resolve(result);
-    //router.push("/profile");
-  });
-};
+// export const onSubmitFunctionToTest = (
+//   values: LoginFormDataType
+// ): Promise<string> => {
+//   return new Promise(async (resolve, reject) => {
+//     const result = await new Promise(() => 'Success'); //await handler(values);
+//     console.log(values);
+//     if (result !== 'Success') {
+//       return reject(result);
+//     }
+//     return resolve(result);
+//     //router.push("/profile");
+//   });
+// };
 
 export const defaultLoginFormSchema = z.object({
   userIdentifier: z.string().min(5),
@@ -37,15 +40,15 @@ export const defaultLoginFormSchema = z.object({
 });
 
 export type LoginFormDataType = {
-  userIdentifier: string;
   password: string;
   tenantId: string;
+  userIdentifier: string;
 };
 
 export type LoginPropsType = {
-  onSubmitFunction: (values: LoginFormDataType) => Promise<string>;
-  formSchema: z.ZodObject<any>;
   allowTenantChange: boolean;
+  formSchema: z.ZodObject<any>;
+  onSubmitFunction: (values: LoginFormDataType) => Promise<string>;
   registerPath: string;
   resources?: { [key: string]: any };
 };
@@ -82,7 +85,7 @@ export default function LoginForm({
   }
 
   return (
-    <div className="mx-auto flex w-full flex-col justify-center space-y-4 sm:w-[350px]">
+    <div className="mx-auto flex w-full flex-col justify-center space-y-4 sm:w-[350px] p-5">
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
           {resources?.AbpUi?.texts?.Login}
@@ -163,7 +166,7 @@ export default function LoginForm({
               </Alert>
             )}
             <Button
-              variant={'default'}
+              variant="default"
               disabled={isLoading}
               className="bg-blue-800 hover:bg-blue-950 w-full text-white"
               type="submit"
@@ -181,31 +184,28 @@ export default function LoginForm({
             <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
+            <span className="bg-background px-2 text-muted-foreground text-center">
               {resources?.AbpAccount?.texts?.OrSignInWith}
             </span>
           </div>
         </div>
 
         <Button
-          variant={'default'}
-          disabled={isLoading}
-          className="bg-slate-700 hover:bg-slate-600"
+          variant="default"
           asChild
+          className="bg-slate-700 hover:bg-slate-600"
         >
           <a
             href={registerPath}
-            className="text-center text-sm w-full text-white"
+            className={`text-center text-sm w-full text-white ${
+              isLoading ? 'pointer-events-none opacity-50' : ''
+            }`}
           >
-            {isLoading ? (
-              <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
-            ) : (
-              resources?.AbpUi?.texts?.Register
-            )}
+            {resources?.AbpUi?.texts?.Register}
           </a>
         </Button>
       </div>
-      <p className="px-8 text-center text-sm text-muted-foreground">
+      <p className="px-4 text-center text-sm text-muted-foreground">
         By clicking continue, you agree to our{' '}
         <a
           href="/terms"

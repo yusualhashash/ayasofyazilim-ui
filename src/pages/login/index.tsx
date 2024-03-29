@@ -200,14 +200,14 @@ const lang = {
 };
 
 export type LoginPropsType = {
-  children: React.ReactNode;
-  onSubmitFunction: (email: LoginFormDataType) => Promise<string>;
-  formSchema: z.ZodObject<any>;
   allowTenantChange: boolean;
+  children: React.ReactNode;
+  cultureName: string;
+  formSchema: z.ZodObject<any>;
+  onLangChange: (cultureName: string) => void;
+  onSubmitFunction: (email: LoginFormDataType) => Promise<string>;
   registerPath: string;
   resources: { [key: string]: any };
-  cultureName: string;
-  onLangChange: (cultureName: string) => void;
 };
 
 export const Login = ({
@@ -217,31 +217,29 @@ export const Login = ({
   children,
   registerPath,
   resources,
-  cultureName,
+  cultureName = 'tr',
   onLangChange,
-}: LoginPropsType) => {
-  return (
-    <TwoColumnLayout
-      LeftNode={children}
-      RightNode={
-        <div className="flex-auto flex">
-          <div className="absolute right-10 top-8">
-            <CountrySelector
-              menuAlign={'end'}
-              countries={lang.countries}
-              defaultValue={cultureName}
-              onValueChange={onLangChange}
-            />
-          </div>
-          <LoginForm
-            onSubmitFunction={onSubmitFunction}
-            formSchema={formSchema}
-            allowTenantChange={allowTenantChange}
-            registerPath={registerPath}
-            resources={resources}
+}: LoginPropsType) => (
+  <TwoColumnLayout
+    LeftNode={children}
+    RightNode={
+      <div className="flex-auto flex">
+        <div className="absolute right-4 top-4 md:right-10 md:top-8">
+          <CountrySelector
+            menuAlign="end"
+            countries={lang.countries}
+            defaultValue={cultureName}
+            onValueChange={onLangChange}
           />
         </div>
-      }
-    />
-  );
-};
+        <LoginForm
+          onSubmitFunction={onSubmitFunction}
+          formSchema={formSchema}
+          allowTenantChange={allowTenantChange}
+          registerPath={registerPath}
+          resources={resources}
+        />
+      </div>
+    }
+  />
+);
