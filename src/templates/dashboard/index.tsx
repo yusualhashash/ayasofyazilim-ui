@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/table';
 
 import CardList from '../../organisms/card-list';
-import DashboardHeader from '../../organisms/header';
 
 export type DashboardProps = {
   logo: string;
@@ -50,34 +49,31 @@ const cards = {
 export default function Dashboard() {
   // porps: DashboardProps
   return (
-    <>
-      <DashboardHeader />
-      <div className="flex flex-col items-center justify-start h-100 w-11/12">
-        <div className="flex-row p-4">
-          <CardList {...cards} />
-        </div>
-        <div className="w-10/12 flex-row p-4 m-4">
-          <Table>
-            <TableCaption>A list of your recent invoices.</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Method</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell className="font-medium">INV001</TableCell>
-                <TableCell>Paid</TableCell>
-                <TableCell>Credit Card</TableCell>
-                <TableCell className="text-right">$250.00</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
+    <div className="flex flex-col items-center justify-start h-full w-full">
+      <div className="flex-row p-4">
+        <CardList {...cards} />
       </div>
-    </>
+      <div className="w-10/12 flex-row p-4 m-4">
+        <Table>
+          <TableCaption>A list of your recent invoices.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">Invoice</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Method</TableHead>
+              <TableHead className="text-right">Amount</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell className="font-medium">INV001</TableCell>
+              <TableCell>Paid</TableCell>
+              <TableCell>Credit Card</TableCell>
+              <TableCell className="text-right">$250.00</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
+    </div>
   );
 }

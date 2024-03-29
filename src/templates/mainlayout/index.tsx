@@ -21,7 +21,7 @@ export default function Mainlayout({
       <DashboardHeader logo={logo} title={title} />
       <div className="flex">
         <Sidebar menus={menus} />
-        <div className="flex-col w-100 h-100">{children}</div>
+        <div className="flex-col w-full h-full">{children}</div>
       </div>
     </>
   );
