@@ -12,13 +12,10 @@ export default function Mainlayout({ logo, title, children }: mainLayoutProps) {
   // porps: DashboardProps
   return (
     <>
-      <DashboardHeader />
+      <DashboardHeader logo={logo} title={title} />
       <div className="flex">
         <Sidebar />
-        <div className="flex-col w-100 h-100">
-          {`${logo} ${title}`}
-          {children}
-        </div>
+        <div className="flex-col w-100 h-100">{children}</div>
       </div>
     </>
   );

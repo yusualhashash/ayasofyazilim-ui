@@ -12,7 +12,7 @@ export default function AvatarWrapper({ url, text, sideText }: avatarProps) {
     <div className="flex justify-center align-center items-center">
       <Avatar>
         <AvatarImage src={url} />
-        {text && <AvatarFallback>{text}</AvatarFallback>}
+        <AvatarFallback>{text || sideText?.slice(0, 2)}</AvatarFallback>
       </Avatar>
       <span className="ml-2"> {sideText} </span>
     </div>
