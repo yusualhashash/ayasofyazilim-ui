@@ -11,7 +11,7 @@ export default {
   },
 } as Meta<typeof UserNav>;
 
-const Template: StoryFn<typeof UserNav> = (args) => <UserNav {...args} />;
+const Template: StoryFn<typeof UserNav> = () => <UserNav />;
 
 export const Default = Template.bind({});
 
