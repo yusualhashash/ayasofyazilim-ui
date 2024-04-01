@@ -1,22 +1,23 @@
-"use client";
-import { Form } from "@/components/ui/form";
-import React from "react";
-import { DefaultValues, useForm } from "react-hook-form";
-import { z } from "zod";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
+import React from 'react';
+import { DefaultValues, useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import AutoFormObject from "./fields/object";
-import { Dependency, FieldConfig } from "./types";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { Form } from '@/components/ui/form';
+
+import AutoFormObject from './fields/object';
+import { Dependency, FieldConfig } from './types';
 import {
   ZodObjectOrWrapped,
   getDefaultValues,
   getObjectFormSchema,
-} from "./utils";
+} from './utils';
 
-export function AutoFormSubmit({
+export const AutoFormSubmit = ({
   children,
   className,
   disabled,
@@ -24,15 +25,25 @@ export function AutoFormSubmit({
   children?: React.ReactNode;
   className?: string;
   disabled?: boolean;
-}) {
-  return (
-    <Button type="submit" disabled={disabled} className={className}>
-      {children ?? "Submit"}
-    </Button>
-  );
-}
+}) => (
+  <Button type="submit" disabled={disabled} className={className}>
+    {children ?? 'Submit'}
+  </Button>
+);
+export type SchemaType = ZodObjectOrWrapped;
+export type AutoFormProps = {
+  children?: React.ReactNode;
+  className?: string;
+  dependencies?: Dependency<z.infer<SchemaType>>[];
+  fieldConfig?: FieldConfig<z.infer<SchemaType>>;
+  formSchema: SchemaType;
+  onParsedValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
+  onSubmit?: (values: z.infer<SchemaType>) => void;
+  onValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
+  values?: Partial<z.infer<SchemaType>>;
+};
 
-function AutoForm<SchemaType extends ZodObjectOrWrapped>({
+function AutoForm({
   formSchema,
   values: valuesProp,
   onValuesChange: onValuesChangeProp,
@@ -42,17 +53,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   children,
   className,
   dependencies,
-}: {
-  formSchema: SchemaType;
-  values?: Partial<z.infer<SchemaType>>;
-  onValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
-  onParsedValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
-  onSubmit?: (values: z.infer<SchemaType>) => void;
-  fieldConfig?: FieldConfig<z.infer<SchemaType>>;
-  children?: React.ReactNode;
-  className?: string;
-  dependencies?: Dependency<z.infer<SchemaType>>[];
-}) {
+}: AutoFormProps) {
   const objectFormSchema = getObjectFormSchema(formSchema);
   const defaultValues: DefaultValues<z.infer<typeof objectFormSchema>> | null =
     getDefaultValues(objectFormSchema, fieldConfig);
@@ -89,7 +90,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
           onSubmit={(e) => {
             form.handleSubmit(onSubmit)(e);
           }}
-          className={cn("space-y-5", className)}
+          className={cn('space-y-5', className)}
         >
           <AutoFormObject
             schema={objectFormSchema}

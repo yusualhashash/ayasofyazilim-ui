@@ -1,7 +1,7 @@
 import { Meta, StoryFn } from '@storybook/react';
 
 import { z } from 'zod';
-import AutoForm, { AutoFormSubmit } from '.';
+import AutoForm, { AutoFormSubmit, AutoFormProps } from '.';
 
 export default {
   component: AutoForm,
@@ -27,20 +27,23 @@ const formSchema = z.object({
     }),
 });
 
-const Template: StoryFn<typeof AutoForm> = () => (
-  <AutoForm
-    formSchema={formSchema}
-    fieldConfig={{
-      password: {
-        inputProps: {
-          type: 'password',
-          placeholder: '••••••••',
-        },
-      },
-    }}
-  >
+const Template: StoryFn<typeof AutoForm> = (args: AutoFormProps) => (
+  <AutoForm {...args}>
+    {args.children}
     <AutoFormSubmit>Send now</AutoFormSubmit>
   </AutoForm>
 );
 
 export const AutoFormStory = Template.bind({});
+AutoFormStory.args = {
+  formSchema,
+  fieldConfig: {
+    password: {
+      inputProps: {
+        type: 'password',
+        placeholder: '••••••••',
+      },
+    },
+  },
+  children: <div>asdasd</div>,
+};
