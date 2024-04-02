@@ -95,7 +95,7 @@ export default function LoginForm({
           {resources?.AbpUi?.texts?.Login}
         </h1>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-4 grid">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -190,21 +190,17 @@ export default function LoginForm({
           </form>
         </Form>
         <ForgotPasswordForm formSchema={defaultForgotPasswordFormSchema} />
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground text-center">
-              {resources?.AbpAccount?.texts?.OrSignInWith}
-            </span>
-          </div>
+        <div className="flex items-center justify-center gap-4">
+          <span className="w-full h-px bg-muted" />
+          <span className="text-center whitespace-nowrap text-xs uppercase text-muted-foreground">
+            {resources?.AbpAccount?.texts?.OrRegisterWith}
+          </span>
+          <span className="w-full h-px bg-muted" />
         </div>
-
-        <Button variant="secondary" asChild className="">
+        <Button variant="outline" asChild className="">
           <a
             href={registerPath}
-            className={`text-center bg-transparent cursor-pointer text-sm w-full  ${isLoading ? 'pointer-events-none opacity-50' : ''}`}
+            className={`text-center cursor-pointer text-sm w-full  ${isLoading ? 'pointer-events-none opacity-50' : ''}`}
           >
             {resources?.AbpUi?.texts?.Register}
           </a>
