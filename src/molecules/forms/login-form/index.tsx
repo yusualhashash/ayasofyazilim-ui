@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 import localeTr from '../../../locale_tr.json';
+import { ReplaceHolders } from '../../../lib';
 
 // export const onSubmitFunctionToTest = (
 //   values: LoginFormDataType
@@ -206,21 +207,24 @@ export default function LoginForm({
         </Button>
       </div>
       <p className="px-4 text-center text-sm text-muted-foreground">
-        By clicking continue, you agree to our{' '}
-        <a
-          href="/terms"
-          className="underline underline-offset-4 hover:text-primary"
-        >
-          Terms of Service
-        </a>{' '}
-        and{' '}
-        <a
-          href="/privacy"
-          className="underline underline-offset-4 hover:text-primary"
-        >
-          Privacy Policy
-        </a>
-        .
+        {ReplaceHolders(resources?.AbpGdpr?.texts?.CookieConsentAgreePolicies, {
+          '{0}': (
+            <a
+              href="/cookies"
+              className="underline underline-offset-4 hover:text-primary"
+            >
+              {resources?.AbpGdpr?.texts?.CookiePolicy}
+            </a>
+          ),
+          '{1}': (
+            <a
+              href="/privacy"
+              className="underline underline-offset-4 hover:text-primary"
+            >
+              {resources?.AbpGdpr?.texts?.PrivacyPolicy}
+            </a>
+          ),
+        })}
       </p>
     </div>
   );
