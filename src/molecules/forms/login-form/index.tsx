@@ -19,6 +19,9 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 import localeTr from '../../../locale_tr.json';
 import { ReplaceHolders } from '../../../lib';
+import ForgotPasswordForm, {
+  defaultForgotPasswordFormSchema,
+} from '../forgot-password-form';
 
 // export const onSubmitFunctionToTest = (
 //   values: LoginFormDataType
@@ -86,15 +89,19 @@ export default function LoginForm({
   }
 
   return (
-    <div className="mx-auto flex w-full flex-col justify-center space-y-4 sm:w-[350px] p-5">
+    <div className="mx-auto flex w-full flex-col justify-center gap-4 sm:w-[350px] p-5">
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
           {resources?.AbpUi?.texts?.Login}
         </h1>
       </div>
-      <div className="grid gap-4 my-1">
+      <div className="space-y-4">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4"
+            id="login-form"
+          >
             {allowTenantChange && (
               <FormField
                 control={form.control}
@@ -155,6 +162,7 @@ export default function LoginForm({
                 </FormItem>
               )}
             />
+
             {error && (
               <Alert variant="destructive">
                 <ExclamationTriangleIcon className="h-4 w-4" />
@@ -169,8 +177,9 @@ export default function LoginForm({
             <Button
               variant="default"
               disabled={isLoading}
-              className="bg-blue-800 hover:bg-blue-950 w-full text-white"
+              className=" w-full text-white"
               type="submit"
+              form="login-form"
             >
               {isLoading ? (
                 <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
@@ -180,6 +189,7 @@ export default function LoginForm({
             </Button>
           </form>
         </Form>
+        <ForgotPasswordForm formSchema={defaultForgotPasswordFormSchema} />
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t" />
@@ -191,22 +201,16 @@ export default function LoginForm({
           </div>
         </div>
 
-        <Button
-          variant="default"
-          asChild
-          className="bg-slate-700 hover:bg-slate-600"
-        >
+        <Button variant="secondary" asChild className="">
           <a
             href={registerPath}
-            className={`text-center text-sm w-full text-white ${
-              isLoading ? 'pointer-events-none opacity-50' : ''
-            }`}
+            className={`text-center bg-transparent cursor-pointer text-sm w-full  ${isLoading ? 'pointer-events-none opacity-50' : ''}`}
           >
             {resources?.AbpUi?.texts?.Register}
           </a>
         </Button>
       </div>
-      <p className="px-4 text-center text-sm text-muted-foreground">
+      <p className="px-4 text-center text-xs text-muted-foreground">
         {ReplaceHolders(resources?.AbpGdpr?.texts?.CookieConsentAgreePolicies, {
           '{0}': (
             <a
