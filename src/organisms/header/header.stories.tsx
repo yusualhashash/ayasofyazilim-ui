@@ -5,6 +5,7 @@ import DashboardHeader from '.';
 import Navigation from '../../molecules/navigation-menu';
 import AvatarWrapper from '../../molecules/avatar';
 import { UserNav } from '../profile-menu/index';
+import { userNavigation } from '../profile-menu/data';
 import { navigationLinks } from '../../molecules/navigation-menu/data';
 
 export default {
@@ -26,5 +27,6 @@ export const HeaderStory = Template.bind({});
 HeaderStory.args = {
   title: 'ayasofya',
   logo: '',
+  userNav: userNavigation,
   navMenu: navigationLinks,
 };
