@@ -38,22 +38,25 @@ export const defaultForgotPasswordFormSchema = z.object({
         { '{0}': localeTr.resources?.AbpAccount?.texts?.EmailAddress }
       ).join(' ')
     ),
-  appName: z.string(),
 });
 
 export type ForgotPasswordFormDataType = {
   appName: string;
   email: string;
+  returnUrl: string;
+  returnUrlHash: string;
 };
 
 export type ForgotPasswordPropsType = {
   formSchema: z.ZodObject<any>;
-  onSubmitFunction?: (values: ForgotPasswordFormDataType) => Promise<string>;
+  onForgotPasswordSubmit?: (
+    values: ForgotPasswordFormDataType
+  ) => Promise<string>;
   resources?: { [key: string]: any };
 };
 
 export default function ForgotPasswordForm({
-  onSubmitFunction,
+  onForgotPasswordSubmit,
   formSchema,
   resources = localeTr.resources,
 }: ForgotPasswordPropsType) {
@@ -64,14 +67,14 @@ export default function ForgotPasswordForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
-      appName: '',
     },
   });
 
   function onSubmit(values: ForgotPasswordFormDataType) {
-    setIsLoading(true);
-    if (onSubmitFunction)
-      onSubmitFunction(values)
+    console.log(values);
+    if (onForgotPasswordSubmit) {
+      setIsLoading(true);
+      onForgotPasswordSubmit(values)
         .then(() => {
           setError('');
         })
@@ -80,6 +83,7 @@ export default function ForgotPasswordForm({
           console.log(error);
           setIsLoading(false);
         });
+    }
   }
 
   return (
@@ -128,13 +132,11 @@ export default function ForgotPasswordForm({
                 </FormItem>
               )}
             />
+            <DialogFooter className="pt-4">
+              <Button type="submit">{resources?.AbpUi?.texts?.Submit}</Button>
+            </DialogFooter>
           </form>
         </Form>
-        <DialogFooter className="pt-4">
-          <Button type="submit" form="forgot-password-form">
-            {resources?.AbpUi?.texts?.Submit}
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

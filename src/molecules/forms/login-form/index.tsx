@@ -20,6 +20,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import localeTr from '../../../locale_tr.json';
 import { ReplaceHolders } from '../../../lib';
 import ForgotPasswordForm, {
+  ForgotPasswordFormDataType,
   defaultForgotPasswordFormSchema,
 } from '../forgot-password-form';
 
@@ -52,6 +53,9 @@ export type LoginFormDataType = {
 export type LoginPropsType = {
   allowTenantChange: boolean;
   formSchema: z.ZodObject<any>;
+  onForgotPasswordSubmit?: (
+    values: ForgotPasswordFormDataType
+  ) => Promise<string>;
   onSubmitFunction: (values: LoginFormDataType) => Promise<string>;
   registerPath: string;
   resources?: { [key: string]: any };
@@ -63,6 +67,7 @@ export default function LoginForm({
   allowTenantChange,
   registerPath,
   resources = localeTr.resources,
+  onForgotPasswordSubmit,
 }: LoginPropsType) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>('');
@@ -189,7 +194,10 @@ export default function LoginForm({
             </Button>
           </form>
         </Form>
-        <ForgotPasswordForm formSchema={defaultForgotPasswordFormSchema} />
+        <ForgotPasswordForm
+          formSchema={defaultForgotPasswordFormSchema}
+          onForgotPasswordSubmit={onForgotPasswordSubmit}
+        />
         <div className="flex items-center justify-center gap-4">
           <span className="w-full h-px bg-muted" />
           <span className="text-center whitespace-nowrap text-xs uppercase text-muted-foreground">
