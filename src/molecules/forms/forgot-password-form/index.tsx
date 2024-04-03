@@ -4,7 +4,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
+import {
+  ExclamationTriangleIcon,
+  CheckCircledIcon,
+} from '@radix-ui/react-icons';
 import { Button } from '@/components/ui/button';
 
 import localeTr from '../../../locale_tr.json';
@@ -150,14 +153,20 @@ export default function ForgotPasswordForm({
                   </FormLabel>
                   <FormControl>
                     <Input
-                      disabled={isLoading || typeof alert !== 'undefined'}
+                      disabled={
+                        isLoading || (alert && alert.variant === 'default')
+                      }
                       placeholder="name@example.com"
                       {...field}
                     />
                   </FormControl>
                   {alert && (
                     <Alert variant={alert.variant}>
-                      <ExclamationTriangleIcon className="h-4 w-4" />
+                      {alert.variant === 'destructive' ? (
+                        <ExclamationTriangleIcon className="h-4 w-4" />
+                      ) : (
+                        <CheckCircledIcon className="h-4 w-4" />
+                      )}
                       <AlertTitle>
                         {alert.variant === 'destructive' &&
                           resources?.AbpAuditLogging?.texts?.Fault}
