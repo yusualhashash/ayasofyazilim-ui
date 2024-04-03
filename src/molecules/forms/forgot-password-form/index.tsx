@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import { Button } from '@/components/ui/button';
 
 import localeTr from '../../../locale_tr.json';
@@ -25,19 +26,23 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { ReplaceHolders } from '../../../lib';
+import { replacePlaceholders } from '../../../lib';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export const defaultForgotPasswordFormSchema = z.object({
-  email: z
-    .string()
-    .email(
-      ReplaceHolders(
-        localeTr.resources.AbpValidation.texts[
-          'The {0} field is not a valid e-mail address.'
-        ],
-        { '{0}': localeTr.resources?.AbpAccount?.texts?.EmailAddress }
-      ).join(' ')
-    ),
+  email: z.string().email(
+    replacePlaceholders(
+      localeTr.resources.AbpValidation.texts[
+        'The {0} field is not a valid e-mail address.'
+      ],
+      [
+        {
+          holder: '{0}',
+          replacement: localeTr.resources?.AbpAccount?.texts?.EmailAddress,
+        },
+      ]
+    ).join(' ')
+  ),
 });
 
 export type ForgotPasswordFormDataType = {
@@ -61,7 +66,7 @@ export default function ForgotPasswordForm({
   resources = localeTr.resources,
 }: ForgotPasswordPropsType) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [error, setError] = React.useState<string>('');
+  const [error, setError] = React.useState<string | undefined>();
 
   const form = useForm<ForgotPasswordFormDataType>({
     resolver: zodResolver(formSchema),
@@ -75,12 +80,13 @@ export default function ForgotPasswordForm({
     if (onForgotPasswordSubmit) {
       setIsLoading(true);
       onForgotPasswordSubmit(values)
-        .then(() => {
-          setError('');
+        .then((res) => {
+          console.log('sc:', res);
+          setError(undefined);
         })
         .catch((result) => {
           setError(result);
-          console.log(error);
+          console.log('er', result);
           setIsLoading(false);
         });
     }
@@ -128,7 +134,32 @@ export default function ForgotPasswordForm({
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage>
+                    {error && (
+                      <Alert variant="destructive">
+                        <ExclamationTriangleIcon className="h-4 w-4" />
+                        <AlertTitle>
+                          {
+                            resources?.AbpExceptionHandling?.texts
+                              ?.DefaultErrorMessage
+                          }
+                        </AlertTitle>
+                        <AlertDescription>
+                          {replacePlaceholders(
+                            resources?.AbpAccount?.texts?.[
+                              'Volo.Account:InvalidEmailAddress'
+                            ],
+                            [
+                              {
+                                holder: '{0}',
+                                replacement: <Button>Test</Button>,
+                              },
+                            ]
+                          )}
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                  </FormMessage>
                 </FormItem>
               )}
             />
