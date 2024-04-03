@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { z } from 'zod';
+import { ForgotPasswordFormDataType } from 'src/molecules/forms/forgot-password-form';
 import LoginForm, { LoginFormDataType } from '../../molecules/forms/login-form';
 import { CountrySelector } from '../../organisms/country-selector';
 import { TwoColumnLayout } from '../../templates/two-column-layout';
@@ -204,6 +205,9 @@ export type LoginPropsType = {
   children: React.ReactNode;
   cultureName: string;
   formSchema: z.ZodObject<any>;
+  onForgotPasswordSubmit?: (
+    values: ForgotPasswordFormDataType
+  ) => Promise<string>;
   onLangChange: (cultureName: string) => void;
   onSubmitFunction: (email: LoginFormDataType) => Promise<string>;
   registerPath: string;
@@ -212,6 +216,7 @@ export type LoginPropsType = {
 
 export const Login = ({
   onSubmitFunction,
+  onForgotPasswordSubmit,
   formSchema,
   allowTenantChange,
   children,
@@ -236,6 +241,7 @@ export const Login = ({
           onSubmitFunction={onSubmitFunction}
           formSchema={formSchema}
           allowTenantChange={allowTenantChange}
+          onForgotPasswordSubmit={onForgotPasswordSubmit}
           registerPath={registerPath}
           resources={resources}
         />
