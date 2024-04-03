@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 import localeTr from '../../../locale_tr.json';
-import { ReplaceHolders } from '../../../lib';
+import { replacePlaceholders } from '../../../lib';
 import ForgotPasswordForm, {
   ForgotPasswordFormDataType,
   defaultForgotPasswordFormSchema,
@@ -195,6 +195,7 @@ export default function LoginForm({
           </form>
         </Form>
         <ForgotPasswordForm
+          resources={resources}
           formSchema={defaultForgotPasswordFormSchema}
           onForgotPasswordSubmit={onForgotPasswordSubmit}
         />
@@ -215,24 +216,33 @@ export default function LoginForm({
         </Button>
       </div>
       <p className="px-4 text-center text-xs text-muted-foreground">
-        {ReplaceHolders(resources?.AbpGdpr?.texts?.CookieConsentAgreePolicies, {
-          '{0}': (
-            <a
-              href="/cookies"
-              className="underline underline-offset-4 hover:text-primary"
-            >
-              {resources?.AbpGdpr?.texts?.CookiePolicy}
-            </a>
-          ),
-          '{1}': (
-            <a
-              href="/privacy"
-              className="underline underline-offset-4 hover:text-primary"
-            >
-              {resources?.AbpGdpr?.texts?.PrivacyPolicy}
-            </a>
-          ),
-        })}
+        {replacePlaceholders(
+          resources?.AbpGdpr?.texts?.CookieConsentAgreePolicies,
+          [
+            {
+              holder: '{0}',
+              replacement: (
+                <a
+                  href="/cookies"
+                  className="underline underline-offset-4 hover:text-primary"
+                >
+                  {resources?.AbpGdpr?.texts?.CookiePolicy}
+                </a>
+              ),
+            },
+            {
+              holder: '{1}',
+              replacement: (
+                <a
+                  href="/privacy"
+                  className="underline underline-offset-4 hover:text-primary"
+                >
+                  {resources?.AbpGdpr?.texts?.PrivacyPolicy}
+                </a>
+              ),
+            },
+          ]
+        )}
       </p>
     </div>
   );
