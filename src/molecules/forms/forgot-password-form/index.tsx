@@ -23,7 +23,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { replacePlaceholders } from '../../../lib';
@@ -66,7 +65,13 @@ export default function ForgotPasswordForm({
   resources = localeTr.resources,
 }: ForgotPasswordPropsType) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [error, setError] = React.useState<string | undefined>();
+  const [alert, setAlert] = React.useState<
+    | {
+        message: React.ReactNode | string | null;
+        variant: 'default' | 'destructive';
+      }
+    | undefined
+  >();
 
   const form = useForm<ForgotPasswordFormDataType>({
     resolver: zodResolver(formSchema),
@@ -76,24 +81,38 @@ export default function ForgotPasswordForm({
   });
 
   function onSubmit(values: ForgotPasswordFormDataType) {
-    console.log(values);
     if (onForgotPasswordSubmit) {
       setIsLoading(true);
       onForgotPasswordSubmit(values)
-        .then((res) => {
-          console.log('sc:', res);
-          setError(undefined);
+        .then(() => {
+          setAlert({
+            variant: 'default',
+            message: resources?.AbpAccount?.texts?.PasswordResetMailSentMessage,
+          });
+          setIsLoading(false);
         })
-        .catch((result) => {
-          setError(result);
-          console.log('er', result);
+        .catch(() => {
+          setAlert({
+            variant: 'destructive',
+            message: replacePlaceholders(
+              resources?.AbpAccount?.texts?.[
+                'Volo.Account:InvalidEmailAddress'
+              ],
+              [
+                {
+                  holder: '{0}',
+                  replacement: values.email,
+                },
+              ]
+            ),
+          });
           setIsLoading(false);
         });
     }
   }
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={() => setAlert(undefined)}>
       <DialogTrigger asChild>
         <Button
           variant="link"
@@ -110,7 +129,9 @@ export default function ForgotPasswordForm({
             {resources?.AbpAccount?.texts?.ForgotPassword}
           </DialogTitle>
           <DialogDescription>
-            {resources?.AbpAccount?.texts?.SendPasswordResetLink_Information}
+            {!alert || alert.variant !== 'default'
+              ? resources?.AbpAccount?.texts?.SendPasswordResetLink_Information
+              : ''}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -129,42 +150,34 @@ export default function ForgotPasswordForm({
                   </FormLabel>
                   <FormControl>
                     <Input
-                      disabled={isLoading}
+                      disabled={isLoading || typeof alert !== 'undefined'}
                       placeholder="name@example.com"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage>
-                    {error && (
-                      <Alert variant="destructive">
-                        <ExclamationTriangleIcon className="h-4 w-4" />
-                        <AlertTitle>
-                          {
-                            resources?.AbpExceptionHandling?.texts
-                              ?.DefaultErrorMessage
-                          }
-                        </AlertTitle>
-                        <AlertDescription>
-                          {replacePlaceholders(
-                            resources?.AbpAccount?.texts?.[
-                              'Volo.Account:InvalidEmailAddress'
-                            ],
-                            [
-                              {
-                                holder: '{0}',
-                                replacement: <Button>Test</Button>,
-                              },
-                            ]
-                          )}
-                        </AlertDescription>
-                      </Alert>
-                    )}
-                  </FormMessage>
+                  {alert && (
+                    <Alert variant={alert.variant}>
+                      <ExclamationTriangleIcon className="h-4 w-4" />
+                      <AlertTitle>
+                        {alert.variant === 'destructive' &&
+                          resources?.AbpAuditLogging?.texts?.Fault}
+                        {alert.variant === 'default' &&
+                          resources?.AbpUi?.texts?.Success}
+                      </AlertTitle>
+                      <AlertDescription>{alert.message}</AlertDescription>
+                    </Alert>
+                  )}
                 </FormItem>
               )}
             />
             <DialogFooter className="pt-4">
-              <Button type="submit">{resources?.AbpUi?.texts?.Submit}</Button>
+              {!alert || alert.variant !== 'default' ? (
+                <Button type="submit" disabled={isLoading}>
+                  {resources?.AbpUi?.texts?.Submit}
+                </Button>
+              ) : (
+                ''
+              )}
             </DialogFooter>
           </form>
         </Form>
