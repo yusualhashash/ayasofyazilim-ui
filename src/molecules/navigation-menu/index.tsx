@@ -13,24 +13,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
-
-export type submenuTypes = {
-  description: string;
-  href: string;
-  title: string;
-};
-
-export type navigationLinkTypes = {
-  href?: string;
-  submenu?: submenuTypes[];
-  text?: string;
-  title?: string;
-};
-
-export type NavigationProps = {
-  className?: string;
-  navigationLinks?: navigationLinkTypes[];
-};
+import { NavigationProps } from './types';
 
 export default function Navigation({
   navigationLinks,
@@ -62,11 +45,14 @@ export default function Navigation({
           }
           return (
             <NavigationMenuItem key={link.href}>
-              <Link href={link.href} passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  {link.text}
-                </NavigationMenuLink>
-              </Link>
+              {/* <Link href={link.href} passHref> */}
+              <NavigationMenuLink
+                href={link.href}
+                className={navigationMenuTriggerStyle()}
+              >
+                {link.text}
+              </NavigationMenuLink>
+              {/* </Link> */}
             </NavigationMenuItem>
           );
         })}
