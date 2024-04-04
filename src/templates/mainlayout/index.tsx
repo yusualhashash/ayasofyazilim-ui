@@ -2,7 +2,7 @@ import React, { JSXElementConstructor, ReactElement } from 'react';
 import { userNavTypes } from 'src/organisms/profile-menu';
 import DashboardHeader from '../../organisms/header';
 import Sidebar, { MenuProps } from '../../molecules/side-bar/index';
-import { navigationLinkTypes } from '../../molecules/navigation-menu';
+import { navigationLinkTypes } from '../../molecules/navigation-menu/types';
 
 export type mainLayoutProps = {
   children?: ReactElement<any, string | JSXElementConstructor<any>> | String;
@@ -10,6 +10,7 @@ export type mainLayoutProps = {
   logo?: string;
   menus?: MenuProps[];
   navMenu: navigationLinkTypes[];
+  navMenuLocation?: 'left' | 'right' | 'center';
   title?: string;
   userNav?: userNavTypes;
 };
@@ -22,6 +23,7 @@ export default function Mainlayout({
   userNav,
   navMenu,
   extraMenu,
+  navMenuLocation,
 }: mainLayoutProps) {
   // porps: DashboardProps
   return (
@@ -32,6 +34,7 @@ export default function Mainlayout({
         userNav={userNav}
         navMenu={navMenu}
         extraMenu={extraMenu}
+        navMenuLocation={navMenuLocation}
       />
       <div className="flex">
         <Sidebar className="hidden md:flex" menus={menus} />
