@@ -54,7 +54,7 @@ export type ForgotPasswordFormDataType = {
   returnUrlHash: string;
 };
 
-export type ForgotPasswordPropsType = {
+export type ForgotPasswordFormPropsType = {
   formSchema: z.ZodObject<any>;
   onForgotPasswordSubmit?: (
     values: ForgotPasswordFormDataType
@@ -66,7 +66,7 @@ export default function ForgotPasswordForm({
   onForgotPasswordSubmit,
   formSchema,
   resources = localeTr.resources,
-}: ForgotPasswordPropsType) {
+}: ForgotPasswordFormPropsType) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<
     | {

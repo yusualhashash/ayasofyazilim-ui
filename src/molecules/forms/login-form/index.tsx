@@ -50,7 +50,7 @@ export type LoginFormDataType = {
   userIdentifier: string;
 };
 
-export type LoginPropsType = {
+export type LoginFormPropsType = {
   allowTenantChange: boolean;
   formSchema: z.ZodObject<any>;
   onForgotPasswordSubmit?: (
@@ -68,7 +68,7 @@ export default function LoginForm({
   registerPath,
   resources = localeTr.resources,
   onForgotPasswordSubmit,
-}: LoginPropsType) {
+}: LoginFormPropsType) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>('');
 
