@@ -16,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export const lang = {
   searchText: 'Find',
@@ -282,21 +283,23 @@ function CountrySelector({
       </PopoverTrigger>
       <PopoverContent className="w-[160px] p-0" align={menuAlign}>
         <Command>
-          <CommandList>
-            <CommandInput placeholder={searchText} className="h-9 text-xs" />
-            <CommandEmpty>{searchEmptyValue}</CommandEmpty>
-            <CommandGroup>
-              {countries.map((country) => (
-                <CommandItem
-                  key={country.cultureName}
-                  value={country.cultureName || ''}
-                  onSelect={(currentValue: string) => onSelect(currentValue)}
-                >
-                  <SelectedCountry {...country} />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
+          <ScrollArea className="h-full overflow-auto">
+            <CommandList className="h-full overflow-visible">
+              <CommandInput placeholder={searchText} className="h-9 text-xs" />
+              <CommandEmpty>{searchEmptyValue}</CommandEmpty>
+              <CommandGroup>
+                {countries.map((country) => (
+                  <CommandItem
+                    key={country.cultureName}
+                    value={country.cultureName || ''}
+                    onSelect={(currentValue: string) => onSelect(currentValue)}
+                  >
+                    <SelectedCountry {...country} />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </ScrollArea>
         </Command>
       </PopoverContent>
     </Popover>
