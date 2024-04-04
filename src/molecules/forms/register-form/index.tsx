@@ -3,6 +3,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ExclamationTriangleIcon, ReloadIcon } from '@radix-ui/react-icons';
 
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,22 +17,21 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-
-const onSubmitFunctionToTest = (
-  values: RegisterFormDataType
-): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
-    const result = 'Success'; //await handler(values);
-    if (result !== 'Success') {
-      return reject(result);
-    }
-    resolve(result);
-    //router.push("/profile");
-  });
-};
+import localeTr from '../../../locale_tr.json';
+import { replacePlaceholders } from '../../../lib';
+// export const onSubmitFunctionToTest = (
+//   values: LoginFormDataType
+// ): Promise<string> => {
+//   return new Promise(async (resolve, reject) => {
+//     const result = await new Promise(() => 'Success'); //await handler(values);
+//     console.log(values);
+//     if (result !== 'Success') {
+//       return reject(result);
+//     }
+//     return resolve(result);
+//     //router.push("/profile");
+//   });
+// };
 export const defaultRegisterFormSchema = z.object({
   userName: z.string().min(5),
   email: z.string().email(),
@@ -38,24 +40,25 @@ export const defaultRegisterFormSchema = z.object({
 });
 
 export type RegisterFormDataType = {
-  userName: string;
   email: string;
   password: string;
   tenantId: string;
+  userName: string;
 };
 
-export type RegisterPropsType = {
-  onSubmitFunction: (values: RegisterFormDataType) => Promise<string>;
+export type RegisterFormPropsType = {
   formSchema: z.ZodObject<any>;
   loginPath: string;
-  locale?: { [key: string]: any };
+  onSubmitFunction: (values: RegisterFormDataType) => Promise<string>;
+  resources?: { [key: string]: any };
 };
 
 export default function RegisterForm({
   onSubmitFunction,
   formSchema,
   loginPath,
-}: RegisterPropsType) {
+  resources = localeTr.resources,
+}: RegisterFormPropsType) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>('');
 
@@ -82,8 +85,12 @@ export default function RegisterForm({
   return (
     <div className="mx-auto flex w-full flex-col justify-center space-y-4 sm:w-[350px]">
       <div className="flex flex-col space-y-2 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">Register</h1>
-        <p className="text-sm text-muted-foreground">Create your account.</p>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {resources?.AbpUi?.texts?.Register}
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          {resources?.AbpIdentity?.texts?.NewUser}
+        </p>
       </div>
       <div className="grid gap-4 my-1">
         <Form {...form}>
@@ -93,7 +100,9 @@ export default function RegisterForm({
               name="userName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>User Name</FormLabel>
+                  <FormLabel>
+                    {resources?.AbpIdentity?.texts?.UserName}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       disabled={isLoading}
@@ -110,7 +119,9 @@ export default function RegisterForm({
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>
+                    {resources?.AbpIdentity?.texts?.EmailAddress}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       disabled={isLoading}
@@ -127,7 +138,9 @@ export default function RegisterForm({
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>
+                    {resources?.AbpIdentity?.texts?.Password}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       disabled={isLoading}
@@ -147,78 +160,63 @@ export default function RegisterForm({
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            <Button
-              variant={'default'}
-              disabled={isLoading}
-              className="bg-blue-800 hover:bg-blue-950 w-full text-white"
-            >
+            <Button variant="default" disabled={isLoading} className=" w-full ">
               {isLoading ? (
                 <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
               ) : (
-                'Create Account'
+                resources?.AbpUi?.texts?.Register
               )}
             </Button>
           </form>
         </Form>
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">Or</span>
-          </div>
+        <div className="flex items-center justify-center gap-4">
+          <span className="w-full h-px bg-muted" />
+          <span className="text-center whitespace-nowrap text-xs uppercase text-muted-foreground">
+            {resources?.AbpAccount?.texts?.OrSignInWith}
+          </span>
+          <span className="w-full h-px bg-muted" />
         </div>
-
-        <Button
-          variant={'default'}
-          disabled={isLoading}
-          className="bg-slate-700 hover:bg-slate-600"
-          asChild
-        >
-          <a href={loginPath} className="text-center text-sm w-full text-white">
+        <Button variant="outline" disabled={isLoading} className="" asChild>
+          <a href={loginPath} className="text-center text-sm w-full">
             {isLoading ? (
               <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
             ) : (
-              'Login'
+              resources?.AbpUi?.texts?.Login
             )}
           </a>
         </Button>
       </div>
-      <p className="px-8 text-center text-sm text-muted-foreground">
-        By clicking continue, you agree to our{' '}
-        <a
-          href="/terms"
-          className="underline underline-offset-4 hover:text-primary"
-        >
-          Terms of Service
-        </a>{' '}
-        and{' '}
-        <a
-          href="/privacy"
-          className="underline underline-offset-4 hover:text-primary"
-        >
-          Privacy Policy
-        </a>
-        .
+      <p className="px-4 text-center text-xs text-muted-foreground">
+        {replacePlaceholders(
+          resources?.AbpGdpr?.texts?.CookieConsentAgreePolicies,
+          [
+            {
+              holder: '{0}',
+              replacement: (
+                <a
+                  key="cookie-policy"
+                  href="/cookies"
+                  className="underline underline-offset-4 hover:text-primary"
+                >
+                  {resources?.AbpGdpr?.texts?.CookiePolicy}
+                </a>
+              ),
+            },
+            {
+              holder: '{1}',
+              replacement: (
+                <a
+                  key="privacy-policy"
+                  href="/privacy"
+                  className="underline underline-offset-4 hover:text-primary"
+                >
+                  {resources?.AbpGdpr?.texts?.PrivacyPolicy}
+                </a>
+              ),
+            },
+          ]
+        )}
       </p>
     </div>
   );
-}
-
-{
-  /* <Button disabled={isLoading} variant="outline">
-  {isLoading ? (
-    <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
-  ) : (
-    <div className="flex justify-center">
-      <img
-        src="https://cdn.e-devlet.gov.tr/themes/izmir/images/favicons/favicon-196x196.1.8.0.png"
-        width={20}
-        className="mx-1"
-        alt="E-devlet"
-      />
-      <span className="mx-1">E-devlet</span>
-    </div>
-  )}
-</Button>; */
 }
