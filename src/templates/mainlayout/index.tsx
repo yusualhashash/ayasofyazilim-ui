@@ -3,6 +3,7 @@ import { userNavTypes } from 'src/organisms/profile-menu';
 import DashboardHeader from '../../organisms/header';
 import Sidebar, { MenuProps } from '../../molecules/side-bar/index';
 import { navigationLinkTypes } from '../../molecules/navigation-menu/types';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export type mainLayoutProps = {
   children?: ReactElement<any, string | JSXElementConstructor<any>> | String;
@@ -27,7 +28,7 @@ export default function Mainlayout({
 }: mainLayoutProps) {
   // porps: DashboardProps
   return (
-    <div className="h-dvh grid grid-rows-[max-content_1fr]">
+    <div className="h-dvh grid grid-rows-[max-content_1fr]  overflow-hidden">
       <DashboardHeader
         logo={logo}
         title={title}
@@ -36,9 +37,11 @@ export default function Mainlayout({
         extraMenu={extraMenu}
         navMenuLocation={navMenuLocation}
       />
-      <div className="flex">
-        <Sidebar className="hidden md:flex" menus={menus} />
-        <div className="flex-col w-full h-full">{children}</div>
+      <div className="flex overflow-hidden">
+        <Sidebar className="hidden md:flex shadow-md" menus={menus} />
+        <ScrollArea className="flex-col w-full h-full overflow-auto bg-transparent p-2">
+          {children}
+        </ScrollArea>
       </div>
     </div>
   );
