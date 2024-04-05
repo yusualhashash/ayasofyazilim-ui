@@ -11,6 +11,7 @@ export type mainLayoutProps = {
   logo?: string;
   menus?: MenuProps[];
   navMenu: navigationLinkTypes[];
+  navMenuLocation?: 'left' | 'right' | 'center';
   title?: string;
   userNav?: userNavTypes;
 };
@@ -23,6 +24,7 @@ export default function Mainlayout({
   userNav,
   navMenu,
   extraMenu,
+  navMenuLocation,
 }: mainLayoutProps) {
   // porps: DashboardProps
   return (
@@ -33,6 +35,7 @@ export default function Mainlayout({
         userNav={userNav}
         navMenu={navMenu}
         extraMenu={extraMenu}
+        navMenuLocation={navMenuLocation}
       />
       <div className="flex overflow-hidden">
         <Sidebar className="hidden md:flex shadow-md" menus={menus} />
