@@ -7,6 +7,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { PasswordInput } from '../../password-input';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -142,9 +143,9 @@ export default function RegisterForm({
                     {resources?.AbpIdentity?.texts?.Password}
                   </FormLabel>
                   <FormControl>
-                    <Input
+                    <PasswordInput
                       disabled={isLoading}
-                      placeholder="Password"
+                      placeholder={resources?.AbpIdentity?.texts?.Password}
                       type="password"
                       {...field}
                     />

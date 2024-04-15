@@ -27,9 +27,9 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
-import { Input } from '@/components/ui/input';
 import { replacePlaceholders } from '../../../lib';
 import localeTr from '../../../locale_tr.json';
+import { PasswordInput } from '../../password-input';
 
 export type ResetPasswordFormDataType = {
   password: string;
@@ -60,119 +60,110 @@ export default function ResetPasswordForm({
   onResetPasswordCancel,
   resources = localeTr.resources,
 }: ResetPasswordFormPropsType) {
+  const zodPasswordRequirements = z
+    .string()
+    .min(passwordRequirements.passwordRequiredLength || 0, {
+      message: replacePlaceholders(
+        resources?.AbpIdentity?.texts?.['Volo.Abp.Identity:PasswordTooShort'],
+        [
+          {
+            holder: '{0}',
+            replacement: passwordRequirements.passwordRequiredLength || 0,
+          },
+        ]
+      ).join(''),
+    }) // length
+    .regex(/[0-9]/, {
+      message:
+        resources?.AbpIdentity?.texts?.[
+          'Volo.Abp.Identity:PasswordRequiresDigit'
+        ],
+    }) // number
+    .regex(/[a-z]/, {
+      message:
+        resources?.AbpIdentity?.texts?.[
+          'Volo.Abp.Identity:PasswordRequiresLower'
+        ],
+    }) // lowercase
+    .regex(/[A-Z]/, {
+      message:
+        resources?.AbpIdentity?.texts?.[
+          'Volo.Abp.Identity:PasswordRequiresUpper'
+        ],
+    }) // uppercase
+    .regex(/[^a-zA-Z0-9]/, {
+      message:
+        resources?.AbpIdentity?.texts?.[
+          'Volo.Abp.Identity:PasswordRequiresNonAlphanumeric'
+        ],
+    }) // nonalphanumeric
+    .refine(
+      (password: string) => {
+        const uniqueCount = new Map();
+        for (let i = 0; i < password.length; i++) {
+          if (uniqueCount.has(password[i])) {
+            uniqueCount.set(password[i], uniqueCount.get(password[i]) + 1);
+          } else {
+            uniqueCount.set(password[i], 1);
+          }
+        }
+        if (!passwordRequirements.passwordRequiresUniqueChars) {
+          return false;
+        }
+        if (!passwordRequirements.passwordRequiredUniqueCharsLength) {
+          return false;
+        }
+
+        if (
+          uniqueCount.size <
+          passwordRequirements.passwordRequiredUniqueCharsLength
+        ) {
+          return false;
+        }
+        return true;
+      },
+      {
+        message:
+          replacePlaceholders(
+            resources?.AbpIdentity?.texts?.[
+              'Volo.Abp.Identity:PasswordRequiresUniqueChars'
+            ],
+            [
+              {
+                holder: '{0}',
+                replacement:
+                  passwordRequirements.passwordRequiredUniqueCharsLength || 0,
+              },
+            ]
+          ).join('') || '',
+      }
+    );
   const formSchema = z
     .object({
-      password: z
-        .string()
-        .min(passwordRequirements.passwordRequiredLength || 0, {
-          message: replacePlaceholders(
-            resources?.AbpIdentity?.texts?.[
-              'Volo.Abp.Identity:PasswordTooShort'
-            ],
-            [
-              {
-                holder: '{0}',
-                replacement: passwordRequirements.passwordRequiredLength || 0,
-              },
-            ]
-          ).join(' '),
-        }) // length
-        .regex(/[0-9]/, {
-          message:
-            resources?.AbpIdentity?.texts?.[
-              'Volo.Abp.Identity:PasswordRequiresDigit'
-            ],
-        }) // number
-        .regex(/[a-z]/, {
-          message:
-            resources?.AbpIdentity?.texts?.[
-              'Volo.Abp.Identity:PasswordRequiresLower'
-            ],
-        }) // lowercase
-        .regex(/[A-Z]/, {
-          message:
-            resources?.AbpIdentity?.texts?.[
-              'Volo.Abp.Identity:PasswordRequiresUpper'
-            ],
-        }) // uppercase
-        .regex(/[^a-zA-Z0-9]/, {
-          message:
-            resources?.AbpIdentity?.texts?.[
-              'Volo.Abp.Identity:PasswordRequiresNonAlphanumeric'
-            ],
-        }) // nonalphanumeric
-        .refine(
-          (password: string) => {
-            const uniqueCount = new Map();
-            for (let i = 0; i < password.length; i++) {
-              if (uniqueCount.has(password[i])) {
-                uniqueCount.set(password[i], uniqueCount.get(password[i]) + 1);
-              } else {
-                uniqueCount.set(password[i], 1);
-              }
-            }
-            if (!passwordRequirements.passwordRequiresUniqueChars) {
-              return false;
-            }
-            if (!passwordRequirements.passwordRequiredUniqueCharsLength) {
-              return false;
-            }
-
-            if (
-              uniqueCount.size <
-              passwordRequirements.passwordRequiredUniqueCharsLength
-            ) {
-              return false;
-            }
-            return true;
-          },
-          {
-            message:
-              replacePlaceholders(
-                resources?.AbpIdentity?.texts?.[
-                  'Volo.Abp.Identity:PasswordRequiresUniqueChars'
-                ],
-                [
-                  {
-                    holder: '{0}',
-                    replacement:
-                      passwordRequirements.passwordRequiredUniqueCharsLength ||
-                      0,
-                  },
-                ]
-              ).join(' ') || '',
-          }
-        ),
+      password: zodPasswordRequirements,
       passwordConfirm: z.string(),
     })
-    .required()
-    .superRefine(({ passwordConfirm, password }, ctx) => {
-      if (passwordConfirm !== password) {
-        ctx.addIssue({
-          code: 'custom',
-          message: replacePlaceholders(
-            localeTr.resources?.AbpValidation?.texts?.[
-              "'{0}' and '{1}' do not match."
-            ],
-            [
-              {
-                holder: '{0}',
-                replacement:
-                  localeTr.resources.AbpIdentity.texts[
-                    'DisplayName:NewPassword'
-                  ],
-              },
-              {
-                holder: '{1}',
-                replacement:
-                  localeTr.resources.AbpIdentity.texts[
-                    'DisplayName:NewPasswordConfirm'
-                  ],
-              },
-            ]
-          ).join(' '),
-        });
-      }
+    .refine((data) => data.password === data.passwordConfirm, {
+      message: replacePlaceholders(
+        localeTr.resources?.AbpValidation?.texts?.[
+          "'{0}' and '{1}' do not match."
+        ],
+        [
+          {
+            holder: '{0}',
+            replacement:
+              localeTr.resources.AbpIdentity.texts['DisplayName:NewPassword'],
+          },
+          {
+            holder: '{1}',
+            replacement:
+              localeTr.resources.AbpIdentity.texts[
+                'DisplayName:NewPasswordConfirm'
+              ],
+          },
+        ]
+      ).join(''),
+      path: ['passwordConfirm'],
     });
 
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -199,11 +190,17 @@ export default function ResetPasswordForm({
         .then(() => {
           setAlert({
             variant: 'default',
-            message: resources?.AbpAccount?.texts?.PasswordResetMailSentMessage,
+            message: 'scs',
           });
-          setIsLoading(false);
         })
-        .catch(() => {
+        .catch((error) => {
+          console.log('error:', error);
+          setAlert({
+            variant: 'destructive',
+            message: resources?.AbpIdentity?.texts?.[error],
+          });
+        })
+        .finally(() => {
           setIsLoading(false);
         });
     }
@@ -219,6 +216,7 @@ export default function ResetPasswordForm({
       <div className="space-y-4 grid">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormMessage />
             <FormField
               control={form.control}
               name="password"
@@ -229,7 +227,7 @@ export default function ResetPasswordForm({
                     <PasswordRequirements resources={resources} />
                   </FormLabel>
                   <FormControl>
-                    <Input
+                    <PasswordInput
                       disabled={isLoading}
                       placeholder={
                         resources.AbpIdentity.texts['DisplayName:NewPassword']
@@ -253,7 +251,7 @@ export default function ResetPasswordForm({
                     <PasswordRequirements resources={resources} />
                   </FormLabel>
                   <FormControl>
-                    <Input
+                    <PasswordInput
                       disabled={isLoading}
                       placeholder={
                         resources.AbpIdentity.texts[
@@ -265,6 +263,7 @@ export default function ResetPasswordForm({
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -300,6 +299,7 @@ export default function ResetPasswordForm({
                   resources?.AbpAccount?.texts?.ResetMyPassword
                 )}
               </Button>
+              <FormMessage />
             </div>
           </form>
         </Form>
