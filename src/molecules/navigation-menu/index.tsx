@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+// @ts-ignore
 import Link from 'next/link';
 
 import { cn } from '@/lib/utils';
