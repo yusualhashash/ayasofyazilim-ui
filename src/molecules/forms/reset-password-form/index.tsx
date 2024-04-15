@@ -46,7 +46,6 @@ export type PasswordRequirementsType = {
   passwordRequiresUpper: boolean;
 };
 export type ResetPasswordFormPropsType = {
-  allowTenantChange: boolean;
   onResetPasswordCancel?: () => void;
   onResetPasswordSubmit?: (
     values: ResetPasswordFormDataType
@@ -205,20 +204,6 @@ export default function ResetPasswordForm({
           setIsLoading(false);
         })
         .catch(() => {
-          setAlert({
-            variant: 'destructive',
-            message: replacePlaceholders(
-              resources?.AbpAccount?.texts?.[
-                'Volo.Account:InvalidEmailAddress'
-              ],
-              [
-                {
-                  holder: '{0}',
-                  replacement: values.email,
-                },
-              ]
-            ),
-          });
           setIsLoading(false);
         });
     }
@@ -228,7 +213,7 @@ export default function ResetPasswordForm({
     <div className="mx-auto flex w-full flex-col justify-center gap-4 sm:w-[350px] p-5">
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
-          {resources?.AbpUi?.texts?.Login}
+          {resources?.AbpAccount?.texts?.PasswordReset}
         </h1>
       </div>
       <div className="space-y-4 grid">
@@ -249,7 +234,8 @@ export default function ResetPasswordForm({
                       placeholder={
                         resources.AbpIdentity.texts['DisplayName:NewPassword']
                       }
-                      type="text"
+                      type="password"
+                      autoComplete="new-password"
                       {...field}
                     />
                   </FormControl>
@@ -275,6 +261,7 @@ export default function ResetPasswordForm({
                         ]
                       }
                       type="password"
+                      autoComplete="new-password"
                       {...field}
                     />
                   </FormControl>
@@ -297,15 +284,20 @@ export default function ResetPasswordForm({
                 <AlertDescription>{alert.message}</AlertDescription>
               </Alert>
             )}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex gap-2">
               <Button variant="outline" onClick={onResetPasswordCancel}>
                 {resources?.AbpUi?.texts?.Cancel}
               </Button>
-              <Button variant="default" disabled={isLoading} type="submit">
+              <Button
+                variant="default"
+                disabled={isLoading}
+                type="submit"
+                className="w-full"
+              >
                 {isLoading ? (
                   <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
                 ) : (
-                  resources?.AbpUi?.texts?.Submit
+                  resources?.AbpAccount?.texts?.ResetMyPassword
                 )}
               </Button>
             </div>
