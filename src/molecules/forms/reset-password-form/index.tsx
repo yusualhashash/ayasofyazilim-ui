@@ -27,9 +27,9 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
-import { Input } from '@/components/ui/input';
 import { replacePlaceholders } from '../../../lib';
 import localeTr from '../../../locale_tr.json';
+import { PasswordInput } from '../../password-input';
 
 export type ResetPasswordFormDataType = {
   password: string;
@@ -227,7 +227,7 @@ export default function ResetPasswordForm({
                     <PasswordRequirements resources={resources} />
                   </FormLabel>
                   <FormControl>
-                    <Input
+                    <PasswordInput
                       disabled={isLoading}
                       placeholder={
                         resources.AbpIdentity.texts['DisplayName:NewPassword']
@@ -251,7 +251,7 @@ export default function ResetPasswordForm({
                     <PasswordRequirements resources={resources} />
                   </FormLabel>
                   <FormControl>
-                    <Input
+                    <PasswordInput
                       disabled={isLoading}
                       placeholder={
                         resources.AbpIdentity.texts[

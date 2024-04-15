@@ -17,8 +17,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-import localeTr from '../../../locale_tr.json';
 import { replacePlaceholders } from '../../../lib';
+import localeTr from '../../../locale_tr.json';
+import { PasswordInput } from '../../password-input';
 import ForgotPasswordForm, {
   ForgotPasswordFormDataType,
   defaultForgotPasswordFormSchema,
@@ -156,9 +157,9 @@ export default function LoginForm({
                     {resources?.AbpIdentity?.texts?.Password}
                   </FormLabel>
                   <FormControl>
-                    <Input
+                    <PasswordInput
                       disabled={isLoading}
-                      placeholder="Password"
+                      placeholder={resources?.AbpIdentity?.texts?.Password}
                       type="password"
                       {...field}
                     />
