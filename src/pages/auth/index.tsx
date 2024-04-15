@@ -9,12 +9,17 @@ import LoginForm, {
 } from '../../molecules/forms/login-form';
 import { CountrySelector, lang } from '../../organisms/country-selector';
 import { TwoColumnLayout } from '../../templates/two-column-layout';
+import ResetPasswordForm, {
+  ResetPasswordFormPropsType,
+} from '../../molecules/forms/reset-password-form';
 
-export type authTypes = 'login' | 'register' | 'resetPassword';
+export type authTypes = 'login' | 'register' | 'reset-password';
 export const isAuthType = (value: string): value is authTypes =>
-  ['login', 'register', 'resetPassword'].indexOf(value as authTypes) !== -1;
+  ['login', 'register', 'reset-password'].indexOf(value as authTypes) !== -1;
 export type AuthPropsType = {
-  authProps: LoginFormPropsType & RegisterFormPropsType;
+  authProps: LoginFormPropsType &
+    RegisterFormPropsType &
+    ResetPasswordFormPropsType;
   authType: authTypes;
   children: React.ReactNode;
   cultureName: string;
@@ -24,13 +29,17 @@ export type AuthPropsType = {
 function formSwitch(
   authType: authTypes,
   resources: { [key: string]: any },
-  authProps: LoginFormPropsType & RegisterFormPropsType
+  authProps: LoginFormPropsType &
+    RegisterFormPropsType &
+    ResetPasswordFormPropsType
 ) {
   switch (authType) {
     case 'login':
       return <LoginForm {...authProps} resources={resources} />;
     case 'register':
       return <RegisterForm {...authProps} resources={resources} />;
+    case 'reset-password':
+      return <ResetPasswordForm {...authProps} resources={resources} />;
     default:
       return resources?.AbpExceptionHandling?.texts
         .DefaultErrorMessage404Detail;
