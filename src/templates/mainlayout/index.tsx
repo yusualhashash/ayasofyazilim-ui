@@ -1,9 +1,9 @@
 import React, { JSXElementConstructor, ReactElement } from 'react';
 import { userNavTypes } from 'src/organisms/profile-menu';
-import DashboardHeader from '../../organisms/header';
-import Sidebar, { MenuProps } from '../../molecules/side-bar/index';
-import { navigationLinkTypes } from '../../molecules/navigation-menu/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { navigationLinkTypes } from '../../molecules/navigation-menu/types';
+import Sidebar, { MenuProps } from '../../molecules/side-bar/index';
+import DashboardHeader from '../../organisms/header';
 
 export type mainLayoutProps = {
   children?: ReactElement<any, string | JSXElementConstructor<any>> | String;
@@ -39,7 +39,7 @@ export default function Mainlayout({
       />
       <div className="flex overflow-hidden">
         <Sidebar className="hidden md:flex shadow-md" menus={menus} />
-        <ScrollArea className="flex-col w-full h-full overflow-auto bg-transparent p-2">
+        <ScrollArea className="flex-col w-full h-full overflow-auto bg-transparent">
           {children}
         </ScrollArea>
       </div>
