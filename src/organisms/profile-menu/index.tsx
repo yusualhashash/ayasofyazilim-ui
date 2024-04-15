@@ -1,4 +1,4 @@
-import React from 'react';
+// @ts-ignore
 import Link from 'next/link';
 import {
   Avatar,
