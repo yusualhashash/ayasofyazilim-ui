@@ -1,10 +1,10 @@
 import React from 'react';
 
+import AvatarWrapper from '../../molecules/avatar';
 import Navigation from '../../molecules/navigation-menu';
 import { navigationLinkTypes } from '../../molecules/navigation-menu/types';
-import AvatarWrapper from '../../molecules/avatar';
-import { UserNav, userNavTypes } from '../profile-menu/index';
 import BurgerMenu from '../burger-menu';
+import { UserNav, userNavTypes } from '../profile-menu/index';
 
 interface DashboardHeaderProps {
   children?: React.ReactNode;
@@ -29,7 +29,7 @@ export default function DashboardHeader({
     <Navigation className="hidden md:flex" navigationLinks={navMenu} />
   );
   return (
-    <div className="flex items-center justify-between px-2 w-100">
+    <div className="flex items-center justify-between px-2 w-100 border-b">
       <div className="flex items-center gap-2">
         <BurgerMenu navigationLinks={navMenu} className="md:hidden" />
         <AvatarWrapper text="UR" url={logo} sideText={title} />
