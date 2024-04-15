@@ -1,7 +1,7 @@
 import { Meta, StoryFn } from '@storybook/react';
 import React from 'react';
 
-import CardTable, { CardTableProps } from '.';
+import CardTable, { ICardTableProps } from '.';
 
 export default {
   component: CardTable,
@@ -14,7 +14,7 @@ export default {
   },
 } as Meta<typeof CardTable>;
 
-const Template: StoryFn<typeof CardTable> = (args: CardTableProps) => (
+const Template: StoryFn<typeof CardTable> = (args: ICardTableProps) => (
   <CardTable {...args} />
 );
 

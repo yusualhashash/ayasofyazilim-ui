@@ -1,8 +1,6 @@
-import React from 'react';
-
-import { cn } from '@/lib/utils';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 import { LoaderCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const spinnerContainerVariants = cva('flex justify-center items-center', {
   variants: {
@@ -32,13 +30,13 @@ const spinnerVariants = cva('animate-spin stroke-cyan-300 ', {
     size: 'md',
   },
 });
-export type spinnerProps = {
-  variant?: 'default' | 'transparent';
+export interface ISpinnerProps {
+  className?: string;
+  containerClassName?: string;
   fullScreen?: boolean;
   size?: 'sm' | 'md' | 'lg';
-  containerClassName?: string;
-  className?: string;
-};
+  variant?: 'default' | 'transparent';
+}
 
 export default function Spinner({
   variant,
@@ -46,7 +44,7 @@ export default function Spinner({
   size,
   className,
   containerClassName,
-}: spinnerProps) {
+}: ISpinnerProps) {
   return (
     <div
       className={cn(

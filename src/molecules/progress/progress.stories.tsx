@@ -1,6 +1,6 @@
 import { Meta, StoryFn } from '@storybook/react';
 import React from 'react';
-import Progress, { progressProps } from '.';
+import Progress, { IProgressProps } from '.';
 
 export default {
   component: Progress,
@@ -8,7 +8,7 @@ export default {
   args: {},
 } as Meta<typeof Progress>;
 
-const Template: StoryFn<typeof Progress> = (args: progressProps) => (
+const Template: StoryFn<typeof Progress> = (args: IProgressProps) => (
   <Progress {...args} />
 );
 

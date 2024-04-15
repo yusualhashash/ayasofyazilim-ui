@@ -8,14 +8,14 @@ import {
 } from '@/components/ui/hover-card';
 import { cn } from '@/lib/utils';
 
-export type AboutCardProps = {
+export interface IAboutCardProps {
   avatar: string;
   className?: string;
   containerClassName?: string;
   description: string;
   link?: string;
   title: string;
-};
+}
 export default function AboutCard({
   avatar,
   title,
@@ -23,7 +23,7 @@ export default function AboutCard({
   link,
   containerClassName,
   className,
-}: AboutCardProps) {
+}: IAboutCardProps) {
   return (
     <HoverCard>
       <HoverCardTrigger asChild>

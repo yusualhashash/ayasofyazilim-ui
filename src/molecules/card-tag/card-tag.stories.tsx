@@ -1,7 +1,7 @@
 import { Meta, StoryFn } from '@storybook/react';
 import React from 'react';
 
-import CardTag, { CardTagProps } from '.';
+import CardTag, { ICardTagProps } from '.';
 
 export default {
   component: CardTag,
@@ -13,7 +13,7 @@ export default {
   },
 } as Meta<typeof CardTag>;
 
-const Template: StoryFn<typeof CardTag> = (args: CardTagProps) => (
+const Template: StoryFn<typeof CardTag> = (args: ICardTagProps) => (
   <CardTag {...args} />
 );
 
