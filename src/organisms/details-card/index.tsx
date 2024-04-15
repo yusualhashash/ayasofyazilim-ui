@@ -126,24 +126,26 @@ export default function DetailsCard(infoCard: IDetailsCardProps) {
         />
       ))}
 
-      {infoCard?.tableProps2Col?.map((table) => (
-        <>
+      {infoCard?.tableProps2Col?.map((table, indexLine) => (
+        <div key={`d${indexLine.toString()}`}>
           <Separator />
           <Separator />
           <div className="flex flex-row justify-between items-center">
-            {table.map(({ title, value }, index) => (
+            {table.map(({ title, value }, indexRow) => (
               <CardTable
-                key={title}
+                key={value}
                 title={title}
-                containerClassName={index === 0 ? 'items-start' : 'items-end'}
+                containerClassName={
+                  indexRow === 0 ? 'items-start' : 'items-end'
+                }
                 titleClassName="text-md text-left"
                 value={value}
                 column
-                separator={index === 0}
+                separator={indexRow === 0}
               />
             ))}
           </div>
-        </>
+        </div>
       ))}
     </Card>
   );
