@@ -19,12 +19,13 @@ const cardTagVariants = cva(
     },
   }
 );
-export interface CardTagProps {
+
+export interface ICardTagProps {
   className?: string;
   title?: string;
-  variant?: 'success' | 'warning' | 'secondary' | 'error';
+  variant: 'success' | 'warning' | 'secondary' | 'error';
 }
-export default function CardTag({ title, variant, className }: CardTagProps) {
+export default function CardTag({ title, variant, className }: ICardTagProps) {
   return (
     <div className={cn(cardTagVariants({ variant }), className)}>{title}</div>
   );

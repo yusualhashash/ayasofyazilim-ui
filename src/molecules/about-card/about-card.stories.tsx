@@ -1,7 +1,7 @@
 import { Meta, StoryFn } from '@storybook/react';
 import React from 'react';
 
-import AboutCard, { AboutCardProps } from '.';
+import AboutCard, { IAboutCardProps } from '.';
 
 export default {
   component: AboutCard,
@@ -18,7 +18,7 @@ export default {
   },
 } as Meta<typeof AboutCard>;
 
-const Template: StoryFn<typeof AboutCard> = (args: AboutCardProps) => (
+const Template: StoryFn<typeof AboutCard> = (args: IAboutCardProps) => (
   <AboutCard {...args} />
 );
 

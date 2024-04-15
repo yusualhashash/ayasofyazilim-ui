@@ -8,43 +8,36 @@ import {
 } from '@/components/ui/card';
 
 import { Separator } from '@/components/ui/separator';
-import AboutCard, { AboutCardProps } from '../../molecules/about-card';
+import AboutCard, { IAboutCardProps } from '../../molecules/about-card';
 import CardImage from '../../molecules/card-image';
-import CardTable, { CardTableProps } from '../../molecules/card-table';
-import CardTag, { CardTagProps } from '../../molecules/card-tag';
+import CardTable, { ICardTableProps } from '../../molecules/card-table';
+import CardTag, { ICardTagProps } from '../../molecules/card-tag';
 import Progress from '../../molecules/progress';
 
-const ProjectProgressType = {
-  success: 'bg-green-300',
-  fail: 'bg-red-200',
-  onGoing: 'bg-yellow-200',
-};
-
-export type detailsCardProps = {
-  AboutCardProps: AboutCardProps;
+export interface IDetailsCardProps {
   BeforeCardContentComponent?: React.ReactNode;
   ContainerClassName?: string;
+  IAboutCardProps: IAboutCardProps;
   cardTagClassname?: string;
   cardTagTitle?: string;
-  // displayed
-  cardTagVariant?: CardTagProps['variant'];
+  cardTagVariant: ICardTagProps['variant'];
   description: string;
   image: string;
   link: string;
   locale?: string;
-  tableProps?: Array<CardTableProps>;
-  tableProps2Col?: Array<[CardTableProps, CardTableProps]>;
+  tableProps?: Array<ICardTableProps>;
+  tableProps2Col?: Array<[ICardTableProps, ICardTableProps]>;
   tags: Array<string>;
   title: string;
-};
+}
 const currencyFormatter = new Intl.NumberFormat('tr', {
   style: 'currency',
   currency: 'TRY',
   maximumFractionDigits: 0,
 });
 
-export const defaultProps: detailsCardProps = {
-  AboutCardProps: {
+export const defaultProps: IDetailsCardProps = {
+  IAboutCardProps: {
     link: '#',
     avatar:
       'https://i.kickstarter.com/assets/043/950/483/f7c5bac8005024eea6c3ce6eaf65bb15_original.jpg?anim=false&fit=crop&height=80&origin=ugc&q=92&width=80&sig=IUCq8Z9OX16OY%2BmX17njzYURwPLYdY1ZcjVOuL%2FJfwc%3D',
@@ -85,15 +78,11 @@ export const defaultProps: detailsCardProps = {
   cardTagTitle: 'Başarılı',
   cardTagVariant: 'success',
   BeforeCardContentComponent: (
-    <Progress
-      value={20}
-      containerClassName="h-3"
-      className={`${ProjectProgressType.success}`}
-    />
+    <Progress value={20} containerClassName="h-3" className="bg-green-300" />
   ),
 };
 
-export default function DetailsCard(infoCard: detailsCardProps) {
+export default function DetailsCard(infoCard: IDetailsCardProps) {
   return (
     <Card className="border-gray-200 max-w-xs relative flex flex-col overflow-hidden">
       {infoCard.cardTagTitle && (
@@ -107,8 +96,8 @@ export default function DetailsCard(infoCard: detailsCardProps) {
           src={infoCard.image}
           alt={infoCard.title}
           ComponentAfterImage={
-            infoCard.AboutCardProps && (
-              <AboutCard {...infoCard.AboutCardProps} />
+            infoCard.IAboutCardProps && (
+              <AboutCard {...infoCard.IAboutCardProps} />
             )
           }
         />

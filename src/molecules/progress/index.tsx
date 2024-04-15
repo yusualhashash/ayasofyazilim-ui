@@ -2,17 +2,17 @@ import * as ProgressDefault from '@radix-ui/react-progress';
 import React, { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
-export type progressProps = {
+export interface IProgressProps {
   className?: string;
   containerClassName?: string;
   value: number;
-};
+}
 
 export default function Progress({
   value = 0,
   className,
   containerClassName,
-}: progressProps) {
+}: IProgressProps) {
   const barRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

@@ -2,20 +2,20 @@ import React from 'react';
 
 import { cn } from '@/lib/utils';
 
-export type CardImageProps = {
+export interface ICardImageProps {
   ComponentAfterImage?: React.ReactNode;
   alt?: string;
   className?: string;
   containerClassName?: string;
   src: string;
-};
+}
 export default function CardImage({
   src,
   alt,
   ComponentAfterImage,
   containerClassName,
   className,
-}: CardImageProps) {
+}: ICardImageProps) {
   return (
     <div
       className={cn(

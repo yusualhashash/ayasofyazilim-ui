@@ -4,7 +4,7 @@ import { CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
-export type CardTableProps = {
+export interface ICardTableProps {
   column?: boolean;
   containerClassName?: string;
   separator?: boolean;
@@ -12,7 +12,7 @@ export type CardTableProps = {
   titleClassName?: string;
   value: string;
   valueClassName?: string;
-};
+}
 export default function CardTable({
   title,
   value,
@@ -21,7 +21,7 @@ export default function CardTable({
   containerClassName,
   titleClassName,
   valueClassName,
-}: CardTableProps) {
+}: ICardTableProps) {
   return (
     <>
       {separator && !column && <Separator />}

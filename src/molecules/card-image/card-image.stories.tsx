@@ -1,7 +1,7 @@
 import { Meta, StoryFn } from '@storybook/react';
 import React from 'react';
 
-import CardImage, { CardImageProps } from '.';
+import CardImage, { ICardImageProps } from '.';
 
 export default {
   component: CardImage,
@@ -13,7 +13,7 @@ export default {
   },
 } as Meta<typeof CardImage>;
 
-const Template: StoryFn<typeof CardImage> = (args: CardImageProps) => (
+const Template: StoryFn<typeof CardImage> = (args: ICardImageProps) => (
   <CardImage {...args} />
 );
 
