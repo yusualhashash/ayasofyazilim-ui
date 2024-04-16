@@ -28,7 +28,7 @@ export default function Mainlayout({
 }: mainLayoutProps) {
   // porps: DashboardProps
   return (
-    <div className="h-dvh grid grid-rows-[max-content_1fr]  overflow-hidden">
+    <div className="h-dvh grid grid-rows-[max-content_1fr] overflow-hidden">
       <DashboardHeader
         logo={logo}
         title={title}
@@ -39,7 +39,7 @@ export default function Mainlayout({
       />
       <div className="flex overflow-hidden">
         <Sidebar className="hidden md:flex shadow-md" menus={menus} />
-        <ScrollArea className="flex-col w-full h-full overflow-auto bg-transparent">
+        <ScrollArea className="flex-col w-full h-full overflow-auto bg-muted/40 md:p-10 p-4">
           {children}
         </ScrollArea>
       </div>
