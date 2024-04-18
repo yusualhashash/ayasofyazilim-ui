@@ -1,4 +1,6 @@
 import React from 'react';
+// @ts-ignore
+import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import {
   Card,
@@ -105,7 +107,7 @@ export default function DetailsCard(infoCard: IDetailsCardProps) {
       {infoCard.BeforeCardContentComponent}
       <CardContent className="gap-3 flex flex-col pt-4">
         <CardTitle className="hover:underline">
-          <a href={infoCard.link}>{infoCard?.title}</a>
+          <Link href={infoCard.link}>{infoCard?.title}</Link>
         </CardTitle>
         <CardDescription>{infoCard?.description}</CardDescription>
         <div>
