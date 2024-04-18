@@ -2,15 +2,21 @@ import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface avatarProps {
+  containerClassName?: string;
   sideText?: string;
   text?: string;
   url?: string;
 }
 
-export default function AvatarWrapper({ url, text, sideText }: avatarProps) {
+export default function AvatarWrapper({
+  url,
+  text,
+  sideText,
+  containerClassName,
+}: avatarProps) {
   return (
     <div className="flex justify-center align-center items-center">
-      <Avatar>
+      <Avatar className={containerClassName}>
         <AvatarImage src={url} />
         <AvatarFallback>{text || sideText?.slice(0, 2)}</AvatarFallback>
       </Avatar>
