@@ -38,7 +38,7 @@ const cards = {
       footer: 'Your target is 0',
     },
     {
-      title: 'WIP',
+      title: 'WIP2',
       content: '1',
       description: 'Number of WIP refunds',
       footer: 'Your target is 0',
