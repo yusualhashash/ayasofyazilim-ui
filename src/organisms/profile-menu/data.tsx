@@ -15,7 +15,5 @@ export const userNavigation = {
       shortcut: '⌘D',
     },
   ],
-  logoutFunction: async () => {
-    console.log('logout');
-  },
+  logoutFunction: async () => {},
 };
