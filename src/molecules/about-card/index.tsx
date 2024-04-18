@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CardTitle } from '@/components/ui/card';
@@ -7,6 +8,7 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
 import { cn } from '@/lib/utils';
+// @ts-ignore
 
 export interface IAboutCardProps {
   avatar: string;
@@ -33,14 +35,14 @@ export default function AboutCard({
             containerClassName
           )}
         >
-          <a href={link}>
+          <Link href={link}>
             <Avatar className="items-center w-6">
               <AvatarImage src={avatar} className="w-6 h-6 rounded-full" />
               <AvatarFallback>{title}</AvatarFallback>
             </Avatar>
-          </a>
+          </Link>
           <CardTitle className="m-0 hover:underline">
-            <a href={link}>{title}</a>
+            <Link href={link}>{title}</Link>
           </CardTitle>
         </div>
       </HoverCardTrigger>
@@ -51,15 +53,15 @@ export default function AboutCard({
         )}
       >
         <div className="flex justify-between space-x-4">
-          <a href={link}>
+          <Link href={link}>
             <Avatar>
               <AvatarImage src={avatar} />
               <AvatarFallback>{title}</AvatarFallback>
             </Avatar>
-          </a>
+          </Link>
           <div className="space-y-1">
             <h4 className="text-sm font-semibold hover:underline">
-              <a href={link}>{title}</a>
+              <Link href={link}>{title}</Link>
             </h4>
             <p className="text-sm">{description}</p>
           </div>
