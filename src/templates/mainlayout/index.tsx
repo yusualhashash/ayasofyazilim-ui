@@ -39,7 +39,7 @@ export default function Mainlayout({
       />
       <div className="flex overflow-hidden">
         <Sidebar className="hidden md:flex shadow-md" menus={menus} />
-        <ScrollArea className="flex-col w-full h-full overflow-auto bg-muted/40 md:p-10 p-4">
+        <ScrollArea className="flex-col w-full h-full overflow-auto">
           {children}
         </ScrollArea>
       </div>
