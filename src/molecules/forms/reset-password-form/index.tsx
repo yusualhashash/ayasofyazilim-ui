@@ -194,7 +194,6 @@ export default function ResetPasswordForm({
           });
         })
         .catch((error) => {
-          console.log('error:', error);
           setAlert({
             variant: 'destructive',
             message: resources?.AbpIdentity?.texts?.[error],

@@ -25,20 +25,6 @@ import ForgotPasswordForm, {
   defaultForgotPasswordFormSchema,
 } from '../forgot-password-form';
 
-// export const onSubmitFunctionToTest = (
-//   values: LoginFormDataType
-// ): Promise<string> => {
-//   return new Promise(async (resolve, reject) => {
-//     const result = await new Promise(() => 'Success'); //await handler(values);
-//     console.log(values);
-//     if (result !== 'Success') {
-//       return reject(result);
-//     }
-//     return resolve(result);
-//     //router.push("/profile");
-//   });
-// };
-
 export const defaultLoginFormSchema = z.object({
   userIdentifier: z.string().min(5),
   password: z.string().min(4).max(32),

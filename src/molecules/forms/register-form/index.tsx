@@ -20,19 +20,7 @@ import {
 import { Input } from '@/components/ui/input';
 import localeTr from '../../../locale_tr.json';
 import { replacePlaceholders } from '../../../lib';
-// export const onSubmitFunctionToTest = (
-//   values: LoginFormDataType
-// ): Promise<string> => {
-//   return new Promise(async (resolve, reject) => {
-//     const result = await new Promise(() => 'Success'); //await handler(values);
-//     console.log(values);
-//     if (result !== 'Success') {
-//       return reject(result);
-//     }
-//     return resolve(result);
-//     //router.push("/profile");
-//   });
-// };
+
 export const defaultRegisterFormSchema = z.object({
   userName: z.string().min(5),
   email: z.string().email(),
