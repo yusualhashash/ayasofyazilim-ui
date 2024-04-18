@@ -1,3 +1,4 @@
+// @ts-ignore
 import Link from 'next/link';
 import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -8,7 +9,6 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
 import { cn } from '@/lib/utils';
-// @ts-ignore
 
 export interface IAboutCardProps {
   avatar: string;

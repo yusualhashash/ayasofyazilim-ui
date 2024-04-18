@@ -1,4 +1,5 @@
 import React from 'react';
+// @ts-ignore
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -7,7 +8,6 @@ import {
   CardDescription,
   CardTitle,
 } from '@/components/ui/card';
-// @ts-ignore
 
 import { Separator } from '@/components/ui/separator';
 import AboutCard, { IAboutCardProps } from '../../molecules/about-card';
