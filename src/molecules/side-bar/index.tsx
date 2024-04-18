@@ -1,6 +1,7 @@
 // @ts-ignore
 import Link from 'next/link';
 import * as React from 'react';
+import { ChevronRight } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -96,10 +97,13 @@ export default function SidebarMenu({ menus, className }: sidebarProps) {
                     <div key={menu.name}>
                       <Link
                         href={menu.href}
-                        className="flex text-xs h-10 bg-white dark:bg-background my-2 items-center p-4 hover:bg-primary dark:hover:bg-primary dark:hover:text-background hover:text-white rounded-md"
+                        className="flex text-xs dark:bg-background my-2 items-center py-2 px-4 hover:bg-primary dark:hover:bg-primary dark:hover:text-background hover:text-white rounded-md"
                       >
                         <div className="w-6">{menu.icon}</div>
                         {menu.name}
+                        <div className="w-4 ml-auto">
+                          <ChevronRight className="w-4" />
+                        </div>
                       </Link>
                     </div>
                   )}
