@@ -18,6 +18,9 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
+  globals: {
+    JSX: 'readonly',
+  },
   plugins: [
     'react',
     '@typescript-eslint',
