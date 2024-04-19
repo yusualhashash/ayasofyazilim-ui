@@ -1,7 +1,7 @@
 import { Meta, StoryFn } from '@storybook/react';
 import React from 'react';
 
-import SectionLayout, { defaultProps, ISectionLayoutProps } from '.';
+import SectionLayout, { defaultProps } from '.';
 
 export default {
   component: SectionLayout,
@@ -11,7 +11,7 @@ export default {
   args: defaultProps,
 } as Meta<typeof SectionLayout>;
 
-const Template: StoryFn<typeof SectionLayout> = (args: ISectionLayoutProps) => (
+const Template: StoryFn<typeof SectionLayout> = (args: any) => (
   <SectionLayout {...args} />
 );
 
