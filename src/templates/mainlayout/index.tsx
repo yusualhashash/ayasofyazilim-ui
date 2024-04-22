@@ -40,7 +40,9 @@ export default function Mainlayout({
       <div className="flex overflow-hidden">
         <Sidebar className="hidden md:flex shadow-md" menus={menus} />
         <ScrollArea className="flex-col w-full h-full overflow-auto">
-          {children}
+          <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] gap-4 p-4 md:gap-8 md:p-10">
+            {children}
+          </main>
         </ScrollArea>
       </div>
     </div>
