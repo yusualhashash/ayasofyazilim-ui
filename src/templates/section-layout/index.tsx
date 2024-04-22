@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  ReactElement,
-  SetStateAction,
-  useEffect,
-  useRef,
-} from 'react';
+import React, { useEffect, useRef } from 'react';
 // @ts-ignore
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -168,22 +162,12 @@ export const defaultDataForSectionLayout = [
   },
 ];
 export const defaultProps: ISectionLayoutProps = {
-  children: (
-    <div>
-      {defaultDataForSectionLayout.map((section) => (
-        <SectionContent className="grid-8" sectionId={section.id}>
-          {section.value}
-        </SectionContent>
-      ))}
-    </div>
-  ),
-  clasName: '',
   sections: defaultDataForSectionLayout,
   activeSectionId: 'about-the-project-0',
 };
 
 interface ISection {
-  id?: string;
+  id: string;
   name: string;
   value?: JSX.Element;
 }
@@ -193,22 +177,24 @@ interface ISectionNavbarBase {
   sections: Array<ISection>;
 }
 interface ISectionContentBase {
-  sectionContent: JSX.Element;
+  sectionContent?: JSX.Element;
   sectionId: string;
-  setVisibleSection: React.Dispatch<React.SetStateAction<string>>;
+  setActiveSectionId: React.Dispatch<React.SetStateAction<string>>;
 }
 interface ISectionContent {
-  children: JSX.Element;
+  children?: JSX.Element;
   className?: string;
   sectionId?: string;
-  setVisibleSection?: Dispatch<SetStateAction<string>>;
+  setActiveSectionId?: React.Dispatch<React.SetStateAction<string>>;
 }
 interface ISectionLayoutProps {
   activeSectionId: string;
-  children: ReactElement;
-  clasName?: string;
+  className?: string;
+  content?: JSX.Element;
+  contentClassName?: string;
   openOnNewPage?: boolean;
   sections: Array<ISection>;
+  setActiveSectionId?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const SectionNavbarBase = ({
@@ -233,7 +219,7 @@ const SectionNavbarBase = ({
   </div>
 );
 const SectionContentBase = ({
-  setVisibleSection,
+  setActiveSectionId,
   sectionId,
   sectionContent,
 }: ISectionContentBase) => {
@@ -243,7 +229,7 @@ const SectionContentBase = ({
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setVisibleSection(sectionId);
+          setActiveSectionId(sectionId);
         }
       },
       { threshold: 0.5 }
@@ -260,7 +246,7 @@ const SectionContentBase = ({
 
   return (
     <div id={sectionId} ref={divRef}>
-      <p>{sectionContent}</p>
+      {sectionContent}
     </div>
   );
 };
@@ -269,13 +255,13 @@ export function SectionContent({
   children,
   className,
   sectionId,
-  setVisibleSection,
+  setActiveSectionId,
 }: ISectionContent) {
-  if (setVisibleSection && sectionId) {
+  if (setActiveSectionId && sectionId) {
     return (
       <SectionContentBase
         key={sectionId}
-        setVisibleSection={setVisibleSection}
+        setActiveSectionId={setActiveSectionId}
         sectionId={sectionId}
         sectionContent={children}
       />
@@ -289,17 +275,22 @@ export function SectionContent({
 }
 
 export default function SectionLayout({
-  children,
-  clasName,
+  className,
   sections,
+  content,
+  contentClassName,
   activeSectionId,
+  setActiveSectionId,
   openOnNewPage,
 }: ISectionLayoutProps) {
+  const activeSession = sections.find(
+    (section) => section.id === activeSectionId
+  );
   return (
     <div
       className={cn(
         'mx-auto w-full flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-3',
-        clasName
+        className
       )}
     >
       <SectionNavbarBase
@@ -307,7 +298,29 @@ export default function SectionLayout({
         activeSectionId={activeSectionId}
         openOnNewPage={openOnNewPage}
       />
-      <div className="basis-3/4 ">{children}</div>
+      <div className="basis-3/4 ">
+        {openOnNewPage ? (
+          <SectionContent
+            key={activeSession?.id}
+            sectionId={activeSession?.id}
+            setActiveSectionId={setActiveSectionId}
+            className={contentClassName}
+          >
+            {openOnNewPage ? content : activeSession?.value}
+          </SectionContent>
+        ) : (
+          sections.map((section) => (
+            <SectionContent
+              key={section.id}
+              sectionId={section.id}
+              setActiveSectionId={setActiveSectionId}
+              className={contentClassName}
+            >
+              {section?.value}
+            </SectionContent>
+          ))
+        )}
+      </div>
     </div>
   );
 }
