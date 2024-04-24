@@ -10,6 +10,7 @@ import {
   ImageIcon,
   List,
   ListOrdered,
+  TableIcon,
   Text,
   TextQuote,
 } from 'lucide-react';
@@ -27,6 +28,11 @@ import {
   renderItems,
 } from 'novel/extensions';
 import { UploadImagesPlugin } from 'novel/plugins';
+import Table from '@tiptap/extension-table';
+import TableCell from '@tiptap/extension-table-cell';
+import TableHeader from '@tiptap/extension-table-header';
+import TableRow from '@tiptap/extension-table-row';
+
 import React from 'react';
 import { uploadFn } from './image-upload';
 
@@ -43,15 +49,6 @@ export const suggestionItems = createSuggestionItems([
         .deleteRange(range)
         .toggleNode('paragraph', 'paragraph')
         .run();
-    },
-  },
-  {
-    title: 'To-do List',
-    description: 'Track tasks with a to-do list.',
-    searchTerms: ['todo', 'task', 'list', 'check', 'checkbox'],
-    icon: <CheckSquare size={18} />,
-    command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).toggleTaskList().run();
     },
   },
   {
@@ -93,6 +90,29 @@ export const suggestionItems = createSuggestionItems([
         .focus()
         .deleteRange(range)
         .setNode('heading', { level: 3 })
+        .run();
+    },
+  },
+  {
+    title: 'To-do List',
+    description: 'Track tasks with a to-do list.',
+    searchTerms: ['todo', 'task', 'list', 'check', 'checkbox'],
+    icon: <CheckSquare size={18} />,
+    command: ({ editor, range }) => {
+      editor.chain().focus().deleteRange(range).toggleTaskList().run();
+    },
+  },
+  {
+    title: 'Table',
+    description: 'Add a table view to organize data.',
+    searchTerms: ['table'],
+    icon: <TableIcon size={18} />,
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range) // @ts-ignore
+        .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
         .run();
     },
   },
@@ -264,4 +284,15 @@ export const extensions = [
   taskItem,
   horizontalRule,
   slashCommand,
+  Table.configure({
+    HTMLAttributes: {
+      class:
+        'table-fixed m-0 overflow-hidden w-[98%] mx-auto my-3 border-collapse',
+    },
+    resizable: true,
+    allowTableNodeSelection: true,
+  }),
+  TableRow,
+  TableCell,
+  TableHeader,
 ];
