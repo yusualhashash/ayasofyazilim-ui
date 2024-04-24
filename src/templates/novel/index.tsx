@@ -21,6 +21,7 @@ import { ColorSelector } from '../../organisms/novel/selectors/color-selector';
 import { LinkSelector } from '../../organisms/novel/selectors/link-selector';
 import { NodeSelector } from '../../organisms/novel/selectors/node-selector';
 import { TextButtons } from '../../organisms/novel/selectors/text-buttons';
+import { TableMenu } from '../../organisms/novel/table';
 
 export default function CustomNovelEditor() {
   const [content, setContent] = React.useState<JSONContent>();
@@ -47,6 +48,7 @@ export default function CustomNovelEditor() {
           },
         }}
         slotAfter={<ImageResizer />}
+        // @ts-ignore
         extensions={extensions}
       >
         <EditorCommand className="z-50 h-auto max-h-[330px]  w-72 overflow-y-auto rounded-md border border-muted bg-background px-1 py-2 shadow-md transition-all">
@@ -72,6 +74,7 @@ export default function CustomNovelEditor() {
             </EditorCommandItem>
           ))}
         </EditorCommand>
+        <TableMenu />
         <EditorBubble className="flex w-fit max-w-[90vw] overflow-hidden rounded border border-muted bg-background shadow-xl">
           <NodeSelector open={openNode} onOpenChange={setOpenNode} />
           <LinkSelector open={openLink} onOpenChange={setOpenLink} />
