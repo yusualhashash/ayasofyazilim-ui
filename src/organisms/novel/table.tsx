@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Rows, Trash2, Columns } from 'lucide-react';
+import { Rows, Trash2, Columns, PanelsTopLeft } from 'lucide-react';
 import { useEditor } from 'novel';
 import { cx } from 'class-variance-authority';
 
@@ -13,6 +13,12 @@ export const TableMenu = () => {
   const { editor } = useEditor();
   const [tableLocation, setTableLocation] = useState(0);
   const items: TableMenuItem[] = [
+    {
+      name: 'Toggle Header',
+      // @ts-ignore
+      command: () => editor.chain().focus().toggleHeaderRow().run(),
+      icon: PanelsTopLeft,
+    },
     {
       name: 'Add Column',
       // @ts-ignore
@@ -39,8 +45,12 @@ export const TableMenu = () => {
     },
     {
       name: 'Delete Table',
-      // @ts-ignore
-      command: () => editor.chain().focus().deleteTable().run(),
+
+      command: () => {
+        // @ts-ignore
+        editor.chain().focus().deleteTable().run();
+        setTableLocation(0);
+      },
       icon: Trash2,
     },
   ];
@@ -58,7 +68,6 @@ export const TableMenu = () => {
         if (tableLocation !== tableTop) setTableLocation(tableTop);
       }
     };
-
     // Call the function if user click on the table
     window.addEventListener('click', handleWindowClick);
 
