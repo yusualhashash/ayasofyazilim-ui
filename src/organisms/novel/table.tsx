@@ -48,6 +48,7 @@ export const TableMenu = () => {
   useEffect(() => {
     const handleWindowClick = () => {
       const selection: any = window.getSelection();
+      if (!selection || selection.rangeCount === 0) return;
       const range = selection.getRangeAt(0);
       const tableNode = range.startContainer?.closest?.('table');
       if (tableNode) {
