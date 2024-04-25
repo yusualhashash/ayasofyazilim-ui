@@ -4,6 +4,7 @@ import { cx } from 'class-variance-authority';
 import {
   CheckSquare,
   Code,
+  Columns,
   Heading1,
   Heading2,
   Heading3,
@@ -14,6 +15,8 @@ import {
   Text,
   TextQuote,
 } from 'lucide-react';
+import { ColumnExtension } from '@gocapsule/column-extension';
+import Gapcursor from '@tiptap/extension-gapcursor';
 import {
   Command,
   HorizontalRule,
@@ -27,6 +30,7 @@ import {
   createSuggestionItems,
   renderItems,
 } from 'novel/extensions';
+
 import { UploadImagesPlugin } from 'novel/plugins';
 import Table from '@tiptap/extension-table';
 import TableCell from '@tiptap/extension-table-cell';
@@ -100,6 +104,20 @@ export const suggestionItems = createSuggestionItems([
     icon: <CheckSquare size={18} />,
     command: ({ editor, range }) => {
       editor.chain().focus().deleteRange(range).toggleTaskList().run();
+    },
+  },
+  {
+    title: 'Column',
+    description: 'Add a 2 row column',
+    searchTerms: ['column'],
+    icon: <Columns size={18} />,
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range) // @ts-ignore
+        .setColumns(2)
+        .run();
     },
   },
   {
@@ -295,4 +313,6 @@ export const extensions = [
   TableRow,
   TableCell,
   TableHeader,
+  ColumnExtension,
+  Gapcursor,
 ];

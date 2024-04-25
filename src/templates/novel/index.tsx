@@ -22,6 +22,7 @@ import { LinkSelector } from '../../organisms/novel/selectors/link-selector';
 import { NodeSelector } from '../../organisms/novel/selectors/node-selector';
 import { TextButtons } from '../../organisms/novel/selectors/text-buttons';
 import { TableMenu } from '../../organisms/novel/table';
+import { ColumnMenu } from '../../organisms/novel/column';
 
 export default function CustomNovelEditor() {
   const [content, setContent] = React.useState<JSONContent>();
@@ -75,6 +76,7 @@ export default function CustomNovelEditor() {
           ))}
         </EditorCommand>
         <TableMenu />
+        <ColumnMenu />
         <EditorBubble className="flex w-fit max-w-[90vw] overflow-hidden rounded border border-muted bg-background shadow-xl">
           <NodeSelector open={openNode} onOpenChange={setOpenNode} />
           <LinkSelector open={openLink} onOpenChange={setOpenLink} />
