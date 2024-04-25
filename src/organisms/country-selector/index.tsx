@@ -282,7 +282,23 @@ function CountrySelector({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[160px] p-0" align={menuAlign}>
-        <Command>
+        <Command
+          filter={(commandValue, search) => {
+            if (
+              commandValue.includes(search) ||
+              countries
+                .find(
+                  (i) =>
+                    i.cultureName?.toLocaleLowerCase() ===
+                    commandValue.toLocaleLowerCase()
+                )
+                ?.displayName?.toLocaleLowerCase()
+                ?.includes(search.toLocaleLowerCase())
+            )
+              return 1;
+            return 0;
+          }}
+        >
           <ScrollArea className="h-full overflow-auto">
             <CommandList className="h-full overflow-visible">
               <CommandInput placeholder={searchText} className="h-9 text-xs" />
@@ -291,7 +307,7 @@ function CountrySelector({
                 {countries.map((country) => (
                   <CommandItem
                     key={country.cultureName}
-                    value={country.cultureName || ''}
+                    value={`${country.cultureName}` || ''}
                     onSelect={(currentValue: string) => onSelect(currentValue)}
                   >
                     <SelectedCountry {...country} />
