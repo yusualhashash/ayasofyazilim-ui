@@ -250,3 +250,11 @@ ul[data-type='taskList'] li[data-checked='true'] > div > p {
   padding: 8px;
   margin: -8px;
 }
+
+.tiptap > * + * {
+  margin-top: 0.75em;
+}
+.tiptap img {
+  height: auto;
+  max-width: 100%;
+}

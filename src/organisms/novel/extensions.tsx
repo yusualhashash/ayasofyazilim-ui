@@ -16,6 +16,7 @@ import {
   TextQuote,
 } from 'lucide-react';
 import { ColumnExtension } from '@gocapsule/column-extension';
+import Gapcursor from '@tiptap/extension-gapcursor';
 import {
   Command,
   HorizontalRule,
@@ -313,4 +314,5 @@ export const extensions = [
   TableCell,
   TableHeader,
   ColumnExtension,
+  Gapcursor,
 ];
