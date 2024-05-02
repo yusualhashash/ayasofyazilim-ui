@@ -2,7 +2,12 @@ import CardList from '../../organisms/card-list';
 import DataTable from '../../molecules/tables';
 import { DashboardProps } from './types';
 
-export default function Dashboard({ cards, data, columns }: DashboardProps) {
+export default function Dashboard({
+  cards,
+  data,
+  columns,
+  filterBy,
+}: DashboardProps) {
   let showColumns = true;
   if (!data || !columns) showColumns = false;
 
@@ -15,7 +20,7 @@ export default function Dashboard({ cards, data, columns }: DashboardProps) {
       )}
       {showColumns && (
         <div className="w-10/12 flex-row p-4 m-4">
-          <DataTable columns={columns} data={data} />
+          <DataTable filterBy={filterBy} columns={columns} data={data} />
         </div>
       )}
     </div>

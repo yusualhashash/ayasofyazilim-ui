@@ -13,6 +13,7 @@ export const Default: StoryObj<typeof Dashbaord> = {
     // @ts-ignore
     columns,
     cards,
+    filterBy: 'email',
   },
   parameters: {
     layout: 'centered',
