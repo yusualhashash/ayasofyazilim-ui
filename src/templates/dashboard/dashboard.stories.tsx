@@ -1,14 +1,20 @@
-import { Meta, StoryFn } from '@storybook/react';
-import React from 'react';
-import Dashboard from '.';
+import { Meta, StoryObj } from '@storybook/react';
 
-export default {
-  component: Dashboard,
-  argTypes: {},
-} as Meta<typeof Dashboard>;
+import Dashbaord from '.';
+import { data } from '../../molecules/tables/data';
+import { columns } from '../../molecules/tables/columns';
+import { cards } from '../../organisms/card-list/data';
 
-const Template: StoryFn<typeof Dashboard> = () => <Dashboard />;
+export default { component: Dashbaord } as Meta<typeof Dashbaord>;
 
-export const DashboardTemplate = Template.bind({});
-
-DashboardTemplate.args = {};
+export const Default: StoryObj<typeof Dashbaord> = {
+  args: {
+    data,
+    // @ts-ignore
+    columns,
+    cards,
+  },
+  parameters: {
+    layout: 'centered',
+  },
+};
