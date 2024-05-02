@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ExclamationTriangleIcon, ReloadIcon } from '@radix-ui/react-icons';
+import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -24,6 +24,7 @@ import ForgotPasswordForm, {
   ForgotPasswordFormDataType,
   defaultForgotPasswordFormSchema,
 } from '../forgot-password-form';
+import SubmitButton from '../../../molecules/submit-button';
 
 export const defaultLoginFormSchema = z.object({
   userIdentifier: z.string().min(5),
@@ -166,19 +167,13 @@ export default function LoginForm({
                 </AlertDescription>
               </Alert>
             )}
-            <Button
+
+            <SubmitButton
+              title={resources?.AbpUi?.texts?.Login}
               variant="default"
-              disabled={isLoading}
               className=" w-full text-white"
-              type="submit"
-              form="login-form"
-            >
-              {isLoading ? (
-                <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
-              ) : (
-                resources?.AbpUi?.texts?.Login
-              )}
-            </Button>
+              isLoading={isLoading}
+            />
           </form>
         </Form>
         <ForgotPasswordForm
@@ -236,47 +231,3 @@ export default function LoginForm({
     </div>
   );
 }
-
-// <form onSubmit={onSubmit}>
-//   <div className="grid gap-4">
-//     <div className="grid gap-1">
-//       <Label htmlFor="email">Email</Label>
-//       <Input
-//         id="email"
-//         placeholder="name@example.com"
-//         type="email"
-//         autoComplete="email"
-//         ref={emailRef}
-//         disabled={isLoading}
-//         autoFocus
-//       />
-//     </div>
-
-//     <div className="grid gap-1">
-//       <Label htmlFor="password">Password</Label>
-//       <Input
-//         id="password"
-//         placeholder="password"
-//         type="password"
-//         autoComplete="no"
-//         disabled={isLoading}
-//         ref={passwordRef}
-//       />
-//     </div>
-
-//     {error && (
-//       <Alert variant="destructive">
-//         <ExclamationTriangleIcon className="h-4 w-4" />
-//         <AlertTitle>Error</AlertTitle>
-//         <AlertDescription>{error}</AlertDescription>
-//       </Alert>
-//     )}
-//     <Button disabled={isLoading}>
-//       {isLoading ? (
-//         <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
-//       ) : (
-//         'Log in with Email'
-//       )}
-//     </Button>
-//   </div>
-// </form>
