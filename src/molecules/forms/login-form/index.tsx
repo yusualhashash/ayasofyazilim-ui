@@ -14,7 +14,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 import { replacePlaceholders } from '../../../lib';
@@ -24,7 +23,7 @@ import ForgotPasswordForm, {
   ForgotPasswordFormDataType,
   defaultForgotPasswordFormSchema,
 } from '../forgot-password-form';
-import SubmitButton from '../../../molecules/submit-button';
+import Button from '../../../molecules/button';
 
 export const defaultLoginFormSchema = z.object({
   userIdentifier: z.string().min(5),
@@ -168,7 +167,7 @@ export default function LoginForm({
               </Alert>
             )}
 
-            <SubmitButton
+            <Button
               title={resources?.AbpUi?.texts?.Login}
               variant="default"
               className=" w-full text-white"

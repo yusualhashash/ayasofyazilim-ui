@@ -3,7 +3,7 @@ import React from 'react';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { Button, ButtonProps } from '@/components/ui/button';
 
-export interface ISubmitButtonProps extends ButtonProps {
+export interface IButtonProps extends ButtonProps {
   isLoading?: boolean;
   onSubmitFunction?: () => Promise<any> | void;
 }
@@ -15,7 +15,7 @@ export default function SubmitButton({
   isLoading,
   disabled,
   onSubmitFunction,
-}: ISubmitButtonProps) {
+}: IButtonProps) {
   return (
     <Button
       variant={variant}
