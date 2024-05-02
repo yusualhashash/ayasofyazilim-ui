@@ -9,7 +9,7 @@ export default function Dashboard({ cards, data, columns }: DashboardProps) {
   return (
     <div className="flex flex-col items-center justify-start h-full w-full">
       {cards && (
-        <div className="flex-row p-4">
+        <div className="flex-row p-4 w-10/12">
           <CardList cards={cards} />
         </div>
       )}
