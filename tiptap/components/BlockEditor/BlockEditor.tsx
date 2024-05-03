@@ -1,7 +1,7 @@
 'use client';
 
-import { EditorContent, useEditor } from '@tiptap/react';
-import { useRef } from 'react';
+import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
+import { useEffect, useRef } from 'react';
 
 import { LinkMenu } from '@tiptap-location/components/menus';
 
@@ -16,11 +16,15 @@ import {
 import ExtensionKit from '@tiptap-location/extensions/extension-kit';
 import { ContentItemMenu } from '../menus/ContentItemMenu';
 import { TextMenu } from '../menus/TextMenu';
+import { ITiptapEditorProps } from 'src/organisms/tiptap';
 
-export const BlockEditor = () => {
+export const BlockEditor = ({
+  setEditorContent,
+  editorContent,
+  editable,
+}: ITiptapEditorProps) => {
   const menuContainerRef = useRef(null);
   const editorRef = useRef<HTMLDivElement | null>(null);
-
   const editor = useEditor(
     {
       autofocus: true,
@@ -33,9 +37,23 @@ export const BlockEditor = () => {
           class: 'min-h-full',
         },
       },
+      content: editorContent,
+      editable: editable,
+      onUpdate: ({ editor }) => {
+        if (setEditorContent) {
+          const json = editor.getJSON();
+          setEditorContent(json);
+        }
+      },
     },
     []
   );
+
+  useEffect(() => {
+    if (editor && editor.isEditable !== editable) {
+      editor.setEditable(editable);
+    }
+  }, [editable]);
 
   if (!editor) {
     return null;

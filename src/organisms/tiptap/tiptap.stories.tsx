@@ -1,6 +1,7 @@
 import { Meta, StoryFn } from '@storybook/react';
 import React from 'react';
 
+import { JSONContent } from '@tiptap/react';
 import TipTapEditor from '.';
 
 export default {
@@ -10,6 +11,8 @@ export default {
   },
 } as Meta<typeof TipTapEditor>;
 
-const Template: StoryFn<typeof TipTapEditor> = () => <TipTapEditor />;
+const Template: StoryFn<typeof TipTapEditor> = () => (
+  <TipTapEditor editable editorContent={{} as JSONContent} />
+);
 
 export const Default = Template.bind({});
