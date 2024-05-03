@@ -95,7 +95,7 @@ export const GROUPS: Group[] = [
         label: 'Table',
         iconName: 'Table',
         description: 'Insert a table',
-        shouldBeHidden: (editor) => editor.isActive('columns'),
+        //shouldBeHidden: (editor) => editor.isActive('columns'),
         action: (editor) => {
           editor
             .chain()
