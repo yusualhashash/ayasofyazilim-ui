@@ -1,5 +1,4 @@
 import { BlockEditor } from '@tiptap-location/components/BlockEditor';
-import './style.css';
 import React from 'react';
 
 export declare type JSONContent = {

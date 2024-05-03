@@ -61,7 +61,12 @@ export const BlockEditor = ({
 
   return (
     <div className="flex h-full" ref={menuContainerRef}>
-      <div className="relative flex flex-col flex-1 h-full overflow-hidden">
+      <div
+        className={
+          'relative flex flex-col flex-1 h-full overflow-hidden ' +
+          (editable ? 'edit-mode' : 'preview-mode')
+        }
+      >
         <EditorContent
           editor={editor}
           ref={editorRef}
