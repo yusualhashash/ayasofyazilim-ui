@@ -12,20 +12,22 @@ const buttonVariants = cva('', {
       primary: 'bg-cyan-500 text-white hover:bg-cyan-600',
       secondary: 'bg-gray-300 hover:bg-gray-400',
       error: 'bg-red-400 hover:bg-red-500',
+      default: '',
     },
   },
   defaultVariants: {
-    customVariant: 'secondary',
+    customVariant: 'default',
   },
 });
 
 export interface IButtonProps extends ButtonProps {
-  customVariant: 'success' | 'primary' | 'secondary' | 'error';
+  customVariant?: 'success' | 'primary' | 'secondary' | 'error' | 'default';
   isLoading?: boolean;
   onSubmitFunction?: () => Promise<any> | void;
 }
 
-export default function SubmitButton({
+export default function CustomButton({
+  variant,
   customVariant,
   className,
   isLoading,
@@ -35,6 +37,7 @@ export default function SubmitButton({
 }: IButtonProps) {
   return (
     <Button
+      variant={variant}
       disabled={disabled || isLoading}
       className={cn(buttonVariants({ customVariant }), className)}
       type="submit"
