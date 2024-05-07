@@ -34,7 +34,7 @@ export const BlockEditor = ({
           autocomplete: 'off',
           autocorrect: 'off',
           autocapitalize: 'off',
-          class: 'min-h-full',
+          class: 'min-h-full outline-none',
         },
       },
       content: editorContent,
@@ -67,11 +67,7 @@ export const BlockEditor = ({
           (editable ? 'edit-mode' : 'preview-mode')
         }
       >
-        <EditorContent
-          editor={editor}
-          ref={editorRef}
-          className="flex-1 overflow-y-auto"
-        />
+        <EditorContent editor={editor} ref={editorRef} />
         <ContentItemMenu editor={editor} />
         <LinkMenu editor={editor} appendTo={menuContainerRef} />
         <TextMenu editor={editor} />
