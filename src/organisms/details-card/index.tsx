@@ -1,22 +1,16 @@
 import React from 'react';
 // @ts-ignore
-import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-} from '@/components/ui/card';
 
-import { Separator } from '@/components/ui/separator';
-import AboutCard, { IAboutCardProps } from '../../molecules/about-card';
-import CardImage from '../../molecules/card-image';
-import CardTable, { ICardTableProps } from '../../molecules/card-table';
-import CardTag, { ICardTagProps } from '../../molecules/card-tag';
+import { Button } from '@/components/ui/button';
+import { IAboutCardProps } from '../../molecules/about-card';
+import { ICardTableProps } from '../../molecules/card-table';
+import { ICardTagProps } from '../../molecules/card-tag';
 import Progress from '../../molecules/progress';
+import Compact from './compact';
+import FullPage from './full-page';
 
 export interface IDetailsCardProps {
+  ActionComponent?: React.ReactNode;
   BeforeCardContentComponent?: React.ReactNode;
   ContainerClassName?: string;
   IAboutCardProps: IAboutCardProps;
@@ -37,16 +31,19 @@ const currencyFormatter = new Intl.NumberFormat('tr', {
   currency: 'TRY',
   maximumFractionDigits: 0,
 });
-
-export const defaultProps: IDetailsCardProps = {
+export type DetailsProps = {
+  cardProps: IDetailsCardProps;
+  variant: 'compact' | 'full-page';
+};
+export const defaultCardProps: IDetailsCardProps = {
   IAboutCardProps: {
-    link: '#',
+    link: 'https://google.com',
     avatar:
       'https://i.kickstarter.com/assets/043/950/483/f7c5bac8005024eea6c3ce6eaf65bb15_original.jpg?anim=false&fit=crop&height=80&origin=ugc&q=92&width=80&sig=IUCq8Z9OX16OY%2BmX17njzYURwPLYdY1ZcjVOuL%2FJfwc%3D',
     title: 'Clevetura Devices LLC',
     description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
   },
-  link: '#',
+  link: 'https://google.com',
   title: 'CLVX 1 - Keyboard Gives More',
   description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
   tags: ['Teknoloji', 'Yazılım'],
@@ -82,73 +79,16 @@ export const defaultProps: IDetailsCardProps = {
   BeforeCardContentComponent: (
     <Progress value={20} containerClassName="h-3" className="bg-green-300" />
   ),
+  ActionComponent: <Button>Yatırım yap</Button>,
 };
-
-export default function DetailsCard(infoCard: IDetailsCardProps) {
-  return (
-    <Card className="border-gray-200 max-w-xs relative flex flex-col overflow-hidden">
-      {infoCard.cardTagTitle && (
-        <CardTag
-          title={infoCard.cardTagTitle}
-          variant={infoCard.cardTagVariant}
-        />
-      )}
-      {infoCard.image && (
-        <CardImage
-          src={infoCard.image}
-          alt={infoCard.title}
-          ComponentAfterImage={
-            infoCard.IAboutCardProps && (
-              <AboutCard {...infoCard.IAboutCardProps} />
-            )
-          }
-        />
-      )}
-      {infoCard.BeforeCardContentComponent}
-      <CardContent className="gap-3 flex flex-col pt-4">
-        <CardTitle className="hover:underline">
-          <Link href={infoCard.link}>{infoCard?.title}</Link>
-        </CardTitle>
-        <CardDescription>{infoCard?.description}</CardDescription>
-        <div>
-          {infoCard?.tags?.map((tag) => (
-            <Badge key={tag} variant="outline" className="mr-2 cursor-pointer">
-              {tag}
-            </Badge>
-          ))}
-        </div>
-      </CardContent>
-      {infoCard?.tableProps?.map(({ title, value, column }) => (
-        <CardTable
-          key={title}
-          title={title}
-          value={value}
-          column={column}
-          separator
-        />
-      ))}
-
-      {infoCard?.tableProps2Col?.map((table, indexLine) => (
-        <div key={`d${indexLine.toString()}`}>
-          <Separator />
-          <Separator />
-          <div className="flex flex-row justify-between items-center">
-            {table.map(({ title, value }, indexRow) => (
-              <CardTable
-                key={value}
-                title={title}
-                containerClassName={
-                  indexRow === 0 ? 'items-start' : 'items-end'
-                }
-                titleClassName="text-md text-left"
-                value={value}
-                column
-                separator={indexRow === 0}
-              />
-            ))}
-          </div>
-        </div>
-      ))}
-    </Card>
+export const defaultDetailsCardProps: DetailsProps = {
+  variant: 'compact',
+  cardProps: defaultCardProps,
+};
+export default function DetailsCard(infoCardProps: DetailsProps) {
+  return infoCardProps.variant === 'full-page' ? (
+    <FullPage {...infoCardProps.cardProps} />
+  ) : (
+    <Compact {...infoCardProps.cardProps} />
   );
 }
