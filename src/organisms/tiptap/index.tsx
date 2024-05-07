@@ -1,3 +1,5 @@
+'use client';
+
 import { BlockEditor } from '@tiptap-location/components/BlockEditor';
 import React from 'react';
 
