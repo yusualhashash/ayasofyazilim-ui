@@ -8,14 +8,14 @@ const cardTagVariants = cva(
   {
     variants: {
       variant: {
-        success: ' bg-green-300',
-        warning: ' bg-yellow-300',
+        success: 'bg-emerald-500 text-white',
+        primary: 'bg-cyan-500 text-white',
         secondary: 'bg-gray-300',
-        error: 'bg-red-300',
+        error: 'bg-red-400 text-white',
       },
     },
     defaultVariants: {
-      variant: 'secondary',
+      variant: 'primary',
     },
   }
 );
@@ -23,7 +23,7 @@ const cardTagVariants = cva(
 export interface ICardTagProps {
   className?: string;
   title?: string;
-  variant: 'success' | 'warning' | 'secondary' | 'error';
+  variant: 'success' | 'primary' | 'secondary' | 'error';
 }
 export default function CardTag({ title, variant, className }: ICardTagProps) {
   return (

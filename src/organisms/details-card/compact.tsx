@@ -7,9 +7,7 @@ import {
   CardDescription,
   CardTitle,
 } from '@/components/ui/card';
-// @ts-ignore
 
-import { Separator } from '@/components/ui/separator';
 import { IDetailsCardProps } from '.';
 import AboutCard from '../../molecules/about-card';
 import CardImage from '../../molecules/card-image';
@@ -37,7 +35,7 @@ export default function Compact(infoCard: IDetailsCardProps) {
         />
       )}
       {infoCard.BeforeCardContentComponent}
-      <CardContent className="gap-3 flex flex-col pt-4">
+      <CardContent className="gap-3 flex flex-col px-6 py-4  mb-auto justify-between flex-1">
         <CardTitle className="hover:underline">
           <Link href={infoCard.link}>{infoCard?.title}</Link>
         </CardTitle>
@@ -50,20 +48,14 @@ export default function Compact(infoCard: IDetailsCardProps) {
           ))}
         </div>
       </CardContent>
-      {infoCard?.tableProps?.map(({ title, value, column }) => (
-        <CardTable
-          key={title}
-          title={title}
-          value={value}
-          column={column}
-          separator
-        />
-      ))}
 
+      {infoCard?.tableProps?.map(({ title, value, column }) => (
+        <CardTable key={title} title={title} value={value} column={column} />
+      ))}
+      <div className="h-2" />
       {infoCard?.tableProps2Col?.map((table, indexLine) => (
         <div key={`d${indexLine.toString()}`}>
-          <Separator className="h-[2px]" />
-          <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row justify-between items-center bg-gray-100">
             {table.map(({ title, value }, indexRow) => (
               <CardTable
                 key={value}
@@ -71,10 +63,9 @@ export default function Compact(infoCard: IDetailsCardProps) {
                 containerClassName={
                   indexRow === 0 ? 'items-start' : 'items-end'
                 }
-                titleClassName="text-md text-left"
+                titleClassName="text-md m-auto"
                 value={value}
                 column
-                separator={indexRow === 0}
               />
             ))}
           </div>
