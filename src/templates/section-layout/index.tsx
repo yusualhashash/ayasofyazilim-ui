@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useRef } from 'react';
 // @ts-ignore
 import Link from 'next/link';
