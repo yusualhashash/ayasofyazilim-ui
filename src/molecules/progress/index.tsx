@@ -1,3 +1,5 @@
+'use client';
+
 import * as ProgressDefault from '@radix-ui/react-progress';
 import React, { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
