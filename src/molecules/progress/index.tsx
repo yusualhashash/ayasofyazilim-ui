@@ -2,18 +2,34 @@
 
 import * as ProgressDefault from '@radix-ui/react-progress';
 import React, { useEffect, useRef } from 'react';
+import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
+const progressVariants = cva('h-full w-full', {
+  variants: {
+    variant: {
+      success: 'bg-emerald-500',
+      primary: 'bg-cyan-500 text-white',
+      secondary: 'bg-gray-300',
+      error: 'bg-red-400',
+    },
+  },
+  defaultVariants: {
+    variant: 'secondary',
+  },
+});
 export interface IProgressProps {
   className?: string;
   containerClassName?: string;
   value: number;
+  variant?: 'success' | 'primary' | 'secondary' | 'error';
 }
 
 export default function Progress({
   value = 0,
   className,
   containerClassName,
+  variant = 'secondary',
 }: IProgressProps) {
   const barRef = useRef<HTMLDivElement>(null);
 
@@ -43,7 +59,7 @@ export default function Progress({
     >
       <ProgressDefault.Indicator
         ref={barRef}
-        className={cn('bg-green-400 w-full h-full', className)}
+        className={cn(progressVariants({ variant }), className)}
       />
     </ProgressDefault.Root>
   );
