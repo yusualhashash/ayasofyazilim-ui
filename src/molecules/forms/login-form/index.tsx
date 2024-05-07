@@ -168,11 +168,12 @@ export default function LoginForm({
             )}
 
             <Button
-              title={resources?.AbpUi?.texts?.Login}
               variant="default"
               className=" w-full text-white"
               isLoading={isLoading}
-            />
+            >
+              {resources?.AbpUi?.texts?.Login}
+            </Button>
           </form>
         </Form>
         <ForgotPasswordForm
