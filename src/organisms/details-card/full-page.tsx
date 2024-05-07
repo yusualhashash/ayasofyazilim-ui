@@ -14,10 +14,16 @@ import AboutCard from '../../molecules/about-card';
 import CardImage from '../../molecules/card-image';
 import CardTable from '../../molecules/card-table';
 import CardTag from '../../molecules/card-tag';
+import { cn } from '@/lib/utils';
 
 export default function FullPage(infoCard: IDetailsCardProps) {
   return (
-    <Card className=" max-w-full w-full relative grid grid-cols-2 gap-3 overflow-hidden rounded-none border-none shadow-none">
+    <Card
+      className={cn(
+        ' max-w-full w-full grid grid-cols-2 gap-3 overflow-hidden rounded-none border-none shadow-none',
+        infoCard.ContainerClassName
+      )}
+    >
       <CardContent className="gap-3 flex flex-col pt-4   bg-white col-span-2">
         <CardTitle className="hover:underline">
           <Link href={infoCard.link}>{infoCard?.title}</Link>
@@ -77,7 +83,6 @@ export default function FullPage(infoCard: IDetailsCardProps) {
                   titleClassName="text-md text-left"
                   value={value}
                   column
-                  separator={indexRow === 0}
                 />
               ))}
             </div>
