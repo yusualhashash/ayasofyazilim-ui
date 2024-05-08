@@ -1,8 +1,6 @@
 'use client';
 
 import React from 'react';
-// @ts-ignore
-
 import { Button } from '@/components/ui/button';
 import { IAboutCardProps } from '../../molecules/about-card';
 import { ICardTableProps } from '../../molecules/card-table';
@@ -24,6 +22,7 @@ export interface IDetailsCardProps {
   image: string;
   link: string;
   locale?: string;
+  overlay?: boolean;
   tableProps?: Array<ICardTableProps>;
   tableProps2Col?: Array<[ICardTableProps, ICardTableProps]>;
   tags: Array<string>;

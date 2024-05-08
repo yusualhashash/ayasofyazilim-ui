@@ -16,7 +16,11 @@ import CardTag from '../../molecules/card-tag';
 
 export default function Compact(infoCard: IDetailsCardProps) {
   return (
-    <Card className="border-gray-200 max-w-xs relative flex flex-col overflow-hidden">
+    <Card
+      className={`border-gray-200 max-w-xs relative flex flex-col overflow-hidden${
+        infoCard.overlay ? ' opacity-60' : ''
+      }`}
+    >
       {infoCard.cardTagTitle && (
         <CardTag
           title={infoCard.cardTagTitle}
