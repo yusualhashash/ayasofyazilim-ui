@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 // @ts-ignore
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -165,7 +165,7 @@ export const defaultDataForSectionLayout = [
 ];
 export const defaultProps: ISectionLayoutProps = {
   sections: defaultDataForSectionLayout,
-  activeSectionId: 'about-the-project-0',
+  defaultActiveSectionId: 'about-the-project-0',
 };
 
 interface ISection {
@@ -190,13 +190,12 @@ interface ISectionContent {
   setActiveSectionId?: React.Dispatch<React.SetStateAction<string>>;
 }
 interface ISectionLayoutProps {
-  activeSectionId: string;
   className?: string;
   content?: JSX.Element;
   contentClassName?: string;
+  defaultActiveSectionId: string;
   openOnNewPage?: boolean;
   sections: Array<ISection>;
-  setActiveSectionId?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const SectionNavbarBase = ({
@@ -281,13 +280,20 @@ export default function SectionLayout({
   sections,
   content,
   contentClassName,
-  activeSectionId,
-  setActiveSectionId,
   openOnNewPage,
+  defaultActiveSectionId,
 }: ISectionLayoutProps) {
+  const [activeSectionId, setActiveSectionId] = useState(
+    defaultActiveSectionId
+  );
   const activeSession = sections.find(
     (section) => section.id === activeSectionId
   );
+  useEffect(() => {
+    if (openOnNewPage) {
+      setActiveSectionId(defaultActiveSectionId);
+    }
+  }, [defaultActiveSectionId]);
   return (
     <div
       className={cn(
