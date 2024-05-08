@@ -10,6 +10,7 @@ import { ICardTagProps } from '../../molecules/card-tag';
 import Progress from '../../molecules/progress';
 import Compact from './compact';
 import FullPage from './full-page';
+import CompactVertical from './compact-vertical';
 
 export interface IDetailsCardProps {
   ActionComponent?: React.ReactNode;
@@ -35,7 +36,7 @@ const currencyFormatter = new Intl.NumberFormat('tr', {
 });
 export type DetailsProps = {
   cardProps: IDetailsCardProps;
-  variant: 'compact' | 'full-page';
+  variant: 'compact' | 'full-page' | 'compact-vertical';
 };
 export const defaultCardProps: IDetailsCardProps = {
   IAboutCardProps: {
@@ -88,9 +89,13 @@ export const defaultDetailsCardProps: DetailsProps = {
   cardProps: defaultCardProps,
 };
 export default function DetailsCard(infoCardProps: DetailsProps) {
-  return infoCardProps.variant === 'full-page' ? (
-    <FullPage {...infoCardProps.cardProps} />
-  ) : (
-    <Compact {...infoCardProps.cardProps} />
-  );
+  switch (infoCardProps.variant) {
+    case 'full-page':
+      return <FullPage {...infoCardProps.cardProps} />;
+    case 'compact-vertical':
+      return <CompactVertical {...infoCardProps.cardProps} />;
+    case 'compact':
+    default:
+      return <Compact {...infoCardProps.cardProps} />;
+  }
 }
