@@ -170,6 +170,7 @@ export const defaultProps: ISectionLayoutProps = {
 
 interface ISection {
   id: string;
+  link?: string;
   name: string;
   value?: JSX.Element;
 }
@@ -177,6 +178,7 @@ interface ISectionNavbarBase {
   activeSectionId: string;
   openOnNewPage?: boolean;
   sections: Array<ISection>;
+  vertical?: boolean;
 }
 interface ISectionContentBase {
   className?: string;
@@ -197,18 +199,30 @@ interface ISectionLayoutProps {
   defaultActiveSectionId: string;
   openOnNewPage?: boolean;
   sections: Array<ISection>;
+  vertical?: boolean;
 }
 
 const SectionNavbarBase = ({
   sections,
   activeSectionId,
   openOnNewPage,
+  vertical,
 }: ISectionNavbarBase) => (
-  <div className="basis-1/4 md:basis-2/12 sticky top-5">
-    <nav className="grid gap-4 text-sm text-muted-foreground pb-5 border-b md:border-0 text-center md:text-left">
+  <div
+    className={`sticky z-10 ${
+      vertical
+        ? 'top-5 basis-1/4 md:basis-2/12'
+        : 'top-0 w-full bg-white shadow-sm'
+    }`}
+  >
+    <nav
+      className={`gap-4 text-sm text-muted-foreground pb-5 border-b md:border-0 text-center md:text-left ${
+        vertical ? 'grid' : 'flex flex-row justify-center pt-5'
+      }`}
+    >
       {sections.map((section) => (
         <Link
-          href={openOnNewPage ? section.id : `#${section.id}`}
+          href={openOnNewPage ? section?.link ?? section.id : `#${section.id}`}
           className={
             section.id === activeSectionId ? 'font-semibold text-primary' : ''
           }
@@ -284,6 +298,7 @@ export default function SectionLayout({
   content,
   contentClassName,
   openOnNewPage,
+  vertical,
   defaultActiveSectionId,
 }: ISectionLayoutProps) {
   const [activeSectionId, setActiveSectionId] = useState(
@@ -300,7 +315,9 @@ export default function SectionLayout({
   return (
     <div
       className={cn(
-        'mx-auto w-full flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-3',
+        `mx-auto w-full flex flex-col items-center gap-6 md:gap-3 ${
+          vertical ? 'md:flex-row md:items-start' : ''
+        }`,
         className
       )}
     >
@@ -308,6 +325,7 @@ export default function SectionLayout({
         sections={sections}
         activeSectionId={activeSectionId}
         openOnNewPage={openOnNewPage}
+        vertical={vertical}
       />
       <div className="basis-3/4 ">
         {openOnNewPage ? (
