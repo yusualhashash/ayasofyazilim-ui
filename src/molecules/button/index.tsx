@@ -20,10 +20,14 @@ const buttonVariants = cva('', {
   },
 });
 
-export interface IButtonProps extends ButtonProps {
+export interface IButtonProps {
+  children?: JSX.Element | string;
+  className?: string;
   customVariant?: 'success' | 'primary' | 'secondary' | 'error' | 'default';
+  disabled?: boolean;
   isLoading?: boolean;
   onSubmitFunction?: () => Promise<any> | void;
+  variant?: ButtonProps['variant'];
 }
 
 export default function CustomButton({
