@@ -179,6 +179,7 @@ interface ISectionNavbarBase {
   sections: Array<ISection>;
 }
 interface ISectionContentBase {
+  className?: string;
   sectionContent?: JSX.Element;
   sectionId: string;
   setActiveSectionId: React.Dispatch<React.SetStateAction<string>>;
@@ -223,6 +224,7 @@ const SectionContentBase = ({
   setActiveSectionId,
   sectionId,
   sectionContent,
+  className,
 }: ISectionContentBase) => {
   const divRef = useRef(null);
 
@@ -246,7 +248,7 @@ const SectionContentBase = ({
   }, []);
 
   return (
-    <div id={sectionId} ref={divRef}>
+    <div id={sectionId} ref={divRef} className={cn('', className)}>
       {sectionContent}
     </div>
   );
@@ -265,6 +267,7 @@ export function SectionContent({
         setActiveSectionId={setActiveSectionId}
         sectionId={sectionId}
         sectionContent={children}
+        className={className}
       />
     );
   }
