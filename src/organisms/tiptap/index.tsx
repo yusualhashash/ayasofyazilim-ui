@@ -17,7 +17,7 @@ export declare type JSONContent = {
 };
 export interface ITiptapEditorProps {
   editable: boolean;
-  editorContent: JSONContent;
+  editorContent: JSONContent | undefined;
   setEditorContent?: React.Dispatch<React.SetStateAction<JSONContent>>;
 }
 export default function TipTapEditor({
