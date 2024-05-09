@@ -40,9 +40,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
+import AutoForm from '../../organisms/auto-form';
 
 export type tableAction = {
+  autoFormArgs: any;
   callback: () => void;
   cta: string;
   description: string;
@@ -121,36 +122,30 @@ export default function DataTable<TData, TValue>({
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline">{action?.cta}</Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Edit profile</DialogTitle>
-              <DialogDescription>{action?.description}</DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Name
-                </Label>
-                <Input id="name" value="Pedro Duarte" className="col-span-3" />
+        {action ? (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">{action?.cta}</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>{action?.cta}</DialogTitle>
+                <DialogDescription>{action?.description}</DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <AutoForm {...action?.autoFormArgs}>
+                  {action?.autoFormArgs?.children}
+                  {/* <AutoFormSubmit>Send now</AutoFormSubmit> */}
+                </AutoForm>
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Username
-                </Label>
-                <Input id="username" value="@peduarte" className="col-span-3" />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit" onClick={action?.callback}>
-                Save changes
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+              <DialogFooter>
+                <Button type="submit" onClick={action?.callback}>
+                  Save changes
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        ) : null}
       </div>
       <div className="rounded-md border">
         <Table>
