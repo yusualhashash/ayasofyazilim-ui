@@ -15,6 +15,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
+import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -44,7 +45,7 @@ import AutoForm from '../../organisms/auto-form';
 
 export type tableAction = {
   autoFormArgs: any;
-  callback: () => void;
+  callback: (values: any) => void;
   cta: string;
   description: string;
 };
@@ -62,6 +63,9 @@ export default function DataTable<TData, TValue>({
   filterBy,
   action,
 }: DataTableProps<TData, TValue>) {
+  const [values, setValues] = React.useState<
+    z.infer<typeof action.autoFormArgs.formSchema>
+  >({});
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -133,13 +137,25 @@ export default function DataTable<TData, TValue>({
                 <DialogDescription>{action?.description}</DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
-                <AutoForm {...action?.autoFormArgs}>
+                <AutoForm
+                  {...action?.autoFormArgs}
+                  onParsedValuesChange={(e) => {
+                    setValues(e);
+                  }}
+                  values={values}
+                  onValuesChange={setValues}
+                >
                   {action?.autoFormArgs?.children}
                   {/* <AutoFormSubmit>Send now</AutoFormSubmit> */}
                 </AutoForm>
               </div>
               <DialogFooter>
-                <Button type="submit" onClick={action?.callback}>
+                <Button
+                  type="submit"
+                  onClick={() => {
+                    action?.callback(values);
+                  }}
+                >
                   Save changes
                 </Button>
               </DialogFooter>
