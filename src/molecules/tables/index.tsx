@@ -31,8 +31,25 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+
+export type tableAction = {
+  callback: () => void;
+  cta: string;
+  description: string;
+};
 
 export type DataTableProps<TData, TValue> = {
+  action?: tableAction;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   filterBy: string;
@@ -42,6 +59,7 @@ export default function DataTable<TData, TValue>({
   columns,
   data,
   filterBy,
+  action,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -84,7 +102,7 @@ export default function DataTable<TData, TValue>({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
+              View <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -103,6 +121,36 @@ export default function DataTable<TData, TValue>({
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline">{action?.cta}</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit profile</DialogTitle>
+              <DialogDescription>{action?.description}</DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Name
+                </Label>
+                <Input id="name" value="Pedro Duarte" className="col-span-3" />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="username" className="text-right">
+                  Username
+                </Label>
+                <Input id="username" value="@peduarte" className="col-span-3" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit" onClick={action?.callback}>
+                Save changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
       <div className="rounded-md border">
         <Table>
