@@ -7,6 +7,7 @@ export default function Dashboard({
   data,
   columns,
   filterBy,
+  action,
 }: DashboardProps) {
   let showColumns = true;
   if (!data || !columns) showColumns = false;
@@ -20,7 +21,12 @@ export default function Dashboard({
       )}
       {showColumns && (
         <div className="w-10/12 flex-row p-4 m-4">
-          <DataTable filterBy={filterBy} columns={columns} data={data} />
+          <DataTable
+            filterBy={filterBy}
+            columns={columns}
+            data={data}
+            action={action}
+          />
         </div>
       )}
     </div>
