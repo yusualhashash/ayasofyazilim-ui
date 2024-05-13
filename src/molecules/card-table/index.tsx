@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils';
 export interface ICardTableProps {
   column?: boolean;
   containerClassName?: string;
-  key?: string;
   title: string;
   titleClassName?: string;
   value: string | JSX.Element;
@@ -19,11 +18,9 @@ export default function CardTable({
   containerClassName,
   titleClassName,
   valueClassName,
-  key,
 }: ICardTableProps) {
   return (
     <CardFooter
-      key={key}
       className={cn(
         `flex justify-between py-2 text-center ${
           column ? 'flex-col' : 'flex-row'
