@@ -13,10 +13,16 @@ import AboutCard from '../../molecules/about-card';
 import CardImage from '../../molecules/card-image';
 import CardTable from '../../molecules/card-table';
 import CardTag from '../../molecules/card-tag';
+import { cn } from '@/lib/utils';
 
 export default function CompactVertical(infoCard: IDetailsCardProps) {
   return (
-    <Card className="border-gray-200 max-w-full w-full relative flex flex-row overflow-hidden">
+    <Card
+      className={cn(
+        'border-gray-200 max-w-full w-full relative flex flex-row overflow-hidden',
+        infoCard.ContainerClassName
+      )}
+    >
       <div className="w-full">
         {infoCard.cardTagTitle && (
           <CardTag
@@ -65,7 +71,7 @@ export default function CompactVertical(infoCard: IDetailsCardProps) {
             <div className="flex flex-row justify-between items-center bg-gray-100">
               {table.map(({ title, value }, indexRow) => (
                 <CardTable
-                  key={value}
+                  key={title + indexRow.toString()}
                   title={title}
                   containerClassName={
                     indexRow === 0 ? 'items-start' : 'items-end'
