@@ -41,7 +41,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import AutoForm from '../../organisms/auto-form';
+import AutoForm, { AutoFormSubmit } from '../../organisms/auto-form';
 
 export type tableAction = {
   autoFormArgs: any;
@@ -143,21 +143,18 @@ export default function DataTable<TData, TValue>({
                     setValues(e);
                   }}
                   values={values}
-                  onValuesChange={setValues}
+                  onSubmit={(formData) => {
+                    action?.callback(formData);
+                  }}
                 >
                   {action?.autoFormArgs?.children}
-                  {/* <AutoFormSubmit>Send now</AutoFormSubmit> */}
+                  <AutoFormSubmit className="float-right">
+                    Save Changes
+                  </AutoFormSubmit>
                 </AutoForm>
               </div>
               <DialogFooter>
-                <Button
-                  type="submit"
-                  onClick={() => {
-                    action?.callback(values);
-                  }}
-                >
-                  Save changes
-                </Button>
+                {/* TODO: Dialog footer to add whatever children we need */}
               </DialogFooter>
             </DialogContent>
           </Dialog>
