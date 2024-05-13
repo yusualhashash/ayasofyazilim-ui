@@ -18,11 +18,16 @@ import { ContentItemMenu } from '../menus/ContentItemMenu';
 import { TextMenu } from '../menus/TextMenu';
 import { ITiptapEditorProps } from 'src/organisms/tiptap';
 
+export interface IBlockEditorProps {
+  editable: boolean;
+  editorContent: JSONContent | undefined;
+  setEditorContent?: React.Dispatch<React.SetStateAction<JSONContent>>;
+}
 export const BlockEditor = ({
   setEditorContent,
   editorContent,
   editable,
-}: ITiptapEditorProps) => {
+}: IBlockEditorProps) => {
   const menuContainerRef = useRef(null);
   const editorRef = useRef<HTMLDivElement | null>(null);
   const editor = useEditor(
@@ -63,18 +68,22 @@ export const BlockEditor = ({
     <div className="flex h-full" ref={menuContainerRef}>
       <div
         className={
-          'relative flex flex-col flex-1 h-full overflow-hidden ' +
+          'relative flex flex-col flex-1 h-full ' +
           (editable ? 'edit-mode' : 'preview-mode')
         }
       >
         <EditorContent editor={editor} ref={editorRef} />
-        <ContentItemMenu editor={editor} />
-        <LinkMenu editor={editor} appendTo={menuContainerRef} />
-        <TextMenu editor={editor} />
-        <ColumnsMenu editor={editor} appendTo={menuContainerRef} />
-        <TableRowMenu editor={editor} appendTo={menuContainerRef} />
-        <TableColumnMenu editor={editor} appendTo={menuContainerRef} />
-        <ImageBlockMenu editor={editor} appendTo={menuContainerRef} />
+        {editable && (
+          <div>
+            <ContentItemMenu editor={editor} />
+            <LinkMenu editor={editor} appendTo={menuContainerRef} />
+            <TextMenu editor={editor} />
+            <ColumnsMenu editor={editor} appendTo={menuContainerRef} />
+            <TableRowMenu editor={editor} appendTo={menuContainerRef} />
+            <TableColumnMenu editor={editor} appendTo={menuContainerRef} />
+            <ImageBlockMenu editor={editor} appendTo={menuContainerRef} />
+          </div>
+        )}
       </div>
     </div>
   );
