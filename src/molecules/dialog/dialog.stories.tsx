@@ -1,9 +1,9 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { z } from 'zod';
-import Table, { tableAction } from '.';
-import { data } from './data';
-import { columns } from './columns';
+import { useState } from 'react';
+import AutoformDialog, { tableAction } from '.';
+import { Button } from '@/components/ui/button';
 
 const formSchema = z.object({
   username: z
@@ -40,24 +40,38 @@ const autoFormArgs = {
 const action: tableAction = {
   cta: 'New Record',
   description: 'Ad New Record',
-  callback: () => alert('Added'),
+  callback: () => {
+    console.log('callback');
+  },
   autoFormArgs,
 };
 
-export default { component: Table } as Meta<typeof Table>;
+export default { component: AutoformDialog } as Meta<typeof AutoformDialog>;
 
-export const Default: StoryObj<typeof Table> = {
+export const Default: StoryObj<typeof AutoformDialog> = {
   args: {
-    data,
-    // @ts-ignore
-    columnsData: {
-      type: 'Custom',
-      data: columns,
-    },
-    filterBy: 'email',
     action,
   },
   parameters: {
     layout: 'centered',
+  },
+  render: (args) => {
+    const [open, onOpenChange] = useState(false);
+    return (
+      <>
+        <Button
+          onClick={() => {
+            onOpenChange(true);
+          }}
+        >
+          Open Dialog
+        </Button>
+        <AutoformDialog
+          action={args.action}
+          open={open}
+          onOpenChange={args.onOpenChange}
+        />
+      </>
+    );
   },
 };

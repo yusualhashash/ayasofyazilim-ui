@@ -15,7 +15,6 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
-import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -32,16 +31,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import AutoForm from '../../organisms/auto-form';
+import AutoformDialog from '../dialog';
+import { columnsGenerator } from './columnsGenerator';
+import { normalizeName } from './utils';
 
 export type tableAction = {
   autoFormArgs: any;
@@ -50,22 +42,33 @@ export type tableAction = {
   description: string;
 };
 
-export type DataTableProps<TData, TValue> = {
+type autoColumnGnerator = {
+  autoFormArgs: any;
+  callback: any;
+  excludeList: string[];
+  onDelete: (e: any, originalRow: any) => void;
+  onEdit: (e: any, originalRow: any) => void;
+  tableType: any;
+};
+
+type columnsType = {
+  data: ColumnDef<any>[] | autoColumnGnerator;
+  type: 'Custom' | 'Auto';
+};
+
+export type DataTableProps<TData> = {
   action?: tableAction;
-  columns: ColumnDef<TData, TValue>[];
+  columnsData: columnsType;
   data: TData[];
   filterBy: string;
 };
 
 export default function DataTable<TData, TValue>({
-  columns,
+  columnsData,
   data,
   filterBy,
   action,
 }: DataTableProps<TData, TValue>) {
-  const [values, setValues] = React.useState<
-    z.infer<typeof action.autoFormArgs.formSchema>
-  >({});
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -73,6 +76,20 @@ export default function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  let columns: ColumnDef<any, any>[] = [];
+  if (columnsData.type === 'Auto') {
+    const tempData = columnsData.data as autoColumnGnerator;
+    columns = columnsGenerator(
+      tempData.callback,
+      tempData.autoFormArgs,
+      tempData.tableType,
+      tempData.onEdit,
+      tempData.onDelete,
+      tempData.excludeList
+    );
+  } else {
+    columns = columnsData.data as ColumnDef<TData, TValue>[];
+  }
 
   const table = useReactTable({
     data,
@@ -92,9 +109,10 @@ export default function DataTable<TData, TValue>({
       rowSelection,
     },
   });
-
+  const [isOpen, setIsOpen] = React.useState(false);
   return (
     <div className="w-full">
+      <AutoformDialog open={isOpen} onOpenChange={setIsOpen} action={action} />
       <div className="flex items-center py-4">
         <Input
           placeholder={`Filter ${filterBy}s...`}
@@ -121,46 +139,15 @@ export default function DataTable<TData, TValue>({
                   checked={column.getIsVisible()}
                   onCheckedChange={(value) => column.toggleVisibility(!!value)}
                 >
-                  {column.id}
+                  {normalizeName(column.id)}
                 </DropdownMenuCheckboxItem>
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
         {action ? (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline">{action?.cta}</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>{action?.cta}</DialogTitle>
-                <DialogDescription>{action?.description}</DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <AutoForm
-                  {...action?.autoFormArgs}
-                  onParsedValuesChange={(e) => {
-                    setValues(e);
-                  }}
-                  values={values}
-                  onValuesChange={setValues}
-                >
-                  {action?.autoFormArgs?.children}
-                  {/* <AutoFormSubmit>Send now</AutoFormSubmit> */}
-                </AutoForm>
-              </div>
-              <DialogFooter>
-                <Button
-                  type="submit"
-                  onClick={() => {
-                    action?.callback(values);
-                  }}
-                >
-                  Save changes
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <Button variant="outline" onClick={() => setIsOpen(true)}>
+            {action?.cta}
+          </Button>
         ) : null}
       </div>
       <div className="rounded-md border">
