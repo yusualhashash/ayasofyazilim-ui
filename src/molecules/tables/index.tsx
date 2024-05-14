@@ -32,6 +32,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import AutoformDialog from '../dialog';
+import { columnsGenerator } from './columnsGenerator';
+import { normalizeName } from './utils';
 
 export type tableAction = {
   autoFormArgs: any;
@@ -40,15 +42,29 @@ export type tableAction = {
   description: string;
 };
 
-export type DataTableProps<TData, TValue> = {
+type autoColumnGnerator = {
+  autoFormArgs: any;
+  callback: any;
+  excludeList: string[];
+  onDelete: (e: any, originalRow: any) => void;
+  onEdit: (e: any, originalRow: any) => void;
+  tableType: any;
+};
+
+type columnsType = {
+  data: ColumnDef<any>[] | autoColumnGnerator;
+  type: 'Custom' | 'Auto';
+};
+
+export type DataTableProps<TData> = {
   action?: tableAction;
-  columns: ColumnDef<TData, TValue>[];
+  columnsData: columnsType;
   data: TData[];
   filterBy: string;
 };
 
 export default function DataTable<TData, TValue>({
-  columns,
+  columnsData,
   data,
   filterBy,
   action,
@@ -60,6 +76,20 @@ export default function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  let columns: ColumnDef<any, any>[] = [];
+  if (columnsData.type === 'Auto') {
+    const tempData = columnsData.data as autoColumnGnerator;
+    columns = columnsGenerator(
+      tempData.callback,
+      tempData.autoFormArgs,
+      tempData.tableType,
+      tempData.onEdit,
+      tempData.onDelete,
+      tempData.excludeList
+    );
+  } else {
+    columns = columnsData.data as ColumnDef<TData, TValue>[];
+  }
 
   const table = useReactTable({
     data,
@@ -109,7 +139,7 @@ export default function DataTable<TData, TValue>({
                   checked={column.getIsVisible()}
                   onCheckedChange={(value) => column.toggleVisibility(!!value)}
                 >
-                  {column.id}
+                  {normalizeName(column.id)}
                 </DropdownMenuCheckboxItem>
               ))}
           </DropdownMenuContent>

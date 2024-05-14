@@ -50,7 +50,10 @@ export const Default: StoryObj<typeof Table> = {
   args: {
     data,
     // @ts-ignore
-    columns,
+    columnsData: {
+      type: 'Custom',
+      data: columns,
+    },
     filterBy: 'email',
     action,
   },

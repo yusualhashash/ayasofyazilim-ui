@@ -5,12 +5,12 @@ import { DashboardProps } from './types';
 export default function Dashboard({
   cards,
   data,
-  columns,
+  columnsData,
   filterBy,
   action,
 }: DashboardProps) {
   let showColumns = true;
-  if (!data || !columns) showColumns = false;
+  if (!data || !columnsData) showColumns = false;
 
   return (
     <div className="flex flex-col items-center justify-start h-full w-full">
@@ -23,7 +23,7 @@ export default function Dashboard({
         <div className="w-10/12 flex-row p-4 m-4">
           <DataTable
             filterBy={filterBy}
-            columns={columns}
+            columnsData={columnsData}
             data={data}
             action={action}
           />
