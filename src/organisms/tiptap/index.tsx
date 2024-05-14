@@ -1,8 +1,9 @@
 'use client';
 
 import { BlockEditor } from '@tiptap-location/components/BlockEditor';
-import { EditIcon, SaveIcon } from 'lucide-react';
-import React, { useState } from 'react';
+import { EditIcon, SaveIcon, X } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Toaster, toast } from '@/components/ui/sonner';
 
 export declare type JSONContent = {
   [key: string]: any;
@@ -19,33 +20,89 @@ export declare type JSONContent = {
 export interface ITiptapEditorProps {
   canEditable?: boolean;
   editorContent: JSONContent | undefined;
-  setEditorContent?: React.Dispatch<React.SetStateAction<JSONContent>>;
+  editorId?: string;
+  onSaveFunction?: (editorId: string, editorContent: string) => Promise<string>;
 }
 export default function TipTapEditor({
-  setEditorContent,
+  editorId,
   editorContent,
   canEditable,
+  onSaveFunction,
 }: ITiptapEditorProps) {
+  const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
   const [editable, setEditable] = useState<boolean>(false);
+  const [content, setContent] = useState<JSONContent | undefined>(
+    editorContent
+  );
 
+  useEffect(() => {
+    if (JSON.stringify(content) === JSON.stringify(editorContent)) {
+      setIsSaveDisabled(true);
+      return;
+    }
+    setIsSaveDisabled(false);
+  }, [content, editorContent]);
+
+  async function onSave() {
+    if (!onSaveFunction || !editorId) return;
+
+    setEditable(false);
+    const result = await onSaveFunction(
+      editorId,
+      content ? JSON.stringify(content) : ''
+    );
+    if (result === 'OK') {
+      toast.success('Başarılı');
+      return;
+    }
+    toast.error(result);
+  }
+  function onCancel() {
+    setContent(editorContent);
+    setEditable(!editable);
+  }
   return (
     <div className="relative">
       {canEditable && (
         <div className="absolute right-5 top-5 z-10">
-          <button
-            type="button"
-            onClick={() => setEditable(!editable)}
-            className="btn btn-ghost btn-circle opacity-40 hover:opacity-100"
-          >
-            {!editable ? <EditIcon /> : <SaveIcon />}
-          </button>
+          {editable ? (
+            <>
+              <button
+                type="button"
+                onClick={onCancel}
+                className="btn btn-ghost btn-circle opacity-40 hover:opacity-100 mr-4"
+                aria-label="Cancel"
+              >
+                <X />
+              </button>
+              <button
+                disabled={isSaveDisabled}
+                type="button"
+                onClick={onSave}
+                className="btn btn-ghost btn-circle opacity-40 hover:opacity-100 disabled:opacity-10"
+                aria-label="Save"
+              >
+                <SaveIcon />
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setEditable(!editable)}
+              className="btn btn-ghost btn-circle opacity-40 hover:opacity-100"
+              aria-label="Edit"
+            >
+              <EditIcon />
+            </button>
+          )}
         </div>
       )}
       <BlockEditor
-        setEditorContent={setEditorContent}
-        editorContent={editorContent}
+        setEditorContent={setContent}
+        editorContent={content}
         editable={editable}
       />
+      <Toaster richColors position="top-center" />
     </div>
   );
 }
