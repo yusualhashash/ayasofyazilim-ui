@@ -15,7 +15,6 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
-import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -32,16 +31,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import AutoForm, { AutoFormSubmit } from '../../organisms/auto-form';
+import AutoformDialog from '../dialog';
 
 export type tableAction = {
   autoFormArgs: any;
@@ -63,9 +53,6 @@ export default function DataTable<TData, TValue>({
   filterBy,
   action,
 }: DataTableProps<TData, TValue>) {
-  const [values, setValues] = React.useState<
-    z.infer<typeof action.autoFormArgs.formSchema>
-  >({});
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -92,9 +79,10 @@ export default function DataTable<TData, TValue>({
       rowSelection,
     },
   });
-
+  const [isOpen, setIsOpen] = React.useState(false);
   return (
     <div className="w-full">
+      <AutoformDialog open={isOpen} onOpenChange={setIsOpen} action={action} />
       <div className="flex items-center py-4">
         <Input
           placeholder={`Filter ${filterBy}s...`}
@@ -127,37 +115,9 @@ export default function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
         {action ? (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline">{action?.cta}</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>{action?.cta}</DialogTitle>
-                <DialogDescription>{action?.description}</DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <AutoForm
-                  {...action?.autoFormArgs}
-                  onParsedValuesChange={(e) => {
-                    setValues(e);
-                  }}
-                  values={values}
-                  onSubmit={(formData) => {
-                    action?.callback(formData);
-                  }}
-                >
-                  {action?.autoFormArgs?.children}
-                  <AutoFormSubmit className="float-right">
-                    Save Changes
-                  </AutoFormSubmit>
-                </AutoForm>
-              </div>
-              <DialogFooter>
-                {/* TODO: Dialog footer to add whatever children we need */}
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <Button variant="outline" onClick={() => setIsOpen(true)}>
+            {action?.cta}
+          </Button>
         ) : null}
       </div>
       <div className="rounded-md border">
