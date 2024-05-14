@@ -14,9 +14,9 @@ import {
   TableRowMenu,
 } from '@tiptap-location/extensions/Table/menus';
 import ExtensionKit from '@tiptap-location/extensions/extension-kit';
+import { Content } from 'tippy.js';
 import { ContentItemMenu } from '../menus/ContentItemMenu';
 import { TextMenu } from '../menus/TextMenu';
-import { ITiptapEditorProps } from 'src/organisms/tiptap';
 
 export interface IBlockEditorProps {
   editable: boolean;
@@ -56,6 +56,7 @@ export const BlockEditor = ({
 
   useEffect(() => {
     if (editor && editor.isEditable !== editable) {
+      editor?.commands.setContent(editorContent as Content);
       editor.setEditable(editable);
     }
   }, [editable]);
