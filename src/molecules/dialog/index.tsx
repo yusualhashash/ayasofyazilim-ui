@@ -13,7 +13,7 @@ import AutoForm, { AutoFormSubmit } from '../../organisms/auto-form';
 
 export type tableAction = {
   autoFormArgs: any;
-  callback: (values: any) => void;
+  callback: (values: any, triggerData: any) => void;
   cta: string;
   description: string;
 };
@@ -22,14 +22,16 @@ export type AutoformDialogProps = {
   action?: tableAction;
   onOpenChange: (e: boolean) => void;
   open: boolean;
+  triggerData?: any;
 };
 
 export default function AutoformDialog({
   open,
   onOpenChange,
   action,
+  triggerData,
 }: AutoformDialogProps) {
-  const [values, setValues] = useState<any>({});
+  const [values, setValues] = useState<any>(triggerData || {});
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -45,7 +47,7 @@ export default function AutoformDialog({
             }}
             values={values}
             onSubmit={(formData) => {
-              action?.callback(formData);
+              action?.callback(formData, triggerData);
             }}
           >
             {action?.autoFormArgs?.children}
