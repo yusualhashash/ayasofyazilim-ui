@@ -29,14 +29,19 @@ export default function TipTapEditor({
   canEditable,
   onSaveFunction,
 }: ITiptapEditorProps) {
+  const [isButtonsDisabled, setIsButtonsDisabled] = useState<boolean>(false);
   const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
+
   const [editable, setEditable] = useState<boolean>(false);
+  const [defaultContent, setDefaultContent] = useState<JSONContent | undefined>(
+    editorContent
+  );
   const [content, setContent] = useState<JSONContent | undefined>(
     editorContent
   );
 
   useEffect(() => {
-    if (JSON.stringify(content) === JSON.stringify(editorContent)) {
+    if (JSON.stringify(content) === JSON.stringify(defaultContent)) {
       setIsSaveDisabled(true);
       return;
     }
@@ -46,27 +51,32 @@ export default function TipTapEditor({
   async function onSave() {
     if (!onSaveFunction || !editorId) return;
 
+    setIsButtonsDisabled(true);
     setEditable(false);
     const result = await onSaveFunction(
       editorId,
       content ? JSON.stringify(content) : ''
     );
+    setIsButtonsDisabled(false);
     if (result === 'OK') {
+      setDefaultContent(content);
       toast.success('Başarılı');
       return;
     }
     toast.error(result);
   }
+
   function onCancel() {
     setContent(editorContent);
     setEditable(!editable);
   }
+
   return (
     <div className="relative">
-      {canEditable && (
+      {canEditable && !isButtonsDisabled && (
         <div className="absolute right-5 top-5 z-10">
           {editable ? (
-            <>
+            <div>
               <button
                 type="button"
                 onClick={onCancel}
@@ -84,7 +94,7 @@ export default function TipTapEditor({
               >
                 <SaveIcon />
               </button>
-            </>
+            </div>
           ) : (
             <button
               type="button"
