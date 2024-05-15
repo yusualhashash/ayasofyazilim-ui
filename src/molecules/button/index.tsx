@@ -18,7 +18,7 @@ const buttonVariants = cva('', {
   },
 });
 
-export interface IButtonProps {
+export interface IButtonProps extends ButtonProps {
   children?: JSX.Element | string;
   className?: string;
   customVariant?: 'success' | 'primary' | 'secondary' | 'error' | 'default';
@@ -26,7 +26,6 @@ export interface IButtonProps {
   isLoading?: boolean;
   onSubmitFunction?: () => Promise<any> | void;
   title?: string;
-  variant?: ButtonProps['variant'];
 }
 
 export default function CustomButton({
@@ -38,6 +37,7 @@ export default function CustomButton({
   disabled,
   children,
   onSubmitFunction,
+  ...props
 }: IButtonProps) {
   return (
     <Button
@@ -46,6 +46,7 @@ export default function CustomButton({
       className={cn(buttonVariants({ customVariant }), className)}
       type="submit"
       onClick={onSubmitFunction}
+      {...props}
     >
       {isLoading ? (
         <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
