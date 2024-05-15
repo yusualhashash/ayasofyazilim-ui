@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { cva } from 'class-variance-authority';
 import { Button, ButtonProps } from '@/components/ui/button';
@@ -27,10 +25,12 @@ export interface IButtonProps {
   disabled?: boolean;
   isLoading?: boolean;
   onSubmitFunction?: () => Promise<any> | void;
+  title?: string;
   variant?: ButtonProps['variant'];
 }
 
 export default function CustomButton({
+  title,
   variant,
   customVariant,
   className,
@@ -51,7 +51,8 @@ export default function CustomButton({
         <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
       ) : (
         children
-      )}
+      )}{' '}
+      {title}
     </Button>
   );
 }
