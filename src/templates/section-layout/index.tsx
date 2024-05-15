@@ -304,7 +304,7 @@ export default function SectionLayout({
   const [activeSectionId, setActiveSectionId] = useState(
     defaultActiveSectionId
   );
-  const activeSession = sections.find(
+  const activeSection = sections.find(
     (section) => section.id === activeSectionId
   );
   useEffect(() => {
@@ -330,12 +330,12 @@ export default function SectionLayout({
       <div className="basis-3/4 ">
         {openOnNewPage ? (
           <SectionContent
-            key={activeSession?.id}
-            sectionId={activeSession?.id}
+            key={activeSection?.id}
+            sectionId={activeSection?.id}
             setActiveSectionId={setActiveSectionId}
             className={contentClassName}
           >
-            {openOnNewPage ? content : activeSession?.value}
+            {openOnNewPage ? content : activeSection?.value}
           </SectionContent>
         ) : (
           sections.map((section) => (
