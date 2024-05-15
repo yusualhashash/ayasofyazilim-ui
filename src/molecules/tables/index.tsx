@@ -34,6 +34,7 @@ import {
 import AutoformDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import { normalizeName } from './utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export type tableAction = {
   autoFormArgs: any;
@@ -61,14 +62,24 @@ export type DataTableProps<TData> = {
   columnsData: columnsType;
   data: TData[];
   filterBy: string;
+  isLoading?: boolean;
 };
+const SkeletonCell = () => <Skeleton className="w-20 h-3" />;
 
 export default function DataTable<TData, TValue>({
   columnsData,
   data,
   filterBy,
   action,
-}: DataTableProps<TData, TValue>) {
+  isLoading,
+}: DataTableProps<TData>) {
+  let tableData = data;
+
+  function selectedRowsText() {
+    if (isLoading) return 'Loading...';
+    return `${table.getFilteredSelectedRowModel().rows.length} of ${table.getFilteredRowModel().rows.length} row(s) selected.`;
+  }
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -90,18 +101,30 @@ export default function DataTable<TData, TValue>({
   } else {
     columns = columnsData.data as ColumnDef<TData, TValue>[];
   }
-
+  if (isLoading) {
+    tableData = Array(6).fill({});
+    columns = columns.map((column) => ({
+      ...column,
+      cell: SkeletonCell,
+    }));
+  }
   const table = useReactTable({
-    data,
+    data: tableData,
     columns,
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
+    onColumnFiltersChange: (filters) => {
+      if (isLoading) return;
+      setColumnFilters(filters);
+    },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: (row) => {
+      if (isLoading) return;
+      setRowSelection(row);
+    },
     state: {
       sorting,
       columnFilters,
@@ -115,6 +138,7 @@ export default function DataTable<TData, TValue>({
       <AutoformDialog open={isOpen} onOpenChange={setIsOpen} action={action} />
       <div className="flex items-center py-4">
         <Input
+          disabled={isLoading}
           placeholder={`Filter ${filterBy}s...`}
           value={(table.getColumn(filterBy)?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
@@ -124,7 +148,7 @@ export default function DataTable<TData, TValue>({
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
+            <Button disabled={isLoading} variant="outline" className="ml-auto">
               View <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -145,7 +169,11 @@ export default function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
         {action ? (
-          <Button variant="outline" onClick={() => setIsOpen(true)}>
+          <Button
+            disabled={isLoading}
+            variant="outline"
+            onClick={() => setIsOpen(true)}
+          >
             {action?.cta}
           </Button>
         ) : null}
@@ -200,8 +228,7 @@ export default function DataTable<TData, TValue>({
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{' '}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {selectedRowsText()}
         </div>
         <div className="space-x-2">
           <Button

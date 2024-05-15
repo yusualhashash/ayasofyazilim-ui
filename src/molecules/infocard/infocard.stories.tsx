@@ -13,7 +13,6 @@ export default {
     description: 'your target',
     footer: 'You are doing well!',
     title: 'People',
-    loading: 'boolean' as unknown as any,
   },
 } as Meta<typeof Infocard>;
 
@@ -22,3 +21,7 @@ const Template: StoryFn<typeof Infocard> = (args: infoCardProps) => (
 );
 
 export const Default = Template.bind({});
+export const Loading = Template.bind({});
+Loading.args = {
+  loading: true,
+};

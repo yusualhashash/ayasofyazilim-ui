@@ -11,11 +11,14 @@ export const Default: StoryObj<typeof Dashbaord> = {
   args: {
     data,
     // @ts-ignore
-    columns,
+    columnsData: {
+      type: 'Custom',
+      data: columns,
+    },
     cards,
     filterBy: 'email',
   },
   parameters: {
-    layout: 'centered',
+    layout: 'full',
   },
 };

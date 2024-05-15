@@ -8,24 +8,25 @@ export default function Dashboard({
   columnsData,
   filterBy,
   action,
+  isLoading,
+  withCards,
+  withTable,
 }: DashboardProps) {
-  let showColumns = true;
-  if (!data || !columnsData) showColumns = false;
-
   return (
     <div className="flex flex-col items-center justify-start h-full w-full">
-      {cards && (
+      {withCards && (
         <div className="flex-row p-4 w-10/12">
-          <CardList cards={cards} />
+          <CardList isLoading={isLoading} cards={cards} />
         </div>
       )}
-      {showColumns && (
+      {withTable && (
         <div className="w-10/12 flex-row p-4 m-4">
           <DataTable
             filterBy={filterBy}
             columnsData={columnsData}
             data={data}
             action={action}
+            isLoading={isLoading}
           />
         </div>
       )}
