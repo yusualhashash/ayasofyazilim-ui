@@ -23,8 +23,7 @@ export default function InfoCard(infoCard: infoCardProps) {
     value: string,
     width: string | number = '24',
     height: string | number = '5'
-  ) =>
-    loading ? <Skeleton className={`w-${width} h-${height}`} /> : { value };
+  ) => (loading ? <Skeleton className={`w-${width} h-${height}`} /> : value);
 
   return (
     <Card className="min-w-60">
