@@ -45,7 +45,7 @@ function generateColumns(tableType: any, excludeList: string[] = []) {
       generatedTableColumns.push({
         accessorKey,
         header,
-        cell: ({ row }) => readOnlyCheckbox(row, key),
+        cell: ({ row }: { row: any }) => readOnlyCheckbox(row, key),
       });
     }
     if (value.type === 'string') {
