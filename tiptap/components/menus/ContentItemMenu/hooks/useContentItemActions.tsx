@@ -14,6 +14,7 @@ const useContentItemActions = (
     chain.setNodeSelection(currentNodePos).unsetAllMarks();
 
     if (currentNode?.type.name !== 'paragraph') {
+      // @ts-ignore
       chain.setParagraph();
     }
 

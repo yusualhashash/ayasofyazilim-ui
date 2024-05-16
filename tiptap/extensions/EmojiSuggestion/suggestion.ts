@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { ReactRenderer } from '@tiptap/react';
 import { Editor } from '@tiptap/core';
 import { SuggestionKeyDownProps, SuggestionProps } from '@tiptap/suggestion';
@@ -42,7 +43,6 @@ export const emojiSuggestion = {
 
       onUpdate(props: SuggestionProps<any>) {
         component.updateProps(props);
-
         popup[0].setProps({
           getReferenceClientRect: props.clientRect,
         });

@@ -12,7 +12,7 @@ export default {
 } as Meta<typeof TipTapEditor>;
 
 const Template: StoryFn<typeof TipTapEditor> = () => (
-  <TipTapEditor editable editorContent={{} as JSONContent} />
+  <TipTapEditor editorContent={{} as JSONContent} />
 );
 
 export const Default = Template.bind({});

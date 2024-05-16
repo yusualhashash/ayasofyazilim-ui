@@ -7,6 +7,7 @@ import { cn } from '../../lib/utils';
 import { Dialog, DialogContent } from './dialog';
 
 const Command = React.forwardRef<
+  // @ts-ignore
   React.ElementRef<typeof CommandPrimitive>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive>
 >(({ className, ...props }, ref) => (

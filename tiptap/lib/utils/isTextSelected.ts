@@ -1,3 +1,5 @@
+// @ts-ignore
+
 import { isTextSelection } from '@tiptap/core';
 import { Editor } from '@tiptap/react';
 

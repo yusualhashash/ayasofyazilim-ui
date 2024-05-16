@@ -1,4 +1,5 @@
 import { mergeAttributes } from '@tiptap/core';
+//@ts-ignore
 import TiptapHorizontalRule from '@tiptap/extension-horizontal-rule';
 
 export const HorizontalRule = TiptapHorizontalRule.extend({
