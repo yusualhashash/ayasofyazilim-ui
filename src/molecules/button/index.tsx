@@ -47,13 +47,14 @@ export default function CustomButton({
       type="submit"
       onClick={onSubmitFunction}
       {...props}
+      title={title}
     >
       {isLoading ? (
         <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
       ) : (
         children
-      )}{' '}
-      {title}
+      )}
+      {/* {title} */}
     </Button>
   );
 }
