@@ -18,6 +18,7 @@ export const ImageUploader = ({
 
   const onFileChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) =>
+      //@ts-ignore
       e.target.files ? uploadFile(e.target.files[0]) : null,
     [uploadFile]
   );

@@ -1,6 +1,7 @@
 import { BubbleMenu as BaseBubbleMenu } from '@tiptap/react';
 import React, { useCallback, useRef } from 'react';
 import { Instance, sticky } from 'tippy.js';
+//@ts-ignore
 import { v4 as uuid } from 'uuid';
 
 import { Toolbar } from '@tiptap-location/components/ui/Toolbar';

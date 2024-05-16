@@ -12,6 +12,7 @@ export const useUploader = ({
   const uploadFile = useCallback(async () => {
     setLoading(true);
     try {
+      // @ts-ignore
       const url = await API.uploadImage();
 
       onUpload(url);

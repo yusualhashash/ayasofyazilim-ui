@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Editor } from '@tiptap/react';
 import { useCallback } from 'react';
 

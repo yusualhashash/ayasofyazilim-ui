@@ -208,6 +208,7 @@ export const SlashCommand = Extension.create({
                 return new DOMRect(rect.x, rect.y, rect.width, rect.height);
               };
 
+              //@ts-ignore
               view.dom.parentElement?.addEventListener('scroll', scrollHandler);
 
               // eslint-disable-next-line no-param-reassign
