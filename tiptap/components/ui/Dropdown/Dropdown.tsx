@@ -3,7 +3,7 @@ import { cn } from '@tiptap-location/lib/utils';
 export const DropdownCategoryTitle = ({
   children,
 }: {
-  children: React.ReactNode;
+  children: JSX.Element;
 }) => {
   return (
     <div className="text-[.65rem] font-semibold mb-1 uppercase text-neutral-500 dark:text-neutral-400 px-1.5">
@@ -19,7 +19,7 @@ export const DropdownButton = ({
   disabled,
   className,
 }: {
-  children: React.ReactNode;
+  children: JSX.Element;
   isActive?: boolean;
   onClick?: () => void;
   disabled?: boolean;

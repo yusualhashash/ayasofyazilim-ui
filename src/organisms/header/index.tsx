@@ -1,5 +1,3 @@
-import React from 'react';
-
 import AvatarWrapper from '../../molecules/avatar';
 import Navigation from '../../molecules/navigation-menu';
 import { navigationLinkTypes } from '../../molecules/navigation-menu/types';
@@ -7,8 +5,8 @@ import BurgerMenu from '../burger-menu';
 import { UserNav, userNavTypes } from '../profile-menu/index';
 
 interface DashboardHeaderProps {
-  children?: React.ReactNode;
-  extraMenu?: React.ReactNode;
+  children?: JSX.Element;
+  extraMenu?: JSX.Element;
   logo?: string;
   navMenu: navigationLinkTypes[];
   navMenuLocation?: 'left' | 'right' | 'center';

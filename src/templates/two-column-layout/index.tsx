@@ -3,8 +3,8 @@
 import React from 'react';
 
 export type TwoColumnLayoutProps = {
-  LeftNode: React.ReactNode;
-  RightNode: React.ReactNode;
+  LeftNode: JSX.Element;
+  RightNode: JSX.Element;
 };
 
 export const TwoColumnLayout = ({

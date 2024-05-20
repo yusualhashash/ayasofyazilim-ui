@@ -9,7 +9,7 @@ import { TwoColumnLayout } from '../../templates/two-column-layout';
 
 export type LoginPropsType = {
   allowTenantChange: boolean;
-  children: React.ReactNode;
+  children: JSX.Element;
   cultureName: string;
   formSchema: z.ZodObject<any>;
   onForgotPasswordSubmit?: (

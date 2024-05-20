@@ -9,7 +9,7 @@ import { CountrySelector, lang } from '../../organisms/country-selector';
 import { TwoColumnLayout } from '../../templates/two-column-layout';
 
 export type RegisterPropsType = {
-  children: React.ReactNode;
+  children: JSX.Element;
   formSchema: z.ZodObject<any>;
   loginPath: string;
   onLangChange: () => void;

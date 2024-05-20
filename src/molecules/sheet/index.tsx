@@ -11,12 +11,12 @@ import {
 } from '@/components/ui/sheet';
 
 export type sheetProps = {
-  children?: React.ReactNode;
+  children?: JSX.Element;
   className?: string;
   description?: string;
   position: 'top' | 'right' | 'bottom' | 'left';
   title?: string;
-  trigger: string | React.ReactNode;
+  trigger: string | JSX.Element;
 };
 
 export default function SheetSide(props: sheetProps) {

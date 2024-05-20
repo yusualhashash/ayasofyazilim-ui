@@ -2,12 +2,12 @@ import React from 'react';
 import { Placement, Props } from 'tippy.js';
 
 export interface TooltipProps {
-  children?: string | React.ReactNode;
+  children?: string | JSX.Element;
   enabled?: boolean;
   title?: string;
   shortcut?: string[];
   tippyOptions?: Omit<Partial<Props>, 'content'>;
-  content?: React.ReactNode;
+  content?: JSX.Element;
 }
 
 export interface TippyProps {

@@ -71,7 +71,7 @@ const Container = ({
   children,
   oriantation,
 }: {
-  children: React.ReactNode;
+  children: JSX.Element;
   oriantation: 'cols' | 'rows';
 }) => (
   <div

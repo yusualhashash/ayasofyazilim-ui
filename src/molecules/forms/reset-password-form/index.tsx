@@ -169,7 +169,7 @@ export default function ResetPasswordForm({
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<
     | {
-        message: React.ReactNode | string | null;
+        message: JSX.Element | string | null;
         variant: 'default' | 'destructive';
       }
     | undefined

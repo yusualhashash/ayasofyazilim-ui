@@ -21,7 +21,7 @@ export type AuthPropsType = {
     RegisterFormPropsType &
     ResetPasswordFormPropsType;
   authType: authTypes;
-  children: React.ReactNode;
+  children: JSX.Element;
   cultureName: string;
   onLangChange: (cultureName: string) => void;
   resources: { [key: string]: any };
