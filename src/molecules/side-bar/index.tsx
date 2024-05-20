@@ -1,6 +1,7 @@
+'use client';
+
 // @ts-ignore
 import Link from 'next/link';
-import * as React from 'react';
 import { ChevronRight } from 'lucide-react';
 import {
   Accordion,
@@ -18,7 +19,7 @@ type sidebarProps = {
 
 export type MenuProps = {
   href: string;
-  icon: React.ReactNode | React.ReactElement;
+  icon: JSX.Element;
   label: string;
   name: string;
   submenu?: Submenu[];
@@ -26,7 +27,7 @@ export type MenuProps = {
 
 type Submenu = {
   href: string;
-  icon: React.ReactNode;
+  icon: JSX.Element;
   name: string;
 };
 
@@ -37,7 +38,7 @@ export default function SidebarMenu({ menus, className }: sidebarProps) {
     <ScrollArea className={`h-100 lg:w-48 sm:w-max rounded-md ${className}`}>
       <div className="md:px-4 sm:p-0 mt-5 ">
         {uniqueLabels.map((label, index) => (
-          <React.Fragment key={label}>
+          <div key={label}>
             {label && (
               <p
                 className={`mx-4 mb-3 text-xs text-left tracking-wider font-bold text-slate-300 ${index > 0 ? 'mt-10' : ''}`}
@@ -48,7 +49,7 @@ export default function SidebarMenu({ menus, className }: sidebarProps) {
             {menus
               ?.filter((menu) => menu.label === label)
               .map((menu) => (
-                <React.Fragment key={menu.name}>
+                <div key={menu.name}>
                   {menu.submenu && menu.submenu.length > 0 ? (
                     <Accordion
                       key={menu.name}
@@ -107,9 +108,9 @@ export default function SidebarMenu({ menus, className }: sidebarProps) {
                       </Link>
                     </div>
                   )}
-                </React.Fragment>
+                </div>
               ))}
-          </React.Fragment>
+          </div>
         ))}
       </div>
     </ScrollArea>
