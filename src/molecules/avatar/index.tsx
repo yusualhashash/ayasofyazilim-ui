@@ -1,4 +1,5 @@
-import React from 'react';
+'use client';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface avatarProps {
@@ -20,7 +21,7 @@ export default function AvatarWrapper({
         <AvatarImage src={url} />
         <AvatarFallback>{text || sideText?.slice(0, 2)}</AvatarFallback>
       </Avatar>
-      <span className="ml-2"> {sideText} </span>
+      {sideText && <span className="ml-2"> {sideText} </span>}
     </div>
   );
 }
