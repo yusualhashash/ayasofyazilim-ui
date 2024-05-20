@@ -11,7 +11,8 @@
   },
   "scripts": {
     "dev": "concurrently \"pnpm build --watch\" \"pnpm storybook\" \"pnpm test\" ",
-    "build": "tsup --onSuccess \"pnpm link:self\"",
+    "_build": "tsup --onSuccess \"pnpm link:self\"",
+    "build": "pnpm link:self",
     "type-check": "tsc",
     "lint": "eslint --ignore-path .gitignore \"{src,tests}/**/*.+(ts|js|tsx|jsx)\"",
     "lint:fix": "pnpm lint --fix && prettier --write .",
@@ -31,7 +32,8 @@
     "./molecules/*": "./src/molecules/*/index.tsx",
     "./organisms/*": "./src/organisms/*/index.tsx",
     "./templates/*": "./src/templates/*/index.tsx",
-    "./pages/*": "./src/pages/*/index.tsx"
+    "./pages/*": "./src/pages/*/index.tsx",
+    "./lib/*": "./src/lib/*/index.tsx"
   },
   "files": [
     "dist"
@@ -196,6 +198,8 @@
     "@tiptap/extension-text-style": "^2.3.0",
     "@tiptap/extension-typography": "^2.3.0",
     "@tiptap/extension-underline": "^2.3.0",
+    "@tiptap/extension-heading": "^2.3.0",
+    "@tiptap/extension-horizontal-rule": "^2.3.0",
     "@tiptap/pm": "^2.3.0",
     "@tiptap/react": "^2.3.0",
     "@tiptap/starter-kit": "^2.3.0",
@@ -206,8 +210,6 @@
     "cmdk": "0.2.1",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.0.0",
-    "extension-heading": "link:@tiptap\\extension-heading",
-    "extension-horizontal-rule": "link:@tiptap\\extension-horizontal-rule",
     "input-otp": "^1.2.2",
     "lowlight": "^2.9.0",
     "lucide-react": "^0.359.0",
