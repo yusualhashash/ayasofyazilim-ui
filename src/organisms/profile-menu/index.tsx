@@ -1,11 +1,7 @@
 // @ts-ignore
 import Link from 'next/link';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '../../../@/components/ui/avatar';
-import { Button } from '../../../@/components/ui/button';
+import AvatarWrapper from '../../molecules/avatar';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +11,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '../../../@/components/ui/dropdown-menu';
+} from '../../molecules/dropdown-menu';
+import CustomButton from '../../molecules/button';
 
 type menuLinkTypes = {
   href: string;
@@ -50,21 +47,21 @@ export const UserNav = (props: userNavTypes) => {
           </DropdownMenuItem>
         </Link>
       ));
-      return <DropdownMenuGroup> {menu} </DropdownMenuGroup>;
+      return <DropdownMenuGroup>{menu}</DropdownMenuGroup>;
     }
-
     return null;
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={props.imageURL} alt={`@${props.username}`} />
-            <AvatarFallback>{initials}</AvatarFallback>
-          </Avatar>
-        </Button>
+        <CustomButton variant="ghost" className="relative h-8 w-8 rounded-full">
+          <AvatarWrapper
+            containerClassName="h-8 w-8"
+            text={initials}
+            url={props.imageURL}
+          />
+        </CustomButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
@@ -82,7 +79,9 @@ export const UserNav = (props: userNavTypes) => {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="hover:cursor cursor-pointer hover:bg-gray-100"
-          onClick={() => {
+          onClick={async () => {
+            'use server';
+
             if (props.logoutFunction) {
               props.logoutFunction();
             }
