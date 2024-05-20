@@ -22,7 +22,7 @@ export const AutoFormSubmit = ({
   className,
   disabled,
 }: {
-  children?: React.ReactNode;
+  children?: JSX.Element;
   className?: string;
   disabled?: boolean;
 }) => (
@@ -32,7 +32,7 @@ export const AutoFormSubmit = ({
 );
 export type SchemaType = ZodObjectOrWrapped;
 export type AutoFormProps = {
-  children?: React.ReactNode;
+  children?: JSX.Element;
   className?: string;
   dependencies?: Dependency<z.infer<SchemaType>>[];
   fieldConfig?: FieldConfig<z.infer<SchemaType>>;

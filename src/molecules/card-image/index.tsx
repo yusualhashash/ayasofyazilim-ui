@@ -3,7 +3,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 export interface ICardImageProps {
-  ComponentAfterImage?: React.ReactNode;
+  ComponentAfterImage?: JSX.Element;
   alt?: string;
   className?: string;
   containerClassName?: string;

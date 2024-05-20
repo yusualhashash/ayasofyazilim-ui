@@ -11,8 +11,8 @@ import FullPage from './full-page';
 import CompactVertical from './compact-vertical';
 
 export interface IDetailsCardProps {
-  ActionComponent?: React.ReactNode;
-  BeforeCardContentComponent?: React.ReactNode;
+  ActionComponent?: JSX.Element;
+  BeforeCardContentComponent?: JSX.Element;
   ContainerClassName?: string;
   IAboutCardProps: IAboutCardProps;
   cardTagClassname?: string;

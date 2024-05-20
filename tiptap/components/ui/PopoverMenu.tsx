@@ -9,8 +9,8 @@ export const Trigger = Popover.Trigger;
 export const Portal = Popover.Portal;
 
 export type MenuProps = {
-  children: React.ReactNode;
-  trigger: React.ReactNode;
+  children: JSX.Element;
+  trigger: JSX.Element;
   triggerClassName?: string;
   customTrigger?: boolean;
   isOpen?: boolean;
@@ -73,9 +73,9 @@ export const Item = ({
   onClick,
   isActive,
 }: {
-  label: string | React.ReactNode;
+  label: string | JSX.Element;
   icon?: keyof typeof icons;
-  iconComponent?: React.ReactNode;
+  iconComponent?: JSX.Element;
   close?: boolean;
   disabled?: boolean;
   onClick: () => void;
@@ -106,7 +106,7 @@ export const Item = ({
 };
 
 export type CategoryTitle = {
-  children: React.ReactNode;
+  children: JSX.Element;
 };
 
 export const CategoryTitle = ({ children }: CategoryTitle) => {
