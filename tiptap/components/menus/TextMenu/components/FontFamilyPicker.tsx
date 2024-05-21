@@ -70,7 +70,9 @@ export const FontFamilyPicker = ({
               className="mt-2.5 first:mt-0 gap-0.5 flex flex-col"
               key={group.label}
             >
-              <DropdownCategoryTitle>{group.label}</DropdownCategoryTitle>
+              <DropdownCategoryTitle>
+                <>{group.label} </>
+              </DropdownCategoryTitle>
               {group.options.map((font) => (
                 <DropdownButton
                   isActive={value === font.value}

@@ -142,8 +142,10 @@ export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
                 }
                 onClick={createCommandClickHandler(groupIndex, commandIndex)}
               >
-                <Icon name={command.iconName} className="mr-1" />
-                {command.label}
+                <>
+                  <Icon name={command.iconName} className="mr-1" />
+                  {command.label}
+                </>
               </DropdownButton>
             ))}
           </React.Fragment>

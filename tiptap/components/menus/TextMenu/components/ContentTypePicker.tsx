@@ -71,15 +71,17 @@ export const ContentTypePicker = ({ options }: ContentTypePickerProps) => {
                   onClick={option.onClick}
                   isActive={option.isActive()}
                 >
-                  <Icon name={option.icon} className="w-4 h-4 mr-1" />
-                  {option.label}
+                  <>
+                    <Icon name={option.icon} className="w-4 h-4 mr-1" />
+                    {option.label}
+                  </>
                 </DropdownButton>
               );
             } else if (isCategory(option)) {
               return (
                 <div className="mt-2 first:mt-0" key={option.id}>
                   <DropdownCategoryTitle key={option.id}>
-                    {option.label}
+                    <>{option.label}</>
                   </DropdownCategoryTitle>
                 </div>
               );
