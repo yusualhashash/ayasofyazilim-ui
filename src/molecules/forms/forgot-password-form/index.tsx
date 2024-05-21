@@ -70,7 +70,7 @@ export default function ForgotPasswordForm({
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<
     | {
-        message: JSX.Element | string | null;
+        message: JSX.Element | string | null | React.ReactNode;
         variant: 'default' | 'destructive';
       }
     | undefined
