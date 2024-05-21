@@ -24,8 +24,8 @@ export type userNavTypes = {
   email?: string;
   imageURL?: string;
   initials?: string;
-  logoutFunction?: () => void;
   menuLinks?: menuLinkTypes[];
+  signOutFunction?: any;
   username?: string;
 };
 
@@ -77,19 +77,14 @@ export const UserNav = (props: userNavTypes) => {
         <DropdownMenuSeparator />
         {menuLinks(props.menuLinks)}
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="hover:cursor cursor-pointer hover:bg-gray-100"
-          onClick={async () => {
-            'use server';
-
-            if (props.logoutFunction) {
-              props.logoutFunction();
-            }
-          }}
-        >
-          Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-        </DropdownMenuItem>
+        <form action={props.signOutFunction}>
+          <button type="submit" className="w-full">
+            <DropdownMenuItem className="hover:cursor cursor-pointer hover:bg-gray-100">
+              Log out
+              <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </button>
+        </form>
       </DropdownMenuContent>
     </DropdownMenu>
   );
