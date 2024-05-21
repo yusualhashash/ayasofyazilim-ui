@@ -54,7 +54,7 @@ type autoColumnGnerator = {
   tableType: any;
 };
 
-type columnsType = {
+export type columnsType = {
   data: ColumnDef<any>[] | autoColumnGnerator;
   type: 'Custom' | 'Auto';
 };
