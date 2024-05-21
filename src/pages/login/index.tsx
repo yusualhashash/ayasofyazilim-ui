@@ -3,7 +3,7 @@
 import React from 'react';
 import { z } from 'zod';
 import { ForgotPasswordFormDataType } from 'src/molecules/forms/forgot-password-form';
-import LoginForm, { LoginFormDataType } from '../../molecules/forms/login-form';
+import LoginForm from '../../molecules/forms/login-form';
 import { CountrySelector, lang } from '../../organisms/country-selector';
 import { TwoColumnLayout } from '../../templates/two-column-layout';
 
@@ -16,7 +16,15 @@ export type LoginPropsType = {
     values: ForgotPasswordFormDataType
   ) => Promise<string>;
   onLangChange: (cultureName: string) => void;
-  onSubmitFunction: (email: LoginFormDataType) => Promise<string>;
+  onSubmitFunction: (
+    username: string,
+    password: string
+  ) => Promise<
+    | {
+        error: string;
+      }
+    | undefined
+  >;
   registerPath: string;
   resources: { [key: string]: any };
 };
