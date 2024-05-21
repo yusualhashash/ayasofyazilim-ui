@@ -1,7 +1,7 @@
 import { Meta, StoryFn } from '@storybook/react';
 import React from 'react';
 
-import SectionLayout, { defaultProps } from '.';
+import { SectionLayout, defaultProps } from '.';
 
 export default {
   component: SectionLayout,
