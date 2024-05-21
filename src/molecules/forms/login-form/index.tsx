@@ -43,7 +43,15 @@ export type LoginFormPropsType = {
   onForgotPasswordSubmit?: (
     values: ForgotPasswordFormDataType
   ) => Promise<string>;
-  onSubmitFunction: (values: LoginFormDataType) => Promise<string>;
+  onSubmitFunction: (
+    username: string,
+    password: string
+  ) => Promise<
+    | {
+        error: string;
+      }
+    | undefined
+  >;
   registerPath: string;
   resources?: { [key: string]: any };
 };
@@ -58,7 +66,6 @@ export default function LoginForm({
 }: LoginFormPropsType) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>('');
-
   const form = useForm<LoginFormDataType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -69,15 +76,17 @@ export default function LoginForm({
   });
 
   function onSubmit(values: LoginFormDataType) {
+    onSubmitFunction(values.userIdentifier, values.password).then(
+      (response: any) => {
+        if (response?.error) {
+          setError(response?.error);
+          setIsLoading(false);
+          return;
+        }
+        window.location.reload();
+      }
+    );
     setIsLoading(true);
-    onSubmitFunction(values)
-      .then(() => {
-        setError('');
-      })
-      .catch((result) => {
-        setError(result);
-        setIsLoading(false);
-      });
   }
 
   return (
@@ -161,9 +170,7 @@ export default function LoginForm({
                 <AlertTitle>
                   {resources?.AbpExceptionHandling?.texts?.DefaultErrorMessage}
                 </AlertTitle>
-                <AlertDescription>
-                  {resources?.AbpAccount?.texts?.[error]}
-                </AlertDescription>
+                <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
 
