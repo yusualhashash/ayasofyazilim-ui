@@ -3,7 +3,7 @@ import React from 'react';
 export function replacePlaceholders(
   string: string,
   replacements: { holder: string; replacement: string | React.ReactNode }[]
-): (string | React.ReactNode)[] {
+): (string | React.ReactNode | JSX.Element)[] {
   if (!string || !replacements || replacements.length === 0) {
     console.error(
       'Invalid input: string or replacements are missing or empty.'
@@ -11,7 +11,7 @@ export function replacePlaceholders(
     return [];
   }
 
-  let result: (string | React.ReactNode)[] = [string];
+  let result: (string | React.ReactNode | JSX.Element)[] = [string];
 
   replacements.forEach(({ holder, replacement }) => {
     const updatedResult: (string | React.ReactNode)[] = [];
