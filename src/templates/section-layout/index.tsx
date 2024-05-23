@@ -262,7 +262,7 @@ const SectionContentBase = ({
   }, []);
 
   return (
-    <div id={sectionId} ref={divRef} className={cn('', className)}>
+    <div id={sectionId} ref={divRef} className={cn('w-full ', className)}>
       {sectionContent}
     </div>
   );
@@ -327,7 +327,7 @@ export function SectionLayout({
         openOnNewPage={openOnNewPage}
         vertical={vertical}
       />
-      <div className="basis-3/4 ">
+      <div className={vertical ? 'basis-3/4 ' : 'w-full'}>
         {openOnNewPage ? (
           <SectionContent
             key={activeSection?.id}
