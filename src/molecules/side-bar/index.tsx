@@ -35,7 +35,7 @@ export default function SidebarMenu({ menus, className }: sidebarProps) {
   const uniqueLabels = Array.from(new Set(menus?.map((menu) => menu.label)));
 
   return (
-    <ScrollArea className={`h-100 lg:w-48 sm:w-max rounded-md ${className}`}>
+    <ScrollArea className={`h-100 lg:w-80 sm:w-max rounded-md ${className}`}>
       <div className="md:px-4 sm:p-0 mt-5 ">
         {uniqueLabels.map((label, index) => (
           <div key={label}>
