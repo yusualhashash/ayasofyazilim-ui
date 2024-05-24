@@ -62,16 +62,8 @@ export const StepperHeader = ({
           active ? 'text-black' : 'text-muted-foreground'
         }`;
         return (
-          <div
-            key={item}
-            className="flex flex-col items-center gap-2 cursor-pointer"
-          >
-            <div
-              className={innerClass}
-              // onClick={() => setActiveTabIndex(index)}
-            >
-              {index / 2 + 1}
-            </div>
+          <div key={item} className="flex flex-col items-center gap-2">
+            <div className={innerClass}>{index / 2 + 1}</div>
             <div className={titleContainerClass}>{item}</div>
           </div>
         );
@@ -82,8 +74,13 @@ export const StepperHeader = ({
 export interface IStepperProps {
   activeTabIndex: number;
   children?: React.ReactNode[];
+  vertical?: boolean;
 }
-export default function Stepper({ children, activeTabIndex }: IStepperProps) {
+export default function Stepper({
+  children,
+  activeTabIndex,
+  vertical,
+}: IStepperProps) {
   const keys = children?.flatMap((child, index) => {
     if (index !== 0) {
       return [
@@ -95,9 +92,13 @@ export default function Stepper({ children, activeTabIndex }: IStepperProps) {
   }) as string[];
   const filteredChildren = React.Children.toArray(children)?.[activeTabIndex];
   return (
-    <>
-      <StepperHeader keysWithSeparator={keys} activeTabIndex={activeTabIndex} />
+    <div className={vertical ? 'flex flex-row gap-10' : ''}>
+      <StepperHeader
+        keysWithSeparator={keys}
+        activeTabIndex={activeTabIndex}
+        vertical={vertical}
+      />
       {filteredChildren}
-    </>
+    </div>
   );
 }
