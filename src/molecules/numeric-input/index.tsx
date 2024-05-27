@@ -12,6 +12,7 @@ export const numberFormatter = new Intl.NumberFormat('tr', {
 export type NumericInputProps = {
   className?: string;
   direction?: 'row' | 'column';
+  id?: string;
   inputLabel?: string;
   label: string;
   max: number;
@@ -24,6 +25,7 @@ export type NumericInputProps = {
   value?: number;
 };
 export function NumericInput({
+  id = 'numeric-input',
   min = 0,
   max = 999999,
   step = 1,
@@ -54,7 +56,7 @@ export function NumericInput({
   }
   return (
     <Label
-      htmlFor="quantity"
+      htmlFor={id}
       className={cn(
         'flex gap-4 justify-between w-full items-center ',
         direction === 'row' ? ' ' : 'flex-col',
@@ -116,7 +118,7 @@ export function NumericInput({
                   onValueChanged(quantity - step);
                 }
               }}
-              id="quantity"
+              id={id}
             />
             {inputLabel && (
               <span className="absolute bg-gray-50 rounded-r-md max-w-8 peer-focus:text-primary min-w-8 px-1 right-[1px] inset-y-[1px] justify-center flex items-center text-muted-foreground text-sm leading-normal">
