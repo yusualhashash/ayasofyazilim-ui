@@ -20,7 +20,7 @@ export type NumericInputProps = {
   step?: number;
   stepper?: boolean;
   subLabel: string;
-  value: number;
+  value?: number;
 };
 export function NumericInput({
   min = 0,
