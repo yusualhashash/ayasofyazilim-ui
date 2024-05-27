@@ -73,7 +73,7 @@ export function NumericInput({
             onValueChange={(_value) => onValueChanged(_value[0])}
           />
         )}
-        <div className="flex items-center  gap-2 justify-end w-min ">
+        <div className="flex items-center gap-2 justify-end w-min ">
           {stepper && (
             <Button
               variant="outline"
@@ -85,10 +85,10 @@ export function NumericInput({
               <Minus className="w-3" />
             </Button>
           )}
-          <div className="relative flex items-center group">
+          <div className="relative flex items-center group max-w-[140px]">
             <Input
               type="text"
-              className={`w-min grow-0 h-8  max-w-[140px]  ${inputLabel ? 'text-right peer pr-10' : 'text-center'}`}
+              className={`w-min grow-0 h-8 max-w-[140px] ${inputLabel ? 'text-right peer pr-10' : 'text-center'}`}
               min={min}
               max={max}
               step={step}
@@ -106,7 +106,7 @@ export function NumericInput({
               id="quantity"
             />
             {inputLabel && (
-              <span className="absolute bg-gray-50 rounded-r-md max-w-8  peer-focus:text-primary min-w-8 px-1 right-[1px] inset-y-[1px] justify-center flex items-center text-muted-foreground text-sm leading-normal">
+              <span className="absolute bg-gray-50 rounded-r-md max-w-8 peer-focus:text-primary min-w-8 px-1 right-[1px] inset-y-[1px] justify-center flex items-center text-muted-foreground text-sm leading-normal">
                 {inputLabel}
               </span>
             )}
