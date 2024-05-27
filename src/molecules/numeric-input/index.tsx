@@ -11,6 +11,7 @@ export const numberFormatter = new Intl.NumberFormat('tr', {
 });
 export type NumericInputProps = {
   className?: string;
+  direction?: 'row' | 'column';
   inputLabel?: string;
   label: string;
   max: number;
@@ -34,6 +35,7 @@ export function NumericInput({
   stepper = true,
   className,
   onValueChange,
+  direction = 'row',
 }: NumericInputProps) {
   const [quantity, setQuantity] = useState<number>(value);
   const [inputQuantity, setInputQuantity] = useState<string>(value.toString());
@@ -54,7 +56,8 @@ export function NumericInput({
     <Label
       htmlFor="quantity"
       className={cn(
-        'flex gap-4 justify-between w-full items-center',
+        'flex gap-4 justify-between w-full items-center ',
+        direction === 'row' ? ' ' : 'flex-col',
         className
       )}
     >
@@ -62,7 +65,9 @@ export function NumericInput({
         <h3 className="text-sm font-semibold">{label}</h3>
         <p className="text-xs text-muted-foreground">{subLabel}</p>
       </div>
-      <div className="flex flex-col gap-2">
+      <div
+        className={`flex flex-col gap-2 ${direction === 'row' ? '' : 'w-full'}`}
+      >
         {slider && (
           <Slider
             value={[quantity]}
@@ -73,7 +78,11 @@ export function NumericInput({
             onValueChange={(_value) => onValueChanged(_value[0])}
           />
         )}
-        <div className="flex items-center gap-2 justify-end w-min ">
+        <div
+          className={`flex items-center gap-2 justify-end ${
+            direction === 'row' ? 'w-min' : ''
+          }`}
+        >
           {stepper && (
             <Button
               variant="outline"
@@ -85,10 +94,14 @@ export function NumericInput({
               <Minus className="w-3" />
             </Button>
           )}
-          <div className="relative flex items-center group max-w-[140px]">
+          <div
+            className={`relative flex items-center group ${
+              direction === 'row' ? 'max-w-[140px]' : 'w-full'
+            }`}
+          >
             <Input
               type="text"
-              className={`w-min grow-0 h-8 max-w-[140px] ${inputLabel ? 'text-right peer pr-10' : 'text-center'}`}
+              className={` grow-0 h-8  ${inputLabel ? 'text-right peer pr-10' : 'text-center'} ${direction === 'row' ? 'w-min max-w-[140px]' : 'w-full'}`}
               min={min}
               max={max}
               step={step}
