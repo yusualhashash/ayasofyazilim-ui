@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { SetStateAction } from 'react';
+import CustomButton from '../../molecules/button';
 
 export interface ISeparatorProps {
   vertical?: boolean;
@@ -19,11 +20,48 @@ export const Separator = ({ vertical }: ISeparatorProps) => {
 };
 
 export interface IStepperContentProps {
+  canGoBack?: boolean;
+  canGoNext?: boolean;
   children?: React.ReactNode;
+  isBackDisabled?: boolean;
+  isNextDisabled?: boolean;
+  onIndexChange?: (value: SetStateAction<number>) => void;
   title?: string;
 }
-export const StepperContent = ({ children, title }: IStepperContentProps) => (
-  <div id={title}>{children}</div>
+export const StepperContent = ({
+  children,
+  title,
+  canGoBack = true,
+  canGoNext = true,
+  isBackDisabled,
+  isNextDisabled,
+  onIndexChange,
+}: IStepperContentProps) => (
+  <div id={title}>
+    {children}
+    {onIndexChange && (
+      <div className="mt-5">
+        {canGoBack && (
+          <CustomButton
+            variant="outline"
+            disabled={isBackDisabled}
+            onClick={() => onIndexChange((prev) => prev - 1)}
+          >
+            Previous
+          </CustomButton>
+        )}
+        {canGoNext && (
+          <CustomButton
+            className="float-right"
+            disabled={isNextDisabled}
+            onClick={() => onIndexChange((prev) => prev + 1)}
+          >
+            Next
+          </CustomButton>
+        )}
+      </div>
+    )}
+  </div>
 );
 
 export interface IStepperHeaderProps {
@@ -37,10 +75,10 @@ export const StepperHeader = ({
   activeTabIndex,
   vertical,
 }: IStepperHeaderProps) => {
-  const containerClass = `flex gap-5 justify-between w-full relative mb-10${
-    vertical ? ' flex-col items-center' : ''
+  const containerClass = `flex gap-5 justify-between w-full relative mb-10 ${
+    vertical ? 'flex-col items-center' : ''
   }`;
-  const activeItemClass = 'bg-blue-500 text-white';
+  const activeItemClass = 'bg-primary text-white';
   const inactiveItemClass = 'bg-muted text-black';
 
   return (
