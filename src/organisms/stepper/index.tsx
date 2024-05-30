@@ -41,10 +41,10 @@ export const StepperContent = ({
   isBackDisabled,
   isNextDisabled,
 }: IStepperContentProps) => {
-  const { previousButtonText, nextButtonText, onIndexChange } =
+  const { previousButtonText, nextButtonText, onIndexChange, vertical } =
     useContext(StepperContext);
   return (
-    <div id={title}>
+    <div id={title} className={vertical ? 'w-10/12' : 'w-full'}>
       {children}
       {onIndexChange && (
         <div className="mt-5">
@@ -85,8 +85,8 @@ export const StepperHeader = ({
   activeTabIndex,
   vertical,
 }: IStepperHeaderProps) => {
-  const containerClass = `flex gap-5 justify-between w-full relative mb-10 ${
-    vertical ? 'flex-col items-center' : ''
+  const containerClass = `flex gap-5 justify-between relative mb-10 ${
+    vertical ? 'flex-col items-center w-2/12' : 'w-full'
   }`;
   const activeItemClass = 'bg-primary text-white';
   const inactiveItemClass = 'bg-muted text-black';
@@ -126,6 +126,7 @@ const StepperContext = createContext({
   previousButtonText: 'Previous',
   // eslint-disable-next-line
   onIndexChange: (value: SetStateAction<number>) => {},
+  vertical: false,
 });
 export interface IStepperProps {
   activeTabIndex: number;
@@ -139,7 +140,7 @@ export interface IStepperProps {
 export default function Stepper({
   children,
   activeTabIndex,
-  vertical,
+  vertical = false,
   nextButtonText = 'Next',
   previousButtonText = 'Previous',
   onIndexChange,
@@ -158,8 +159,9 @@ export default function Stepper({
       nextButtonText,
       previousButtonText,
       onIndexChange,
+      vertical,
     }),
-    [nextButtonText, previousButtonText, onIndexChange]
+    [nextButtonText, previousButtonText, onIndexChange, vertical]
   );
   const filteredChildren = React.Children.toArray(children)?.[activeTabIndex];
   return (
