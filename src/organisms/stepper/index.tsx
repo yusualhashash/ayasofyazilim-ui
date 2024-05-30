@@ -1,6 +1,12 @@
 'use client';
 
-import React, { SetStateAction } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useContext,
+  useMemo,
+} from 'react';
 import CustomButton from '../../molecules/button';
 
 export interface ISeparatorProps {
@@ -25,7 +31,6 @@ export interface IStepperContentProps {
   children?: React.ReactNode;
   isBackDisabled?: boolean;
   isNextDisabled?: boolean;
-  onIndexChange?: (value: SetStateAction<number>) => void;
   title?: string;
 }
 export const StepperContent = ({
@@ -35,38 +40,43 @@ export const StepperContent = ({
   canGoNext = true,
   isBackDisabled,
   isNextDisabled,
-  onIndexChange,
-}: IStepperContentProps) => (
-  <div id={title}>
-    {children}
-    {onIndexChange && (
-      <div className="mt-5">
-        {canGoBack && (
-          <CustomButton
-            variant="outline"
-            disabled={isBackDisabled}
-            onClick={() => onIndexChange((prev) => prev - 1)}
-          >
-            Previous
-          </CustomButton>
-        )}
-        {canGoNext && (
-          <CustomButton
-            className="float-right"
-            disabled={isNextDisabled}
-            onClick={() => onIndexChange((prev) => prev + 1)}
-          >
-            Next
-          </CustomButton>
-        )}
-      </div>
-    )}
-  </div>
-);
+}: IStepperContentProps) => {
+  const { previousButtonText, nextButtonText, onIndexChange } =
+    useContext(StepperContext);
+  return (
+    <div id={title}>
+      {children}
+      {onIndexChange && (
+        <div className="mt-5">
+          {canGoBack && (
+            <CustomButton
+              variant="outline"
+              disabled={isBackDisabled}
+              onClick={() => onIndexChange((prev) => prev - 1)}
+            >
+              {previousButtonText}
+            </CustomButton>
+          )}
+          {canGoNext && (
+            <CustomButton
+              className="float-right"
+              disabled={isNextDisabled}
+              onClick={() => onIndexChange((prev) => prev + 1)}
+            >
+              {nextButtonText}
+            </CustomButton>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export interface IStepperHeaderProps {
   activeTabIndex: number;
-  keysWithSeparator: string[];
+  keysWithSeparator:
+    | (string | { icon: any; index: number; title: any })[]
+    | undefined;
   vertical?: boolean;
 }
 
@@ -83,8 +93,8 @@ export const StepperHeader = ({
 
   return (
     <div className={containerClass}>
-      {keysWithSeparator.map((item, index) => {
-        if (item === 'SEPARATOR') {
+      {keysWithSeparator?.map((item, index) => {
+        if (typeof item === 'string') {
           return (
             <Separator
               key={`separator-${index.toString()}`}
@@ -92,7 +102,8 @@ export const StepperHeader = ({
             />
           );
         }
-        const active = activeTabIndex === index / 2;
+
+        const active = activeTabIndex === item.index;
         const innerClass = `rounded-full w-8 h-8 items-center justify-center flex text-xs ${
           active ? activeItemClass : inactiveItemClass
         }`;
@@ -100,43 +111,67 @@ export const StepperHeader = ({
           active ? 'text-black' : 'text-muted-foreground'
         }`;
         return (
-          <div key={item} className="flex flex-col items-center gap-2">
-            <div className={innerClass}>{index / 2 + 1}</div>
-            <div className={titleContainerClass}>{item}</div>
+          <div key={item.index} className="flex flex-col items-center gap-2">
+            <div className={innerClass}>{item.icon || item.index + 1}</div>
+            <div className={titleContainerClass}>{item.title}</div>
           </div>
         );
       })}
     </div>
   );
 };
+
+const StepperContext = createContext({
+  nextButtonText: 'Next',
+  previousButtonText: 'Previous',
+  // eslint-disable-next-line
+  onIndexChange: (value: SetStateAction<number>) => {},
+});
 export interface IStepperProps {
   activeTabIndex: number;
   children?: React.ReactNode[];
+  nextButtonText?: string;
+  onIndexChange: Dispatch<SetStateAction<number>>;
+  previousButtonText?: string;
   vertical?: boolean;
 }
+
 export default function Stepper({
   children,
   activeTabIndex,
   vertical,
+  nextButtonText = 'Next',
+  previousButtonText = 'Previous',
+  onIndexChange,
 }: IStepperProps) {
   const keys = children?.flatMap((child, index) => {
-    if (index !== 0) {
-      return [
-        'SEPARATOR',
-        (React.isValidElement(child) && child.props.title) || index + 1,
-      ];
+    const item = React.isValidElement(child)
+      ? { title: child.props.title || '', icon: child.props.icon, index }
+      : { title: '', icon: '', index };
+    if (index === 0) {
+      return [item];
     }
-    return [(React.isValidElement(child) && child.props.title) || index + 1];
-  }) as string[];
+    return ['SEPARATOR', item];
+  });
+  const providerProps = useMemo(
+    () => ({
+      nextButtonText,
+      previousButtonText,
+      onIndexChange,
+    }),
+    [nextButtonText, previousButtonText, onIndexChange]
+  );
   const filteredChildren = React.Children.toArray(children)?.[activeTabIndex];
   return (
-    <div className={vertical ? 'flex flex-row gap-10' : ''}>
-      <StepperHeader
-        keysWithSeparator={keys}
-        activeTabIndex={activeTabIndex}
-        vertical={vertical}
-      />
-      {filteredChildren}
-    </div>
+    <StepperContext.Provider value={providerProps}>
+      <div className={vertical ? 'flex flex-row gap-10' : ''}>
+        <StepperHeader
+          keysWithSeparator={keys}
+          activeTabIndex={activeTabIndex}
+          vertical={vertical}
+        />
+        {filteredChildren}
+      </div>
+    </StepperContext.Provider>
   );
 }
