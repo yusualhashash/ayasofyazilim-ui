@@ -1,6 +1,6 @@
-import { ControllerRenderProps, FieldValues } from "react-hook-form";
-import * as z from "zod";
-import { INPUT_COMPONENTS } from "./config";
+import { ControllerRenderProps, FieldValues } from 'react-hook-form';
+import * as z from 'zod';
+import { INPUT_COMPONENTS } from './config';
 
 export type FieldConfigItem = {
   description?: React.ReactNode;
@@ -34,6 +34,7 @@ type BaseDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
   sourceField: keyof SchemaType;
   type: DependencyType;
   targetField: keyof SchemaType;
+  hasParentField?: boolean;
   when: (sourceFieldValue: any, targetFieldValue: any) => boolean;
 };
 
