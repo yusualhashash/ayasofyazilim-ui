@@ -87,6 +87,10 @@ export default function AutoFormObject<
               <AccordionTrigger>{itemName}</AccordionTrigger>
               <AccordionContent className="p-2">
                 <AutoFormObject
+                  dependencies={dependencies.filter(
+                    (dependency) => dependency.hasParentField
+                  )}
+                  // @ts-ignore
                   schema={item as unknown as z.ZodObject<any, any>}
                   form={form}
                   fieldConfig={
