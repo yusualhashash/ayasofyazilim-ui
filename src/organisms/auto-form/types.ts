@@ -3,6 +3,7 @@ import * as z from 'zod';
 import { INPUT_COMPONENTS } from './config';
 
 export type FieldConfigItem = {
+  displayName?: string;
   description?: React.ReactNode;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement> & {
     showLabel?: boolean;
