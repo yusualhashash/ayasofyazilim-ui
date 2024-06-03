@@ -3,7 +3,7 @@
 import { BlockEditor } from '@tiptap-location/components/BlockEditor';
 import { EditIcon, SaveIcon, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { Toaster, toast } from '@/components/ui/sonner';
+import { toast } from '@/components/ui/sonner';
 
 export declare type JSONContent = {
   [key: string]: any;
@@ -114,7 +114,6 @@ export default function TipTapEditor({
         editorContent={content}
         editable={editable}
       />
-      <Toaster richColors position="top-center" />
     </div>
   );
 }
