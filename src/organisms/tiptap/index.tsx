@@ -19,6 +19,7 @@ export declare type JSONContent = {
 };
 export interface ITiptapEditorProps {
   canEditable?: boolean;
+  editOnStart?: boolean;
   editorContent: JSONContent | undefined;
   editorId?: string;
   onSaveFunction?: (editorId: string, editorContent: string) => Promise<string>;
@@ -27,12 +28,13 @@ export default function TipTapEditor({
   editorId,
   editorContent,
   canEditable,
+  editOnStart,
   onSaveFunction,
 }: ITiptapEditorProps) {
   const [isButtonsDisabled, setIsButtonsDisabled] = useState<boolean>(false);
   const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
 
-  const [editable, setEditable] = useState<boolean>(false);
+  const [editable, setEditable] = useState<boolean>(!!editOnStart);
   const [defaultContent, setDefaultContent] = useState<JSONContent | undefined>(
     editorContent
   );
