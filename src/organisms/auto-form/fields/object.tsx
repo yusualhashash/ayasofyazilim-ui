@@ -114,7 +114,6 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
   }
 
   if (zodBaseType === 'ZodObject') {
-    console.log(dependencies);
     return (
       <div key={key} className="flex flex-col border p-4 rounded-md">
         <div className="text-sm font-bold">
@@ -166,7 +165,7 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
 
   return (
     <FormField
-      disabled={isDisabled}
+      // disabled={isDisabled}
       control={form.control}
       name={key}
       key={key}
