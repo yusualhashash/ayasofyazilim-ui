@@ -1,5 +1,5 @@
 .ProseMirror {
-  @apply outline-0 pr-24 pl-24 py-8 mb-8 rounded-2xl z-0 bg-gray-50;
+  @apply outline-0 pr-24 pl-24 py-8 mb-0 rounded-2xl z-0 bg-gray-50;
 
   & > * {
     @apply mx-auto max-w-2xl;
