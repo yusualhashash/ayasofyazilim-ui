@@ -176,6 +176,7 @@ interface ISection {
 }
 interface ISectionNavbarBase {
   activeSectionId: string;
+  location?: string;
   openOnNewPage?: boolean;
   sections: Array<ISection>;
   vertical?: boolean;
@@ -197,6 +198,7 @@ interface ISectionLayoutProps {
   content?: JSX.Element;
   contentClassName?: string;
   defaultActiveSectionId: string;
+  location?: string;
   openOnNewPage?: boolean;
   sections: Array<ISection>;
   vertical?: boolean;
@@ -207,6 +209,7 @@ const SectionNavbarBase = ({
   activeSectionId,
   openOnNewPage,
   vertical,
+  location,
 }: ISectionNavbarBase) => (
   <div
     className={`sticky z-10 ${
@@ -217,7 +220,7 @@ const SectionNavbarBase = ({
   >
     <nav
       className={`gap-4 text-sm text-muted-foreground pb-5 border-b md:border-0 text-center md:text-left ${
-        vertical ? 'grid' : 'flex flex-row justify-center pt-5'
+        vertical ? 'grid' : `flex flex-row justify-${location} px-36 pt-5`
       }`}
     >
       {sections.map((section) => (
@@ -300,6 +303,7 @@ export function SectionLayout({
   openOnNewPage,
   vertical,
   defaultActiveSectionId,
+  location,
 }: ISectionLayoutProps) {
   const [activeSectionId, setActiveSectionId] = useState(
     defaultActiveSectionId
@@ -326,6 +330,7 @@ export function SectionLayout({
         activeSectionId={activeSectionId}
         openOnNewPage={openOnNewPage}
         vertical={vertical}
+        location={location}
       />
       <div className={vertical ? 'basis-3/4 ' : 'w-full'}>
         {openOnNewPage ? (
