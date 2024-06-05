@@ -81,6 +81,7 @@ const SectionNavbarBase = ({
           if (!openOnNewPage && showContentInSamePage && onSectionChange) {
             return (
               <Button
+                key={section.id}
                 variant={'link'}
                 onClick={() => onClick(section.id)}
                 className={`${section.id === activeSectionId ? 'font-semibold text-primary' : ''} `}
