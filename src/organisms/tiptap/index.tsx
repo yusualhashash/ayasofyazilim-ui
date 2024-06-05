@@ -20,16 +20,21 @@ export declare type JSONContent = {
 export interface ITiptapEditorProps {
   canEditable?: boolean;
   editOnStart?: boolean;
-  editorContent: JSONContent | undefined;
+  editorContent?: JSONContent | undefined;
   editorId?: string;
+  minWordCount?: number;
   onSaveFunction?: (editorId: string, editorContent: string) => Promise<string>;
+  onWordCountChanged?: (wordCount: number) => void;
 }
+
 export default function TipTapEditor({
   editorId,
   editorContent,
   canEditable,
   editOnStart,
+  minWordCount = 10,
   onSaveFunction,
+  onWordCountChanged,
 }: ITiptapEditorProps) {
   const [isButtonsDisabled, setIsButtonsDisabled] = useState<boolean>(false);
   const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
@@ -41,14 +46,23 @@ export default function TipTapEditor({
   const [content, setContent] = useState<JSONContent | undefined>(
     editorContent
   );
+  const [wordCount, setWordCount] = useState<number>(0);
 
   useEffect(() => {
-    if (JSON.stringify(content) === JSON.stringify(defaultContent)) {
+    if (
+      wordCount < minWordCount ||
+      JSON.stringify(content) === JSON.stringify(defaultContent)
+    ) {
       setIsSaveDisabled(true);
       return;
     }
     setIsSaveDisabled(false);
   }, [content, editorContent]);
+  useEffect(() => {
+    if (onWordCountChanged) {
+      onWordCountChanged(wordCount);
+    }
+  }, [wordCount]);
 
   async function onSave() {
     if (!onSaveFunction || !editorId) return;
@@ -72,7 +86,6 @@ export default function TipTapEditor({
     setContent(editorContent);
     setEditable(!editable);
   }
-
   return (
     <div className="relative">
       {canEditable && !isButtonsDisabled && (
@@ -111,6 +124,7 @@ export default function TipTapEditor({
       )}
       <BlockEditor
         setEditorContent={setContent}
+        setWordCount={setWordCount}
         editorContent={content}
         editable={editable}
       />
