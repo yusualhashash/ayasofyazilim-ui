@@ -18,13 +18,16 @@ import { Content } from 'tippy.js';
 import { ContentItemMenu } from '../menus/ContentItemMenu';
 import { TextMenu } from '../menus/TextMenu';
 
+let timeout: NodeJS.Timeout;
 export interface IBlockEditorProps {
   editable: boolean;
   editorContent: JSONContent | undefined;
   setEditorContent?: React.Dispatch<React.SetStateAction<JSONContent>>;
+  setWordCount?: React.Dispatch<React.SetStateAction<number>>;
 }
 export const BlockEditor = ({
   setEditorContent,
+  setWordCount,
   editorContent,
   editable,
 }: IBlockEditorProps) => {
@@ -44,10 +47,24 @@ export const BlockEditor = ({
       },
       content: editorContent,
       editable: editable,
+
       onUpdate: ({ editor }) => {
         if (setEditorContent) {
-          const json = editor.getJSON();
-          setEditorContent(json);
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            const json = editor.getJSON();
+            setEditorContent(json);
+            const wordCount = editor.storage.characterCount.words();
+            if (setWordCount && wordCount) {
+              setWordCount(wordCount);
+            }
+          }, 1000);
+        }
+      },
+      onCreate: ({ editor }) => {
+        const wordCount = editor.storage.characterCount.words();
+        if (setWordCount && wordCount) {
+          setWordCount(wordCount);
         }
       },
     },
