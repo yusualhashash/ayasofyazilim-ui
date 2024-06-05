@@ -4,204 +4,48 @@ import React, { useEffect, useRef, useState } from 'react';
 // @ts-ignore
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
-export const defaultDataForSectionLayout = [
-  {
-    id: 'about-the-project-0',
-    name: 'About The Project',
-    value: (
-      <>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vel
-        ultrices sapien. Maecenas lobortis elementum sapien, sed volutpat lacus.
-        Vivamus vitae erat mi. Suspendisse vestibulum turpis libero. Donec
-        facilisis quam in magna tempus, quis bibendum diam blandit. Nulla eget
-        sem gravida, hendrerit tortor sed, laoreet tortor. Donec vitae nibh
-        erat. Proin faucibus vulputate nunc, id feugiat justo volutpat quis.
-        Aliquam erat volutpat.Aliquam faucibus, turpis in rhoncus tincidunt,
-        quam nisi rutrum metus, ac gravida erat nulla suscipit elit. Donec
-        vehicula dolor ut metus semper, et cursus dui eleifend. Duis vitae sem
-        condimentum, placerat turpis eget, mollis quam. Morbi convallis sodales
-        leo, a porta leo sagittis in. Curabitur dignissim vehicula faucibus. Nam
-        fringilla velit a lectus accumsan laoreet. Donec sit amet porttitor
-        nibh.Donec pretium placerat ipsum, eget tempor tellus. In pulvinar id
-        lacus sit amet molestie. Lorem ipsum dolor sit amet, consectetur
-        adipiscing elit. Suspendisse bibendum orci et erat volutpat facilisis.
-        Cras fringilla elementum ipsum sed tristique. Donec elementum libero a
-        purus laoreet, viverra rutrum dolor pellentesque. Duis varius et neque
-        sit amet feugiat. Vivamus ac ante ligula. Phasellus suscipit mollis elit
-        et aliquet. Curabitur elit velit, gravida non odio eu, elementum
-        facilisis purus. Vestibulum accumsan risus eget neque blandit sodales.
-        Praesent velit urna, faucibus id lacus non, gravida finibus sapien.
-        Curabitur pretium orci vitae commodo convallis. Sed non lacus bibendum,
-        gravida neque sit amet, scelerisque ante. Cras velit massa, venenatis eu
-        tortor et, lacinia consequat elit.Praesent sit amet quam et dolor
-        dapibus rhoncus. Ut vel purus nec velit gravida dapibus. Vestibulum ante
-        ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
-        Donec viverra velit odio, vel efficitur lorem pharetra vel. Mauris
-        lacinia libero risus, posuere vehicula dui venenatis eget. Quisque ut
-        pulvinar ligula, id dignissim ipsum. Vivamus arcu erat, consectetur id
-        laoreet sit amet, pharetra eget ligula. Morbi fringilla orci et ante
-        molestie, quis fermentum turpis posuere. Nam hendrerit eleifend dolor ut
-        tempor. Integer dictum faucibus elementum. Praesent tristique lorem a
-        massa dignissim, vitae rutrum nunc porta. Integer elementum lacus ac
-        porttitor posuere. Donec auctor in massa et gravida. Phasellus vitae
-        vehicula nibh. Ut elit mauris, volutpat hendrerit ex at, maximus feugiat
-        velit.Phasellus ultrices, lorem et malesuada lobortis, lacus erat
-        iaculis nunc, eu ultricies eros urna vitae lorem. Pellentesque tristique
-        malesuada lobortis. Nam eget consequat risus, sed viverra quam.
-        Curabitur rutrum nibh nec magna eleifend, ut pellentesque tellus luctus.
-        Donec porta eget felis ac faucibus. Fusce vel laoreet mi. Integer
-        lacinia vehicula lorem. Sed nec efficitur dui. Quisque vehicula
-        tincidunt tempus. Praesent elementum enim euismod ex gravida feugiat.
-        Proin ullamcorper eu neque eu vulputate. Praesent hendrerit posuere
-        eros, vitae porta est dictum condimentum.
-      </>
-    ),
-  },
-  {
-    id: 'documents-1',
-    name: 'Documents',
-    value: (
-      <>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vel
-        ultrices sapien. Maecenas lobortis elementum sapien, sed volutpat lacus.
-        Vivamus vitae erat mi. Suspendisse vestibulum turpis libero. Donec
-        facilisis quam in magna tempus, quis bibendum diam blandit. Nulla eget
-        sem gravida, hendrerit tortor sed, laoreet tortor. Donec vitae nibh
-        erat. Proin faucibus vulputate nunc, id feugiat justo volutpat quis.
-        Aliquam erat volutpat.Aliquam faucibus, turpis in rhoncus tincidunt,
-        quam nisi rutrum metus, ac gravida erat nulla suscipit elit. Donec
-        vehicula dolor ut metus semper, et cursus dui eleifend. Duis vitae sem
-        condimentum, placerat turpis eget, mollis quam. Morbi convallis sodales
-        leo, a porta leo sagittis in. Curabitur dignissim vehicula faucibus. Nam
-        fringilla velit a lectus accumsan laoreet. Donec sit amet porttitor
-        nibh.Donec pretium placerat ipsum, eget tempor tellus. In pulvinar id
-        lacus sit amet molestie. Lorem ipsum dolor sit amet, consectetur
-        adipiscing elit. Suspendisse bibendum orci et erat volutpat facilisis.
-        Cras fringilla elementum ipsum sed tristique. Donec elementum libero a
-        purus laoreet, viverra rutrum dolor pellentesque. Duis varius et neque
-        sit amet feugiat. Vivamus ac ante ligula. Phasellus suscipit mollis elit
-        et aliquet. Curabitur elit velit, gravida non odio eu, elementum
-        facilisis purus. Vestibulum accumsan risus eget neque blandit sodales.
-        Praesent velit urna, faucibus id lacus non, gravida finibus sapien.
-        Curabitur pretium orci vitae commodo convallis. Sed non lacus bibendum,
-        gravida neque sit amet, scelerisque ante. Cras velit massa, venenatis eu
-        tortor et, lacinia consequat elit.Praesent sit amet quam et dolor
-        dapibus rhoncus. Ut vel purus nec velit gravida dapibus. Vestibulum ante
-        ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
-        Donec viverra velit odio, vel efficitur lorem pharetra vel. Mauris
-        lacinia libero risus, posuere vehicula dui venenatis eget. Quisque ut
-        pulvinar ligula, id dignissim ipsum. Vivamus arcu erat, consectetur id
-        laoreet sit amet, pharetra eget ligula. Morbi fringilla orci et ante
-        molestie, quis fermentum turpis posuere. Nam hendrerit eleifend dolor ut
-        tempor. Integer dictum faucibus elementum. Praesent tristique lorem a
-        massa dignissim, vitae rutrum nunc porta. Integer elementum lacus ac
-        porttitor posuere. Donec auctor in massa et gravida. Phasellus vitae
-        vehicula nibh. Ut elit mauris, volutpat hendrerit ex at, maximus feugiat
-        velit.Phasellus ultrices, lorem et malesuada lobortis, lacus erat
-        iaculis nunc, eu ultricies eros urna vitae lorem. Pellentesque tristique
-        malesuada lobortis. Nam eget consequat risus, sed viverra quam.
-        Curabitur rutrum nibh nec magna eleifend, ut pellentesque tellus luctus.
-        Donec porta eget felis ac faucibus. Fusce vel laoreet mi. Integer
-        lacinia vehicula lorem. Sed nec efficitur dui. Quisque vehicula
-        tincidunt tempus. Praesent elementum enim euismod ex gravida feugiat.
-        Proin ullamcorper eu neque eu vulputate. Praesent hendrerit posuere
-        eros, vitae porta est dictum condimentum.
-      </>
-    ),
-  },
-  {
-    id: 'team-2',
-    name: 'Team',
-    value: (
-      <>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vel
-        ultrices sapien. Maecenas lobortis elementum sapien, sed volutpat lacus.
-        Vivamus vitae erat mi. Suspendisse vestibulum turpis libero. Donec
-        facilisis quam in magna tempus, quis bibendum diam blandit. Nulla eget
-        sem gravida, hendrerit tortor sed, laoreet tortor. Donec vitae nibh
-        erat. Proin faucibus vulputate nunc, id feugiat justo volutpat quis.
-        Aliquam erat volutpat.Aliquam faucibus, turpis in rhoncus tincidunt,
-        quam nisi rutrum metus, ac gravida erat nulla suscipit elit. Donec
-        vehicula dolor ut metus semper, et cursus dui eleifend. Duis vitae sem
-        condimentum, placerat turpis eget, mollis quam. Morbi convallis sodales
-        leo, a porta leo sagittis in. Curabitur dignissim vehicula faucibus. Nam
-        fringilla velit a lectus accumsan laoreet. Donec sit amet porttitor
-        nibh.Donec pretium placerat ipsum, eget tempor tellus. In pulvinar id
-        lacus sit amet molestie. Lorem ipsum dolor sit amet, consectetur
-        adipiscing elit. Suspendisse bibendum orci et erat volutpat facilisis.
-        Cras fringilla elementum ipsum sed tristique. Donec elementum libero a
-        purus laoreet, viverra rutrum dolor pellentesque. Duis varius et neque
-        sit amet feugiat. Vivamus ac ante ligula. Phasellus suscipit mollis elit
-        et aliquet. Curabitur elit velit, gravida non odio eu, elementum
-        facilisis purus. Vestibulum accumsan risus eget neque blandit sodales.
-        Praesent velit urna, faucibus id lacus non, gravida finibus sapien.
-        Curabitur pretium orci vitae commodo convallis. Sed non lacus bibendum,
-        gravida neque sit amet, scelerisque ante. Cras velit massa, venenatis eu
-        tortor et, lacinia consequat elit.Praesent sit amet quam et dolor
-        dapibus rhoncus. Ut vel purus nec velit gravida dapibus. Vestibulum ante
-        ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
-        Donec viverra velit odio, vel efficitur lorem pharetra vel. Mauris
-        lacinia libero risus, posuere vehicula dui venenatis eget. Quisque ut
-        pulvinar ligula, id dignissim ipsum. Vivamus arcu erat, consectetur id
-        laoreet sit amet, pharetra eget ligula. Morbi fringilla orci et ante
-        molestie, quis fermentum turpis posuere. Nam hendrerit eleifend dolor ut
-        tempor. Integer dictum faucibus elementum. Praesent tristique lorem a
-        massa dignissim, vitae rutrum nunc porta. Integer elementum lacus ac
-        porttitor posuere. Donec auctor in massa et gravida. Phasellus vitae
-        vehicula nibh. Ut elit mauris, volutpat hendrerit ex at, maximus feugiat
-        velit.Phasellus ultrices, lorem et malesuada lobortis, lacus erat
-        iaculis nunc, eu ultricies eros urna vitae lorem. Pellentesque tristique
-        malesuada lobortis. Nam eget consequat risus, sed viverra quam.
-        Curabitur rutrum nibh nec magna eleifend, ut pellentesque tellus luctus.
-        Donec porta eget felis ac faucibus. Fusce vel laoreet mi. Integer
-        lacinia vehicula lorem. Sed nec efficitur dui. Quisque vehicula
-        tincidunt tempus. Praesent elementum enim euismod ex gravida feugiat.
-        Proin ullamcorper eu neque eu vulputate. Praesent hendrerit posuere
-        eros, vitae porta est dictum condimentum.
-      </>
-    ),
-  },
-];
-export const defaultProps: ISectionLayoutProps = {
-  sections: defaultDataForSectionLayout,
-  defaultActiveSectionId: 'about-the-project-0',
-};
-
-interface ISection {
+export interface ISection {
   id: string;
   link?: string;
   name: string;
   value?: JSX.Element;
 }
-interface ISectionNavbarBase {
+export interface ISectionNavbarBase {
   activeSectionId: string;
-  location?: string;
+  navClassName?: string;
+  navAlignment?: 'start' | 'center' | 'end';
   openOnNewPage?: boolean;
   sections: Array<ISection>;
   vertical?: boolean;
+  onSectionChange?: (sectionId: string) => void;
+  showContentInSamePage?: boolean;
 }
-interface ISectionContentBase {
+export interface ISectionContentBase {
   className?: string;
   sectionContent?: JSX.Element;
   sectionId: string;
   setActiveSectionId: React.Dispatch<React.SetStateAction<string>>;
 }
-interface ISectionContent {
+export interface ISectionContent {
   children?: JSX.Element;
   className?: string;
   sectionId?: string;
   setActiveSectionId?: React.Dispatch<React.SetStateAction<string>>;
 }
-interface ISectionLayoutProps {
+export interface ISectionLayoutProps {
   className?: string;
   content?: JSX.Element;
   contentClassName?: string;
   defaultActiveSectionId: string;
-  location?: string;
   openOnNewPage?: boolean;
   sections: Array<ISection>;
   vertical?: boolean;
+  navAlignment?: 'start' | 'center' | 'end';
+  navClassName?: string;
+  onSectionChange?: (sectionId: string) => void;
+  showContentInSamePage?: boolean;
 }
 
 const SectionNavbarBase = ({
@@ -209,34 +53,62 @@ const SectionNavbarBase = ({
   activeSectionId,
   openOnNewPage,
   vertical,
-  location,
-}: ISectionNavbarBase) => (
-  <div
-    className={`sticky z-10 ${
-      vertical
-        ? 'top-5 basis-1/4 md:basis-2/12'
-        : 'top-0 w-full bg-white shadow-sm'
-    }`}
-  >
-    <nav
-      className={`gap-4 text-sm text-muted-foreground pb-5 border-b md:border-0 text-center md:text-left ${
-        vertical ? 'grid' : `flex flex-row justify-${location} px-36 pt-5`
+  navAlignment,
+  navClassName,
+  onSectionChange,
+  showContentInSamePage,
+}: ISectionNavbarBase) => {
+  function onClick(e: string) {
+    if (onSectionChange) onSectionChange(e);
+  }
+  return (
+    <div
+      className={`sticky z-10 ${
+        vertical
+          ? 'top-5 basis-1/4 md:basis-2/12'
+          : 'top-0 w-full bg-white shadow-sm'
       }`}
     >
-      {sections.map((section) => (
-        <Link
-          href={openOnNewPage ? section?.link ?? section.id : `#${section.id}`}
-          className={
-            section.id === activeSectionId ? 'font-semibold text-primary' : ''
+      <nav
+        className={cn(
+          `gap-4 text-sm text-muted-foreground border-b md:border-0 text-center md:text-left ${
+            vertical ? 'grid' : `flex flex-row justify-${navAlignment} p-5`
+          }`,
+          navClassName
+        )}
+      >
+        {sections.map((section) => {
+          if (!openOnNewPage && showContentInSamePage && onSectionChange) {
+            return (
+              <Button
+                variant={'link'}
+                onClick={() => onClick(section.id)}
+                className={`${section.id === activeSectionId ? 'font-semibold text-primary' : ''} `}
+              >
+                {section.name}
+              </Button>
+            );
           }
-          key={section.id}
-        >
-          {section.name}
-        </Link>
-      ))}
-    </nav>
-  </div>
-);
+          return (
+            <Link
+              href={
+                openOnNewPage ? section?.link ?? section.id : `#${section.id}`
+              }
+              className={
+                section.id === activeSectionId
+                  ? 'font-semibold text-primary'
+                  : ''
+              }
+              key={section.id}
+            >
+              {section.name}
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
+  );
+};
 const SectionContentBase = ({
   setActiveSectionId,
   sectionId,
@@ -303,7 +175,10 @@ export function SectionLayout({
   openOnNewPage,
   vertical,
   defaultActiveSectionId,
-  location,
+  navAlignment = 'start',
+  navClassName,
+  onSectionChange,
+  showContentInSamePage,
 }: ISectionLayoutProps) {
   const [activeSectionId, setActiveSectionId] = useState(
     defaultActiveSectionId
@@ -312,10 +187,18 @@ export function SectionLayout({
     (section) => section.id === activeSectionId
   );
   useEffect(() => {
-    if (openOnNewPage) {
+    if (openOnNewPage || showContentInSamePage) {
       setActiveSectionId(defaultActiveSectionId);
+      if (onSectionChange) onSectionChange(defaultActiveSectionId);
     }
   }, [defaultActiveSectionId]);
+
+  function onChange(e: string) {
+    if (!openOnNewPage && showContentInSamePage && onSectionChange) {
+      onSectionChange(e);
+    }
+  }
+
   return (
     <div
       className={cn(
@@ -329,18 +212,23 @@ export function SectionLayout({
         sections={sections}
         activeSectionId={activeSectionId}
         openOnNewPage={openOnNewPage}
+        onSectionChange={onChange}
+        showContentInSamePage={showContentInSamePage}
         vertical={vertical}
-        location={location}
+        navAlignment={navAlignment}
+        navClassName={navClassName}
       />
       <div className={vertical ? 'basis-3/4 ' : 'w-full'}>
-        {openOnNewPage ? (
+        {openOnNewPage || showContentInSamePage ? (
           <SectionContent
             key={activeSection?.id}
             sectionId={activeSection?.id}
             setActiveSectionId={setActiveSectionId}
             className={contentClassName}
           >
-            {openOnNewPage ? content : activeSection?.value}
+            {openOnNewPage || showContentInSamePage
+              ? content
+              : activeSection?.value}
           </SectionContent>
         ) : (
           sections.map((section) => (
