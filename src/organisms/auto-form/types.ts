@@ -30,14 +30,14 @@ export enum DependencyType {
   HIDES,
   SETS_OPTIONS,
 }
-
-type BaseDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
-  sourceField: keyof SchemaType;
-  type: DependencyType;
-  targetField: keyof SchemaType;
-  hasParentField?: boolean;
-  when: (sourceFieldValue: any, targetFieldValue: any) => boolean;
-};
+export type BaseDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> =
+  {
+    sourceField: keyof SchemaType;
+    type: DependencyType;
+    targetField: keyof SchemaType;
+    hasParentField?: boolean;
+    when: (sourceFieldValue: any, targetFieldValue: any) => boolean;
+  };
 
 export type ValueDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> =
   BaseDependency<SchemaType> & {
