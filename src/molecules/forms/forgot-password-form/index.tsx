@@ -31,39 +31,21 @@ import { Input } from '@/components/ui/input';
 import { replacePlaceholders } from '../../../lib/replace-placeholders';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-export const defaultForgotPasswordFormSchema = z.object({
-  email: z.string().email(
-    replacePlaceholders(
-      localeTr.resources.AbpValidation.texts[
-        'The {0} field is not a valid e-mail address.'
-      ],
-      [
-        {
-          holder: '{0}',
-          replacement: localeTr.resources?.AbpAccount?.texts?.EmailAddress,
-        },
-      ]
-    ).join(' ')
-  ),
-});
-
 export type ForgotPasswordFormDataType = {
-  appName: string;
   email: string;
-  returnUrl: string;
-  returnUrlHash: string;
 };
 
 export type ForgotPasswordFormPropsType = {
   formSchema: z.ZodObject<any>;
-  onForgotPasswordSubmit?: (
-    values: ForgotPasswordFormDataType
-  ) => Promise<string>;
+  passwordResetFunction?: (values: ForgotPasswordFormDataType) => {
+    message: any;
+    status: any;
+  };
   resources?: { [key: string]: any };
 };
 
 export default function ForgotPasswordForm({
-  onForgotPasswordSubmit,
+  passwordResetFunction,
   formSchema,
   resources = localeTr.resources,
 }: ForgotPasswordFormPropsType) {
@@ -83,34 +65,31 @@ export default function ForgotPasswordForm({
     },
   });
 
-  function onSubmit(values: ForgotPasswordFormDataType) {
-    if (onForgotPasswordSubmit) {
-      setIsLoading(true);
-      onForgotPasswordSubmit(values)
-        .then(() => {
-          setAlert({
-            variant: 'default',
-            message: resources?.AbpAccount?.texts?.PasswordResetMailSentMessage,
-          });
-          setIsLoading(false);
-        })
-        .catch(() => {
-          setAlert({
-            variant: 'destructive',
-            message: replacePlaceholders(
-              resources?.AbpAccount?.texts?.[
-                'Volo.Account:InvalidEmailAddress'
-              ],
-              [
-                {
-                  holder: '{0}',
-                  replacement: values.email,
-                },
-              ]
-            ),
-          });
-          setIsLoading(false);
+  async function onSubmit(values: ForgotPasswordFormDataType) {
+    setIsLoading(true);
+    if (passwordResetFunction) {
+      const response = await passwordResetFunction(values);
+      if (response?.status === 200) {
+        setAlert({
+          variant: 'default',
+          message: resources?.AbpAccount?.texts?.PasswordResetMailSentMessage,
         });
+        setIsLoading(false);
+        return;
+      }
+      setAlert({
+        variant: 'destructive',
+        message: replacePlaceholders(
+          resources?.AbpAccount?.texts?.['Volo.Account:InvalidEmailAddress'],
+          [
+            {
+              holder: '{0}',
+              replacement: values.email,
+            },
+          ]
+        ),
+      });
+      setIsLoading(false);
     }
   }
 
