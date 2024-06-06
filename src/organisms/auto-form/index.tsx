@@ -11,6 +11,8 @@ import { Form } from '@/components/ui/form';
 
 import AutoFormObject from './fields/object';
 import { Dependency, FieldConfig } from './types';
+export * as AutoFormTypes from './types';
+export * as AutoFormUtils from './utils';
 import {
   ZodObjectOrWrapped,
   getDefaultValues,
