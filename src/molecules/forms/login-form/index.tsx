@@ -2,9 +2,10 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import {
   Form,
@@ -21,15 +22,9 @@ import localeTr from '../../../locale_tr.json';
 import { PasswordInput } from '../../password-input';
 import ForgotPasswordForm, {
   ForgotPasswordFormDataType,
-  defaultForgotPasswordFormSchema,
 } from '../forgot-password-form';
 import Button from '../../../molecules/button';
-
-export const defaultLoginFormSchema = z.object({
-  userIdentifier: z.string().min(5),
-  password: z.string().min(4).max(32),
-  tenantId: z.string(),
-});
+import { defaultForgotPasswordFormSchema } from '../forgot-password-form/forgot-password-form.stories';
 
 export type LoginFormDataType = {
   password: string;
@@ -40,32 +35,46 @@ export type LoginFormDataType = {
 export type LoginFormPropsType = {
   allowTenantChange: boolean;
   formSchema: z.ZodObject<any>;
-  onForgotPasswordSubmit?: (
-    values: ForgotPasswordFormDataType
-  ) => Promise<string>;
-  onSubmitFunction: (
-    username: string,
-    password: string
-  ) => Promise<
-    | {
-        error: string;
-      }
-    | undefined
-  >;
+  loginFunction?: (values: LoginFormDataType) => {
+    message: any;
+    status: any;
+  };
+  passwordResetFunction?: (values: ForgotPasswordFormDataType) => {
+    message: any;
+    status: any;
+  };
   registerPath: string;
   resources?: { [key: string]: any };
+  router: any;
 };
 
 export default function LoginForm({
-  onSubmitFunction,
+  router,
+  passwordResetFunction,
+  loginFunction,
   formSchema,
   allowTenantChange,
   registerPath,
   resources = localeTr.resources,
-  onForgotPasswordSubmit,
 }: LoginFormPropsType) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>('');
+
+  useEffect(() => {
+    const isRegistered = window.location.href.includes('register=true');
+    if (isRegistered) {
+      toast.info('Hesabınız oluşturuldu!', {
+        dismissible: true,
+        description: 'Şimdi giriş yapabilirsiniz.',
+      });
+      window.history.pushState(
+        null,
+        '',
+        window.location.href.replace('?register=true', '')
+      );
+    }
+  }, []);
+
   const form = useForm<LoginFormDataType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -75,18 +84,23 @@ export default function LoginForm({
     },
   });
 
-  function onSubmit(values: LoginFormDataType) {
-    onSubmitFunction(values.userIdentifier, values.password).then(
-      (response: any) => {
-        if (response?.error) {
-          setError(response?.error);
-          setIsLoading(false);
+  async function onSubmit(values: LoginFormDataType) {
+    setIsLoading(true);
+    if (loginFunction) {
+      const response = await loginFunction(values);
+      if (response?.status === 200) {
+        if (router) {
+          const locale = window.location.pathname.split('/')[1];
+          router.push(`/${locale}/`);
           return;
         }
         window.location.reload();
+
+        return;
       }
-    );
-    setIsLoading(true);
+      setError(response?.message);
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -186,7 +200,7 @@ export default function LoginForm({
         <ForgotPasswordForm
           resources={resources}
           formSchema={defaultForgotPasswordFormSchema}
-          onForgotPasswordSubmit={onForgotPasswordSubmit}
+          passwordResetFunction={passwordResetFunction}
         />
         <div className="flex items-center justify-center gap-4">
           <span className="w-full h-px bg-muted" />

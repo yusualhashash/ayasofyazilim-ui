@@ -1,8 +1,11 @@
 import { Meta, StoryFn } from '@storybook/react';
-import React from 'react';
-import ForgotPasswordForm, { defaultForgotPasswordFormSchema } from '.';
+import { z } from 'zod';
+import ForgotPasswordForm from '.';
 import locale from '../../../locale_tr.json';
 
+export const defaultForgotPasswordFormSchema = z.object({
+  email: z.string().email(),
+});
 export default {
   component: ForgotPasswordForm,
   argTypes: {},

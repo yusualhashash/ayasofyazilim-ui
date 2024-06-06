@@ -21,29 +21,24 @@ import { Input } from '@/components/ui/input';
 import localeTr from '../../../locale_tr.json';
 import { replacePlaceholders } from '../../../lib/replace-placeholders';
 
-export const defaultRegisterFormSchema = z.object({
-  userName: z.string().min(5),
-  email: z.string().email(),
-  password: z.string().min(4).max(32),
-  tenantId: z.string(),
-});
-
 export type RegisterFormDataType = {
   email: string;
   password: string;
-  tenantId: string;
   userName: string;
 };
 
 export type RegisterFormPropsType = {
   formSchema: z.ZodObject<any>;
   loginPath: string;
-  onSubmitFunction: (values: RegisterFormDataType) => Promise<string>;
+  registerFunction?: (values: RegisterFormDataType) => {
+    message: any;
+    status: any;
+  };
   resources?: { [key: string]: any };
 };
 
 export default function RegisterForm({
-  onSubmitFunction,
+  registerFunction,
   formSchema,
   loginPath,
   resources = localeTr.resources,
@@ -54,21 +49,22 @@ export default function RegisterForm({
   const form = useForm<RegisterFormDataType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      tenantId: '',
+      userName: '',
       email: '',
       password: '',
     },
   });
-  function onSubmit(values: RegisterFormDataType) {
+  async function onSubmit(values: RegisterFormDataType) {
     setIsLoading(true);
-    onSubmitFunction(values)
-      .then(() => {
-        setError('');
-      })
-      .catch((result) => {
-        setError(result);
-        setIsLoading(false);
-      });
+    if (registerFunction) {
+      const response = await registerFunction(values);
+      if (response?.status === 200) {
+        window.location.href = `${loginPath}?register=true`;
+        return;
+      }
+      setError(response?.message);
+      setIsLoading(false);
+    }
   }
 
   return (
