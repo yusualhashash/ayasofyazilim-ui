@@ -47,25 +47,28 @@ export const StepperContent = ({
     <div id={title} className={vertical ? 'w-10/12' : 'w-full'}>
       {children}
       {onIndexChange && (
-        <div className="mt-5">
-          {canGoBack && (
-            <CustomButton
-              variant="outline"
-              disabled={isBackDisabled}
-              onClick={() => onIndexChange((prev) => prev - 1)}
-            >
-              {previousButtonText}
-            </CustomButton>
-          )}
-          {canGoNext && (
-            <CustomButton
-              className="float-right"
-              disabled={isNextDisabled}
-              onClick={() => onIndexChange((prev) => prev + 1)}
-            >
-              {nextButtonText}
-            </CustomButton>
-          )}
+        <div className="mt-5 flex justify-between">
+          <div>
+            {canGoBack && (
+              <CustomButton
+                variant="outline"
+                disabled={isBackDisabled}
+                onClick={() => onIndexChange((prev) => prev - 1)}
+              >
+                {previousButtonText}
+              </CustomButton>
+            )}
+          </div>
+          <div>
+            {canGoNext && (
+              <CustomButton
+                disabled={isNextDisabled}
+                onClick={() => onIndexChange((prev) => prev + 1)}
+              >
+                {nextButtonText}
+              </CustomButton>
+            )}
+          </div>
         </div>
       )}
     </div>
