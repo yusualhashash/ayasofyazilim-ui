@@ -92,7 +92,7 @@ export const StepperHeader = ({
     vertical ? 'flex-col items-center w-2/12' : 'w-full'
   }`;
   const activeItemClass = 'bg-primary text-white';
-  const inactiveItemClass = 'bg-muted text-black';
+  const inactiveItemClass = 'bg-zinc-200 text-black';
 
   return (
     <div className={containerClass}>
