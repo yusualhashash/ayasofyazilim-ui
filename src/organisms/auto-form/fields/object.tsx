@@ -68,7 +68,7 @@ export default function AutoFormObject<
   }
   return (
     <div className="space-y-5">
-      {Object.keys(shape).map((name) => {
+      {Object.keys(shape).map((name: string) => {
         return CreateFormObject(
           name,
           shape,
@@ -79,7 +79,7 @@ export default function AutoFormObject<
           form,
           createItemName,
           handleIfZodNumber,
-          name == 'ChildToggle' ? false : isDisabled
+          name.includes('IsApplicable') ? false : isDisabled
         );
       })}
     </div>
