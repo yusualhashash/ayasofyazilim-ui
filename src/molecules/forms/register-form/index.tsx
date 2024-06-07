@@ -1,12 +1,12 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ExclamationTriangleIcon, ReloadIcon } from '@radix-ui/react-icons';
+import { ReloadIcon } from '@radix-ui/react-icons';
 
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { toast } from 'sonner';
 import { PasswordInput } from '../../password-input';
 import { Button } from '@/components/ui/button';
 import {
@@ -31,10 +31,11 @@ export type RegisterFormPropsType = {
   formSchema: z.ZodObject<any>;
   loginPath: string;
   registerFunction?: (values: RegisterFormDataType) => {
-    message: any;
+    description: any;
     status: any;
   };
   resources?: { [key: string]: any };
+  router: any;
 };
 
 export default function RegisterForm({
@@ -42,9 +43,9 @@ export default function RegisterForm({
   formSchema,
   loginPath,
   resources = localeTr.resources,
+  router,
 }: RegisterFormPropsType) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [error, setError] = React.useState<string>('');
 
   const form = useForm<RegisterFormDataType>({
     resolver: zodResolver(formSchema),
@@ -59,10 +60,15 @@ export default function RegisterForm({
     if (registerFunction) {
       const response = await registerFunction(values);
       if (response?.status === 200) {
+        if (router) {
+          const locale = window.location.pathname.split('/')[1];
+          router.push(`/${locale}/${loginPath}?register=true`);
+          return;
+        }
         window.location.href = `${loginPath}?register=true`;
         return;
       }
-      setError(response?.message);
+      toast.error(response?.description);
       setIsLoading(false);
     }
   }
@@ -138,13 +144,7 @@ export default function RegisterForm({
                 </FormItem>
               )}
             />
-            {error && (
-              <Alert variant="destructive">
-                <ExclamationTriangleIcon className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
+
             <Button variant="default" disabled={isLoading} className=" w-full ">
               {isLoading ? (
                 <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />

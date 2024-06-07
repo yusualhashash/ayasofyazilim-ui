@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -15,7 +14,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 import { replacePlaceholders } from '../../../lib/replace-placeholders';
 import localeTr from '../../../locale_tr.json';
@@ -36,7 +34,7 @@ export type LoginFormPropsType = {
   allowTenantChange: boolean;
   formSchema: z.ZodObject<any>;
   loginFunction?: (values: LoginFormDataType) => {
-    message: any;
+    description: any;
     status: any;
   };
   passwordResetFunction?: (values: ForgotPasswordFormDataType) => {
@@ -58,7 +56,6 @@ export default function LoginForm({
   resources = localeTr.resources,
 }: LoginFormPropsType) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [error, setError] = React.useState<string>('');
 
   useEffect(() => {
     const isRegistered = window.location.href.includes('register=true');
@@ -95,10 +92,9 @@ export default function LoginForm({
           return;
         }
         window.location.reload();
-
         return;
       }
-      setError(response?.message);
+      toast.error(response?.description);
       setIsLoading(false);
     }
   }
@@ -177,17 +173,6 @@ export default function LoginForm({
                 </FormItem>
               )}
             />
-
-            {error && (
-              <Alert variant="destructive">
-                <ExclamationTriangleIcon className="h-4 w-4" />
-                <AlertTitle>
-                  {resources?.AbpExceptionHandling?.texts?.DefaultErrorMessage}
-                </AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-
             <Button
               variant="default"
               className=" w-full text-white"
