@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { ScrollBar, ScrollArea } from '@/components/ui/scroll-area';
 
 export interface ISection {
   id: string;
@@ -48,6 +49,36 @@ export interface ISectionLayoutProps {
   showContentInSamePage?: boolean;
 }
 
+function useWindowSize() {
+  // Initialize state with undefined width/height so server and client renders match
+  // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
+  const [windowSize, setWindowSize] = useState({
+    width: undefined,
+    height: undefined,
+  });
+
+  useEffect(() => {
+    // only execute all the code below in client side
+    // Handler to call on window resize
+    function handleResize() {
+      // Set window width/height to state
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // Call handler right away so state gets updated with initial window size
+    handleResize();
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []); // Empty array ensures that effect is only run on mount
+  return windowSize;
+}
 const SectionNavbarBase = ({
   sections,
   activeSectionId,
@@ -62,52 +93,63 @@ const SectionNavbarBase = ({
     if (onSectionChange) onSectionChange(e);
   }
   return (
-    <div
-      className={`sticky z-10 ${
-        vertical
-          ? 'top-5 basis-1/4 md:basis-2/12'
-          : 'top-0 w-full bg-white shadow-sm'
-      }`}
+    <ScrollArea
+      className={`bg-white w-full shadow-sm ${vertical ? 'h-16 max-w-full md:h-full md:max-w-72' : 'h-16 max-w-full'}`}
     >
-      <nav
-        className={cn(
-          `gap-4 text-sm text-muted-foreground border-b md:border-0 text-center md:text-left ${
-            vertical ? 'grid' : `flex flex-row justify-${navAlignment} p-5`
-          }`,
-          navClassName
-        )}
-      >
-        {sections.map((section) => {
-          if (!openOnNewPage && showContentInSamePage && onSectionChange) {
+      <ScrollBar
+        orientation={
+          vertical && useWindowSize().width > 768 ? 'vertical' : 'horizontal'
+        }
+        className="z-10"
+      />
+      <div>
+        <nav
+          className={cn(
+            `flex gap-4 text-sm text-muted-foreground md:border-0 border-b text-center md:text-left ${
+              vertical
+                ? `flex-row justify-start p-0 h-16 items-center md:items-start md:flex-col md:gap-0 md:h-full`
+                : `flex-row justify-${navAlignment} p-0 h-16 items-center`
+            }     `,
+            navClassName
+          )}
+        >
+          {sections.map((section, key) => {
+            if (!openOnNewPage && showContentInSamePage && onSectionChange) {
+              return (
+                <Button
+                  key={section.id}
+                  variant={'link'}
+                  onClick={() => onClick(section.id)}
+                  className={`
+                    hover:no-underline rounded-none bg-white ${section.id === activeSectionId ? `font-semibold text-primary sticky left-0 right-0` : 'text-muted-foreground hover:text-black'} ${
+                      vertical
+                        ? 'block overflow-hidden text-ellipsis text-left max-w-72 h-10 px-4 py-0'
+                        : 'flex text-left h-16 px-4 py-0'
+                    } `}
+                >
+                  {section.name}
+                </Button>
+              );
+            }
             return (
-              <Button
+              <Link
+                href={
+                  openOnNewPage ? section?.link ?? section.id : `#${section.id}`
+                }
+                className={
+                  section.id === activeSectionId
+                    ? 'font-semibold text-primary'
+                    : ''
+                }
                 key={section.id}
-                variant={'link'}
-                onClick={() => onClick(section.id)}
-                className={`${section.id === activeSectionId ? 'font-semibold text-primary' : ''} `}
               >
                 {section.name}
-              </Button>
+              </Link>
             );
-          }
-          return (
-            <Link
-              href={
-                openOnNewPage ? section?.link ?? section.id : `#${section.id}`
-              }
-              className={
-                section.id === activeSectionId
-                  ? 'font-semibold text-primary'
-                  : ''
-              }
-              key={section.id}
-            >
-              {section.name}
-            </Link>
-          );
-        })}
-      </nav>
-    </div>
+          })}
+        </nav>
+      </div>
+    </ScrollArea>
   );
 };
 const SectionContentBase = ({
@@ -203,9 +245,7 @@ export function SectionLayout({
   return (
     <div
       className={cn(
-        `mx-auto w-full flex flex-col items-center gap-6 md:gap-3 ${
-          vertical ? 'md:flex-row md:items-start' : ''
-        }`,
+        `flex overflow-hidden h-full ${vertical ? 'flex-col md:flex-row' : 'flex-col'}`,
         className
       )}
     >
@@ -219,7 +259,7 @@ export function SectionLayout({
         navAlignment={navAlignment}
         navClassName={navClassName}
       />
-      <div className={vertical ? 'basis-3/4 ' : 'w-full'}>
+      <ScrollArea className="w-full flex">
         {openOnNewPage || showContentInSamePage ? (
           <SectionContent
             key={activeSection?.id}
@@ -243,7 +283,7 @@ export function SectionLayout({
             </SectionContent>
           ))
         )}
-      </div>
+      </ScrollArea>
     </div>
   );
 }
