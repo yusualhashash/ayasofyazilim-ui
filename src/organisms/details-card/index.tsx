@@ -14,7 +14,7 @@ export interface IDetailsCardProps {
   ActionComponent?: JSX.Element;
   BeforeCardContentComponent?: JSX.Element;
   ContainerClassName?: string;
-  IAboutCardProps: IAboutCardProps;
+  IAboutCardProps?: IAboutCardProps;
   cardTagClassname?: string;
   cardTagTitle?: string;
   cardTagVariant: ICardTagProps['variant'];
