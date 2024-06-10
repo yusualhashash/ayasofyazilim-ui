@@ -31,7 +31,7 @@ export default function AboutCard({
       <HoverCardTrigger asChild>
         <div
           className={cn(
-            'opacity-80 rounded-tl-md flex bg-gray-50 items-center justify-center px-2  gap-2',
+            'opacity-80 rounded-tl-md flex bg-gray-50 items-center justify-center flex-1 gap-2',
             containerClassName
           )}
         >

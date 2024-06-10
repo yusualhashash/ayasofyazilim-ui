@@ -19,18 +19,20 @@ export default function CardImage({
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-t-xl',
+        'relative overflow-hidden rounded-t-xl flex flex-col',
         containerClassName
       )}
     >
-      <img
-        src={src}
-        alt={alt}
-        className={cn(
-          'w-full hover:scale-105 hover:ease-in transition duration-150',
-          className
-        )}
-      />
+      <div className="overflow-hidden">
+        <img
+          src={src}
+          alt={alt}
+          className={cn(
+            'w-full hover:scale-105 hover:ease-in transition duration-150 object-cover h-full lg:max-h-[350px]',
+            className
+          )}
+        />
+      </div>
       {ComponentAfterImage}
     </div>
   );

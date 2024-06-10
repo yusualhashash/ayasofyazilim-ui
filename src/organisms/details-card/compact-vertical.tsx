@@ -1,6 +1,5 @@
 // @ts-ignore
 import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
@@ -19,11 +18,11 @@ export default function CompactVertical(infoCard: IDetailsCardProps) {
   return (
     <Card
       className={cn(
-        'border-gray-200 max-w-full w-full relative flex flex-row overflow-hidden',
+        'border-gray-200 max-w-full w-full relative flex lg:flex-row flex-col overflow-hidden',
         infoCard.ContainerClassName
       )}
     >
-      <div className="w-full">
+      <div className="flex">
         {infoCard.cardTagTitle && (
           <CardTag
             title={infoCard.cardTagTitle}
@@ -31,26 +30,28 @@ export default function CompactVertical(infoCard: IDetailsCardProps) {
           />
         )}
         {infoCard.image && (
-          <CardImage
-            src={infoCard.image}
-            alt={infoCard.title}
-            containerClassName="rounded-none"
-            ComponentAfterImage={
-              infoCard.IAboutCardProps && (
-                <AboutCard {...infoCard.IAboutCardProps} />
-              )
-            }
-          />
+          <Link href={infoCard.link}>
+            <CardImage
+              src={infoCard.image}
+              alt={infoCard.title}
+              containerClassName="rounded-none"
+              ComponentAfterImage={
+                infoCard.IAboutCardProps && (
+                  <AboutCard {...infoCard.IAboutCardProps} />
+                )
+              }
+            />
+          </Link>
         )}
       </div>
-      <div className="w-full flex flex-col">
+      <div className="flex flex-col flex-1">
         {infoCard.BeforeCardContentComponent}
-        <CardContent className="gap-3 flex flex-col px-6 py-4  mb-auto flex-1">
+        <CardContent className="gap-3 flex flex-col pt-6 pb-3">
           <CardTitle className="hover:underline">
             <Link href={infoCard.link}>{infoCard?.title}</Link>
           </CardTitle>
           <CardDescription>{infoCard?.description}</CardDescription>
-          <div>
+          {/* <div>
             {infoCard?.tags?.map((tag) => (
               <Badge
                 key={tag}
@@ -60,12 +61,12 @@ export default function CompactVertical(infoCard: IDetailsCardProps) {
                 {tag}
               </Badge>
             ))}
-          </div>
+          </div> */}
         </CardContent>
         {infoCard?.tableProps?.map(({ title, value, column }) => (
           <CardTable key={title} title={title} value={value} column={column} />
         ))}
-        <div className="h-2" />
+        <div className="mt-auto" />
         {infoCard?.tableProps2Col?.map((table, indexLine) => (
           <div key={`d${indexLine.toString()}`}>
             <div className="flex flex-row justify-between items-center bg-gray-100">
