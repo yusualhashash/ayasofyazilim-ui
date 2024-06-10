@@ -15,13 +15,13 @@ export interface ISection {
 }
 export interface ISectionNavbarBase {
   activeSectionId: string;
-  navClassName?: string;
   navAlignment?: 'start' | 'center' | 'end';
+  navClassName?: string;
+  onSectionChange?: (sectionId: string) => void;
   openOnNewPage?: boolean;
   sections: Array<ISection>;
-  vertical?: boolean;
-  onSectionChange?: (sectionId: string) => void;
   showContentInSamePage?: boolean;
+  vertical?: boolean;
 }
 export interface ISectionContentBase {
   className?: string;
@@ -40,21 +40,21 @@ export interface ISectionLayoutProps {
   content?: JSX.Element;
   contentClassName?: string;
   defaultActiveSectionId: string;
-  openOnNewPage?: boolean;
-  sections: Array<ISection>;
-  vertical?: boolean;
   navAlignment?: 'start' | 'center' | 'end';
   navClassName?: string;
   onSectionChange?: (sectionId: string) => void;
+  openOnNewPage?: boolean;
+  sections: Array<ISection>;
   showContentInSamePage?: boolean;
+  vertical?: boolean;
 }
 
 function useWindowSize() {
   // Initialize state with undefined width/height so server and client renders match
   // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
   const [windowSize, setWindowSize] = useState({
-    width: undefined,
-    height: undefined,
+    width: 0,
+    height: 0,
   });
 
   useEffect(() => {
@@ -108,17 +108,17 @@ const SectionNavbarBase = ({
             `flex gap-4 text-sm text-muted-foreground md:border-0 border-b text-center md:text-left ${
               vertical
                 ? `flex-row justify-start p-0 h-16 items-center md:items-start md:flex-col md:gap-0 md:h-full`
-                : `flex-row justify-${navAlignment} p-0 h-16 items-center`
+                : `flex-row justify-${navAlignment}  h-16 items-center p-5`
             }     `,
             navClassName
           )}
         >
-          {sections.map((section, key) => {
+          {sections.map((section) => {
             if (!openOnNewPage && showContentInSamePage && onSectionChange) {
               return (
                 <Button
                   key={section.id}
-                  variant={'link'}
+                  variant="link"
                   onClick={() => onClick(section.id)}
                   className={`
                     hover:no-underline rounded-none bg-white ${section.id === activeSectionId ? `font-semibold text-primary sticky left-0 right-0` : 'text-muted-foreground hover:text-black'} ${
@@ -253,7 +253,7 @@ export function SectionLayout({
         sections={sections}
         activeSectionId={activeSectionId}
         openOnNewPage={openOnNewPage}
-        onSectionChange={onChange}
+        onSectionChange={(e) => onChange(e)}
         showContentInSamePage={showContentInSamePage}
         vertical={vertical}
         navAlignment={navAlignment}
