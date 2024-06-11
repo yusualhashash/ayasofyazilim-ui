@@ -137,7 +137,13 @@ export default function DataTable<TData, TValue>({
   const [isOpen, setIsOpen] = React.useState(false);
   return (
     <div className="w-full">
-      <AutoformDialog open={isOpen} onOpenChange={setIsOpen} action={action} />
+      {action ? (
+        <AutoformDialog
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          action={action}
+        />
+      ) : null}
       <div className="flex items-center py-4">
         <Input
           disabled={isLoading}
