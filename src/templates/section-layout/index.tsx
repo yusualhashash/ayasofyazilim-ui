@@ -40,6 +40,7 @@ export interface ISectionLayoutProps {
   content?: JSX.Element;
   contentClassName?: string;
   defaultActiveSectionId: string;
+  isScrollArea?: boolean;
   navAlignment?: 'start' | 'center' | 'end';
   navClassName?: string;
   onSectionChange?: (sectionId: string) => void;
@@ -47,6 +48,22 @@ export interface ISectionLayoutProps {
   sections: Array<ISection>;
   showContentInSamePage?: boolean;
   vertical?: boolean;
+}
+
+function WrapperElement({
+  children,
+  className,
+  isScrollArea,
+}: {
+  children: JSX.Element | JSX.Element[];
+  className: string;
+  isScrollArea: boolean;
+}) {
+  if (isScrollArea) {
+    return <ScrollArea className={className}>{children}</ScrollArea>;
+  }
+
+  return <div className={className}>{children}</div>;
 }
 
 function useWindowSize() {
@@ -114,18 +131,20 @@ const SectionNavbarBase = ({
           )}
         >
           {sections.map((section) => {
+            const className = `
+            hover:no-underline rounded-none bg-white ${section.id === activeSectionId ? `font-semibold text-primary sticky left-0 right-0` : 'text-muted-foreground hover:text-black'} ${
+              vertical
+                ? 'block overflow-hidden text-ellipsis text-left max-w-72 h-10 px-4 py-0'
+                : ''
+            } `;
+
             if (!openOnNewPage && showContentInSamePage && onSectionChange) {
               return (
                 <Button
                   key={section.id}
                   variant="link"
                   onClick={() => onClick(section.id)}
-                  className={`
-                    hover:no-underline rounded-none bg-white ${section.id === activeSectionId ? `font-semibold text-primary sticky left-0 right-0` : 'text-muted-foreground hover:text-black'} ${
-                      vertical
-                        ? 'block overflow-hidden text-ellipsis text-left max-w-72 h-10 px-4 py-0'
-                        : 'flex text-left h-16 px-4 py-0'
-                    } `}
+                  className={className}
                 >
                   {section.name}
                 </Button>
@@ -136,11 +155,7 @@ const SectionNavbarBase = ({
                 href={
                   openOnNewPage ? section?.link ?? section.id : `#${section.id}`
                 }
-                className={
-                  section.id === activeSectionId
-                    ? 'font-semibold text-primary'
-                    : ''
-                }
+                className={className}
                 key={section.id}
               >
                 {section.name}
@@ -180,7 +195,11 @@ const SectionContentBase = ({
   }, []);
 
   return (
-    <div id={sectionId} ref={divRef} className={cn('w-full ', className)}>
+    <div
+      id={`${sectionId}testTable`}
+      ref={divRef}
+      className={cn('w-full ', className)}
+    >
       {sectionContent}
     </div>
   );
@@ -222,6 +241,7 @@ export function SectionLayout({
   navClassName,
   onSectionChange,
   showContentInSamePage,
+  isScrollArea = true,
 }: ISectionLayoutProps) {
   const [activeSectionId, setActiveSectionId] = useState(
     defaultActiveSectionId
@@ -259,7 +279,7 @@ export function SectionLayout({
         navAlignment={navAlignment}
         navClassName={navClassName}
       />
-      <ScrollArea className="w-full flex">
+      <WrapperElement isScrollArea={isScrollArea} className="w-full flex">
         {openOnNewPage || showContentInSamePage ? (
           <SectionContent
             key={activeSection?.id}
@@ -283,7 +303,7 @@ export function SectionLayout({
             </SectionContent>
           ))
         )}
-      </ScrollArea>
+      </WrapperElement>
     </div>
   );
 }
