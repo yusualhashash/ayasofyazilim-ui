@@ -28,7 +28,7 @@ export default function CardImage({
           src={src}
           alt={alt}
           className={cn(
-            'w-full hover:scale-105 hover:ease-in transition duration-150 object-cover h-full lg:max-h-[350px]',
+            'w-full hover:scale-105 hover:ease-in transition duration-150 object-cover h-full lg:max-h-[300px]',
             className
           )}
         />
