@@ -189,15 +189,16 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
           ...zodToHtmlInputProps(item),
           ...field,
           ...fieldConfigItem.inputProps,
-          disabled: fieldConfigItem.inputProps?.disabled || isDisabled,
+          disabled:
+            fieldConfigItem.inputProps?.disabled ||
+            isDisabled ||
+            isInputDisabled,
           ref: undefined,
           value: value,
         };
-
         if (InputComponent === undefined) {
           return <></>;
         }
-        fieldProps.disabled = isInputDisabled;
         return (
           <ParentElement key={`${key}.parent`}>
             <InputComponent

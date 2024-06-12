@@ -25,10 +25,10 @@ export type FieldConfig<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
 };
 
 export enum DependencyType {
-  DISABLES,
-  REQUIRES,
-  HIDES,
-  SETS_OPTIONS,
+  DISABLES = 'DISABLES',
+  REQUIRES = 'REQUIRES',
+  HIDES = 'HIDES',
+  SETS_OPTIONS = 'SETS_OPTIONS',
 }
 export type BaseDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> =
   {
