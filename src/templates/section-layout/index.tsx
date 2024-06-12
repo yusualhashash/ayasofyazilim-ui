@@ -252,7 +252,7 @@ export function SectionLayout({
   useEffect(() => {
     if (openOnNewPage || showContentInSamePage) {
       setActiveSectionId(defaultActiveSectionId);
-      if (onSectionChange) onSectionChange(defaultActiveSectionId);
+      // if (onSectionChange) onSectionChange(defaultActiveSectionId);
     }
   }, [defaultActiveSectionId]);
 
