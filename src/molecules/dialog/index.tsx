@@ -34,7 +34,7 @@ export default function AutoformDialog({
   const [values, setValues] = useState<any>(triggerData || {});
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-auto [&::-webkit-scrollbar]:hidden">
         <DialogHeader>
           <DialogTitle>{action?.cta}</DialogTitle>
           <DialogDescription>{action?.description}</DialogDescription>
@@ -52,7 +52,7 @@ export default function AutoformDialog({
           >
             {action?.autoFormArgs?.children}
             <AutoFormSubmit className="float-right">
-              Save Changes
+              <button>Save Changes</button>
             </AutoFormSubmit>
           </AutoForm>
         </div>
