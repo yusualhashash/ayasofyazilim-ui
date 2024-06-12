@@ -1,6 +1,7 @@
 import CardList from '../../organisms/card-list';
 import DataTable from '../../molecules/tables';
 import { DashboardProps } from './types';
+import ScrollArea from '../../molecules/scroll-area';
 
 export default function Dashboard({
   cards,
@@ -13,14 +14,15 @@ export default function Dashboard({
   withTable,
 }: DashboardProps) {
   return (
-    <div className="flex flex-col items-center justify-start h-full w-full">
+    // <div className="flex flex-col items-center justify-start h-full w-full">
+    <>
       {withCards && (
         <div className="flex-row p-4 w-10/12">
           <CardList isLoading={isLoading} cards={cards} />
         </div>
       )}
       {withTable && (
-        <div className="w-10/12 flex-row p-4 m-4">
+        <ScrollArea>
           <DataTable
             filterBy={filterBy}
             columnsData={columnsData}
@@ -28,8 +30,9 @@ export default function Dashboard({
             action={action}
             isLoading={isLoading}
           />
-        </div>
+        </ScrollArea>
       )}
-    </div>
+    </>
+    // </div>
   );
 }
