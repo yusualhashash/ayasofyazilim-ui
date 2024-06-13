@@ -19,6 +19,7 @@ const progressVariants = cva('h-full w-full', {
   },
 });
 export interface IProgressProps {
+  children?: JSX.Element;
   className?: string;
   containerClassName?: string;
   value: number;
@@ -30,6 +31,7 @@ export default function Progress({
   className,
   containerClassName,
   variant = 'secondary',
+  children,
 }: IProgressProps) {
   const barRef = useRef<HTMLDivElement>(null);
 
@@ -60,7 +62,9 @@ export default function Progress({
       <ProgressDefault.Indicator
         ref={barRef}
         className={cn(progressVariants({ variant }), className)}
-      />
+      >
+        {children}
+      </ProgressDefault.Indicator>
     </ProgressDefault.Root>
   );
 }
