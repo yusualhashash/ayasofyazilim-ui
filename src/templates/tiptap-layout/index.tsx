@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 
-import Link from 'next/link';
 import { cn } from '@/lib/utils';
 // @ts-ignore
 
@@ -47,9 +46,9 @@ const SectionNavbarBase = ({
         const className = `
             hover:no-underline rounded-none bg-white ${section.id === activeSectionId ? `font-semibold text-primary sticky left-0 right-0` : 'text-muted-foreground hover:text-black'}`;
         return (
-          <Link href={`#${section.id}`} className={className} key={section.id}>
+          <a href={`#${section.id}`} className={className} key={section.id}>
             {section.name}
-          </Link>
+          </a>
         );
       })}
     </nav>
