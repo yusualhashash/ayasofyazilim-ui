@@ -218,6 +218,7 @@
     "react-hook-form": "7.51.1",
     "react-hot-toast": "2.4.1",
     "react-resizable-panels": "2.0.13",
+    "recharts": "^2.12.7",
     "sonner": "1.4.32",
     "tailwind-merge": "2.2.2",
     "tailwindcss-animate": "1.0.7",

@@ -1,14 +1,20 @@
 'use client';
 
+
 import { ChevronUp } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+
 import { cn } from '@/lib/utils';
+import ScrollArea from '../../molecules/scroll-area';
 
 export type mainLayoutProps = {
   HeaderComponent?: JSX.Element;
   SidebarComponent?: JSX.Element;
   children?: JSX.Element;
   mainClassName?: string;
+  mainScrollArea?: boolean;
+  childScrollArea?: boolean;
+  wrapperClassName?: string;
 };
 
 export default function MainLayout({
@@ -16,6 +22,9 @@ export default function MainLayout({
   SidebarComponent,
   children,
   mainClassName,
+  mainScrollArea = true,
+  childScrollArea = true,
+  wrapperClassName,
 }: mainLayoutProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -37,9 +46,49 @@ export default function MainLayout({
       }
     };
   }, []);
+  if (mainScrollArea)
+    return (
+      <ScrollArea id="scroll-area" className="h-screen">
+        <Layout
+          HeaderComponent={HeaderComponent}
+          SidebarComponent={SidebarComponent}
+          mainClassName={mainClassName}
+          childScrollArea={childScrollArea}
+          wrapperClassName={wrapperClassName}
+        >
+          {children}
+        </Layout>
+      </ScrollArea>
+    );
 
   return (
-    <div className="h-dvh grid grid-rows-[max-content_1fr] overflow-hidden">
+    <Layout
+      HeaderComponent={HeaderComponent}
+      SidebarComponent={SidebarComponent}
+      mainClassName={mainClassName}
+      childScrollArea={childScrollArea}
+      wrapperClassName={wrapperClassName}
+    >
+      {children}
+    </Layout>
+  );
+}
+
+function Layout({
+  HeaderComponent,
+  SidebarComponent,
+  children,
+  mainClassName,
+  childScrollArea = true,
+  wrapperClassName,
+}: mainLayoutProps) {
+  return (
+    <div
+      className={cn(
+        'h-dvh grid grid-rows-[max-content_1fr] overflow-hidden',
+        wrapperClassName
+      )}
+    >
       {HeaderComponent}
 
       <div className="flex overflow-hidden">
@@ -52,7 +101,7 @@ export default function MainLayout({
             mainClassName
           )}
         >
-          {children}
+          {childScrollArea ? <ScrollArea>{children}</ScrollArea> : children}
           {isScrolled && (
             <button
               type="button"
@@ -65,6 +114,7 @@ export default function MainLayout({
               <ChevronUp className="w-6 h-6" color="white" />
             </button>
           )}
+
         </main>
       </div>
     </div>
