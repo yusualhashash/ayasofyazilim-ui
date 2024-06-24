@@ -83,11 +83,7 @@ const SectionContentBase = ({
   }, []);
 
   return (
-    <div
-      id={`${sectionId}testTable`}
-      ref={divRef}
-      className={cn('w-full ', className)}
-    >
+    <div id={`${sectionId}`} ref={divRef} className={cn('w-full ', className)}>
       {sectionContent}
     </div>
   );
