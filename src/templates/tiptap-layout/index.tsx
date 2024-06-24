@@ -40,7 +40,7 @@ const SectionNavbarBase = ({
   sections,
   activeSectionId,
 }: ISectionNavbarBase) => (
-  <div className="bg-white pt-3 pb-3 border-b sticky top-0 z-10">
+  <div className="bg-white pt-3 pb-3 border-b sticky top-20 z-10">
     <nav className="text-sm flex flex-row gap-5 justify-center">
       {sections.map((section) => {
         const className = `
