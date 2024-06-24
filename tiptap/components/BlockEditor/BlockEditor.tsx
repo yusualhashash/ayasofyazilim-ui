@@ -35,7 +35,7 @@ export const BlockEditor = ({
   const editorRef = useRef<HTMLDivElement | null>(null);
   const editor = useEditor(
     {
-      autofocus: true,
+      autofocus: false,
       extensions: [...ExtensionKit()],
       editorProps: {
         attributes: {
