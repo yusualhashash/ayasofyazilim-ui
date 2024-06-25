@@ -1,8 +1,7 @@
 'use client';
 
-
 import { ChevronUp } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { cn } from '@/lib/utils';
 import ScrollArea from '../../molecules/scroll-area';
@@ -10,10 +9,18 @@ import ScrollArea from '../../molecules/scroll-area';
 export type mainLayoutProps = {
   HeaderComponent?: JSX.Element;
   SidebarComponent?: JSX.Element;
+  childScrollArea?: boolean;
   children?: JSX.Element;
   mainClassName?: string;
   mainScrollArea?: boolean;
+  wrapperClassName?: string;
+};
+export type ILayoutProps = {
+  HeaderComponent?: JSX.Element;
+  SidebarComponent?: JSX.Element;
   childScrollArea?: boolean;
+  children?: JSX.Element;
+  mainClassName?: string;
   wrapperClassName?: string;
 };
 
@@ -26,27 +33,27 @@ export default function MainLayout({
   childScrollArea = true,
   wrapperClassName,
 }: mainLayoutProps) {
-  const scrollRef = useRef<HTMLDivElement>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const scrollThreshold = 200;
 
-  const handleScroll = () => {
-    if (scrollRef.current) {
-      const currentPosition = scrollRef.current.scrollTop;
-      setIsScrolled(currentPosition > 0);
-    }
-  };
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.addEventListener('scroll', handleScroll);
+    const el = document.querySelector('#scroll-area > div');
+    const handleScroll = () => {
+      setIsScrolled((el?.scrollTop || 0) >= scrollThreshold);
+    };
+
+    if (el) {
+      el.addEventListener('scroll', handleScroll);
     }
 
     return () => {
-      if (scrollRef.current) {
-        scrollRef.current.removeEventListener('scroll', handleScroll);
+      if (el) {
+        el.removeEventListener('scroll', handleScroll);
       }
     };
   }, []);
-  if (mainScrollArea)
+
+  if (mainScrollArea) {
     return (
       <ScrollArea id="scroll-area" className="h-screen">
         <Layout
@@ -58,8 +65,24 @@ export default function MainLayout({
         >
           {children}
         </Layout>
+
+        {isScrolled && (
+          <button
+            type="button"
+            aria-label="Scroll to Top"
+            className="fixed bottom-5 z-50 right-5 p-2 bg-gray-600 hover:bg-gray-700 rounded-full cursor-pointer"
+            onClick={() =>
+              document
+                ?.querySelector('#scroll-area > div')
+                ?.scrollTo({ top: 0, behavior: 'smooth' })
+            }
+          >
+            <ChevronUp className="w-6 h-6" color="white" />
+          </button>
+        )}
       </ScrollArea>
     );
+  }
 
   return (
     <Layout
@@ -74,49 +97,25 @@ export default function MainLayout({
   );
 }
 
-function Layout({
+const Layout = ({
   HeaderComponent,
   SidebarComponent,
   children,
   mainClassName,
   childScrollArea = true,
   wrapperClassName,
-}: mainLayoutProps) {
-  return (
-    <div
-      className={cn(
-        'h-dvh grid grid-rows-[max-content_1fr] overflow-hidden',
-        wrapperClassName
-      )}
-    >
-      {HeaderComponent}
+}: ILayoutProps) => (
+  <div
+    className={cn('h-dvh grid grid-rows-[max-content_1fr] ', wrapperClassName)}
+  >
+    {HeaderComponent}
 
-      <div className="flex overflow-hidden">
-        {SidebarComponent}
+    <div className="flex">
+      {SidebarComponent}
 
-        <main
-          ref={scrollRef}
-          className={cn(
-            'flex min-h-[calc(100vh_-_theme(spacing.16))] gap-4 p-4 md:gap-8 md:p-10 w-full',
-            mainClassName
-          )}
-        >
-          {childScrollArea ? <ScrollArea>{children}</ScrollArea> : children}
-          {isScrolled && (
-            <button
-              type="button"
-              aria-label="Scroll to Top"
-              className="fixed bottom-5 z-50 right-5 p-2 bg-gray-600 hover:bg-gray-700 rounded-full cursor-pointer"
-              onClick={() =>
-                scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
-              }
-            >
-              <ChevronUp className="w-6 h-6" color="white" />
-            </button>
-          )}
-
-        </main>
-      </div>
+      <main className={cn(mainClassName)}>
+        {childScrollArea ? <ScrollArea>{children}</ScrollArea> : children}
+      </main>
     </div>
-  );
-}
+  </div>
+);
