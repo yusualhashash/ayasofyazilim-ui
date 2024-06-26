@@ -16,6 +16,7 @@ type Bar<T> = T & {
   href?: string;
   value: number;
   name: string;
+  className?: string;
 };
 
 interface BarListProps<T = unknown>
@@ -94,6 +95,7 @@ function BarListInner<T>(
                 // background color
                 'bg-blue-200',
                 onValueChange ? 'group-hover:bg-blue-300' : '',
+                item.className,
                 // margin and duration
                 {
                   'mb-0': index === sortedData.length - 1,
@@ -109,8 +111,6 @@ function BarListInner<T>(
                     className={cn(
                       // base
                       'truncate whitespace-nowrap rounded text-sm',
-                      // text color
-                      'text-gray-900',
                       // hover
                       'hover:underline hover:underline-offset-2',
                       // focus
@@ -126,9 +126,7 @@ function BarListInner<T>(
                   <p
                     className={cn(
                       // base
-                      'truncate whitespace-nowrap text-sm',
-                      // text color
-                      'text-gray-900'
+                      'truncate whitespace-nowrap text-sm'
                     )}
                   >
                     {item.name}
@@ -152,9 +150,7 @@ function BarListInner<T>(
             <p
               className={cn(
                 // base
-                'truncate whitespace-nowrap text-sm leading-none',
-                // text color
-                'text-gray-900'
+                'truncate whitespace-nowrap text-sm leading-none'
               )}
             >
               {valueFormatter(item.value)}
