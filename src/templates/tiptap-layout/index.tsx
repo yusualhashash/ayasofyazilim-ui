@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/lib/utils';
-// @ts-ignore
 
 export interface ISection {
   id: string;
@@ -24,15 +23,13 @@ export interface ISectionContentBase {
 export interface ISectionContent {
   children?: JSX.Element;
   className?: string;
-  sectionId?: string;
-  setActiveSectionId?: React.Dispatch<React.SetStateAction<string>>;
+  sectionId: string;
+  setActiveSectionId: React.Dispatch<React.SetStateAction<string>>;
 }
 export interface ISectionLayoutProps {
   className?: string;
-
   contentClassName?: string;
   defaultActiveSectionId: string;
-
   sections: Array<ISection>;
 }
 
@@ -82,55 +79,40 @@ const SectionContentBase = ({
   }, []);
 
   return (
-    <div id={`${sectionId}`} ref={divRef} className={cn('w-full ', className)}>
+    <div
+      id={`${sectionId}`}
+      ref={divRef}
+      className={cn('w-full scroll-mt-20 pt-10', className)}
+    >
       {sectionContent}
     </div>
   );
 };
 
-export function SectionContent({
+export const SectionContent = ({
   children,
   className,
   sectionId,
   setActiveSectionId,
-}: ISectionContent) {
-  if (setActiveSectionId && sectionId) {
-    return (
-      <SectionContentBase
-        key={sectionId}
-        setActiveSectionId={setActiveSectionId}
-        sectionId={sectionId}
-        sectionContent={children}
-        className={className}
-      />
-    );
-  }
-  return (
-    <div className={cn('flex flex-1 justify-center', className)}>
-      {children}
-    </div>
-  );
-}
+}: ISectionContent) => (
+  <SectionContentBase
+    key={sectionId}
+    setActiveSectionId={setActiveSectionId}
+    sectionId={sectionId}
+    sectionContent={children}
+    className={className}
+  />
+);
 
 export function TiptapLayout({
   className,
   sections,
   contentClassName,
   defaultActiveSectionId,
-  // onSectionChange,
 }: ISectionLayoutProps) {
   const [activeSectionId, setActiveSectionId] = useState(
     defaultActiveSectionId
   );
-  // const activeSection = sections.find(
-  //   (section) => section.id === activeSectionId
-  // );
-
-  // function onChange(e: string) {
-  //   if (onSectionChange) {
-  //     onSectionChange(e);
-  //   }
-  // }
 
   return (
     <div className={className}>
