@@ -7,7 +7,8 @@ const buttonVariants = cva('', {
   variants: {
     customVariant: {
       success: 'bg-emerald-500 hover:bg-emerald-600',
-      primary: 'bg-cyan-500 text-white hover:bg-cyan-600',
+      primary:
+        'border bg-transparent border-cyan-500 text-cyan-500 hover:text-white hover:bg-cyan-600',
       secondary: 'bg-gray-300 hover:bg-gray-400',
       error: 'bg-red-400 hover:bg-red-500',
       default: '',

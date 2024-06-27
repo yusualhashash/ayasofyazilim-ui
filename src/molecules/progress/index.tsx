@@ -38,7 +38,6 @@ export default function Progress({
   useEffect(() => {
     if (barRef.current) {
       barRef.current.style.transition = 'transform 1.4s ease';
-      barRef.current.style.transform = 'translateX(-100%)';
     }
     setTimeout(() => {
       animateProgressBar();
@@ -47,7 +46,7 @@ export default function Progress({
 
   function animateProgressBar() {
     if (barRef.current) {
-      barRef.current.style.transform = `translateX(-${100 - value}%)`;
+      barRef.current.style.transform = `translateX(${value - 100}%)`;
     }
   }
 
@@ -62,6 +61,7 @@ export default function Progress({
       <ProgressDefault.Indicator
         ref={barRef}
         className={cn(progressVariants({ variant }), className)}
+        style={{ transform: ' translateX(-100%)' }}
       >
         {children}
       </ProgressDefault.Indicator>
