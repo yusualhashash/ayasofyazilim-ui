@@ -1,3 +1,4 @@
+import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import {
@@ -8,14 +9,17 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 export type infoCardProps = {
   content: string;
   description: string;
   footer: string;
   loading?: boolean;
+  onDelete?: () => void;
+  onEdit?: () => void;
   title: string;
-};
+} & React.HTMLProps<HTMLDivElement>;
 
 export default function InfoCard(infoCard: infoCardProps) {
   const checkIsLoading = (
@@ -40,6 +44,16 @@ export default function InfoCard(infoCard: infoCardProps) {
       </CardContent>
       <CardFooter className="text-gray-400">
         <p>{checkIsLoading(infoCard.loading, infoCard.footer, 24)}</p>
+        {infoCard.onEdit && (
+          <Button className="w-full m-4" onClick={infoCard.onEdit}>
+            Edit
+          </Button>
+        )}
+        {infoCard.onDelete && (
+          <Button className="w-full m-4" onClick={infoCard.onDelete}>
+            Delete
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
