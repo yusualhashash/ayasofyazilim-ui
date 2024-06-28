@@ -38,13 +38,14 @@ export default function AutoFormArray({
     name,
   });
   const title = item._def.description ?? beautifyObjectName(name);
-
-  const itemDefType = isZodArray(item)
+  let itemDefType = isZodArray(item)
     ? item._def.type
     : isZodDefault(item)
       ? item._def.innerType._def.type
       : null;
-
+  if (itemDefType === null) {
+    itemDefType = item._def.innerType._def.innerType.element;
+  }
   return (
     <Accordion type="multiple">
       <AccordionItem value={name} className="border-none">
