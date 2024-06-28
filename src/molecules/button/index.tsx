@@ -20,6 +20,7 @@ const buttonVariants = cva('', {
 });
 
 export interface IButtonProps extends ButtonProps {
+  asChild?: boolean;
   children?: JSX.Element | string;
   className?: string;
   customVariant?: 'success' | 'primary' | 'secondary' | 'error' | 'default';
