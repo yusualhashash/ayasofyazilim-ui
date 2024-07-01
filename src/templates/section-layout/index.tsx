@@ -111,7 +111,7 @@ const SectionNavbarBase = ({
   }
   return (
     <ScrollArea
-      className={`bg-white w-full shadow-sm ${vertical ? 'h-16 max-w-full md:h-full md:max-w-72' : 'h-16 max-w-full'}`}
+      className={`bg-white w-full shadow-sm ${vertical ? 'h-16 max-w-full md:h-full md:max-w-72' : 'h-16 max-w-full overflow-visible'}`}
     >
       <ScrollBar
         orientation={
