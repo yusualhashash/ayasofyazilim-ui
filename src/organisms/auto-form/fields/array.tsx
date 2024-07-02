@@ -61,7 +61,7 @@ export default function AutoFormArray({
     itemDefType = item._def.innerType._def.innerType.element;
   }
   return (
-    <Accordion type="single" defaultValue={name}>
+    <Accordion type="multiple" defaultValue={[name]}>
       <AccordionItem value={name} className="border-none">
         <AccordionTrigger>{title}</AccordionTrigger>
         <AccordionContent>
@@ -98,7 +98,7 @@ export default function AutoFormArray({
             className="mt-4 flex items-center"
           >
             <Plus className="mr-2" size={16} />
-            Add
+            Add {title}
           </Button>
         </AccordionContent>
       </AccordionItem>
