@@ -12,10 +12,12 @@ export const numberFormatter = new Intl.NumberFormat('tr', {
 export type NumericInputProps = {
   className?: string;
   direction?: 'row' | 'column';
+  disabled?: boolean;
   id?: string;
   inputLabel?: string;
   label: string;
   max: number;
+
   min: number;
   onValueChange?: (value: number) => void;
   slider?: boolean;
@@ -38,6 +40,7 @@ export function NumericInput({
   className,
   onValueChange,
   direction = 'row',
+  disabled,
 }: NumericInputProps) {
   const [quantity, setQuantity] = useState<number>(value);
   const [inputQuantity, setInputQuantity] = useState<string>(value.toString());
@@ -78,6 +81,7 @@ export function NumericInput({
             step={step}
             className="h-6"
             onValueChange={(_value) => onValueChanged(_value[0])}
+            disabled={disabled}
           />
         )}
         <div
@@ -92,6 +96,7 @@ export function NumericInput({
               onClick={() => {
                 onValueChanged(quantity - step);
               }}
+              disabled={disabled}
             >
               <Minus className="w-3" />
             </Button>
@@ -108,6 +113,7 @@ export function NumericInput({
               max={max}
               step={step}
               value={inputQuantity}
+              disabled={disabled}
               onChange={(e) => onValueChanged(e.target.value)}
               placeholder={label}
               onKeyDown={(e) => {
@@ -130,6 +136,7 @@ export function NumericInput({
             <Button
               variant="outline"
               className="p-0 w-8 h-8"
+              disabled={disabled}
               onClick={() => {
                 onValueChanged(quantity + step);
               }}
