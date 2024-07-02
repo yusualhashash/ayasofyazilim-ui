@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 const buttonVariants = cva('', {
   variants: {
     customVariant: {
-      success: 'bg-emerald-500 hover:bg-emerald-600',
+      success: 'bg-emerald-600 hover:bg-emerald-700',
       primary:
         'border bg-transparent border-cyan-500 text-cyan-500 hover:text-white hover:bg-cyan-600',
       secondary: 'bg-gray-300 hover:bg-gray-400',
