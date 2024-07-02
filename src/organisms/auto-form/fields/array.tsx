@@ -1,6 +1,7 @@
 import { Plus, Trash } from 'lucide-react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as z from 'zod';
+import { useEffect } from 'react';
 import {
   AccordionContent,
   AccordionItem,
@@ -37,6 +38,17 @@ export default function AutoFormArray({
     control: form.control,
     name,
   });
+  useEffect(() => {
+    const formvalues = form.getValues();
+    if (JSON.stringify(formvalues) === '{}') {
+      return;
+    }
+    let object = formvalues;
+    path.forEach((key) => {
+      object = object[key];
+    });
+    append(object);
+  }, []);
   const title = item._def.description ?? beautifyObjectName(name);
   let itemDefType = isZodArray(item)
     ? item._def.type
@@ -47,7 +59,7 @@ export default function AutoFormArray({
     itemDefType = item._def.innerType._def.innerType.element;
   }
   return (
-    <Accordion type="multiple">
+    <Accordion type="single" defaultValue={name}>
       <AccordionItem value={name} className="border-none">
         <AccordionTrigger>{title}</AccordionTrigger>
         <AccordionContent>
