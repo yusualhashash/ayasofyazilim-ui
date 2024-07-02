@@ -45,7 +45,9 @@ export default function AutoFormArray({
     }
     let object = formvalues;
     path.forEach((key) => {
-      object = object[key];
+      if (object[key]) {
+        object = object[key];
+      }
     });
     append(object);
   }, []);

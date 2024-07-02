@@ -47,9 +47,7 @@ export default function InfoCard(infoCard: infoCardProps) {
         <p>{checkIsLoading(infoCard.loading, infoCard.footer, 24)}</p>
         {infoCard.onEdit && (
           <Link className="w-full m-4" href={infoCard.onEdit} asChild>
-            <Button className="w-full m-4" onClick={infoCard.onEdit}>
-              Edit
-            </Button>
+            <Button className="w-full m-4">Edit</Button>
           </Link>
         )}
         {infoCard.onDelete && (
