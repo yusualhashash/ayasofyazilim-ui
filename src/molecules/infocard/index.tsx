@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import {
@@ -17,7 +18,7 @@ export type infoCardProps = {
   footer: string;
   loading?: boolean;
   onDelete?: () => void;
-  onEdit?: () => void;
+  onEdit?: string;
   title: string;
 } & React.HTMLProps<HTMLDivElement>;
 
@@ -45,9 +46,11 @@ export default function InfoCard(infoCard: infoCardProps) {
       <CardFooter className="text-gray-400">
         <p>{checkIsLoading(infoCard.loading, infoCard.footer, 24)}</p>
         {infoCard.onEdit && (
-          <Button className="w-full m-4" onClick={infoCard.onEdit}>
-            Edit
-          </Button>
+          <Link className="w-full m-4" href={infoCard.onEdit} asChild>
+            <Button className="w-full m-4" onClick={infoCard.onEdit}>
+              Edit
+            </Button>
+          </Link>
         )}
         {infoCard.onDelete && (
           <Button className="w-full m-4" onClick={infoCard.onDelete}>
