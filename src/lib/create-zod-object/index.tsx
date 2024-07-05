@@ -1,7 +1,18 @@
 import { ZodSchema, ZodType, z } from 'zod';
 
-//item & sub item
+// item & sub item
 export type JsonSchema = {
+  default?: any;
+  description?: string | undefined;
+  displayName: string;
+  enum?: any;
+  format?: 'date-time' | 'email' | 'uuid';
+  isReadOnly?: boolean;
+  isRequired?: boolean;
+  maxLength?: number;
+  nullable?: boolean;
+  pattern?: RegExp;
+  properties?: Record<string, JsonSchema>;
   type:
     | 'string'
     | 'boolean'
@@ -11,33 +22,20 @@ export type JsonSchema = {
     | 'array'
     | 'toggle'
     | 'select';
-  isRequired?: boolean;
-  isReadOnly?: boolean;
-  maxLength?: number;
-  pattern?: RegExp;
-  format?: 'date-time' | 'email' | 'uuid';
-  description?: string | undefined;
-  nullable?: boolean;
-  enum?: any;
-  default?: any;
-  properties?: Record<string, JsonSchema>;
-  displayName: string;
 };
-//group
+// group
 export type SchemaType = {
-  required: ReadonlyArray<string>;
-  type: String;
+  additionalProperties: Boolean;
   displayName: string;
   properties: Record<string, JsonSchema | SchemaType>;
-  additionalProperties: Boolean;
+  required: ReadonlyArray<string>;
+  type: String;
 };
 
-export function isJsonSchema(object: any): object is JsonSchema {
-  return 'type' in object;
-}
-export function isSchemaType(object: any): object is SchemaType {
-  return 'required' in object;
-}
+export const isJsonSchema = (object: any): object is JsonSchema =>
+  'type' in object;
+export const isSchemaType = (object: any): object is SchemaType =>
+  'required' in object;
 
 export function createZodObject(
   schema: SchemaType,
@@ -49,11 +47,12 @@ export function createZodObject(
     const props = schema.properties[element];
     const isRequired = schema.required.includes(element);
     if (isSchemaType(props)) {
-      Object.keys(props.properties).map((key) => {
+      Object.keys(props.properties).map(() => {
         zodSchema[element] = createZodObject(
           props,
           Object.keys(props.properties)
         );
+        return null;
       });
     } else if (isJsonSchema(props)) {
       let zodType;
@@ -105,24 +104,17 @@ function createZodType(
       break;
     case 'boolean':
       zodType = z.boolean();
-      if (schema.default) zodType = zodType.default(schema.default == 'true');
+      if (schema.default) zodType = zodType.default(schema.default === 'true');
       break;
     case 'integer':
       if (schema.enum) {
-        let stringEnums = schema.enum.map((e: any) => e.toString());
+        const stringEnums = schema.enum.map((e: any) => e.toString());
         zodType = z.enum(stringEnums as [string, ...string[]]);
         break;
       }
       zodType = z.number().int();
       break;
-    case 'integer':
-      if (schema.enum) {
-        let stringEnums = schema.enum.map((e: any) => e.toString());
-        zodType = z.enum(stringEnums as [string, ...string[]]);
-        break;
-      }
-      zodType = z.number().int();
-      break;
+
     default:
       zodType = z.unknown({ description: schema.displayName });
   }
