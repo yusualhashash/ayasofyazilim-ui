@@ -45,9 +45,9 @@ export function createZodObject(
   const zodSchema: Record<string, ZodSchema> = {};
   positions.forEach((element: string) => {
     const props = schema.properties[element];
-    const isRequired = schema.required.includes(element);
+    const isRequired = schema.required?.includes(element);
     if (isSchemaType(props)) {
-      Object.keys(props.properties).map((key) => {
+      Object.keys(props.properties).forEach(() => {
         zodSchema[element] = createZodObject(
           props,
           Object.keys(props.properties)
@@ -103,15 +103,7 @@ function createZodType(
       break;
     case 'boolean':
       zodType = z.boolean();
-      if (schema.default) zodType = zodType.default(schema.default == 'true');
-      break;
-    case 'integer':
-      if (schema.enum) {
-        const stringEnums = schema.enum.map((e: any) => e.toString());
-        zodType = z.enum(stringEnums as [string, ...string[]]);
-        break;
-      }
-      zodType = z.number().int();
+      if (schema.default) zodType = zodType.default(schema.default === 'true');
       break;
     case 'integer':
       if (schema.enum) {

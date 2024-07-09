@@ -17,13 +17,13 @@ export type authTypes = 'login' | 'register' | 'reset-password';
 export const isAuthType = (value: string): value is authTypes =>
   ['login', 'register', 'reset-password'].indexOf(value as authTypes) !== -1;
 export type AuthPropsType = {
-  authProps: LoginFormPropsType &
-    RegisterFormPropsType &
-    ResetPasswordFormPropsType;
+  authProps:
+    | (LoginFormPropsType & RegisterFormPropsType & ResetPasswordFormPropsType)
+    | {};
   authType: authTypes;
   children: JSX.Element;
   cultureName: string;
-  onLangChange: (cultureName: string) => void;
+  onLangChange?: (cultureName: string) => void;
   resources: { [key: string]: any };
 };
 function formSwitch(
