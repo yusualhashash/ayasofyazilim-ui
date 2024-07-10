@@ -17,6 +17,7 @@ export interface ISectionNavbarBase {
   activeSectionId: string;
   navAlignment?: 'start' | 'center' | 'end';
   navClassName?: string;
+  navContainerClassName?: string;
   onSectionChange?: (sectionId: string) => void;
   openOnNewPage?: boolean;
   sections: Array<ISection>;
@@ -96,7 +97,7 @@ function useWindowSize() {
   }, []); // Empty array ensures that effect is only run on mount
   return windowSize;
 }
-const SectionNavbarBase = ({
+export const SectionNavbarBase = ({
   sections,
   activeSectionId,
   openOnNewPage,
@@ -105,13 +106,17 @@ const SectionNavbarBase = ({
   navClassName,
   onSectionChange,
   showContentInSamePage,
+  navContainerClassName,
 }: ISectionNavbarBase) => {
   function onClick(e: string) {
     if (onSectionChange) onSectionChange(e);
   }
   return (
     <ScrollArea
-      className={`bg-white w-full shadow-sm ${vertical ? 'h-16 max-w-full md:h-full md:max-w-72' : 'h-16 max-w-full overflow-visible'}`}
+      className={cn(
+        `bg-white w-full shadow-sm ${vertical ? 'h-16 max-w-full md:h-full md:max-w-72' : 'h-16 max-w-full overflow-visible'}`,
+        navContainerClassName
+      )}
     >
       <ScrollBar
         orientation={
@@ -287,9 +292,7 @@ export function SectionLayout({
             setActiveSectionId={setActiveSectionId}
             className={contentClassName}
           >
-            {openOnNewPage || showContentInSamePage
-              ? content
-              : activeSection?.value}
+            {openOnNewPage ? content : activeSection?.value}
           </SectionContent>
         ) : (
           sections.map((section) => (
