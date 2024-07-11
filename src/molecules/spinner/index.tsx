@@ -10,7 +10,7 @@ const spinnerContainerVariants = cva('flex justify-center items-center', {
     },
     fullScreen: {
       true: ' h-screen h-dvh w-full absolute z-50',
-      false: ' h-8 rounded-md px-3 text-xs',
+      false: ' h-8 px-3 text-xs',
     },
   },
   defaultVariants: {
