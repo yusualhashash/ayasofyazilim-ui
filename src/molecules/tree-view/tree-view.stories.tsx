@@ -13,6 +13,15 @@ export default {
 const template: StoryFn<typeof TreeView> = (args) => <TreeView {...args} />;
 export const Default = template.bind({});
 Default.args = {
+  className: 'w-full m-5',
+  selectedId: '2',
+  setSelectedId: () => {},
+  optionsDropdownContent: (
+    <>
+      <div>edit</div>
+      <div>delete</div>
+    </>
+  ),
   elements: [
     {
       id: '1',
