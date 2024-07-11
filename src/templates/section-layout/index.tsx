@@ -22,6 +22,7 @@ export interface ISectionNavbarBase {
   openOnNewPage?: boolean;
   sections: Array<ISection>;
   showContentInSamePage?: boolean;
+  showScrollArea?: boolean;
   vertical?: boolean;
 }
 export interface ISectionContentBase {
@@ -107,69 +108,121 @@ export const SectionNavbarBase = ({
   onSectionChange,
   showContentInSamePage,
   navContainerClassName,
+  showScrollArea = true,
 }: ISectionNavbarBase) => {
   function onClick(e: string) {
     if (onSectionChange) onSectionChange(e);
   }
-  return (
-    <ScrollArea
-      className={cn(
-        `bg-white w-full shadow-sm ${vertical ? 'h-16 max-w-full md:h-full md:max-w-72' : 'h-16 max-w-full overflow-visible'}`,
-        navContainerClassName
-      )}
-    >
-      <ScrollBar
-        orientation={
-          vertical && useWindowSize().width > 768 ? 'vertical' : 'horizontal'
-        }
-        className="z-10"
-      />
-      <div>
-        <nav
-          className={cn(
-            `flex gap-4 text-sm text-muted-foreground md:border-0 border-b text-center md:text-left ${
-              vertical
-                ? `flex-row justify-start p-0 h-16 items-center md:items-start md:flex-col md:gap-0 md:h-full`
-                : `flex-row justify-${navAlignment}  h-16 items-center p-5`
-            }     `,
-            navClassName
-          )}
-        >
-          {sections.map((section) => {
-            const className = `
+  if (showScrollArea) {
+    return (
+      <ScrollArea
+        className={cn(
+          `bg-white w-full shadow-sm ${vertical ? 'h-16 max-w-full md:h-full md:max-w-72' : 'h-16 max-w-full overflow-visible'}`,
+          navContainerClassName
+        )}
+      >
+        <ScrollBar
+          orientation={
+            vertical && useWindowSize().width > 768 ? 'vertical' : 'horizontal'
+          }
+          className="z-10"
+        />
+        <div>
+          <nav
+            className={cn(
+              `flex gap-4 text-sm text-muted-foreground md:border-0 border-b text-center md:text-left ${
+                vertical
+                  ? `flex-row justify-start p-0 h-16 items-center md:items-start md:flex-col md:gap-0 md:h-full`
+                  : `flex-row justify-${navAlignment}  h-16 items-center p-5`
+              }     `,
+              navClassName
+            )}
+          >
+            {sections.map((section) => {
+              const className = `
             hover:no-underline rounded-none bg-white ${section.id === activeSectionId ? `font-semibold text-primary sticky left-0 right-0` : 'text-muted-foreground hover:text-black'} ${
               vertical
                 ? 'block overflow-hidden text-ellipsis text-left max-w-72 h-10 px-4 py-0'
                 : ''
             } `;
 
-            if (!openOnNewPage && showContentInSamePage && onSectionChange) {
+              if (!openOnNewPage && showContentInSamePage && onSectionChange) {
+                return (
+                  <Button
+                    key={section.id}
+                    variant="link"
+                    onClick={() => onClick(section.id)}
+                    className={className}
+                  >
+                    {section.name}
+                  </Button>
+                );
+              }
               return (
-                <Button
-                  key={section.id}
-                  variant="link"
-                  onClick={() => onClick(section.id)}
+                <Link
+                  href={
+                    openOnNewPage
+                      ? section?.link ?? section.id
+                      : `#${section.id}`
+                  }
                   className={className}
+                  key={section.id}
                 >
                   {section.name}
-                </Button>
+                </Link>
               );
-            }
+            })}
+          </nav>
+        </div>
+      </ScrollArea>
+    );
+  }
+  return (
+    <div>
+      <nav
+        className={cn(
+          `flex gap-4 text-sm text-muted-foreground md:border-0 border-b text-center md:text-left ${
+            vertical
+              ? `flex-row justify-start p-0 h-16 items-center md:items-start md:flex-col md:gap-0 md:h-full`
+              : `flex-row justify-${navAlignment}  h-16 items-center p-5`
+          }     `,
+          navClassName
+        )}
+      >
+        {sections.map((section) => {
+          const className = `
+        hover:no-underline rounded-none bg-white ${section.id === activeSectionId ? `font-semibold text-primary sticky left-0 right-0` : 'text-muted-foreground hover:text-black'} ${
+          vertical
+            ? 'block overflow-hidden text-ellipsis text-left max-w-72 h-10 px-4 py-0'
+            : ''
+        } `;
+
+          if (!openOnNewPage && showContentInSamePage && onSectionChange) {
             return (
-              <Link
-                href={
-                  openOnNewPage ? section?.link ?? section.id : `#${section.id}`
-                }
-                className={className}
+              <Button
                 key={section.id}
+                variant="link"
+                onClick={() => onClick(section.id)}
+                className={className}
               >
                 {section.name}
-              </Link>
+              </Button>
             );
-          })}
-        </nav>
-      </div>
-    </ScrollArea>
+          }
+          return (
+            <Link
+              href={
+                openOnNewPage ? section?.link ?? section.id : `#${section.id}`
+              }
+              className={className}
+              key={section.id}
+            >
+              {section.name}
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
   );
 };
 const SectionContentBase = ({
