@@ -11,7 +11,6 @@ interface TreeViewComponentProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 type TreeViewProps = {
   elements: TreeViewElement[];
-  indicator?: boolean;
   optionsDropdownContent?: React.ReactNode;
   selectedId?: string;
   setSelectedId: React.Dispatch<React.SetStateAction<string | undefined>>;
@@ -34,7 +33,6 @@ export const TreeView = ({
   setSelectedId,
   initialExpendedItems,
   optionsDropdownContent,
-  indicator = false,
 }: TreeViewProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -65,7 +63,6 @@ export const TreeView = ({
             aria-label="Root"
             key={element.key}
             elements={[elements[element.index]]}
-            indicator={indicator}
             setSelectedId={setSelectedId}
             optionsDropdownContent={optionsDropdownContent}
           />
@@ -81,52 +78,45 @@ export const TreeItem = forwardRef<
   HTMLUListElement,
   {
     elements?: TreeViewElement[];
-    indicator?: boolean;
     optionsDropdownContent?: React.ReactNode;
     setSelectedId: React.Dispatch<React.SetStateAction<string | undefined>>;
   } & React.HTMLAttributes<HTMLUListElement>
->(
-  (
-    { optionsDropdownContent, elements, setSelectedId, indicator, ...props },
-    ref
-  ) => (
-    <ul ref={ref} className="w-full space-y-1 " {...props}>
-      {elements &&
-        elements.map((element) => (
-          <li key={element.id} className="w-full">
-            {element.children && element.children?.length > 0 ? (
-              <Folder
-                element={element.name}
-                value={element.id}
-                isSelectable={element.isSelectable}
-                optionsDropdownContent={optionsDropdownContent}
-                setSelectedId={setSelectedId}
-              >
-                <TreeItem
-                  key={element.id}
-                  aria-label={`folder ${element.name}`}
-                  elements={element.children}
-                  indicator={indicator}
-                  optionsDropdownContent={optionsDropdownContent}
-                  setSelectedId={setSelectedId}
-                />
-              </Folder>
-            ) : (
-              <File
-                value={element.id}
-                aria-label={`File ${element.name}`}
+>(({ optionsDropdownContent, elements, setSelectedId, ...props }, ref) => (
+  <ul ref={ref} className="w-full space-y-1 " {...props}>
+    {elements &&
+      elements.map((element) => (
+        <li key={element.id} className="w-full">
+          {element.children && element.children?.length > 0 ? (
+            <Folder
+              element={element.name}
+              value={element.id}
+              isSelectable={element.isSelectable}
+              optionsDropdownContent={optionsDropdownContent}
+              setSelectedId={setSelectedId}
+            >
+              <TreeItem
                 key={element.id}
-                isSelectable={element.isSelectable}
+                aria-label={`folder ${element.name}`}
+                elements={element.children}
                 optionsDropdownContent={optionsDropdownContent}
                 setSelectedId={setSelectedId}
-              >
-                <span>{element?.name}</span>
-              </File>
-            )}
-          </li>
-        ))}
-    </ul>
-  )
-);
+              />
+            </Folder>
+          ) : (
+            <File
+              value={element.id}
+              aria-label={`File ${element.name}`}
+              key={element.id}
+              isSelectable={element.isSelectable}
+              optionsDropdownContent={optionsDropdownContent}
+              setSelectedId={setSelectedId}
+            >
+              <span>{element?.name}</span>
+            </File>
+          )}
+        </li>
+      ))}
+  </ul>
+));
 
 TreeItem.displayName = 'TreeItem';
