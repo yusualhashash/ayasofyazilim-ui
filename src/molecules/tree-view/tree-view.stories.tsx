@@ -54,6 +54,3 @@ Default.args = {
     },
   ],
 };
-
-export const EmptyUrl = template.bind({});
-EmptyUrl.args = { elements: [] };
