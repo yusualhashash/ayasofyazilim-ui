@@ -31,7 +31,8 @@ export default function AutoformDialog({
   action,
   triggerData,
 }: AutoformDialogProps) {
-  const [values, setValues] = useState<any>(triggerData || {});
+  const [values] = useState<any>(triggerData || {});
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-auto [&::-webkit-scrollbar]:hidden">
@@ -42,9 +43,6 @@ export default function AutoformDialog({
         <div className="grid gap-4 py-4">
           <AutoForm
             {...action?.autoFormArgs}
-            onParsedValuesChange={(e) => {
-              setValues(e);
-            }}
             values={values}
             onSubmit={(formData) => {
               action?.callback(formData, triggerData);
@@ -52,7 +50,7 @@ export default function AutoformDialog({
           >
             {action?.autoFormArgs?.children}
             <AutoFormSubmit className="float-right">
-              <button>Save Changes</button>
+              <button type="submit">Save Changes</button>
             </AutoFormSubmit>
           </AutoForm>
         </div>
