@@ -178,51 +178,49 @@ export const SectionNavbarBase = ({
     );
   }
   return (
-    <div>
-      <nav
-        className={cn(
-          `flex gap-4 text-sm text-muted-foreground md:border-0 border-b text-center md:text-left ${
-            vertical
-              ? `flex-row justify-start p-0 h-16 items-center md:items-start md:flex-col md:gap-0 md:h-full`
-              : `flex-row justify-${navAlignment}  h-16 items-center p-5`
-          }     `,
-          navClassName
-        )}
-      >
-        {sections.map((section) => {
-          const className = `
+    <nav
+      className={cn(
+        `flex gap-4 text-sm text-muted-foreground md:border-0 border-b text-center md:text-left ${
+          vertical
+            ? `flex-row justify-start p-0 h-16 items-center md:items-start md:flex-col md:gap-0 md:h-full`
+            : `flex-row justify-${navAlignment}  h-16 items-center p-5`
+        }     `,
+        navClassName
+      )}
+    >
+      {sections.map((section) => {
+        const className = `
         hover:no-underline rounded-none bg-white ${section.id === activeSectionId ? `font-semibold text-primary sticky left-0 right-0` : 'text-muted-foreground hover:text-black'} ${
           vertical
             ? 'block overflow-hidden text-ellipsis text-left max-w-72 h-10 px-4 py-0'
             : ''
         } `;
 
-          if (!openOnNewPage && showContentInSamePage && onSectionChange) {
-            return (
-              <Button
-                key={section.id}
-                variant="link"
-                onClick={() => onClick(section.id)}
-                className={className}
-              >
-                {section.name}
-              </Button>
-            );
-          }
+        if (!openOnNewPage && showContentInSamePage && onSectionChange) {
           return (
-            <Link
-              href={
-                openOnNewPage ? section?.link ?? section.id : `#${section.id}`
-              }
-              className={className}
+            <Button
               key={section.id}
+              variant="link"
+              onClick={() => onClick(section.id)}
+              className={className}
             >
               {section.name}
-            </Link>
+            </Button>
           );
-        })}
-      </nav>
-    </div>
+        }
+        return (
+          <Link
+            href={
+              openOnNewPage ? section?.link ?? section.id : `#${section.id}`
+            }
+            className={className}
+            key={section.id}
+          >
+            {section.name}
+          </Link>
+        );
+      })}
+    </nav>
   );
 };
 const SectionContentBase = ({
