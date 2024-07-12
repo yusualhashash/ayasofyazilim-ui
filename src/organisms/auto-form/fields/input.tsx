@@ -15,14 +15,14 @@ export default function AutoFormInput({
   const type = fieldProps.type || 'text';
 
   return (
-    <div className="flex flex-row  items-center space-x-2">
-      <FormItem className="flex w-full flex-col justify-start">
+    <div className="flex flex-col md:flex-row items-center space-x-2">
+      <FormItem className="flex w-full flex-row justify-between items-center">
         {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
         <FormControl>
           <Input
             type={type}
             {...fieldPropsWithoutShowLabel}
-            className="ml-1 max-w-[99%]"
+            className="max-w-[400px]"
           />
         </FormControl>
         <AutoFormTooltip fieldConfigItem={fieldConfigItem} />

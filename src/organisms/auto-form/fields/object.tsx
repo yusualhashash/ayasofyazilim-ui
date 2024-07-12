@@ -12,9 +12,9 @@ import {
 } from '../utils';
 import AutoFormArray from './array';
 
-const DefaultParent = ({ children }: { children: React.ReactNode }) => (
-  <>{children}</>
-);
+const DefaultParent = ({ children }: { children: JSX.Element }) => ({
+  children,
+});
 
 export default function AutoFormObject<
   SchemaType extends z.ZodObject<any, any>,
@@ -48,9 +48,9 @@ export default function AutoFormObject<
       (item._def as any).innerType?._def?.typeName === 'ZodNumber';
 
     if (isZodNumber) {
-      (item as any)._def.coerce = true;
+      (item as any)._def.coerce = true; // eslint-disable-line no-param-reassign
     } else if (isInnerZodNumber) {
-      (item._def as any).innerType._def.coerce = true;
+      (item._def as any).innerType._def.coerce = true; // eslint-disable-line no-param-reassign
     }
 
     return item;
@@ -114,7 +114,7 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
 
   if (zodBaseType === 'ZodObject') {
     return (
-      <div key={key} className="flex flex-col border p-4 rounded-md">
+      <div key={key} className="flex flex-col border p-4 rounded-md bg-white">
         <div className="text-sm font-bold">{itemName}</div>
         <div className="text-muted-foreground text-sm">
           {fieldConfig?.[name]?.description}
@@ -194,7 +194,7 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
           value,
         };
         if (InputComponent === undefined) {
-          return <></>;
+          return null;
         }
         return (
           <ParentElement key={`${key}.parent`}>
