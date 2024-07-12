@@ -14,6 +14,10 @@ import { Button } from '@/components/ui/button';
 
 export type infoCardProps = {
   content: string;
+  cta?: {
+    href: string;
+    text: string;
+  };
   description: string;
   footer: string;
   loading?: boolean;
@@ -29,6 +33,13 @@ export default function InfoCard(infoCard: infoCardProps) {
     width: string | number = '24',
     height: string | number = '5'
   ) => (loading ? <Skeleton className={`w-${width} h-${height}`} /> : value);
+  let tempCta = infoCard?.cta;
+  if (infoCard.onEdit) {
+    tempCta = {
+      text: 'Edit',
+      href: infoCard.onEdit,
+    };
+  }
 
   return (
     <Card className="min-w-60">
@@ -45,9 +56,9 @@ export default function InfoCard(infoCard: infoCardProps) {
       </CardContent>
       <CardFooter className="text-gray-400">
         <p>{checkIsLoading(infoCard.loading, infoCard.footer, 24)}</p>
-        {infoCard.onEdit && (
-          <Link className="w-full m-4" href={infoCard.onEdit} asChild>
-            <Button className="w-full m-4">Edit</Button>
+        {tempCta && (
+          <Link className="w-full m-4" href={tempCta.href} asChild>
+            <Button className="w-full m-4">{tempCta.text}</Button>
           </Link>
         )}
         {infoCard.onDelete && (
