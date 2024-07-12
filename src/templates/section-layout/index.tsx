@@ -146,7 +146,7 @@ export const SectionNavbarBase = ({
                 : ''
             } `;
 
-              if (!openOnNewPage && showContentInSamePage && onSectionChange) {
+              if (!openOnNewPage && showContentInSamePage) {
                 return (
                   <Button
                     key={section.id}
@@ -196,7 +196,7 @@ export const SectionNavbarBase = ({
             : ''
         } `;
 
-        if (!openOnNewPage && showContentInSamePage && onSectionChange) {
+        if (!openOnNewPage && showContentInSamePage) {
           return (
             <Button
               key={section.id}
