@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 'use client';
 
 import * as React from 'react';
@@ -17,6 +15,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -44,6 +43,8 @@ export type tableAction = {
   callback: (values: any) => void;
   cta: string;
   description: string;
+  href?: string;
+  type?: 'Dialog' | 'NewPage';
 };
 
 type autoColumnGnerator = {
@@ -68,6 +69,27 @@ export type DataTableProps<TData> = {
   isLoading?: boolean;
 };
 const SkeletonCell = () => <Skeleton className="w-20 h-3" />;
+
+const actionComponent = (action?: tableAction, callback?: Function) => {
+  if (!action) return null;
+  if (action.type === 'NewPage') {
+    return (
+      <Link href={action.href || 'add'}>
+        <Button variant="outline">{action.cta}</Button>
+      </Link>
+    );
+  }
+  return (
+    <Button
+      variant="outline"
+      onClick={() => {
+        if (callback) callback();
+      }}
+    >
+      {action.cta}
+    </Button>
+  );
+};
 
 export default function DataTable<TData, TValue>({
   columnsData,
@@ -136,9 +158,16 @@ export default function DataTable<TData, TValue>({
     },
   });
   const [isOpen, setIsOpen] = React.useState(false);
+  const tempAction = action;
   return (
     <div className="w-full container mx-auto">
-      <AutoformDialog open={isOpen} onOpenChange={setIsOpen} action={action} />
+      {action?.type === 'NewPage' ? null : (
+        <AutoformDialog
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          action={action}
+        />
+      )}
       <div className="flex items-center py-4 gap-2">
         <Input
           disabled={isLoading}
@@ -171,15 +200,7 @@ export default function DataTable<TData, TValue>({
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        {action ? (
-          <Button
-            disabled={isLoading}
-            variant="outline"
-            onClick={() => setIsOpen(true)}
-          >
-            {action?.cta}
-          </Button>
-        ) : null}
+        {actionComponent(tempAction, () => setIsOpen(true))}
       </div>
       <div className="rounded-md border relative w-full">
         <ScrollArea>
