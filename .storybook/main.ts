@@ -1,13 +1,13 @@
 import type { StorybookConfig } from '@storybook/react-webpack5';
-import path from 'path';
+import path, { dirname, join } from 'path';
 const config: StorybookConfig = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
   addons: [
-    '@storybook/addon-links',
-    '@storybook/addon-essentials',
-    '@storybook/addon-interactions',
-    '@storybook/addon-webpack5-compiler-swc',
-    '@storybook/addon-styling-webpack',
+    getAbsolutePath('@storybook/addon-links'),
+    getAbsolutePath('@storybook/addon-essentials'),
+    getAbsolutePath('@storybook/addon-interactions'),
+    getAbsolutePath('@storybook/addon-webpack5-compiler-swc'),
+    getAbsolutePath('@storybook/addon-styling-webpack'),
     {
       name: '@storybook/addon-styling-webpack',
 
@@ -35,10 +35,16 @@ const config: StorybookConfig = {
         ],
       },
     },
+    getAbsolutePath('@chromatic-com/storybook'),
+    '@chromatic-com/storybook',
   ],
   framework: {
-    name: '@storybook/react-webpack5',
-    options: {},
+    name: getAbsolutePath('@storybook/nextjs'),
+    options: {
+      builder: {
+        useSWC: true,
+      },
+    },
   },
   swc: (config, options) => ({
     jsc: {
@@ -60,7 +66,11 @@ const config: StorybookConfig = {
     return config;
   },
   docs: {
-    autodocs: 'tag',
+    autodocs: true,
   },
 };
 export default config;
+
+function getAbsolutePath(value: string): any {
+  return dirname(require.resolve(join(value, 'package.json')));
+}
