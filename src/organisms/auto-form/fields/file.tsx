@@ -36,7 +36,7 @@ export default function AutoFormFile({
   };
 
   return (
-    <FormItem>
+    <FormItem className={fieldProps.containerClassName}>
       {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
       {!file && (
         <FormControl>

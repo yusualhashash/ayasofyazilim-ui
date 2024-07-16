@@ -12,8 +12,8 @@ export default function AutoFormCheckbox({
   fieldProps,
 }: AutoFormInputComponentProps) {
   return (
-    <div>
-      <FormItem>
+    <>
+      <FormItem className={fieldProps.containerClassName}>
         <div className="mb-3 flex items-center gap-3">
           <FormControl>
             <Checkbox
@@ -26,6 +26,6 @@ export default function AutoFormCheckbox({
         </div>
       </FormItem>
       <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
-    </div>
+    </>
   );
 }

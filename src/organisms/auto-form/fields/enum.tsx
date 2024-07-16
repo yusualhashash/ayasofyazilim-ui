@@ -33,7 +33,7 @@ export default function AutoFormEnum({
   const findItem = (value: any) => values.find((item) => item[0] === value);
 
   return (
-    <FormItem>
+    <FormItem className={fieldProps.containerClassName}>
       <AutoFormLabel label={label} isRequired={isRequired} />
       <FormControl>
         <Select

@@ -3,6 +3,7 @@ import { Switch } from '@/components/ui/switch';
 import AutoFormLabel from '../common/label';
 import AutoFormTooltip from '../common/tooltip';
 import { AutoFormInputComponentProps } from '../types';
+import { cn } from '@/lib/utils';
 
 export default function AutoFormSwitch({
   label,
@@ -14,7 +15,12 @@ export default function AutoFormSwitch({
   return (
     <div>
       <FormItem>
-        <div className="flex items-center gap-3">
+        <div
+          className={cn(
+            'flex items-center gap-3',
+            fieldProps.containerClassName
+          )}
+        >
           <FormControl>
             <Switch
               checked={field.value}

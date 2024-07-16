@@ -30,8 +30,8 @@ export default function AutoFormRadioGroup({
   }
 
   return (
-    <div>
-      <FormItem>
+    <>
+      <FormItem className={fieldProps.containerClassName}>
         <AutoFormLabel label={label} isRequired={isRequired} />
         <FormControl>
           <RadioGroup
@@ -55,6 +55,6 @@ export default function AutoFormRadioGroup({
         <FormMessage />
       </FormItem>
       <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
-    </div>
+    </>
   );
 }
