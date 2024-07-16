@@ -13,7 +13,7 @@ export default function AutoFormTextarea({
   const { showLabel: _showLabel, ...fieldPropsWithoutShowLabel } = fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
   return (
-    <FormItem>
+    <FormItem className={fieldProps.containerClassName}>
       {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
       <FormControl>
         <Textarea {...fieldPropsWithoutShowLabel} />

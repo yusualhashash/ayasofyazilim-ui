@@ -12,7 +12,7 @@ export default function AutoFormDate({
   fieldProps,
 }: AutoFormInputComponentProps) {
   return (
-    <FormItem>
+    <FormItem className={fieldProps.containerClassName}>
       <AutoFormLabel label={label} isRequired={isRequired} />
       <FormControl>
         <DatePicker

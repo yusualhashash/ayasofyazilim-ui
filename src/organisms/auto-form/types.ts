@@ -68,6 +68,7 @@ export type Dependency<SchemaType extends z.infer<z.ZodObject<any, any>>> =
  */
 export type AutoFormInputComponentProps = {
   className?: string;
+  containerClassName?: string;
   field: ControllerRenderProps<FieldValues, any>;
   fieldConfigItem: FieldConfigItem;
   fieldProps: any;

@@ -23,6 +23,8 @@ export default function AutoFormObject<
   path = [],
   dependencies = [],
   isDisabled = false,
+  showInRow = false,
+  hasParent = false,
 }: {
   dependencies?: Dependency<z.infer<SchemaType>>[];
   fieldConfig?: FieldConfig<z.infer<SchemaType>>;
@@ -30,6 +32,8 @@ export default function AutoFormObject<
   isDisabled?: boolean;
   path?: string[];
   schema: SchemaType | z.ZodEffects<SchemaType>;
+  showInRow?: boolean;
+  hasParent?: boolean;
 }) {
   const { watch } = useFormContext(); // Use useFormContext to access the watch function
 
@@ -64,9 +68,10 @@ export default function AutoFormObject<
       : beautifyObjectName(name);
   }
   return (
-    <div className="space-y-5">
+    <div className={showInRow ? 'flex flex-row gap-3' : 'space-y-2'}>
       {Object.keys(shape).map((name: string) =>
         CreateFormObject(
+          hasParent,
           name,
           shape,
           fieldConfig,
@@ -75,8 +80,7 @@ export default function AutoFormObject<
           watch,
           form,
           createItemName,
-          handleIfZodNumber,
-          name.includes('IsApplicable') ? false : isDisabled
+          handleIfZodNumber
         )
       )}
     </div>
@@ -84,6 +88,7 @@ export default function AutoFormObject<
 }
 
 function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
+  hasParent: boolean,
   name: string,
   shape: z.ZodObject<any, any>['shape'],
   fieldConfig: any,
@@ -93,7 +98,7 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
   form: ReturnType<typeof useForm>,
   createItemName: any,
   handleIfZodNumber: (item: z.ZodAny) => z.ZodAny,
-  isInputDisabled: boolean
+  isInputDisabled?: boolean
 ) {
   let item = shape[name] as z.ZodAny;
   const itemName = createItemName(item, name) ?? name;
@@ -112,24 +117,26 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
 
   if (zodBaseType === 'ZodObject') {
     return (
-      <div key={key} className="flex flex-col border p-4 rounded-md bg-white">
+      <div
+        key={key}
+        className="flex flex-col border p-4 rounded-md bg-white flex-1 gap-2"
+      >
         <div className="text-sm font-bold">{itemName}</div>
         <div className="text-muted-foreground text-sm">
           {fieldConfig?.[name]?.description}
         </div>
-        <div className="p-2">
-          <AutoFormObject
-            isDisabled={isDisabled}
-            dependencies={dependencies}
-            // @ts-ignore
-            schema={item as unknown as z.ZodObject<any, any>}
-            form={form}
-            fieldConfig={
-              (fieldConfig?.[name] ?? {}) as FieldConfig<z.infer<typeof item>>
-            }
-            path={[...path, name]}
-          />
-        </div>
+        <AutoFormObject
+          isDisabled={isDisabled}
+          dependencies={dependencies}
+          hasParent={true}
+          // @ts-ignore
+          schema={item as unknown as z.ZodObject<any, any>}
+          form={form}
+          fieldConfig={
+            (fieldConfig?.[name] ?? {}) as FieldConfig<z.infer<typeof item>>
+          }
+          path={[...path, name]}
+        />
       </div>
     );
   }
@@ -176,7 +183,6 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
             : INPUT_COMPONENTS[inputType];
 
         const ParentElement = fieldConfigItem.renderParent ?? DefaultParent;
-
         const defaultValue = fieldConfigItem.inputProps?.defaultValue;
         const value = field.value ?? defaultValue ?? '';
 
@@ -190,7 +196,9 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
             isInputDisabled,
           ref: undefined,
           value,
+          containerClassName: hasParent ? '' : 'bg-white p-4 rounded-md border',
         };
+
         if (InputComponent === undefined) {
           return null;
         }
