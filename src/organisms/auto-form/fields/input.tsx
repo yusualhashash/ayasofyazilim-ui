@@ -25,11 +25,7 @@ export default function AutoFormInput({
       <FormItem className="flex w-full flex-col justify-start">
         {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
         <FormControl>
-          <Input
-            type={type}
-            {...fieldPropsWithoutShowLabel}
-            className="max-w-[400px]"
-          />
+          <Input type={type} {...fieldPropsWithoutShowLabel} />
         </FormControl>
         <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
         <FormMessage />
