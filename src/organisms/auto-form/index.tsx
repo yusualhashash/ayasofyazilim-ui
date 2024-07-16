@@ -44,6 +44,7 @@ export type AutoFormProps = {
   onSubmit?: (values: z.infer<SchemaType>) => void;
   onValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
   values?: Partial<z.infer<SchemaType>>;
+  showInRow?: boolean;
 };
 
 function AutoForm({
@@ -56,6 +57,7 @@ function AutoForm({
   children,
   className,
   dependencies,
+  showInRow,
 }: AutoFormProps) {
   const objectFormSchema = getObjectFormSchema(formSchema);
   const defaultValues: DefaultValues<z.infer<typeof objectFormSchema>> | null =
@@ -96,6 +98,7 @@ function AutoForm({
           className={cn('space-y-5', className)}
         >
           <AutoFormObject
+            showInRow={showInRow}
             schema={objectFormSchema}
             form={form}
             dependencies={dependencies}
