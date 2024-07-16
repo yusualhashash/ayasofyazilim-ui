@@ -12,9 +12,7 @@ import {
 } from '../utils';
 import AutoFormArray from './array';
 
-const DefaultParent = ({ children }: { children: JSX.Element }) => ({
-  children,
-});
+const DefaultParent = ({ children }: { children: JSX.Element }) => children;
 
 export default function AutoFormObject<
   SchemaType extends z.ZodObject<any, any>,
