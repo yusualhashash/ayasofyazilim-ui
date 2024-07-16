@@ -164,7 +164,6 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
   if (overrideOptions) {
     item = z.enum(overrideOptions) as unknown as z.ZodAny;
   }
-
   return (
     <FormField
       // disabled={isDisabled}
@@ -185,7 +184,7 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
         const ParentElement = fieldConfigItem.renderParent ?? DefaultParent;
         const defaultValue = fieldConfigItem.inputProps?.defaultValue;
         const value = field.value ?? defaultValue ?? '';
-
+        const withoutBorder = fieldConfig?.withoutBorder ?? false;
         const fieldProps = {
           ...zodToHtmlInputProps(item),
           ...field,
@@ -196,7 +195,8 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
             isInputDisabled,
           ref: undefined,
           value,
-          containerClassName: hasParent ? '' : 'bg-white p-4 rounded-md border',
+          containerClassName:
+            hasParent || withoutBorder ? '' : 'bg-white p-4 rounded-md border',
         };
 
         if (InputComponent === undefined) {
