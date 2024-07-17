@@ -14,7 +14,6 @@ export default function Dashboard({
   withTable,
 }: DashboardProps) {
   return (
-    // <div className="flex flex-col items-center justify-start h-full w-full">
     <>
       {withCards && (
         <div className="flex-row p-4 w-10/12">
@@ -33,6 +32,5 @@ export default function Dashboard({
         </ScrollArea>
       )}
     </>
-    // </div>
   );
 }
