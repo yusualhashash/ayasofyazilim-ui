@@ -70,7 +70,13 @@ export type DataTableProps<TData> = {
 };
 const SkeletonCell = () => <Skeleton className="w-20 h-3" />;
 
-const actionComponent = (action?: tableAction, callback?: Function) => {
+const ActionComponent = ({
+  action,
+  callback,
+}: {
+  action?: tableAction;
+  callback?: Function;
+}) => {
   if (!action) return null;
   if (action.type === 'NewPage') {
     return (
@@ -158,7 +164,7 @@ export default function DataTable<TData, TValue>({
     },
   });
   const [isOpen, setIsOpen] = React.useState(false);
-  const tempAction = action;
+
   return (
     <div className="w-full container mx-auto">
       {action?.type === 'NewPage' ? null : (
@@ -200,7 +206,7 @@ export default function DataTable<TData, TValue>({
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        {actionComponent(tempAction, () => setIsOpen(true))}
+        <ActionComponent action={action} callback={() => setIsOpen(true)} />
       </div>
       <div className="rounded-md border relative w-full">
         <ScrollArea>
