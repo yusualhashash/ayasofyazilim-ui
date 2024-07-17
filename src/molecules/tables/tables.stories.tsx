@@ -158,3 +158,45 @@ export const newPage: StoryObj<typeof Table> = {
     layout: 'centered',
   },
 };
+
+export const sheet: StoryObj<typeof Table> = {
+  args: {
+    data,
+    columnsData: {
+      type: 'Auto',
+      data: {
+        callback: () => alert('Added Callback'),
+        autoFormArgs: {
+          formSchema: createZodObject(jsonSchema, [
+            'status',
+            'email',
+            'amount',
+          ]),
+        },
+        tableType: jsonSchema,
+        excludeList: ['id'],
+        onEdit: (values, row) => {
+          alert(
+            `OnEdit \ndata:\n${JSON.stringify(values)} \nRow:\n${JSON.stringify(row)}`
+          );
+        },
+        onDelete: (e, row) => {
+          alert(
+            `OnDelete \ndata:\n${JSON.stringify(e)} \nRow:\n${JSON.stringify(row)}`
+          );
+        },
+      },
+    },
+    filterBy: 'email',
+    action: {
+      cta: 'New Record',
+      description: 'Add New Record',
+      callback: () => alert('Added'),
+      autoFormArgs,
+      type: 'Sheet',
+    },
+  },
+  parameters: {
+    layout: 'centered',
+  },
+};

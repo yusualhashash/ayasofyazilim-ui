@@ -44,7 +44,7 @@ export type tableAction = {
   cta: string;
   description: string;
   href?: string;
-  type?: 'Dialog' | 'NewPage';
+  type?: 'Dialog' | 'NewPage' | 'Sheet';
 };
 
 type autoColumnGnerator = {
@@ -166,6 +166,7 @@ export default function DataTable<TData, TValue>({
           open={isOpen}
           onOpenChange={setIsOpen}
           action={action}
+          type={action?.type}
         />
       )}
       <div className="flex items-center py-4 gap-2">
