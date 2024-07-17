@@ -69,7 +69,10 @@ export const Default: StoryObj<typeof AutoformDialog> = {
         <AutoformDialog
           action={args.action}
           open={open}
-          onOpenChange={args.onOpenChange}
+          onOpenChange={() => {
+            onOpenChange(!open);
+          }}
+          type={args.type}
         />
       </>
     );
