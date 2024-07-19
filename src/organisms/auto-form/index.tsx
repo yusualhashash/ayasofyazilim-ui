@@ -38,11 +38,7 @@ export type AutoFormProps = {
   children?: JSX.Element;
   className?: string;
   dependencies?: Dependency<z.infer<SchemaType>>[];
-  fieldConfig?:
-    | FieldConfig<z.infer<SchemaType>>
-    | {
-        withoutBorder?: boolean;
-      };
+  fieldConfig?: FieldConfig<z.infer<SchemaType>> & { withoutBorder: boolean };
   formSchema: SchemaType;
   onParsedValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
   onSubmit?: (values: z.infer<SchemaType>) => void;
