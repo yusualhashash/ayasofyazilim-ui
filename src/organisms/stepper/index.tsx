@@ -42,8 +42,14 @@ export const StepperContent = ({
   isBackDisabled,
   isNextDisabled,
 }: IStepperContentProps) => {
-  const { previousButtonText, nextButtonText, onIndexChange, vertical } =
-    useContext(StepperContext);
+  const {
+    previousButtonText,
+    nextButtonText,
+    onIndexChange,
+    vertical,
+    stepsLength,
+  } = useContext(StepperContext);
+  const [isLastStep, setIsLastStep] = React.useState(false);
   return (
     <div id={title} className={vertical ? 'w-10/12' : 'w-full'}>
       {children}
@@ -70,10 +76,14 @@ export const StepperContent = ({
           <div>
             {canGoNext && (
               <CustomButton
-                disabled={isNextDisabled}
+                disabled={isNextDisabled || isLastStep}
                 onClick={() =>
                   onIndexChange((prev) => {
-                    if (prev <= Children.count(children) - 1) {
+                    console.log('prev', prev, stepsLength);
+                    if (prev === stepsLength - 1) {
+                      setIsLastStep(true);
+                    }
+                    if (prev < stepsLength - 1) {
                       return prev + 1;
                     }
                     return prev;
@@ -145,6 +155,7 @@ const StepperContext = createContext({
   // eslint-disable-next-line
   onIndexChange: (value: SetStateAction<number>) => {},
   vertical: false,
+  stepsLength: 2,
 });
 export interface IStepperProps {
   activeTabIndex: number;
@@ -163,6 +174,7 @@ export default function Stepper({
   previousButtonText = 'Previous',
   onIndexChange,
 }: IStepperProps) {
+  console.log('children', children);
   const keys = children?.flatMap((child, index) => {
     const item = React.isValidElement(child)
       ? { title: child.props.title || '', icon: child.props.icon, index }
@@ -172,14 +184,16 @@ export default function Stepper({
     }
     return ['SEPARATOR', item];
   });
+  const stepsLength = Children.count(children);
   const providerProps = useMemo(
     () => ({
       nextButtonText,
       previousButtonText,
       onIndexChange,
       vertical,
+      stepsLength,
     }),
-    [nextButtonText, previousButtonText, onIndexChange, vertical]
+    [nextButtonText, previousButtonText, onIndexChange, vertical, stepsLength]
   );
   const filteredChildren = React.Children.toArray(children)?.[activeTabIndex];
   return (
