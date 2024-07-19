@@ -1,6 +1,12 @@
 'use client';
 
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -31,7 +37,9 @@ export function SectionLayoutNavbar({
     <nav
       className={cn(
         'flex gap-4 text-sm text-center md:text-left p-5',
-        vertical ? 'flex-col border-r' : 'flex-col md:flex-row border-b'
+        vertical
+          ? 'flex-col border-r min-w-[240px]'
+          : 'flex-col md:flex-row border-b'
       )}
     >
       {sections.map((section) => (
@@ -98,6 +106,11 @@ export function SectionLayout({
   const [activeSectionId, setActiveSectionId] = useState(
     defaultActiveSectionId || sections?.[0].id
   );
+  useEffect(() => {
+    if (linkElement && defaultActiveSectionId) {
+      setActiveSectionId(defaultActiveSectionId);
+    }
+  }, [defaultActiveSectionId]);
   const contextValue = useMemo(() => ({ activeSectionId }), [activeSectionId]);
   return (
     <SectionLayoutContext.Provider value={contextValue}>
