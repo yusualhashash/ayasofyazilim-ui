@@ -1,6 +1,7 @@
 'use client';
 
 import React, {
+  Children,
   Dispatch,
   SetStateAction,
   createContext,
@@ -53,7 +54,14 @@ export const StepperContent = ({
               <CustomButton
                 variant="outline"
                 disabled={isBackDisabled}
-                onClick={() => onIndexChange((prev) => prev - 1)}
+                onClick={() =>
+                  onIndexChange((prev) => {
+                    if (prev > 0) {
+                      return prev - 1;
+                    }
+                    return prev;
+                  })
+                }
               >
                 {previousButtonText}
               </CustomButton>
@@ -63,7 +71,14 @@ export const StepperContent = ({
             {canGoNext && (
               <CustomButton
                 disabled={isNextDisabled}
-                onClick={() => onIndexChange((prev) => prev + 1)}
+                onClick={() =>
+                  onIndexChange((prev) => {
+                    if (prev <= Children.count(children) - 1) {
+                      return prev + 1;
+                    }
+                    return prev;
+                  })
+                }
               >
                 {nextButtonText}
               </CustomButton>
