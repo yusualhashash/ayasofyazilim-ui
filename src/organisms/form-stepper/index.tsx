@@ -20,7 +20,11 @@ export default function FormStepper({ steps }: { steps: Step[] }) {
   const [currentStep, setCurrentStep] = React.useState(0);
   const stepsComponents = FormStepperGenerator(steps);
   return (
-    <Stepper activeTabIndex={currentStep} onIndexChange={setCurrentStep}>
+    <Stepper
+      activeTabIndex={currentStep}
+      onIndexChange={setCurrentStep}
+      vertical
+    >
       {...stepsComponents}
     </Stepper>
   );
