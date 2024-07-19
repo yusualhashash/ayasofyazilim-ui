@@ -38,13 +38,17 @@ export type AutoFormProps = {
   children?: JSX.Element;
   className?: string;
   dependencies?: Dependency<z.infer<SchemaType>>[];
-  fieldConfig?: FieldConfig<z.infer<SchemaType>>;
+  fieldConfig?:
+    | FieldConfig<z.infer<SchemaType>>
+    | {
+        withoutBorder?: boolean;
+      };
   formSchema: SchemaType;
   onParsedValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
   onSubmit?: (values: z.infer<SchemaType>) => void;
   onValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
-  values?: Partial<z.infer<SchemaType>>;
   showInRow?: boolean;
+  values?: Partial<z.infer<SchemaType>>;
 };
 
 function AutoForm({
