@@ -96,7 +96,44 @@ const ActionComponent = ({
     </Button>
   );
 };
-
+/**
+ * Renders a data table with customizable columns, sorting, filtering, and selection capabilities.
+ * The table can display data in either a custom format defined by the user or automatically generate columns based on provided data.
+ * It supports loading states, custom actions, and can be filtered by a specific field.
+ *
+ * @param {DataTableProps<TData>} props - The properties for configuring the DataTable component.
+ * @param {columnsType} props.columnsData - Configuration for the table columns. Can be either custom-defined columns or automatically generated based on data.
+ * @param {TData[]} props.data - The data to be displayed in the table.
+ * @param {string} props.filterBy - The field name to filter the table data by.
+ * @param {tableAction} [props.action] - Optional. Configuration for an action that can be performed on the table data, such as adding a new row.
+ * @param {boolean} [props.isLoading] - Optional. Indicates whether the table is in a loading state. Defaults to false.
+ *
+ * @returns {React.ReactElement} The rendered data table component.
+ *
+ * @template TData - The type of the data objects that will be displayed in the table.
+ * @template TValue - The type of the values within each data object. This is used when defining custom columns.
+ *
+ * @example
+ * // Example usage of DataTable with auto-generated columns
+ * const usersData = [{ id: 1, name: 'John Doe', role: 'Admin' }];
+ * const columnsConfig = {
+ *   type: 'Auto',
+ *   data: {
+ *     autoFormArgs: {},
+ *     callback: () => {},
+ *     excludeList: ['id'],
+ *     onDelete: () => {},
+ *     onEdit: () => {},
+ *     tableType: 'UserTable',
+ *   },
+ * };
+ *
+ * <DataTable
+ *   columnsData={columnsConfig}
+ *   data={usersData}
+ *   filterBy="name"
+ * />
+ */
 export default function DataTable<TData, TValue>({
   columnsData,
   data,

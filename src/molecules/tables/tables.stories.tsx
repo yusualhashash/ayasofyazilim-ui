@@ -45,6 +45,12 @@ const action: tableAction = {
   autoFormArgs,
 };
 
+/**
+ * # Table stories
+ * Awesome datatable that provides a lot of features.
+ *
+ * like: custom data tables, custom columsn, auto generated columns, etc
+ */
 export default { component: Table } as Meta<typeof Table>;
 
 export const Default: StoryObj<typeof Table> = {
