@@ -36,7 +36,6 @@ import AutoformDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import { normalizeName } from './utils';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ScrollBar, ScrollArea } from '@/components/ui/scroll-area';
 
 export type tableAction = {
   autoFormArgs: any;
@@ -203,7 +202,7 @@ export default function DataTable<TData, TValue>({
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
-    <div className="w-full container mx-auto">
+    <div className="w-full">
       {action?.type === 'NewPage' ? null : (
         <AutoformDialog
           open={isOpen}
@@ -247,58 +246,52 @@ export default function DataTable<TData, TValue>({
         <ActionComponent action={action} callback={() => setIsOpen(true)} />
       </div>
       <div className="rounded-md border relative w-full">
-        <ScrollArea>
-          <ScrollBar orientation="horizontal" className="z-50" />
-          <ScrollBar orientation="vertical" className="z-50" />
-          <div className="w-full h-full max-h-[500px]">
-            <Table wrapperClassName="static overflow-visible">
-              <TableHeader className="sticky top-0 bg-slate-100 z-10">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </TableHead>
-                    ))}
-                  </TableRow>
+        <Table wrapperClassName="min-h-[50vh]">
+          <TableHeader className="sticky top-0 bg-slate-100 z-10">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
                 ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && 'selected'}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      No results.
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </ScrollArea>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
 
       <div className="flex items-center justify-end space-x-2 py-4">
