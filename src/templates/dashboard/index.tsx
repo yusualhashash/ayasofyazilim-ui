@@ -11,6 +11,8 @@ export default function Dashboard({
   isLoading,
   withCards,
   withTable,
+  rowCount,
+  fetchRequest,
 }: DashboardProps) {
   return (
     <>
@@ -26,6 +28,8 @@ export default function Dashboard({
           data={data}
           action={action}
           isLoading={isLoading}
+          rowCount={rowCount}
+          fetchRequest={fetchRequest}
         />
       )}
     </>

@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import {
   ColumnDef,
@@ -10,10 +9,10 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import * as React from 'react';
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -24,6 +23,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -35,7 +35,6 @@ import {
 import AutoformDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import { normalizeName } from './utils';
-import { Skeleton } from '@/components/ui/skeleton';
 
 export type tableAction = {
   autoFormArgs: any;
@@ -64,8 +63,10 @@ export type DataTableProps<TData> = {
   action?: tableAction;
   columnsData: columnsType;
   data: TData[];
+  fetchRequest?: any;
   filterBy: string;
   isLoading?: boolean;
+  rowCount: number;
 };
 const SkeletonCell = () => <Skeleton className="w-20 h-3" />;
 
@@ -139,6 +140,8 @@ export default function DataTable<TData, TValue>({
   filterBy,
   action,
   isLoading,
+  rowCount,
+  fetchRequest,
 }: DataTableProps<TData>) {
   let tableData = data;
 
@@ -184,7 +187,8 @@ export default function DataTable<TData, TValue>({
       setColumnFilters(filters);
     },
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    manualPagination: true,
+    rowCount,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -199,6 +203,10 @@ export default function DataTable<TData, TValue>({
       rowSelection,
     },
   });
+  React.useEffect(() => {
+    fetchRequest(table.getState().pagination.pageIndex);
+  }, [table.getState().pagination.pageIndex]);
+
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
