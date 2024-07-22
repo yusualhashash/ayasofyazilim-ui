@@ -98,7 +98,10 @@ export function SectionLayoutContent({
   if (activeSectionId !== sectionId) return null;
 
   return (
-    <div id={`section-${sectionId}`} className={cn('w-full p-5', className)}>
+    <div
+      id={`section-${sectionId}`}
+      className={cn('w-full p-5 overflow-auto', className)}
+    >
       {children}
     </div>
   );
