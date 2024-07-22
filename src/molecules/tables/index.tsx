@@ -204,7 +204,7 @@ export default function DataTable<TData, TValue>({
     },
   });
   React.useEffect(() => {
-    fetchRequest(table.getState().pagination.pageIndex);
+    fetchRequest?.(table.getState().pagination.pageIndex);
   }, [table.getState().pagination.pageIndex]);
 
   const [isOpen, setIsOpen] = React.useState(false);
