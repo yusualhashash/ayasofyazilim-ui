@@ -25,6 +25,16 @@ export interface ISectionLayoutNavbarProps {
   vertical?: boolean;
 }
 
+/**
+ * Renders a navigation bar for a section layout.
+ *
+ * @param {Array<ISection>} props.sections - The sections to be rendered in the navigation bar.
+ * @param {string} props.activeSectionId - The ID of the active section.
+ * @param {(sectionId: string) => void} [props.onSectionChange] - The function to be called when a section is clicked.
+ * @param {React.ElementType} [props.linkElement] - The element to be used for the section links. (default: Button)
+ * @param {boolean} [props.vertical] - Whether the navigation bar should be rendered vertically.
+ * @return {React.ReactNode} The rendered navigation bar.
+ */
 export function SectionLayoutNavbar({
   sections,
   activeSectionId,
@@ -70,6 +80,14 @@ export interface ISectionContentProps {
   className?: string;
   sectionId: string;
 }
+/**
+ * Renders the content of a section layout based on the active section ID. It must be inside of SectionLayout component.
+ *
+ * @param {string} sectionId - The ID of the section to render.
+ * @param {React.ReactNode} children - The content to be rendered inside the section layout.
+ * @param {string} className - Additional CSS classes for styling.
+ * @return {JSX.Element | null} The rendered section layout content or null if the section is not active.
+ */
 export function SectionLayoutContent({
   sectionId,
   children,
@@ -96,6 +114,17 @@ export interface ISectionLayoutProps {
   sections: Array<ISection>;
   vertical?: boolean;
 }
+
+/**
+ * Renders a section layout component with a navigation bar and content area.
+ *
+ * @param {React.ReactNode} children - The content to be rendered inside the section layout.
+ * @param {Array<ISection>} sections - The sections to be rendered in the navigation bar.
+ * @param {string} [defaultActiveSectionId] - The ID of the section to be active by default.
+ * @param {any} [linkElement] - The element to be used for the section links. (default: Button)
+ * @param {boolean} [vertical] - Whether the layout should be rendered vertically.
+ * @return {JSX.Element} The rendered section layout component.
+ */
 export function SectionLayout({
   children,
   sections,
