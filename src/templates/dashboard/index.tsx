@@ -1,7 +1,6 @@
-import CardList from '../../organisms/card-list';
 import DataTable from '../../molecules/tables';
+import CardList from '../../organisms/card-list';
 import { DashboardProps } from './types';
-import ScrollArea from '../../molecules/scroll-area';
 
 export default function Dashboard({
   cards,
@@ -21,15 +20,13 @@ export default function Dashboard({
         </div>
       )}
       {withTable && (
-        <ScrollArea>
-          <DataTable
-            filterBy={filterBy}
-            columnsData={columnsData}
-            data={data}
-            action={action}
-            isLoading={isLoading}
-          />
-        </ScrollArea>
+        <DataTable
+          filterBy={filterBy}
+          columnsData={columnsData}
+          data={data}
+          action={action}
+          isLoading={isLoading}
+        />
       )}
     </>
   );
