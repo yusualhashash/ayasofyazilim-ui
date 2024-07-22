@@ -66,7 +66,7 @@ export type DataTableProps<TData> = {
   fetchRequest?: any;
   filterBy: string;
   isLoading?: boolean;
-  rowCount: number;
+  rowCount?: number;
 };
 const SkeletonCell = () => <Skeleton className="w-20 h-3" />;
 
@@ -188,7 +188,7 @@ export default function DataTable<TData, TValue>({
     },
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
-    rowCount,
+    rowCount: rowCount || tableData.length,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
