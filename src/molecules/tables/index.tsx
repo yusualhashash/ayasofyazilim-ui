@@ -246,7 +246,7 @@ export default function DataTable<TData, TValue>({
         <ActionComponent action={action} callback={() => setIsOpen(true)} />
       </div>
       <div className="rounded-md border relative w-full">
-        <Table wrapperClassName="min-h-[50vh]">
+        <Table wrapperClassName="h-[500px] overflow-y-auto">
           <TableHeader className="sticky top-0 bg-slate-100 z-10">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -269,6 +269,7 @@ export default function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  className="whitespace-nowrap"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
