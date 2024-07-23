@@ -46,9 +46,9 @@ export function SectionLayoutNavbar({
   return (
     <nav
       className={cn(
-        'flex gap-4 text-sm text-center md:text-left p-5',
+        'flex gap-4 text-sm text-center md:text-left p-5 ',
         vertical
-          ? 'flex-col border-r min-w-[240px]'
+          ? 'flex-col border-b md:border-b-0 md:border-r min-w-full md:min-w-[240px] items-center md:items-start'
           : 'flex-col md:flex-row border-b'
       )}
     >
@@ -56,8 +56,8 @@ export function SectionLayoutNavbar({
         <LinkElement
           className={
             activeSectionId === section.id
-              ? 'font-semibold text-primary hover:no-underline m-0 p-0 h-auto'
-              : 'font-normal text-muted-foreground hover:no-underline m-0 p-0 h-auto'
+              ? 'font-semibold text-primary hover:no-underline m-0 p-0 h-auto justify-start'
+              : 'font-normal text-muted-foreground hover:no-underline m-0 p-0 h-auto justify-start'
           }
           href={section.link || '#'}
           onClick={() => {
@@ -100,7 +100,7 @@ export function SectionLayoutContent({
   return (
     <div
       id={`section-${sectionId}`}
-      className={cn('w-full p-5 overflow-auto', className)}
+      className={cn('w-full p-5 overflow-auto h-full', className)}
     >
       {children}
     </div>
@@ -146,7 +146,13 @@ export function SectionLayout({
   const contextValue = useMemo(() => ({ activeSectionId }), [activeSectionId]);
   return (
     <SectionLayoutContext.Provider value={contextValue}>
-      <Card className={vertical ? 'flex rounded-lg' : 'rounded-lg'}>
+      <Card
+        className={
+          vertical
+            ? 'flex flex-wrap md:flex-nowrap rounded-lg h-full'
+            : 'rounded-lg h-full'
+        }
+      >
         <SectionLayoutNavbar
           sections={sections}
           activeSectionId={activeSectionId}
