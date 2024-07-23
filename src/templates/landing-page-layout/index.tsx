@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 
 import { ChevronUp } from 'lucide-react';
-import ScrollArea from '@repo/ayasofyazilim-ui/molecules/scroll-area';
 import { cn } from '@/lib/utils';
 
 interface ILandingPageLayoutProps {
@@ -33,18 +32,11 @@ export default function LandingPageLayout({
   const scrollThreshold = 200;
 
   useEffect(() => {
-    const el = document.querySelector('#scroll-area > div');
-    const handleScroll = () => {
-      setIsScrolled((el?.scrollTop || 0) >= scrollThreshold);
-    };
-    if (el) {
-      el.addEventListener('scroll', handleScroll);
+    function onScroll() {
+      setIsScrolled((window.scrollY || 0) >= scrollThreshold);
     }
-    return () => {
-      if (el) {
-        el.removeEventListener('scroll', handleScroll);
-      }
-    };
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
@@ -91,9 +83,7 @@ const Layout = ({
     <div className="flex">
       {SidebarComponent}
 
-      <main className={cn(mainClassName)}>
-        <ScrollArea>{children}</ScrollArea>
-      </main>
+      <main className={cn(mainClassName)}>{children}</main>
     </div>
   </div>
 );

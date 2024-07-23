@@ -49,7 +49,7 @@ const SectionNavbarBase = ({
   const [showDropdown, setShowDropdown] = useState(false);
 
   return (
-    <div className="bg-white pt-3 pb-3 border-b sticky top-20 z-10">
+    <div className="bg-white pt-3 pb-3 border-b sticky top-16 z-10">
       <nav className="flex flex-row justify-center items-center">
         <div className="text-sm flex flex-col md:flex-row md:flex-wrap gap-5 items-center md:justify-center">
           {sections.map((section) => {
