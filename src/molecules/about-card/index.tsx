@@ -35,15 +35,17 @@ export default function AboutCard({
             containerClassName
           )}
         >
-          <Link href={link}>
-            <Avatar className="items-center w-6">
-              <AvatarImage src={avatar} className="w-6 h-6 rounded-full" />
-              <AvatarFallback>{title}</AvatarFallback>
-            </Avatar>
-          </Link>
-          <CardTitle className="m-0 hover:underline">
-            <Link href={link}>{title}</Link>
-          </CardTitle>
+          {link && (<>
+            <Link href={link}>
+              <Avatar className="items-center w-6">
+                <AvatarImage src={avatar} className="w-6 h-6 rounded-full" />
+                <AvatarFallback>{title}</AvatarFallback>
+              </Avatar>
+            </Link>
+            <CardTitle className="m-0 hover:underline">
+              <Link href={link}>{title}</Link>
+            </CardTitle>
+          </>)}
         </div>
       </HoverCardTrigger>
       <HoverCardContent
@@ -53,15 +55,15 @@ export default function AboutCard({
         )}
       >
         <div className="flex justify-between space-x-4">
-          <Link href={link}>
+          {link && <Link href={link}>
             <Avatar>
               <AvatarImage src={avatar} />
               <AvatarFallback>{title}</AvatarFallback>
             </Avatar>
-          </Link>
+          </Link>}
           <div className="space-y-1">
             <h4 className="text-sm font-semibold hover:underline">
-              <Link href={link}>{title}</Link>
+              {link && <Link href={link}>{title}</Link>}
             </h4>
             <p className="text-sm">{description}</p>
           </div>

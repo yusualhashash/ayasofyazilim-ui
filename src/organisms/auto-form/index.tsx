@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -25,7 +25,7 @@ export const AutoFormSubmit = ({
   className,
   disabled,
 }: {
-  children?: JSX.Element;
+  children?: ReactNode;
   className?: string;
   disabled?: boolean;
 }) => (
