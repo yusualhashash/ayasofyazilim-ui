@@ -55,11 +55,7 @@ export default function LandingPageLayout({
           type="button"
           aria-label="Scroll to Top"
           className="fixed bottom-5 z-50 right-5 p-2 bg-gray-600 hover:bg-gray-700 rounded-full cursor-pointer"
-          onClick={() =>
-            document
-              ?.querySelector('#scroll-area > div')
-              ?.scrollTo({ top: 0, behavior: 'smooth' })
-          }
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           <ChevronUp className="w-6 h-6" color="white" />
         </button>
