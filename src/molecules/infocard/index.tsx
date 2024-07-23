@@ -57,9 +57,11 @@ export default function InfoCard(infoCard: infoCardProps) {
       <CardFooter className="text-gray-400">
         <p>{checkIsLoading(infoCard.loading, infoCard.footer, 24)}</p>
         {tempCta && (
-          <Link className="w-full m-4" href={tempCta.href} asChild>
-            <Button className="w-full m-4">{tempCta.text}</Button>
-          </Link>
+          <Button className="w-full m-4" asChild>
+            <Link className="w-full m-4" href={tempCta.href}>
+              {tempCta.text}
+            </Link>
+          </Button>
         )}
         {infoCard.onDelete && (
           <Button className="w-full m-4" onClick={infoCard.onDelete}>

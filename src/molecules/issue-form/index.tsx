@@ -392,7 +392,7 @@ export const Issueform = () => (
   </div>
 );
 
-const CalendarDaysIcon = (props) => (
+const CalendarDaysIcon = (props: React.HTMLAttributes<SVGSVGElement>) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -418,7 +418,7 @@ const CalendarDaysIcon = (props) => (
   </svg>
 );
 
-const DollarSignIcon = (props) => (
+const DollarSignIcon = (props: React.HTMLAttributes<SVGSVGElement>) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -436,7 +436,7 @@ const DollarSignIcon = (props) => (
   </svg>
 );
 
-const MailIcon = (props) => (
+const MailIcon = (props: React.HTMLAttributes<SVGSVGElement>) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -454,7 +454,7 @@ const MailIcon = (props) => (
   </svg>
 );
 
-const MapPinIcon = (props) => (
+const MapPinIcon = (props: React.HTMLAttributes<SVGSVGElement>) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -472,7 +472,7 @@ const MapPinIcon = (props) => (
   </svg>
 );
 
-const PlaneIcon = (props) => (
+const PlaneIcon = (props: React.HTMLAttributes<SVGSVGElement>) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -489,7 +489,7 @@ const PlaneIcon = (props) => (
   </svg>
 );
 
-const UserIcon = (props) => (
+const UserIcon = (props: React.HTMLAttributes<SVGSVGElement>) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"

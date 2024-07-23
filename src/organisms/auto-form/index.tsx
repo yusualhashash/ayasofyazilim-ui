@@ -38,7 +38,7 @@ export type AutoFormProps = {
   children?: JSX.Element;
   className?: string;
   dependencies?: Dependency<z.infer<SchemaType>>[];
-  fieldConfig?: FieldConfig<z.infer<SchemaType>> & { withoutBorder: boolean };
+  fieldConfig?: FieldConfig<z.infer<SchemaType>>;
   formSchema: SchemaType;
   onParsedValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
   onSubmit?: (values: z.infer<SchemaType>) => void;
@@ -61,7 +61,7 @@ function AutoForm({
 }: AutoFormProps) {
   const objectFormSchema = getObjectFormSchema(formSchema);
   const defaultValues: DefaultValues<z.infer<typeof objectFormSchema>> | null =
-    getDefaultValues(objectFormSchema, fieldConfig);
+    getDefaultValues(objectFormSchema, fieldConfig  as FieldConfig<z.infer<typeof objectFormSchema>>);
 
   const form = useForm<z.infer<typeof objectFormSchema>>({
     resolver: zodResolver(formSchema),
