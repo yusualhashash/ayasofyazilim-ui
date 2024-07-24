@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { SectionLayout, SectionLayoutContent, SectionLayoutNavbar } from '.';
 import { Card } from '@/components/ui/card';
 
+/**
+ * Section Layout component with a navigation bar and content area.
+ */
 const meta: Meta<typeof SectionLayout> = {
   component: SectionLayout,
 };
@@ -11,7 +14,6 @@ const meta: Meta<typeof SectionLayout> = {
 export default meta;
 type Story = StoryObj<typeof SectionLayout>;
 
-// This story uses a render function to fully control how the component renders.
 export const SamePageStory: Story = {
   parameters: {
     layout: 'centered',
