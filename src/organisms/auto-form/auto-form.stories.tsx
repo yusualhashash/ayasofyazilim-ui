@@ -29,8 +29,12 @@ const formSchema = z.object({
 
 const Template: StoryFn<typeof AutoForm> = (args: AutoFormProps) => (
   <AutoForm {...args}>
-    {args.children}
-    <AutoFormSubmit>Send now</AutoFormSubmit>
+    <>
+      {args.children}
+      <AutoFormSubmit>
+        Send now
+      </AutoFormSubmit>
+    </>
   </AutoForm>
 );
 

@@ -70,7 +70,7 @@ export const Default: StoryObj<typeof Table> = {
 };
 
 // Status	Email	Amount
-const jsonSchema = {
+const jsonSchema: any = {
   type: 'object',
   required: ['status', 'email', 'amount'],
   properties: {

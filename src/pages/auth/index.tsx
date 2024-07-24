@@ -16,10 +16,9 @@ import ResetPasswordForm, {
 export type authTypes = 'login' | 'register' | 'reset-password';
 export const isAuthType = (value: string): value is authTypes =>
   ['login', 'register', 'reset-password'].indexOf(value as authTypes) !== -1;
+export type innerAuthPropsType = LoginFormPropsType | RegisterFormPropsType | ResetPasswordFormPropsType;
 export type AuthPropsType = {
-  authProps:
-    | (LoginFormPropsType & RegisterFormPropsType & ResetPasswordFormPropsType)
-    | {};
+  authProps: innerAuthPropsType;
   authType: authTypes;
   children: JSX.Element;
   cultureName: string;
@@ -29,17 +28,15 @@ export type AuthPropsType = {
 function formSwitch(
   authType: authTypes,
   resources: { [key: string]: any },
-  authProps: LoginFormPropsType &
-    RegisterFormPropsType &
-    ResetPasswordFormPropsType
+  authProps: innerAuthPropsType
 ) {
   switch (authType) {
     case 'login':
-      return <LoginForm {...authProps} resources={resources} />;
+      return <LoginForm {...authProps as LoginFormPropsType} resources={resources} />;
     case 'register':
-      return <RegisterForm {...authProps} resources={resources} />;
+      return <RegisterForm {...authProps as RegisterFormPropsType} resources={resources} />;
     case 'reset-password':
-      return <ResetPasswordForm {...authProps} resources={resources} />;
+      return <ResetPasswordForm {...authProps as ResetPasswordFormPropsType} resources={resources} />;
     default:
       return resources?.AbpExceptionHandling?.texts
         .DefaultErrorMessage404Detail;

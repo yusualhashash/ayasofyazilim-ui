@@ -1,5 +1,5 @@
 import { CalendarDays, Grid2X2, Rows3 } from 'lucide-react';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -71,7 +71,7 @@ const Container = ({
   children,
   oriantation,
 }: {
-  children: JSX.Element;
+  children: ReactNode;
   oriantation: 'cols' | 'rows';
 }) => (
   <div

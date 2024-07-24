@@ -3,7 +3,7 @@
 'use client';
 
 import React from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, LucideIcon } from 'lucide-react';
 import {
   CartesianGrid,
   Dot,
@@ -83,7 +83,7 @@ const LegendItem = ({
 
 interface ScrollButtonProps {
   disabled?: boolean;
-  icon: React.ElementType;
+  icon: React.ElementType | LucideIcon;
   onClick?: () => void;
 }
 

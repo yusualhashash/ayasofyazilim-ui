@@ -58,7 +58,7 @@ export default function AutoFormArray({
       ? item._def.innerType._def.type
       : null;
   if (itemDefType === null) {
-    itemDefType = item._def.innerType._def.innerType.element;
+    itemDefType = (item._def as any).innerType._def.innerType.element;
   }
   return (
     <div className={fieldConfig.containerClassName}>

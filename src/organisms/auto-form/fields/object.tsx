@@ -27,7 +27,7 @@ export default function AutoFormObject<
   hasParent = false,
 }: {
   dependencies?: Dependency<z.infer<SchemaType>>[];
-  fieldConfig?: FieldConfig<z.infer<SchemaType>>;
+  fieldConfig?: FieldConfig<z.infer<SchemaType>> ;
   form: ReturnType<typeof useForm>;
   isDisabled?: boolean;
   path?: string[];
@@ -170,7 +170,7 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
       control={form.control}
       name={key}
       key={key}
-      render={({ field }) => {
+      render={({ field }): React.ReactElement => {
         const inputType =
           fieldConfigItem.fieldType ??
           DEFAULT_ZOD_HANDLERS[zodBaseType] ??
@@ -200,7 +200,7 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
         };
 
         if (InputComponent === undefined) {
-          return null;
+          return <></>;
         }
         return (
           <ParentElement key={`${key}.parent`}>

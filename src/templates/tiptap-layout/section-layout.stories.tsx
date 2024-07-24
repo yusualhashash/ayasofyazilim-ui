@@ -1,7 +1,6 @@
 import { Meta, StoryFn } from '@storybook/react';
-import React from 'react';
 
-import { ISectionLayoutProps, SectionLayout } from '.';
+import { ISectionLayoutProps, TiptapLayout } from '.';
 
 export const defaultDataForSectionLayout = [
   {
@@ -166,15 +165,15 @@ export const defaultProps: ISectionLayoutProps = {
   defaultActiveSectionId: 'about-the-project-0',
 };
 export default {
-  component: SectionLayout,
+  component: TiptapLayout,
   parameters: {
     layout: 'centered',
   },
   args: defaultProps,
-} as Meta<typeof SectionLayout>;
+} as Meta<typeof TiptapLayout>;
 
-const Template: StoryFn<typeof SectionLayout> = (args: any) => (
-  <SectionLayout {...args} />
+const Template: StoryFn<typeof TiptapLayout> = (args: any) => (
+  <TiptapLayout {...args} />
 );
 
 export const Default = Template.bind({});
