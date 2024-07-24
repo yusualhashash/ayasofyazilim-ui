@@ -149,8 +149,8 @@ export function SectionLayout({
       <Card
         className={
           vertical
-            ? 'flex flex-wrap md:flex-nowrap rounded-lg h-full'
-            : 'rounded-lg h-full'
+            ? 'flex flex-wrap md:flex-nowrap rounded-lg h-full overflow-hidden'
+            : 'rounded-lg h-full overflow-hidden'
         }
       >
         <SectionLayoutNavbar
