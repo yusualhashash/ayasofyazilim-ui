@@ -19,9 +19,7 @@ import {
 import AutoFormArray from './array';
 import resolveDependencies from '../dependencies';
 
-const DefaultParent = ({ children }: { children: React.ReactNode }) => (
-  <>{children}</>
-);
+const DefaultParent = ({ children }: { children: React.ReactNode }) => children;
 
 export default function AutoFormObject<
   SchemaType extends z.ZodObject<any, any>,
@@ -50,17 +48,18 @@ export default function AutoFormObject<
   }
 
   const handleIfZodNumber = (item: z.ZodAny) => {
+    const _item = item;
     const isZodNumber = (item as any)._def.typeName === 'ZodNumber';
     const isInnerZodNumber =
-      (item._def as any).innerType?._def?.typeName === 'ZodNumber';
+      (_item._def as any).innerType?._def?.typeName === 'ZodNumber';
 
     if (isZodNumber) {
-      (item as any)._def.coerce = true;
+      (_item as any)._def.coerce = true;
     } else if (isInnerZodNumber) {
-      (item._def as any).innerType._def.coerce = true;
+      (_item._def as any).innerType._def.coerce = true;
     }
 
-    return item;
+    return _item;
   };
 
   return (
@@ -162,7 +161,7 @@ export default function AutoFormObject<
               };
 
               if (InputComponent === undefined) {
-                return <></>;
+                return <span />;
               }
 
               return (

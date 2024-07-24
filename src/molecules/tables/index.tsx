@@ -260,12 +260,14 @@ export default function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
+                    {<>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
+                    </>}
                   </TableHead>
                 ))}
               </TableRow>
@@ -284,7 +286,7 @@ export default function DataTable<TData, TValue>({
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
-                      )}
+                      ) as React.ReactNode}
                     </TableCell>
                   ))}
                 </TableRow>

@@ -4,6 +4,7 @@ import React from 'react';
 import { INPUT_COMPONENTS } from './config';
 
 export type FieldConfigItem = {
+  withoutBorder?: boolean;
   description?: React.ReactNode;
   displayName?: string;
   fieldType?:
