@@ -33,7 +33,7 @@ export default function LandingPageLayout({
 
   useEffect(() => {
     function onScroll() {
-      setIsScrolled((window.scrollY || 0) >= scrollThreshold);
+      setIsScrolled((window?.scrollY || 0) >= scrollThreshold);
     }
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
