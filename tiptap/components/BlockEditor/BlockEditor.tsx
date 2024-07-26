@@ -90,7 +90,7 @@ export const BlockEditor = ({
           (editable ? 'edit-mode' : 'preview-mode')
         }
       >
-        <EditorContent editor={editor} ref={editorRef} />
+        <EditorContent editor={editor} ref={editorRef} className="h-full" />
         {editable && (
           <div>
             <ContentItemMenu editor={editor} />
