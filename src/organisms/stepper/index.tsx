@@ -79,7 +79,6 @@ export const StepperContent = ({
                 disabled={isNextDisabled || isLastStep}
                 onClick={() =>
                   onIndexChange((prev) => {
-                    console.log('prev', prev, stepsLength);
                     if (prev === stepsLength - 1) {
                       setIsLastStep(true);
                     }
@@ -174,7 +173,6 @@ export default function Stepper({
   previousButtonText = 'Previous',
   onIndexChange,
 }: IStepperProps) {
-  console.log('children', children);
   const keys = children?.flatMap((child, index) => {
     const item = React.isValidElement(child)
       ? { title: child.props.title || '', icon: child.props.icon, index }

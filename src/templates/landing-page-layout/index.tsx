@@ -76,7 +76,7 @@ const Layout = ({
   >
     {HeaderComponent}
 
-    <div className="flex">
+    <div className="flex h-full">
       {SidebarComponent}
 
       <main className={cn(mainClassName)}>{children}</main>

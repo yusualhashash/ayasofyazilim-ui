@@ -114,6 +114,7 @@ export interface ISectionLayoutProps {
   children: React.ReactNode;
   defaultActiveSectionId?: string;
   linkElement?: any;
+  noCard?: boolean;
   sections: Array<ISection>;
   vertical?: boolean;
 }
@@ -126,6 +127,7 @@ export interface ISectionLayoutProps {
  * @param {string} [defaultActiveSectionId] - The ID of the section to be active by default.
  * @param {any} [linkElement] - The element to be used for the section links. (default: Button)
  * @param {boolean} [vertical] - Whether the layout should be rendered vertically.
+ * @param {boolean} [noCard] - Whether the layout should be rendered without a card.
  * @return {JSX.Element} The rendered section layout component.
  */
 export function SectionLayout({
@@ -134,7 +136,9 @@ export function SectionLayout({
   defaultActiveSectionId,
   linkElement,
   vertical,
+  noCard,
 }: ISectionLayoutProps) {
+  const Container = noCard ? 'div' : Card;
   const [activeSectionId, setActiveSectionId] = useState(
     defaultActiveSectionId || sections?.[0].id
   );
@@ -146,7 +150,7 @@ export function SectionLayout({
   const contextValue = useMemo(() => ({ activeSectionId }), [activeSectionId]);
   return (
     <SectionLayoutContext.Provider value={contextValue}>
-      <Card
+      <Container
         className={
           vertical
             ? 'flex flex-wrap md:flex-nowrap rounded-lg h-full overflow-hidden'
@@ -161,7 +165,7 @@ export function SectionLayout({
           vertical={vertical}
         />
         {children}
-      </Card>
+      </Container>
     </SectionLayoutContext.Provider>
   );
 }
