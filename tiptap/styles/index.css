@@ -1,8 +1,8 @@
 .ProseMirror {
-  @apply outline-0 py-8 mb-0 rounded-2xl z-0 bg-gray-50;
+  @apply outline-0 py-8 mb-0  z-0 bg-gray-50;
 
   & > * {
-    @apply mx-auto max-w-2xl;
+    @apply mx-auto;
   }
 
   .selection {
@@ -31,7 +31,7 @@
   }
 }
 .preview-mode .ProseMirror {
-  @apply bg-white;
+  @apply bg-white px-5 md:px-20 py-10 min-h-[80vh];
 }
 [data-theme='slash-command'] {
   width: 1000vw;

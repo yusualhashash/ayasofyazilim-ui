@@ -22,6 +22,7 @@ export interface ISectionContentBase {
   sectionContent?: JSX.Element;
   sectionEnded: string;
   sectionId: string;
+  sectionName: string;
   setActiveSectionId: React.Dispatch<React.SetStateAction<string>>;
   setSectionEnded: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -32,12 +33,11 @@ export interface ISectionContent {
   className?: string;
   sectionEnded: string;
   sectionId: string;
+  sectionName: string;
   setActiveSectionId: React.Dispatch<React.SetStateAction<string>>;
   setSectionEnded: React.Dispatch<React.SetStateAction<string>>;
 }
 export interface ISectionLayoutProps {
-  className?: string;
-  contentClassName?: string;
   defaultActiveSectionId: string;
   sections: Array<ISection>;
 }
@@ -53,30 +53,39 @@ const SectionNavbarBase = ({
       <nav className="flex flex-row justify-center items-center">
         <div className="text-sm flex flex-col md:flex-row md:flex-wrap gap-5 items-center md:justify-center">
           {sections.map((section) => {
+            const isActive = section.id === activeSectionId;
             const className = `
-            hover:no-underline rounded-none items-center bg-white ${section.id === activeSectionId ? `font-semibold text-primary sticky left-0 right-0 flex flex-row` : showDropdown ? 'text-muted-foreground hover:text-black' : 'text-muted-foreground hover:text-black hidden md:block'} `;
+            hover:no-underline rounded-none items-center bg-white ${isActive ? `font-semibold text-primary sticky left-0 right-0 flex flex-row` : showDropdown ? 'text-muted-foreground hover:text-black' : 'text-muted-foreground hover:text-black hidden md:block'} `;
+            const classNameButtton = `
+            hover:no-underline rounded-none items-center bg-white ${isActive ? `font-semibold text-primary sticky left-0 right-0 flex flex-row` : showDropdown ? 'text-muted-foreground hover:text-black' : 'text-muted-foreground hover:text-black hidden md:block'} `;
+            if (!isActive) {
+              return (
+                <a
+                  href={`#${section.id}`}
+                  className={className}
+                  key={section.id}
+                  onClick={() => setShowDropdown(false)}
+                >
+                  {section.name}
+                </a>
+              );
+            }
+
             return (
-              <a
-                href={`#${section.id}`}
-                className={className}
+              <button
+                type="button"
+                className={classNameButtton}
                 key={section.id}
-                onClick={() => setShowDropdown(false)}
+                onClick={() => setShowDropdown((p) => !p)}
               >
                 {section.name}
-                {showDropdown && section.id === activeSectionId && (
-                  <ChevronDown
-                    className="items-center md:hidden text-muted-foreground ml-2 cursor-pointer transition-all"
-                    size={16}
-                    onClick={() => setShowDropdown((pre) => !pre)}
-                  />
-                )}
-              </a>
+              </button>
             );
           })}
         </div>
         {!showDropdown && (
           <ChevronDown
-            className="items-center md:hidden text-muted-foreground ml-2 cursor-pointer transition-all"
+            className="items-center md:hidden text-primary ml-2 cursor-pointer transition-all"
             size={16}
             onClick={() => setShowDropdown((pre) => !pre)}
           />
@@ -93,6 +102,7 @@ const SectionContentBase = ({
   sectionEnded,
   setSectionEnded,
   activeSectionId,
+  sectionName,
 }: ISectionContentBase) => {
   const divRef = useRef(null);
   const isVisible = useIsVisible(divRef, 0.05);
@@ -113,8 +123,9 @@ const SectionContentBase = ({
     <div
       id={`${sectionId}`}
       ref={divRef}
-      className={cn('w-full scroll-mt-20 pt-10 min-h-full', className)}
+      className={cn('w-full scroll-mt-24 pt-12 min-h-full', className)}
     >
+      <h2 className="text-2xl text-center mb-10 font-bold">{sectionName}</h2>
       {sectionContent}
     </div>
   );
@@ -128,6 +139,7 @@ export const SectionContent = ({
   setActiveSectionId,
   sectionEnded,
   setSectionEnded,
+  sectionName,
 }: ISectionContent) => (
   <SectionContentBase
     key={sectionId}
@@ -138,13 +150,12 @@ export const SectionContent = ({
     className={className}
     sectionEnded={sectionEnded}
     setSectionEnded={setSectionEnded}
+    sectionName={sectionName}
   />
 );
 
 export function TiptapLayout({
-  className,
   sections,
-  contentClassName,
   defaultActiveSectionId,
 }: ISectionLayoutProps) {
   const [activeSectionId, setActiveSectionId] = useState(
@@ -153,22 +164,22 @@ export function TiptapLayout({
   const [sectionEnded, setSectionEnded] = useState('');
 
   return (
-    <div className={className}>
+    <div className="bg-accent pb-10">
       <SectionNavbarBase
         sections={sections}
         activeSectionId={activeSectionId}
       />
 
-      <div className="container">
+      <div className="max-w-4xl mx-auto">
         {sections.map((section) => (
           <SectionContent
             key={section.id}
             sectionId={section.id}
             setActiveSectionId={setActiveSectionId}
-            className={contentClassName}
             sectionEnded={sectionEnded}
             activeSectionId={activeSectionId}
             setSectionEnded={setSectionEnded}
+            sectionName={section.name}
           >
             {section?.value}
           </SectionContent>

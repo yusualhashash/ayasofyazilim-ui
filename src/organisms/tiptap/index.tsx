@@ -87,7 +87,7 @@ export default function TipTapEditor({
     setEditable(!editable);
   }
   return (
-    <div className="relative">
+    <div className="relative h-full">
       {canEditable && !isButtonsDisabled && (
         <div className="absolute right-5 top-5 z-10">
           {editable ? (
