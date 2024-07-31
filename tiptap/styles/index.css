@@ -1,5 +1,5 @@
 .ProseMirror {
-  @apply outline-0 py-8 mb-0 px-10 z-0 bg-gray-50;
+  @apply outline-0 pt-8 pb-20 mb-0 px-10 z-0 bg-gray-50;
 
   & > * {
     @apply mx-auto;
