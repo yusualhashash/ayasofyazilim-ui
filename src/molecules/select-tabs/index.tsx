@@ -55,7 +55,8 @@ const SelectTabsContext = createContext<IContextProps>({
 interface ISelectTabsProps {
   children?: JSX.Element[];
   deselect?: boolean;
-  onValueChanged?: (value: string) => void;
+  disabled?: boolean;
+  onValueChange?: (value: string) => void;
   value?: string;
 }
 
@@ -66,24 +67,28 @@ interface ISelectTabsProps {
  * @param {boolean} props.deselect - Whether the tabs can have a null value.
  * @param {React.ReactNode} props.children - The content of the tabs.
  * @param {string } [props.value] - The initial active tab value.
- * @param {(newValue: string) => void} [props.onValueChanged] - The callback function triggered when the active tab value changes.
+ * @param {(newValue: string) => void} [props.onValueChange] - The callback function triggered when the active tab value changes.
+ * @param {boolean} [props.disabled] - Whether the tabs are disabled.
  * @return {JSX.Element} The rendered select tabs.
  */
 export default function SelectTabs({
   deselect,
   children,
   value = '',
-  onValueChanged,
+  onValueChange,
+  disabled,
 }: ISelectTabsProps) {
   const [activeTab, setActiveTab] = useState(value);
   const contextValue = useMemo(() => ({ activeTab, onChange }), [activeTab]);
   function onChange(newValue: string) {
+    if (disabled) return;
+
     if (newValue === activeTab && deselect) {
       setActiveTab('');
-      onValueChanged?.('');
+      onValueChange?.('');
     } else if (newValue !== activeTab) {
       setActiveTab(newValue);
-      onValueChanged?.(newValue);
+      onValueChange?.(newValue);
     }
   }
 
