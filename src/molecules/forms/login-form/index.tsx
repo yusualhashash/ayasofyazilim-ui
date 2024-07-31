@@ -88,7 +88,7 @@ export default function LoginForm({
       if (response?.status === 200) {
         if (router) {
           const locale = window.location.pathname.split('/')[1];
-          router.push(`/${locale}/public`);
+          router.push(`/${locale}/`);
           return;
         }
         window.location.reload();
