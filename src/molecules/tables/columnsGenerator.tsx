@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { data } from './data';
 import { normalizeName } from './utils';
+import { MenuAction } from '.';
 
 const createSortableHeader = (column: any, name: string) => (
   <Button
@@ -70,8 +71,10 @@ export function columnsGenerator(
   callback: any,
   autoFormArgs: any,
   tableType: any,
+  // TODO: remove onEdit and onDelete and use actionList instead
   onEdit: (e: any, originalRow: any) => void,
   onDelete: (e: any, originalRow: any) => void,
+  actionList?: MenuAction[],
   excludeList: string[] = []
 ) {
   const columns: ColumnDef<typeof data>[] = [
@@ -149,6 +152,15 @@ export function columnsGenerator(
                 >
                   Edit
                 </DropdownMenuItem>
+                {actionList?.map((action) => (
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      action.callback(e, originalRow);
+                    }}
+                  >
+                    {action.cta}
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </>
