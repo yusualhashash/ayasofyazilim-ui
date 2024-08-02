@@ -45,6 +45,8 @@ export default function resolveDependencies<
           overrideOptions = dependency.options;
         }
         break;
+      default:
+        break;
     }
   }
 

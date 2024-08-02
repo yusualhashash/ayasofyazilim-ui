@@ -47,9 +47,9 @@ export default function AutoFormEnum({
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            {values.map(([value, label]) => (
-              <SelectItem value={label} key={value}>
-                {label}
+            {values.map(([value, _label]) => (
+              <SelectItem value={_label} key={value}>
+                {_label}
               </SelectItem>
             ))}
           </SelectContent>

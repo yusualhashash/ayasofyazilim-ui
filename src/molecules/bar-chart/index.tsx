@@ -3,6 +3,7 @@
 'use client';
 
 import React from 'react';
+import { NodeJS } from 'node';
 import { ArrowLeft, ArrowRight, LucideIcon } from 'lucide-react';
 import {
   Bar,
@@ -563,9 +564,9 @@ interface BarChartProps extends React.HTMLAttributes<HTMLDivElement> {
   tooltipCallback?: (tooltipCallbackContent: TooltipCallbackProps) => void;
   type?: 'default' | 'stacked' | 'percent';
   valueFormatter?: (value: number) => string;
-  yAxisWidth?: number;
-  yAxisLabel?: string;
   xAxisLabel?: string;
+  yAxisLabel?: string;
+  yAxisWidth?: number;
 }
 
 const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(

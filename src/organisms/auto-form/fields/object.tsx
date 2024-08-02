@@ -1,5 +1,6 @@
 import { useForm, useFormContext } from 'react-hook-form';
 import * as z from 'zod';
+import React from 'react';
 import { FormField } from '@/components/ui/form';
 import { DEFAULT_ZOD_HANDLERS, INPUT_COMPONENTS } from '../config';
 import resolveDependencies from '../dependencies';
@@ -22,18 +23,18 @@ export default function AutoFormObject<
   fieldConfig,
   path = [],
   dependencies = [],
-  isDisabled = false,
+  // isDisabled = false,
   showInRow = false,
   hasParent = false,
 }: {
   dependencies?: Dependency<z.infer<SchemaType>>[];
-  fieldConfig?: FieldConfig<z.infer<SchemaType>> ;
+  fieldConfig?: FieldConfig<z.infer<SchemaType>>;
   form: ReturnType<typeof useForm>;
-  isDisabled?: boolean;
+  hasParent?: boolean;
+  // isDisabled?: boolean;
   path?: string[];
   schema: SchemaType | z.ZodEffects<SchemaType>;
   showInRow?: boolean;
-  hasParent?: boolean;
 }) {
   const { watch } = useFormContext(); // Use useFormContext to access the watch function
 
@@ -128,7 +129,7 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
         <AutoFormObject
           isDisabled={isDisabled}
           dependencies={dependencies}
-          hasParent={true}
+          hasParent
           // @ts-ignore
           schema={item as unknown as z.ZodObject<any, any>}
           form={form}
@@ -200,7 +201,7 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
         };
 
         if (InputComponent === undefined) {
-          return <></>;
+          return <div />;
         }
         return (
           <ParentElement key={`${key}.parent`}>

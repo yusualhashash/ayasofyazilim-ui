@@ -3,8 +3,14 @@ import * as z from 'zod';
 import React from 'react';
 import { INPUT_COMPONENTS } from './config';
 
+export enum DependencyType {
+  DISABLES = 'DISABLES',
+  HIDES = 'HIDES',
+  REQUIRES = 'REQUIRES',
+  SETS_OPTIONS = 'SETS_OPTIONS',
+}
+
 export type FieldConfigItem = {
-  withoutBorder?: boolean;
   description?: React.ReactNode;
   displayName?: string;
   fieldType?:
@@ -13,10 +19,11 @@ export type FieldConfigItem = {
   inputProps?: React.InputHTMLAttributes<HTMLInputElement> & {
     showLabel?: boolean;
   };
-
   renderParent?: (props: {
     children: React.ReactNode;
   }) => React.ReactElement | null;
+
+  withoutBorder?: boolean;
 };
 
 export type FieldConfig<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
@@ -26,12 +33,6 @@ export type FieldConfig<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
     : FieldConfigItem;
 };
 
-export enum DependencyType {
-  DISABLES = 'DISABLES',
-  HIDES = 'HIDES',
-  REQUIRES = 'REQUIRES',
-  SETS_OPTIONS = 'SETS_OPTIONS',
-}
 export type BaseDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> =
   {
     hasParentField?: boolean;

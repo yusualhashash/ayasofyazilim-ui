@@ -3,6 +3,7 @@
 'use client';
 
 import React from 'react';
+import { NodeJS } from 'node';
 import { ArrowLeft, ArrowRight, LucideIcon } from 'lucide-react';
 import {
   CartesianGrid,
@@ -265,15 +266,18 @@ const Legend = React.forwardRef<HTMLOListElement, LegendProps>((props, ref) => {
             : 'flex-wrap'
         )}
       >
-        {categories.map((category, index) => (
-          <LegendItem
-            key={`item-${index}`}
-            name={category}
-            color={colors[index] as AvailableChartColorsKeys}
-            onClick={onClickLegendItem}
-            activeLegend={activeLegend}
-          />
-        ))}
+        {categories.map((category, index) => {
+          const key = `item-${index}-${category}`;
+          return (
+            <LegendItem
+              key={key}
+              name={category}
+              color={colors[index] as AvailableChartColorsKeys}
+              onClick={onClickLegendItem}
+              activeLegend={activeLegend}
+            />
+          );
+        })}
       </div>
       {enableLegendSlider && (hasScroll?.right || hasScroll?.left) ? (
         <div

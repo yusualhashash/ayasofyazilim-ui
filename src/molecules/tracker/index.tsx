@@ -18,6 +18,7 @@ const Block = ({
   tooltip,
   defaultBackgroundColor,
   hoverEffect,
+  key,
 }: TrackerBlockProps) => {
   const [open, setOpen] = React.useState(false);
   return (
@@ -82,12 +83,12 @@ const Tracker = React.forwardRef<HTMLDivElement, TrackerProps>(
       className={cn('items-cente group flex h-8 w-full', className)}
       {...props}
     >
-      {data.map((props, index) => (
+      {data.map((_props: TrackerBlockProps, index) => (
         <Block
-          key={props.key ?? index}
+          key={_props.key ?? index}
           defaultBackgroundColor={defaultBackgroundColor}
           hoverEffect={hoverEffect}
-          {...props}
+          {..._props}
         />
       ))}
     </div>
