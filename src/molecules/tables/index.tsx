@@ -45,7 +45,13 @@ export type tableAction = {
   type?: 'Dialog' | 'NewPage' | 'Sheet';
 };
 
+export type MenuAction = {
+  callback: (e: any, originalRow: any) => void;
+  cta: string;
+};
+
 type autoColumnGnerator = {
+  actionList?: MenuAction[];
   autoFormArgs: any;
   callback: any;
   excludeList: string[];
@@ -166,6 +172,7 @@ export default function DataTable<TData, TValue>({
       tempData.tableType,
       tempData.onEdit,
       tempData.onDelete,
+      tempData.actionList,
       tempData.excludeList
     );
   } else {
@@ -260,14 +267,12 @@ export default function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id}>
-                    {<>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                    </>}
                   </TableHead>
                 ))}
               </TableRow>
@@ -283,10 +288,12 @@ export default function DataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      ) as React.ReactNode}
+                      {
+                        flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        ) as React.ReactNode
+                      }
                     </TableCell>
                   ))}
                 </TableRow>

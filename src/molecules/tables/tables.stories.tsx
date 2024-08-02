@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import { Meta, StoryObj } from '@storybook/react';
 
 import { z } from 'zod';
@@ -56,7 +57,6 @@ export default { component: Table } as Meta<typeof Table>;
 export const Default: StoryObj<typeof Table> = {
   args: {
     data,
-    // @ts-ignore
     columnsData: {
       type: 'Custom',
       data: columns,
@@ -86,7 +86,7 @@ const jsonSchema: any = {
   },
 };
 
-export const autoColumns: StoryObj<typeof Table> = {
+export const AutoColumns: StoryObj<typeof Table> = {
   args: {
     data,
     columnsData: {
@@ -112,6 +112,16 @@ export const autoColumns: StoryObj<typeof Table> = {
             `OnDelete \ndata:\n${JSON.stringify(e)} \nRow:\n${JSON.stringify(row)}`
           );
         },
+        actionList: [
+          {
+            cta: 'Test',
+            callback: (e, row) => alert(`Test ${JSON.stringify(row)}`),
+          },
+          {
+            cta: 'Hello world',
+            callback: (e, row) => alert(`hello world ${JSON.stringify(row)}`),
+          },
+        ],
       },
     },
     filterBy: 'email',
@@ -122,7 +132,7 @@ export const autoColumns: StoryObj<typeof Table> = {
   },
 };
 
-export const newPage: StoryObj<typeof Table> = {
+export const NewPage: StoryObj<typeof Table> = {
   args: {
     data,
     columnsData: {
@@ -165,7 +175,7 @@ export const newPage: StoryObj<typeof Table> = {
   },
 };
 
-export const sheet: StoryObj<typeof Table> = {
+export const Sheet: StoryObj<typeof Table> = {
   args: {
     data,
     columnsData: {
