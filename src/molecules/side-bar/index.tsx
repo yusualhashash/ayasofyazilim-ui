@@ -76,7 +76,6 @@ export default function SidebarMenu({ menus, className }: sidebarProps) {
                                 <div className="w-6">{menu.icon}</div>
                                 {menu.name}
                               </div>
-                              {/* <ChevronDownIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" /> */}
                             </div>
                           </a>
                         </AccordionTrigger>

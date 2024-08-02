@@ -46,14 +46,12 @@ export default function Navigation({
           }
           return (
             <NavigationMenuItem key={link.href}>
-              {/* <Link href={link.href} passHref> */}
               <NavigationMenuLink
                 href={link.href}
                 className={navigationMenuTriggerStyle()}
               >
                 {link.text}
               </NavigationMenuLink>
-              {/* </Link> */}
             </NavigationMenuItem>
           );
         })}
