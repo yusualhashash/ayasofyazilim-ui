@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { z } from 'zod';
 import {
   Dialog,
   DialogContent,
@@ -9,10 +10,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import AutoForm, { AutoFormSubmit, SchemaType } from '../../organisms/auto-form';
+import AutoForm, {
+  AutoFormSubmit,
+  SchemaType,
+} from '../../organisms/auto-form';
 import SheetSide from '../sheet';
-import { Z } from 'vitest/dist/reporters-MmQN-57K.js';
-import { z } from 'zod';
 
 export type tableAction = {
   autoFormArgs: any;
@@ -29,7 +31,11 @@ export type AutoformDialogProps = {
   type?: 'Sheet' | 'Dialog' | 'newPage';
 };
 
-const AutoFormData = (action: tableAction, values: Partial<z.infer<SchemaType>>, triggerData?: any) => (
+const AutoFormData = (
+  action: tableAction,
+  values: Partial<z.infer<SchemaType>>,
+  triggerData?: any
+) => (
   <AutoForm
     {...action?.autoFormArgs}
     values={values}
@@ -52,7 +58,9 @@ export default function AutoformDialog({
   type = 'Dialog',
 }: AutoformDialogProps) {
   const [values] = useState<any>(triggerData || {});
-  const autformData = action ? AutoFormData(action, triggerData, values) : <></>;
+  const autformData = action
+    ? AutoFormData(action, triggerData, values)
+    : undefined;
 
   return type === 'Sheet' ? (
     <SheetSide

@@ -68,7 +68,7 @@ const ListItem = React.forwardRef<
 >(({ className, title, children, ...props }, ref) => (
   <li>
     <NavigationMenuLink asChild>
-      {props.href &&
+      {props.href && (
         <Link
           ref={ref}
           className={cn(
@@ -83,7 +83,7 @@ const ListItem = React.forwardRef<
             {children}
           </p>
         </Link>
-      }
+      )}
     </NavigationMenuLink>
   </li>
 ));

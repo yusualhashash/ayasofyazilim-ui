@@ -7,9 +7,14 @@ import AutoForm, { AutoFormProps } from '../auto-form';
 const FormStepperGenerator = (steps: Step[]) =>
   steps.map((step: Step) => (
     <StepperContent title={step.title}>
-      <AutoForm fieldConfig={{ all:{
-        withoutBorder: true
-      } }} {...step.autoformArgs} />
+      <AutoForm
+        fieldConfig={{
+          all: {
+            withoutBorder: true,
+          },
+        }}
+        {...step.autoformArgs}
+      />
     </StepperContent>
   ));
 

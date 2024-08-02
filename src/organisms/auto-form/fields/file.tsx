@@ -18,16 +18,16 @@ export default function AutoFormFile({
   const [file, setFile] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const _file = e.target.files?.[0];
 
-    if (file) {
+    if (_file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setFile(reader.result as string);
-        setFileName(file.name);
+        setFileName(_file.name);
         field.onChange(reader.result as string);
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(_file);
     }
   };
 
@@ -51,7 +51,11 @@ export default function AutoFormFile({
       {file && (
         <div className="flex h-[40px] w-full flex-row items-center justify-between space-x-2 rounded-sm border p-2 text-black focus-visible:ring-0 focus-visible:ring-offset-0 dark:bg-white dark:text-black dark:focus-visible:ring-0 dark:focus-visible:ring-offset-0">
           <p>{fileName}</p>
-          <button onClick={handleRemoveClick} aria-label="Remove image">
+          <button
+            type="button"
+            onClick={handleRemoveClick}
+            aria-label="Remove image"
+          >
             <Trash2 size={16} />
           </button>
         </div>

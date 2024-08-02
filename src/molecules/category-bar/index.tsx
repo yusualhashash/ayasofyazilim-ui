@@ -79,10 +79,10 @@ const BarLabels = ({ values }: { values: number[] }) => {
           : (sumConsecutiveHiddenLabels += widthPercentage);
 
         const widthPositionLeft = getPositionLeft(widthPercentage, sumValues);
-
+        const key = `item-${index}-${widthPercentage}`;
         return (
           <div
-            key={`item-${index}`}
+            key={key}
             className="flex items-center justify-end pr-0.5"
             style={{ width: `${widthPositionLeft}%` }}
           >
@@ -157,9 +157,10 @@ const CategoryBar = React.forwardRef<HTMLDivElement, CategoryBarProps>(
             {values.map((value, index) => {
               const barColor = colors[index] ?? 'gray';
               const percentage = (value / maxValue) * 100;
+              const key = `item-${index}-${value}`;
               return (
                 <div
-                  key={`item-${index}`}
+                  key={key}
                   className={cn(
                     'h-full',
                     getColorClassName(

@@ -16,7 +16,10 @@ import ResetPasswordForm, {
 export type authTypes = 'login' | 'register' | 'reset-password';
 export const isAuthType = (value: string): value is authTypes =>
   ['login', 'register', 'reset-password'].indexOf(value as authTypes) !== -1;
-export type innerAuthPropsType = LoginFormPropsType | RegisterFormPropsType | ResetPasswordFormPropsType;
+export type innerAuthPropsType =
+  | LoginFormPropsType
+  | RegisterFormPropsType
+  | ResetPasswordFormPropsType;
 export type AuthPropsType = {
   authProps: innerAuthPropsType;
   authType: authTypes;
@@ -32,11 +35,26 @@ function formSwitch(
 ) {
   switch (authType) {
     case 'login':
-      return <LoginForm {...authProps as LoginFormPropsType} resources={resources} />;
+      return (
+        <LoginForm
+          {...(authProps as LoginFormPropsType)}
+          resources={resources}
+        />
+      );
     case 'register':
-      return <RegisterForm {...authProps as RegisterFormPropsType} resources={resources} />;
+      return (
+        <RegisterForm
+          {...(authProps as RegisterFormPropsType)}
+          resources={resources}
+        />
+      );
     case 'reset-password':
-      return <ResetPasswordForm {...authProps as ResetPasswordFormPropsType} resources={resources} />;
+      return (
+        <ResetPasswordForm
+          {...(authProps as ResetPasswordFormPropsType)}
+          resources={resources}
+        />
+      );
     default:
       return resources?.AbpExceptionHandling?.texts
         .DefaultErrorMessage404Detail;
