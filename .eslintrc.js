@@ -33,6 +33,8 @@ module.exports = {
   ],
 
   rules: {
+    'no-shadow': 'off',
+
     '@typescript-eslint/no-unused-vars': 'error',
     'import/extensions': 'off',
     'import/no-extraneous-dependencies': 'off',
