@@ -3,7 +3,6 @@
 'use client';
 
 import React from 'react';
-import { NodeJS } from 'node';
 import { ArrowLeft, ArrowRight, LucideIcon } from 'lucide-react';
 import {
   Bar,
