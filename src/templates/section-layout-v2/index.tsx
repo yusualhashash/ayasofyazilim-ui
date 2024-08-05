@@ -100,7 +100,7 @@ export function SectionLayoutContent({
   return (
     <div
       id={`section-${sectionId}`}
-      className={cn('w-full p-5 overflow-auto h-full', className)}
+      className={cn('w-full p-5 overflow-auto h-full flex-1', className)}
     >
       {children}
     </div>
@@ -154,7 +154,7 @@ export function SectionLayout({
         className={
           vertical
             ? 'flex flex-wrap md:flex-nowrap rounded-lg h-full overflow-hidden'
-            : 'rounded-lg h-full overflow-hidden'
+            : 'rounded-lg h-full overflow-hidden flex flex-col'
         }
       >
         <SectionLayoutNavbar
