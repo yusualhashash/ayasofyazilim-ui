@@ -20,6 +20,7 @@ module.exports = {
   },
   globals: {
     JSX: 'readonly',
+    NodeJS: true,
   },
   plugins: [
     'react',
