@@ -86,12 +86,13 @@ export default function LoginForm({
     if (loginFunction) {
       const response = await loginFunction(values);
       if (response?.status === 200) {
-        if (router) {
-          const locale = window.location.pathname.split('/')[1];
-          router.push(`/${locale}/`);
-          return;
-        }
-        window.location.reload();
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectTo =
+          urlParams.get('redirect') ||
+          `/${window.location.pathname.split('/')[1]}/`;
+
+        router.push(redirectTo);
+
         return;
       }
       toast.error(response?.description);
