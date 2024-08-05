@@ -10,6 +10,7 @@ import React, {
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export interface ISection {
   id: string;
@@ -167,5 +168,44 @@ export function SectionLayout({
         {children}
       </Container>
     </SectionLayoutContext.Provider>
+  );
+}
+
+export function SectionLayoutSkeleton({
+  vertical,
+  noCard,
+}: {
+  noCard?: boolean;
+  vertical?: boolean;
+}) {
+  const Container = noCard ? 'div' : Card;
+  return (
+    <Container
+      className={
+        vertical
+          ? 'flex flex-wrap md:flex-nowrap rounded-lg h-full overflow-hidden'
+          : 'rounded-lg h-full overflow-hidden flex flex-col'
+      }
+    >
+      <nav
+        className={cn(
+          'flex gap-4 text-sm text-center md:text-left p-5 ',
+          vertical
+            ? 'flex-col border-b md:border-b-0 md:border-r min-w-full md:min-w-[240px] items-center md:items-start'
+            : 'flex-col md:flex-row border-b'
+        )}
+      >
+        <Skeleton className="h-6 w-full bg-gray-200" />
+        <Skeleton className="h-6 w-full bg-gray-200" />
+        <Skeleton className="h-6 w-full bg-gray-200" />
+        <Skeleton className="h-6 w-full bg-gray-200" />
+        <Skeleton className="h-6 w-full bg-gray-200" />
+      </nav>
+      <div className="w-full p-5 overflow-auto h-full flex-1">
+        <Skeleton className="h-40 w-full bg-gray-200 mb-2" />
+        <Skeleton className="h-40 w-full bg-gray-200 mb-2" />
+        <Skeleton className="h-40 w-full bg-gray-200 mb-2" />
+      </div>
+    </Container>
   );
 }
