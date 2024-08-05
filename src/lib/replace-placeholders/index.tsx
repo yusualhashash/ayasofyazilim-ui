@@ -5,9 +5,6 @@ export function replacePlaceholders(
   replacements: { holder: string; replacement: string | React.ReactNode }[]
 ): (string | React.ReactNode | JSX.Element)[] {
   if (!string || !replacements || replacements.length === 0) {
-    console.error(
-      'Invalid input: string or replacements are missing or empty.'
-    );
     return [];
   }
 

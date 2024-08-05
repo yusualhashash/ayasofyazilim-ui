@@ -9,7 +9,6 @@ interface TrackerBlockProps {
   color?: string;
   defaultBackgroundColor?: string;
   hoverEffect?: boolean;
-  key?: string | number;
   tooltip?: string;
 }
 
@@ -18,7 +17,6 @@ const Block = ({
   tooltip,
   defaultBackgroundColor,
   hoverEffect,
-  key,
 }: TrackerBlockProps) => {
   const [open, setOpen] = React.useState(false);
   return (
@@ -85,7 +83,7 @@ const Tracker = React.forwardRef<HTMLDivElement, TrackerProps>(
     >
       {data.map((_props: TrackerBlockProps, index) => (
         <Block
-          key={_props.key ?? index}
+          key={`item-${index.toString()}`}
           defaultBackgroundColor={defaultBackgroundColor}
           hoverEffect={hoverEffect}
           {..._props}
