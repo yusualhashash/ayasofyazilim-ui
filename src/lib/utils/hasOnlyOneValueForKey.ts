@@ -6,6 +6,7 @@ export function hasOnlyOneValueForKey(
 ): boolean {
   const val: any[] = [];
 
+  // @eslint-disable-next-line
   for (const obj of array) {
     if (Object.prototype.hasOwnProperty.call(obj, keyToCheck)) {
       val.push(obj[keyToCheck]);
