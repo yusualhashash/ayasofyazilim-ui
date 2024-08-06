@@ -80,15 +80,19 @@ const SkeletonCell = () => <Skeleton className="w-20 h-3" />;
 const ActionComponent = ({
   action,
   callback,
+  className,
 }: {
   action?: tableAction;
   callback?: Function;
+  className?: string;
 }) => {
   if (!action) return null;
   if (action.type === 'NewPage') {
     return (
       <Link href={action.href || 'add'}>
-        <Button variant="outline">{action.cta}</Button>
+        <Button variant="outline" className={className}>
+          {action.cta}
+        </Button>
       </Link>
     );
   }
@@ -98,6 +102,7 @@ const ActionComponent = ({
       onClick={() => {
         if (callback) callback();
       }}
+      className={className}
     >
       {action.cta}
     </Button>
@@ -261,28 +266,8 @@ export default function DataTable<TData, TValue>({
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        {isMultipleActionProvided ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button disabled={isLoading} variant="outline">
-                Action <ChevronDownIcon className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {action.map((actionItem) => (
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={() => {
-                    setActiveAction(actionItem);
-                    setIsOpen(true);
-                  }}
-                >
-                  {actionItem.cta}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ) : (
+
+        {!isMultipleActionProvided && (
           <ActionComponent
             action={action}
             callback={() => {
@@ -290,6 +275,47 @@ export default function DataTable<TData, TValue>({
               setIsOpen(true);
             }}
           />
+        )}
+
+        {isMultipleActionProvided && action.length > 0 && (
+          <div className="flex">
+            <ActionComponent
+              action={action[0]}
+              callback={() => {
+                setActiveAction(action[0]);
+                setIsOpen(true);
+              }}
+              className="rounded-r-none"
+            />
+            {action.length > 1 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    disabled={isLoading}
+                    variant="outline"
+                    className="rounded-l-none border-l-0 px-2"
+                  >
+                    <ChevronDownIcon className="" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {action
+                    .filter((i) => i !== action[0])
+                    .map((actionItem) => (
+                      <DropdownMenuItem
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setActiveAction(actionItem);
+                          setIsOpen(true);
+                        }}
+                      >
+                        {actionItem.cta}
+                      </DropdownMenuItem>
+                    ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
         )}
       </div>
       <div className="rounded-md border relative w-full">
