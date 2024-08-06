@@ -44,9 +44,7 @@ const AutoFormData = (
     }}
   >
     {action?.autoFormArgs?.children}
-    <AutoFormSubmit className="float-right">
-      <button type="submit">Save Changes</button>
-    </AutoFormSubmit>
+    <AutoFormSubmit className="float-right">Save Changes</AutoFormSubmit>
   </AutoForm>
 );
 
