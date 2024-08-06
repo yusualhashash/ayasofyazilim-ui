@@ -15,6 +15,7 @@ import {
 import * as React from 'react';
 
 import Link from 'next/link';
+import { ReactNode, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -38,7 +39,7 @@ import { columnsGenerator } from './columnsGenerator';
 import { normalizeName } from './utils';
 
 export type tableAction = {
-  autoFormArgs: any;
+  autoFormArgs?: any;
   callback: (values: any) => void;
   cta: string;
   description: string;
@@ -51,7 +52,7 @@ export type MenuAction = {
   cta: string;
 };
 
-type autoColumnGnerator = {
+export type autoColumnGnerator = {
   actionList?: MenuAction[];
   autoFormArgs: any;
   callback: any;
@@ -120,7 +121,7 @@ const ActionComponent = ({
  * @param {tableAction} [props.action] - Optional. Configuration for an action that can be performed on the table data, such as adding a new row.
  * @param {boolean} [props.isLoading] - Optional. Indicates whether the table is in a loading state. Defaults to false.
  *
- * @returns {React.ReactElement} The rendered data table component.
+ * @returns {ReactElement} The rendered data table component.
  *
  * @template TData - The type of the data objects that will be displayed in the table.
  * @template TValue - The type of the values within each data object. This is used when defining custom columns.
@@ -157,31 +158,16 @@ export default function DataTable<TData, TValue>({
 }: DataTableProps<TData>) {
   let tableData = data;
   const isMultipleActionProvided = Array.isArray(action);
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeAction, setActiveAction] = useState<tableAction>();
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
 
-  function selectedRowsText() {
-    if (isLoading) return 'Loading...';
-    return `${table.getFilteredSelectedRowModel().rows.length} of ${table.getFilteredRowModel().rows.length} row(s) selected.`;
-  }
-
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
   let columns: ColumnDef<any, any>[] = [];
   if (columnsData.type === 'Auto') {
-    const tempData = columnsData.data as autoColumnGnerator;
-    columns = columnsGenerator(
-      tempData.callback,
-      tempData.autoFormArgs,
-      tempData.tableType,
-      tempData.onEdit,
-      tempData.onDelete,
-      tempData.actionList,
-      tempData.excludeList
-    );
+    columns = columnsGenerator(columnsData.data as autoColumnGnerator);
   } else {
     columns = columnsData.data as ColumnDef<TData, TValue>[];
   }
@@ -217,16 +203,19 @@ export default function DataTable<TData, TValue>({
       rowSelection,
     },
   });
-  React.useEffect(() => {
+
+  useEffect(() => {
     fetchRequest?.(table.getState().pagination.pageIndex);
   }, [table.getState().pagination.pageIndex]);
 
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [activeAction, setActiveAction] = React.useState<tableAction>();
+  function selectedRowsText() {
+    if (isLoading) return 'Loading...';
+    return `${table.getFilteredSelectedRowModel().rows.length} of ${table.getFilteredRowModel().rows.length} row(s) selected.`;
+  }
 
   return (
     <div className="w-full">
-      {activeAction?.type === 'NewPage' ? null : (
+      {activeAction?.type !== 'NewPage' && activeAction?.autoFormArgs && (
         <AutoformDialog
           open={isOpen}
           onOpenChange={setIsOpen}
@@ -272,7 +261,7 @@ export default function DataTable<TData, TValue>({
             action={action}
             callback={() => {
               setActiveAction(action);
-              setIsOpen(true);
+              action?.callback(null);
             }}
           />
         )}
@@ -283,6 +272,7 @@ export default function DataTable<TData, TValue>({
               action={action[0]}
               callback={() => {
                 setActiveAction(action[0]);
+
                 setIsOpen(true);
               }}
               className="rounded-r-none"
@@ -303,10 +293,11 @@ export default function DataTable<TData, TValue>({
                     .filter((i) => i !== action[0])
                     .map((actionItem) => (
                       <DropdownMenuItem
+                        key={actionItem.cta}
                         className="cursor-pointer"
                         onClick={() => {
                           setActiveAction(actionItem);
-                          setIsOpen(true);
+                          actionItem?.callback(null);
                         }}
                       >
                         {actionItem.cta}
@@ -352,7 +343,7 @@ export default function DataTable<TData, TValue>({
                         flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
-                        ) as React.ReactNode
+                        ) as ReactNode
                       }
                     </TableCell>
                   ))}

@@ -3,8 +3,8 @@
 import { CaretSortIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { ColumnDef } from '@tanstack/react-table';
 
-import { useState } from 'react';
 import AutoformDialog from '@repo/ayasofyazilim-ui/molecules/dialog';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -15,9 +15,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { data } from './data';
+import { autoColumnGnerator } from '.';
 import { normalizeName } from './utils';
-import { MenuAction } from '.';
 
 const createSortableHeader = (column: any, name: string) => (
   <Button
@@ -67,16 +66,17 @@ function generateColumns(tableType: any, excludeList: string[] = []) {
   return generatedTableColumns;
 }
 
-export function columnsGenerator(
-  callback: any,
-  autoFormArgs: any,
-  tableType: any,
-  // TODO: remove onEdit and onDelete and use actionList instead
-  onEdit: (e: any, originalRow: any) => void,
-  onDelete: (e: any, originalRow: any) => void,
-  actionList?: MenuAction[],
-  excludeList: string[] = []
-) {
+export function columnsGenerator(data: autoColumnGnerator) {
+  const {
+    // callback,
+    autoFormArgs,
+    tableType,
+    onEdit,
+    onDelete,
+    actionList,
+    excludeList,
+  } = data;
+
   const columns: ColumnDef<typeof data>[] = [
     {
       id: 'select',
