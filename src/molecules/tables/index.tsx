@@ -20,6 +20,7 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
@@ -66,7 +67,7 @@ export type columnsType = {
 };
 
 export type DataTableProps<TData> = {
-  action?: tableAction;
+  action?: tableAction | tableAction[];
   columnsData: columnsType;
   data: TData[];
   fetchRequest?: any;
@@ -150,6 +151,7 @@ export default function DataTable<TData, TValue>({
   fetchRequest,
 }: DataTableProps<TData>) {
   let tableData = data;
+  const isMultipleActionProvided = Array.isArray(action);
 
   function selectedRowsText() {
     if (isLoading) return 'Loading...';
@@ -215,15 +217,16 @@ export default function DataTable<TData, TValue>({
   }, [table.getState().pagination.pageIndex]);
 
   const [isOpen, setIsOpen] = React.useState(false);
+  const [activeAction, setActiveAction] = React.useState<tableAction>();
 
   return (
     <div className="w-full">
-      {action?.type === 'NewPage' ? null : (
+      {activeAction?.type === 'NewPage' ? null : (
         <AutoformDialog
           open={isOpen}
           onOpenChange={setIsOpen}
-          action={action}
-          type={action?.type}
+          action={activeAction}
+          type={activeAction?.type}
         />
       )}
       <div className="flex items-center py-4 gap-2">
@@ -258,7 +261,36 @@ export default function DataTable<TData, TValue>({
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <ActionComponent action={action} callback={() => setIsOpen(true)} />
+        {isMultipleActionProvided ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button disabled={isLoading} variant="outline">
+                Action <ChevronDownIcon className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {action.map((actionItem) => (
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setActiveAction(actionItem);
+                    setIsOpen(true);
+                  }}
+                >
+                  {actionItem.cta}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <ActionComponent
+            action={action}
+            callback={() => {
+              setActiveAction(action);
+              setIsOpen(true);
+            }}
+          />
+        )}
       </div>
       <div className="rounded-md border relative w-full">
         <Table wrapperClassName="h-[500px] overflow-y-auto">
