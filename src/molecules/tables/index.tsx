@@ -159,7 +159,18 @@ export default function DataTable<TData, TValue>({
   let tableData = data;
   const isMultipleActionProvided = Array.isArray(action);
   const [isOpen, setIsOpen] = useState(false);
-  const [activeAction, setActiveAction] = useState<tableAction>();
+  const defaultAction: tableAction = isMultipleActionProvided
+    ? action[0]
+    : action || {
+        type: 'NewPage',
+        cta: 'Add New',
+        href: 'add',
+        autoFormArgs: {},
+        callback: () => {},
+        description: 'Add New',
+      };
+  const [activeAction, setActiveAction] =
+    React.useState<tableAction>(defaultAction);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -256,7 +267,7 @@ export default function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {!isMultipleActionProvided && (
+        {!isMultipleActionProvided && action && (
           <ActionComponent
             action={action}
             callback={() => {
