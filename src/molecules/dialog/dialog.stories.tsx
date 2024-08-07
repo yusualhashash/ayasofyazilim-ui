@@ -2,8 +2,9 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { z } from 'zod';
 import { useState } from 'react';
-import AutoformDialog, { tableAction } from '.';
+import AutoformDialog from '.';
 import { Button } from '@/components/ui/button';
+import { tableAction } from '../tables';
 
 const formSchema = z.object({
   username: z
@@ -38,6 +39,7 @@ const autoFormArgs = {
 };
 
 const action: tableAction = {
+  type: 'Dialog',
   cta: 'New Record',
   description: 'Ad New Record',
   callback: () => {

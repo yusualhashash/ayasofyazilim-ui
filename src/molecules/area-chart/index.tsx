@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Tremor Raw AreaChart [v0.2.2]
 
 'use client';

@@ -1,5 +1,6 @@
-// Tremor Raw LineChart [v0.2.1]
+/* eslint-disable */
 
+// Tremor Raw LineChart [v0.2.1]
 'use client';
 
 import React from 'react';

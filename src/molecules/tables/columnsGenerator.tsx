@@ -114,6 +114,7 @@ export function columnsGenerator(data: autoColumnGnerator) {
               open={open}
               onOpenChange={setOpen}
               action={{
+                type: 'Dialog',
                 autoFormArgs,
                 callback: onEdit,
                 cta: 'Edit the role',
