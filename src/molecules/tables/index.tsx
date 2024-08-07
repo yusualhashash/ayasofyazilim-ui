@@ -39,7 +39,7 @@ import { columnsGenerator } from './columnsGenerator';
 import { normalizeName } from './utils';
 
 export type tableAction = {
-  autoFormArgs?: any;
+  autoFormArgs: any;
   callback: (values: any) => void;
   cta: string;
   description: string;
@@ -159,18 +159,13 @@ export default function DataTable<TData, TValue>({
   let tableData = data;
   const isMultipleActionProvided = Array.isArray(action);
   const [isOpen, setIsOpen] = useState(false);
-  const defaultAction: tableAction = isMultipleActionProvided
-    ? action[0]
-    : action || {
-        type: 'NewPage',
-        cta: 'Add New',
-        href: 'add',
-        autoFormArgs: {},
-        callback: () => {},
-        description: 'Add New',
-      };
-  const [activeAction, setActiveAction] =
-    React.useState<tableAction>(defaultAction);
+  let defaultAction;
+  if (action && isMultipleActionProvided) {
+    defaultAction = isMultipleActionProvided ? action[0] : action;
+  }
+  const [activeAction, setActiveAction] = React.useState<
+    tableAction | undefined
+  >(defaultAction);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -268,13 +263,7 @@ export default function DataTable<TData, TValue>({
         </DropdownMenu>
 
         {!isMultipleActionProvided && action && (
-          <ActionComponent
-            action={action}
-            callback={() => {
-              setActiveAction(action);
-              action?.callback(null);
-            }}
-          />
+          <ActionComponent action={action} callback={() => setIsOpen(true)} />
         )}
 
         {isMultipleActionProvided && action.length > 0 && (

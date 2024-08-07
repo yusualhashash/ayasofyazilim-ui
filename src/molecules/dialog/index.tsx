@@ -17,7 +17,7 @@ import AutoForm, {
 import SheetSide from '../sheet';
 
 export type tableAction = {
-  autoFormArgs?: any;
+  autoFormArgs: any;
   callback: (values: any, triggerData: any) => void;
   cta: string;
   description: string;
