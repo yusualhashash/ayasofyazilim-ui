@@ -2,6 +2,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { z } from 'zod';
+import jsonToCsv from 'src/lib/json-to-csv';
 import Table, { tableAction } from '.';
 import { data } from './data';
 import { columns } from './columns';
@@ -41,6 +42,7 @@ const autoFormArgs = {
 
 const action: tableAction = {
   cta: 'New Record',
+  type: 'Dialog',
   description: 'Add New Record',
   callback: () => alert('Added'),
   autoFormArgs,
@@ -163,9 +165,6 @@ export const NewPage: StoryObj<typeof Table> = {
     filterBy: 'email',
     action: {
       cta: 'New Record',
-      description: 'Add New Record',
-      callback: () => alert('Added'),
-      autoFormArgs,
       type: 'NewPage',
       href: '/new-page',
     },
@@ -211,6 +210,69 @@ export const Sheet: StoryObj<typeof Table> = {
       autoFormArgs,
       type: 'Sheet',
     },
+  },
+  parameters: {
+    layout: 'centered',
+  },
+};
+
+export const MultipleActions: StoryObj<typeof Table> = {
+  args: {
+    data,
+    columnsData: {
+      type: 'Auto',
+      data: {
+        callback: () => alert('Added Callback'),
+        autoFormArgs: {
+          formSchema: createZodObject(jsonSchema, [
+            'status',
+            'email',
+            'amount',
+          ]),
+        },
+        tableType: jsonSchema,
+        excludeList: ['id'],
+        onEdit: (values, row) => {
+          alert(
+            `OnEdit \ndata:\n${JSON.stringify(values)} \nRow:\n${JSON.stringify(row)}`
+          );
+        },
+        onDelete: (e, row) => {
+          alert(
+            `OnDelete \ndata:\n${JSON.stringify(e)} \nRow:\n${JSON.stringify(row)}`
+          );
+        },
+      },
+    },
+    filterBy: 'email',
+    action: [
+      {
+        cta: 'New Record sheet',
+        description: 'Add New Record',
+        callback: () => alert('Added'),
+        autoFormArgs,
+        type: 'Sheet',
+      },
+      {
+        cta: 'New Dialog',
+        description: 'Add New Record',
+        callback: () => alert('Added'),
+        autoFormArgs,
+        type: 'Dialog',
+      },
+      {
+        cta: 'New New Page',
+        type: 'NewPage',
+        href: '/new-page',
+      },
+      {
+        type: 'Action',
+        cta: `Export CSV`,
+        callback: () => {
+          jsonToCsv(data, 'export_data');
+        },
+      },
+    ],
   },
   parameters: {
     layout: 'centered',
