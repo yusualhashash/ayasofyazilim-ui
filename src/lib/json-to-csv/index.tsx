@@ -1,6 +1,10 @@
 /* eslint no-param-reassign: ["error", { "props": false }] */
 export default function jsonToCsv(json: any, fileName: string) {
-  const { items } = json;
+  let items = json;
+  if (json.items) {
+    items = json.items;
+  }
+
   items.forEach((item: any) => {
     delete item.extraProperties;
   });
