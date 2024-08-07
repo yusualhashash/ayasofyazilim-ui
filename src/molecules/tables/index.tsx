@@ -38,13 +38,28 @@ import AutoformDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import { normalizeName } from './utils';
 
-export type tableAction = {
-  autoFormArgs: any;
-  callback: (values: any) => void;
+export type tableAction = tableActionCommon &
+  (tableActionNewPage | tableActionDialog | tableActionAction);
+
+export type tableActionCommon = {
   cta: string;
+};
+
+export type tableActionNewPage = {
+  href: string;
+  type: 'NewPage';
+};
+
+export type tableActionDialog = {
+  autoFormArgs: any;
+  callback: (values: any, triggerData?: unknown) => void;
   description: string;
-  href?: string;
-  type?: 'Dialog' | 'NewPage' | 'Sheet';
+  type: 'Dialog' | 'Sheet';
+};
+
+export type tableActionAction = {
+  callback: (values: any) => void;
+  type: 'Action';
 };
 
 export type MenuAction = {
@@ -159,8 +174,8 @@ export default function DataTable<TData, TValue>({
   let tableData = data;
   const isMultipleActionProvided = Array.isArray(action);
   const [isOpen, setIsOpen] = useState(false);
-  let defaultAction;
-  if (action && isMultipleActionProvided) {
+  let defaultAction: tableAction | undefined;
+  if (action) {
     defaultAction = isMultipleActionProvided ? action[0] : action;
   }
   const [activeAction, setActiveAction] = React.useState<
@@ -221,7 +236,7 @@ export default function DataTable<TData, TValue>({
 
   return (
     <div className="w-full">
-      {activeAction?.type !== 'NewPage' && activeAction?.autoFormArgs && (
+      {activeAction && 'autoFormArgs' in activeAction && (
         <AutoformDialog
           open={isOpen}
           onOpenChange={setIsOpen}
@@ -262,52 +277,53 @@ export default function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {!isMultipleActionProvided && action && (
-          <ActionComponent action={action} callback={() => setIsOpen(true)} />
-        )}
-
-        {isMultipleActionProvided && action.length > 0 && (
-          <div className="flex">
-            <ActionComponent
-              action={action[0]}
-              callback={() => {
-                setActiveAction(action[0]);
-
-                setIsOpen(true);
-              }}
-              className="rounded-r-none"
-            />
-            {action.length > 1 && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    disabled={isLoading}
-                    variant="outline"
-                    className="rounded-l-none border-l-0 px-2"
-                  >
-                    <ChevronDownIcon className="" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {action
-                    .filter((i) => i !== action[0])
-                    .map((actionItem) => (
-                      <DropdownMenuItem
-                        key={actionItem.cta}
-                        className="cursor-pointer"
-                        onClick={() => {
+        <div className="flex">
+          <ActionComponent
+            action={defaultAction}
+            callback={() => {
+              setActiveAction(defaultAction);
+              setIsOpen(true);
+            }}
+            className={isMultipleActionProvided ? 'rounded-r-none' : ''}
+          />
+          {isMultipleActionProvided && action.length > 1 && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  disabled={isLoading}
+                  variant="outline"
+                  className="rounded-l-none border-l-0 px-2"
+                >
+                  <ChevronDownIcon className="" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {action
+                  .filter((i) => i !== action[0])
+                  .map((actionItem) => (
+                    <DropdownMenuItem
+                      asChild
+                      key={actionItem.cta}
+                      className="cursor-pointer"
+                    >
+                      <ActionComponent
+                        action={actionItem}
+                        callback={() => {
                           setActiveAction(actionItem);
-                          actionItem?.callback(null);
+                          if (actionItem.type === 'Action') {
+                            actionItem.callback(null);
+                            return;
+                          }
+                          setIsOpen(true);
                         }}
-                      >
-                        {actionItem.cta}
-                      </DropdownMenuItem>
-                    ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-          </div>
-        )}
+                        className="w-full border-none"
+                      />
+                    </DropdownMenuItem>
+                  ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
       </div>
       <div className="rounded-md border relative w-full">
         <Table wrapperClassName="h-[500px] overflow-y-auto">

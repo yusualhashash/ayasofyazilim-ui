@@ -15,24 +15,18 @@ import AutoForm, {
   SchemaType,
 } from '../../organisms/auto-form';
 import SheetSide from '../sheet';
-
-export type tableAction = {
-  autoFormArgs: any;
-  callback: (values: any, triggerData: any) => void;
-  cta: string;
-  description: string;
-};
+import { tableActionCommon, tableActionDialog } from '../tables';
 
 export type AutoformDialogProps = {
-  action?: tableAction;
+  action?: tableActionCommon & tableActionDialog;
   onOpenChange: (e: boolean) => void;
   open: boolean;
   triggerData?: any;
-  type?: 'Sheet' | 'Dialog' | 'newPage';
+  type?: 'Sheet' | 'Dialog';
 };
 
 const AutoFormData = (
-  action: tableAction,
+  action: tableActionCommon & tableActionDialog,
   values: Partial<z.infer<SchemaType>>,
   triggerData?: any
 ) => (
