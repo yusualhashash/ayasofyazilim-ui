@@ -4,7 +4,8 @@ export default function jsonToCsv(json: any, fileName: string) {
   items.forEach((item: any) => {
     delete item.extraProperties;
   });
-  const replacer = (key: any, value: any) => (value === null ? '' : value);
+  const replacer = (key: any, value: any) =>
+    value === null ? '' : Array.isArray(value) ? value.join(' - ') : value;
   const header = Object.keys(items[0]);
   const csv = [
     header.join(','), // header row first
