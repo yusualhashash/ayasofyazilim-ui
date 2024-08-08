@@ -5,7 +5,7 @@ import { z } from 'zod';
 import jsonToCsv from 'src/lib/json-to-csv';
 import Table, { tableAction } from '.';
 import { data } from './data';
-import { columns } from './columns';
+import { columns, columnsEditable } from './columns';
 import { createZodObject } from '../../lib/create-zod-object';
 
 const formSchema = z.object({
@@ -273,6 +273,20 @@ export const MultipleActions: StoryObj<typeof Table> = {
         },
       },
     ],
+  },
+  parameters: {
+    layout: 'centered',
+  },
+};
+export const Editable: StoryObj<typeof Table> = {
+  args: {
+    editable: false,
+    data,
+    columnsData: {
+      type: 'Custom',
+      data: columnsEditable,
+    },
+    showView: false,
   },
   parameters: {
     layout: 'centered',
