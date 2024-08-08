@@ -3,6 +3,8 @@
 import { CaretSortIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { ColumnDef } from '@tanstack/react-table';
 
+import { Trash2Icon } from 'lucide-react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -14,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Payment } from './data';
+import { Input } from '@/components/ui/input';
 
 export const columns: ColumnDef<Payment>[] = [
   {
@@ -101,5 +104,91 @@ export const columns: ColumnDef<Payment>[] = [
         </DropdownMenu>
       );
     },
+  },
+];
+
+export const columnsEditable: ColumnDef<Payment>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+        className="m-3"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+        className="m-3"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: 'name',
+    header: () => <div className="text-center">Name</div>,
+    cell: ({ getValue, row: { index }, column: { id }, table }) => {
+      const initialValue = getValue();
+      const [value, setValue] = React.useState(initialValue);
+
+      const onBlur = () => {
+        table.options.meta?.updateData(index, id, value);
+      };
+
+      React.useEffect(() => {
+        setValue(initialValue);
+      }, [initialValue]);
+
+      return (
+        <Input
+          type="text"
+          value={value as string}
+          onChange={(e) => setValue(e.target.value)}
+          onBlur={onBlur}
+        />
+      );
+    },
+  },
+  {
+    accessorKey: 'price',
+    header: () => <div className="text-center">Price</div>,
+    cell: ({ getValue, row: { index }, column: { id }, table }) => {
+      const initialValue = getValue();
+      const [value, setValue] = React.useState(initialValue);
+
+      const onBlur = () => {
+        table.options.meta?.updateData(index, id, value);
+      };
+
+      React.useEffect(() => {
+        setValue(initialValue);
+      }, [initialValue]);
+
+      return (
+        <Input
+          type="number"
+          value={value as number}
+          onChange={(e) => setValue(e.target.value)}
+          onBlur={onBlur}
+        />
+      );
+    },
+  },
+  {
+    accessorKey: 'actions',
+    enableHiding: false,
+    cell: () => (
+      <Button variant="ghost">
+        <Trash2Icon className="w-4 h-4 text-red-500" />
+      </Button>
+    ),
   },
 ];
