@@ -17,7 +17,6 @@ import {
 import Link from 'next/link';
 import React, { useState, useEffect, useCallback, Fragment } from 'react';
 import { Trash2Icon } from 'lucide-react';
-import { ReactNode } from 'node_modules/react-resizable-panels/dist/declarations/src/vendor/react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -134,7 +133,7 @@ export type DataTableProps<TData> = {
   fetchRequest?: any;
   filterBy?: string;
   isLoading?: boolean;
-  renderSubComponent?: (row: any) => ReactNode;
+  renderSubComponent?: (row: any) => JSX.Element;
   rowCount?: number;
   showView?: boolean;
 };
@@ -466,7 +465,7 @@ export default function DataTable<TData, TValue>({
                           flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
-                          ) as ReactNode
+                          ) as JSX.Element
                         }
                       </TableCell>
                     ))}
