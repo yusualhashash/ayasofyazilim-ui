@@ -17,8 +17,9 @@ import AutoForm, {
 import SheetSide from '../sheet';
 import { tableActionCommon, tableActionDialog } from '../tables';
 
+export type tableAction = tableActionCommon & tableActionDialog;
 export type AutoformDialogProps = {
-  action?: tableActionCommon & tableActionDialog;
+  action?: tableAction;
   onOpenChange: (e: boolean) => void;
   open: boolean;
   triggerData?: any;
