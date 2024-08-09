@@ -3,7 +3,7 @@
 import { CaretSortIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { ColumnDef } from '@tanstack/react-table';
 
-import { Trash2Icon } from 'lucide-react';
+import { ChevronDown, ChevronUp, Trash2Icon } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -15,8 +15,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Payment } from './data';
 import { Input } from '@/components/ui/input';
+import { Payment } from './data';
 
 export const columns: ColumnDef<Payment>[] = [
   {
@@ -192,3 +192,67 @@ export const columnsEditable: ColumnDef<Payment>[] = [
     ),
   },
 ];
+export const columnsSubContent: ColumnDef<Payment>[] = [
+  {
+    id: 'expander',
+    header: () => null,
+    cell: ({ row }) =>
+      row.getCanExpand() ? (
+        <button
+          className="flex cursor-pointer"
+          {...{
+            onClick: row.getToggleExpandedHandler(),
+          }}
+          type="button"
+        >
+          {row.getIsExpanded() ? (
+            <ChevronUp className="text-muted-foreground" />
+          ) : (
+            <ChevronDown className="text-muted-foreground" />
+          )}
+        </button>
+      ) : (
+        ''
+      ),
+  },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue('status')}</div>
+    ),
+  },
+  {
+    accessorKey: 'email',
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Email
+        <CaretSortIcon className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div className="lowercase">{row.getValue('email')}</div>,
+  },
+  {
+    accessorKey: 'amount',
+    header: () => <div className="text-right">Amount</div>,
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue('amount'));
+
+      // Format the amount as a dollar amount
+      const formatted = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(amount);
+
+      return <div className="text-right font-medium">{formatted}</div>;
+    },
+  },
+];
+export const renderSubComponent = ({ row }: { row: any }) => (
+  <pre style={{ fontSize: '10px' }}>
+    <code>{JSON.stringify(row.original, null, 2)}</code>
+  </pre>
+);

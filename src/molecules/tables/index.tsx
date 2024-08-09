@@ -4,19 +4,19 @@ import { ChevronDownIcon } from '@radix-ui/react-icons';
 import {
   ColumnDef,
   ColumnFiltersState,
+  RowData,
   SortingState,
   VisibilityState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getExpandedRowModel,
+  getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
-  RowData,
 } from '@tanstack/react-table';
-import Link from 'next/link';
-import React, { useState, useEffect, useCallback, Fragment } from 'react';
 import { Trash2Icon } from 'lucide-react';
+import Link from 'next/link';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -48,38 +48,6 @@ declare module '@tanstack/react-table' {
     ) => void;
   }
 }
-
-export const renderSubComponent = ({ row }: { row: any }) => (
-  <pre style={{ fontSize: '10px' }}>
-    <code>{JSON.stringify(row.original, null, 2)}</code>
-  </pre>
-);
-
-/* Expandable column example
-
-{
-  id: "expander",
-  header: () => null,
-  cell: ({ row }) => {
-    return row.getCanExpand() ? (
-      <button
-        className="flex cursor-pointer"
-        {...{
-          onClick: row.getToggleExpandedHandler(),
-        }}
-      >
-        {row.getIsExpanded() ? (
-          <ChevronUp className="text-muted-foreground" />
-        ) : (
-          <ChevronDown className="text-muted-foreground" />
-        )}
-      </button>
-    ) : (
-      ""
-    );
-  },
-},
-*/
 
 export type tableAction = tableActionCommon &
   (tableActionNewPage | tableActionDialog | tableActionAction);
@@ -218,9 +186,9 @@ export default function DataTable<TData, TValue>({
   isLoading,
   rowCount,
   fetchRequest,
+  renderSubComponent,
   showView = true,
   editable = false,
-  renderSubComponent,
 }: DataTableProps<TData>) {
   const [tableData, setTableData] = useState<TData[]>(data || []);
   const isMultipleActionProvided = Array.isArray(action);

@@ -1,12 +1,17 @@
 /* eslint-disable no-alert */
 import { Meta, StoryObj } from '@storybook/react';
 
-import { z } from 'zod';
 import jsonToCsv from 'src/lib/json-to-csv';
+import { z } from 'zod';
 import Table, { tableAction } from '.';
-import { data } from './data';
-import { columns, columnsEditable } from './columns';
 import { createZodObject } from '../../lib/create-zod-object';
+import {
+  columns,
+  columnsEditable,
+  columnsSubContent,
+  renderSubComponent,
+} from './columns';
+import { data } from './data';
 
 const formSchema = z.object({
   username: z
@@ -287,6 +292,22 @@ export const Editable: StoryObj<typeof Table> = {
       data: columnsEditable,
     },
     showView: false,
+  },
+  parameters: {
+    layout: 'centered',
+  },
+};
+
+export const SubContent: StoryObj<typeof Table> = {
+  args: {
+    editable: true,
+    data,
+    columnsData: {
+      type: 'Custom',
+      data: columnsSubContent,
+    },
+    showView: false,
+    renderSubComponent,
   },
   parameters: {
     layout: 'centered',
