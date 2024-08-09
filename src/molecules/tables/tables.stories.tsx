@@ -280,7 +280,7 @@ export const MultipleActions: StoryObj<typeof Table> = {
 };
 export const Editable: StoryObj<typeof Table> = {
   args: {
-    editable: false,
+    editable: true,
     data,
     columnsData: {
       type: 'Custom',
