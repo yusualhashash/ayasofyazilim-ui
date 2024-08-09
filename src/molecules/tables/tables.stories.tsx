@@ -283,6 +283,7 @@ export const MultipleActions: StoryObj<typeof Table> = {
     layout: 'centered',
   },
 };
+const filedstable = { name: '', price: '' };
 export const Editable: StoryObj<typeof Table> = {
   args: {
     editable: true,
@@ -292,6 +293,7 @@ export const Editable: StoryObj<typeof Table> = {
       data: columnsEditable,
     },
     showView: false,
+    Headertable: filedstable,
   },
   parameters: {
     layout: 'centered',
@@ -300,7 +302,7 @@ export const Editable: StoryObj<typeof Table> = {
 
 export const SubContent: StoryObj<typeof Table> = {
   args: {
-    editable: true,
+    editable: false,
     data,
     columnsData: {
       type: 'Custom',

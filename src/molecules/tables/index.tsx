@@ -94,6 +94,7 @@ export type columnsType = {
 };
 
 export type DataTableProps<TData> = {
+  Headertable?: any;
   action?: tableAction | tableAction[];
   columnsData: columnsType;
   data: TData[];
@@ -189,6 +190,7 @@ export default function DataTable<TData, TValue>({
   renderSubComponent,
   showView = true,
   editable = false,
+  Headertable,
 }: DataTableProps<TData>) {
   const [tableData, setTableData] = useState<TData[]>(data || []);
   const isMultipleActionProvided = Array.isArray(action);
@@ -282,7 +284,7 @@ export default function DataTable<TData, TValue>({
   }
 
   const handleAddRow = () => {
-    const newRow = {} as TData;
+    const newRow = Headertable;
     setTableData((prevData) => [...prevData, newRow]);
   };
 
