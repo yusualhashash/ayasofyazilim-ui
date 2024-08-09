@@ -9,12 +9,13 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getExpandedRowModel,
   getSortedRowModel,
   useReactTable,
   RowData,
 } from '@tanstack/react-table';
 import Link from 'next/link';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Fragment } from 'react';
 import { Trash2Icon } from 'lucide-react';
 import { ReactNode } from 'node_modules/react-resizable-panels/dist/declarations/src/vendor/react';
 import { Button } from '@/components/ui/button';
@@ -48,6 +49,12 @@ declare module '@tanstack/react-table' {
     ) => void;
   }
 }
+
+export const renderSubComponent = ({ row }: { row: any }) => (
+  <pre style={{ fontSize: '10px' }}>
+    <code>{JSON.stringify(row.original, null, 2)}</code>
+  </pre>
+);
 
 export type tableAction = tableActionCommon &
   (tableActionNewPage | tableActionDialog | tableActionAction);
@@ -101,6 +108,7 @@ export type DataTableProps<TData> = {
   fetchRequest?: any;
   filterBy?: string;
   isLoading?: boolean;
+  renderSubComponent?: (row: any) => ReactNode;
   rowCount?: number;
   showView?: boolean;
 };
@@ -148,6 +156,7 @@ export default function DataTable<TData, TValue>({
   fetchRequest,
   showView = true,
   editable = false,
+  renderSubComponent,
 }: DataTableProps<TData>) {
   const [tableData, setTableData] = useState<TData[]>(data || []);
   const isMultipleActionProvided = Array.isArray(action);
@@ -199,6 +208,8 @@ export default function DataTable<TData, TValue>({
     rowCount: rowCount || tableData.length,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getRowCanExpand: () => !!renderSubComponent,
+    getExpandedRowModel: getExpandedRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: (row) => {
       if (isLoading) return;
@@ -379,22 +390,30 @@ export default function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() ? 'selected' : undefined}
-                  className="whitespace-nowrap"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {
-                        flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        ) as ReactNode
-                      }
-                    </TableCell>
-                  ))}
-                </TableRow>
+                <Fragment key={row.id}>
+                  <TableRow
+                    data-state={row.getIsSelected() ? 'selected' : undefined}
+                    className="whitespace-nowrap"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {
+                          flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          ) as ReactNode
+                        }
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                  {row.getIsExpanded() && renderSubComponent && (
+                    <TableRow>
+                      <TableCell colSpan={row.getVisibleCells().length}>
+                        {renderSubComponent({ row })}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </Fragment>
               ))
             ) : (
               <TableRow>
