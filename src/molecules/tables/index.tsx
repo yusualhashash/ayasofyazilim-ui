@@ -56,6 +56,32 @@ export const renderSubComponent = ({ row }: { row: any }) => (
   </pre>
 );
 
+/* Expandable column example
+
+{
+  id: "expander",
+  header: () => null,
+  cell: ({ row }) => {
+    return row.getCanExpand() ? (
+      <button
+        className="flex cursor-pointer"
+        {...{
+          onClick: row.getToggleExpandedHandler(),
+        }}
+      >
+        {row.getIsExpanded() ? (
+          <ChevronUp className="text-muted-foreground" />
+        ) : (
+          <ChevronDown className="text-muted-foreground" />
+        )}
+      </button>
+    ) : (
+      ""
+    );
+  },
+},
+*/
+
 export type tableAction = tableActionCommon &
   (tableActionNewPage | tableActionDialog | tableActionAction);
 
