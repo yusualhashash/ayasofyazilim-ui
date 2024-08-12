@@ -10,7 +10,6 @@ import {
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
-  getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
@@ -38,6 +37,7 @@ import {
 import AutoformDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import { normalizeName } from './utils';
+import { useDebounce } from '../../hooks/useDebounce';
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -204,6 +204,7 @@ export default function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const filterText = useDebounce(columnFilters?.[0]?.value, 500);
 
   useEffect(() => {
     if (isLoading) {
@@ -226,7 +227,6 @@ export default function DataTable<TData, TValue>({
       cell: SkeletonCell,
     }));
   }
-
   const table = useReactTable({
     data: tableData,
     columns,
@@ -239,7 +239,8 @@ export default function DataTable<TData, TValue>({
     manualPagination: true,
     rowCount: rowCount || tableData.length,
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+    // getFilteredRowModel: getFilteredRowModel(),
+    manualFiltering: true,
     getRowCanExpand: () => !!renderSubComponent,
     getExpandedRowModel: getExpandedRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -273,9 +274,8 @@ export default function DataTable<TData, TValue>({
   const selectedRows = table?.getSelectedRowModel()?.rows || [];
 
   useEffect(() => {
-    fetchRequest?.(table.getState().pagination.pageIndex);
-  }, [table.getState().pagination.pageIndex]);
-
+    fetchRequest?.(table.getState().pagination.pageIndex, filterText);
+  }, [table.getState().pagination.pageIndex, filterText]);
   function selectedRowsText() {
     if (isLoading) return 'Loading...';
     return `${table.getFilteredSelectedRowModel().rows.length} of ${table.getFilteredRowModel().rows.length} row(s) selected.`;
@@ -309,8 +309,7 @@ export default function DataTable<TData, TValue>({
       <div className="flex items-center py-4 gap-2">
         {filterBy && (
           <Input
-            disabled={isLoading}
-            placeholder={`Filter ${filterBy}s...`}
+            placeholder="Ara..."
             value={
               (table.getColumn(filterBy)?.getFilterValue() as string) ?? ''
             }
