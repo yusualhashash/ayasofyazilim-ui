@@ -49,26 +49,26 @@ declare module '@tanstack/react-table' {
   }
 }
 
-export type tableAction = tableActionCommon &
-  (tableActionNewPage | tableActionDialog | tableActionAction);
+export type TableAction = TableActionCommon &
+  (TableActionNewPage | TableActionDialog | TableActionAction);
 
-export type tableActionCommon = {
+export type TableActionCommon = {
   cta: string;
 };
 
-export type tableActionNewPage = {
+export type TableActionNewPage = {
   href: string;
   type: 'NewPage';
 };
 
-export type tableActionDialog = {
+export type TableActionDialog = {
   autoFormArgs: any;
   callback: (values: any, triggerData?: unknown) => void;
   description: string;
   type: 'Dialog' | 'Sheet';
 };
 
-export type tableActionAction = {
+export type TableActionAction = {
   callback: (values: any) => void;
   type: 'Action';
 };
@@ -78,7 +78,7 @@ export type MenuAction = {
   cta: string;
 };
 
-export type autoColumnGnerator = {
+export type AutoColumnGenerator = {
   actionList?: MenuAction[];
   autoFormArgs: any;
   callback: any;
@@ -88,15 +88,15 @@ export type autoColumnGnerator = {
   tableType: any;
 };
 
-export type columnsType = {
-  data: ColumnDef<any>[] | autoColumnGnerator;
+export type ColumnsType = {
+  data: ColumnDef<any>[] | AutoColumnGenerator;
   type: 'Custom' | 'Auto';
 };
 
 export type DataTableProps<TData> = {
   Headertable?: any;
-  action?: tableAction | tableAction[];
-  columnsData: columnsType;
+  action?: TableAction | TableAction[];
+  columnsData: ColumnsType;
   data: TData[];
   editable?: boolean;
   fetchRequest?: any;
@@ -113,7 +113,7 @@ const ActionComponent = ({
   callback,
   className,
 }: {
-  action?: tableAction;
+  action?: TableAction;
   callback?: Function;
   className?: string;
 }) => {
@@ -146,10 +146,10 @@ const ActionComponent = ({
  * It supports loading states, custom actions, and can be filtered by a specific field.
  *
  * @param {DataTableProps<TData>} props - The properties for configuring the DataTable component.
- * @param {columnsType} props.columnsData - Configuration for the table columns. Can be either custom-defined columns or automatically generated based on data.
+ * @param {ColumnsType} props.columnsData - Configuration for the table columns. Can be either custom-defined columns or automatically generated based on data.
  * @param {TData[]} props.data - The data to be displayed in the table.
  * @param {string} props.filterBy - The field name to filter the table data by.
- * @param {tableAction} [props.action] - Optional. Configuration for an action that can be performed on the table data, such as adding a new row.
+ * @param {TableAction} [props.action] - Optional. Configuration for an action that can be performed on the table data, such as adding a new row.
  * @param {boolean} [props.isLoading] - Optional. Indicates whether the table is in a loading state. Defaults to false.
  *
  * @returns {ReactElement} The rendered data table component.
@@ -195,12 +195,12 @@ export default function DataTable<TData, TValue>({
   const [tableData, setTableData] = useState<TData[]>(data || []);
   const isMultipleActionProvided = Array.isArray(action);
   const [isOpen, setIsOpen] = useState(false);
-  let defaultAction: tableAction | undefined;
+  let defaultAction: TableAction | undefined;
   if (action) {
     defaultAction = isMultipleActionProvided ? action[0] : action;
   }
   const [activeAction, setActiveAction] = React.useState<
-    tableAction | undefined
+    TableAction | undefined
   >(defaultAction);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -218,7 +218,7 @@ export default function DataTable<TData, TValue>({
 
   let columns: ColumnDef<any, any>[] = [];
   if (columnsData.type === 'Auto') {
-    columns = columnsGenerator(columnsData.data as autoColumnGnerator);
+    columns = columnsGenerator(columnsData.data as AutoColumnGenerator);
   } else {
     columns = columnsData.data as ColumnDef<TData, TValue>[];
   }

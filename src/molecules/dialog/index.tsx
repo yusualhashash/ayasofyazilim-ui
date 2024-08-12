@@ -15,9 +15,9 @@ import AutoForm, {
   SchemaType,
 } from '../../organisms/auto-form';
 import SheetSide from '../sheet';
-import { tableActionCommon, tableActionDialog } from '../tables';
+import { TableActionCommon, TableActionDialog } from '../tables';
 
-export type tableAction = tableActionCommon & tableActionDialog;
+export type tableAction = TableActionCommon & TableActionDialog;
 export type AutoformDialogProps = {
   action?: tableAction;
   onOpenChange: (e: boolean) => void;
@@ -27,7 +27,7 @@ export type AutoformDialogProps = {
 };
 
 const AutoFormData = (
-  action: tableActionCommon & tableActionDialog,
+  action: TableActionCommon & TableActionDialog,
   values: Partial<z.infer<SchemaType>>,
   triggerData?: any
 ) => (
