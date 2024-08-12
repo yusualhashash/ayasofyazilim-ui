@@ -107,6 +107,7 @@ export type DataTableProps<TData> = {
   fetchRequest?: any;
   filterBy?: string;
   isLoading?: boolean;
+  onDataUpdate?: (data: TData[]) => void;
   renderSubComponent?: (row: any) => JSX.Element;
   rowCount?: number;
   showView?: boolean;
@@ -196,6 +197,7 @@ export default function DataTable<TData, TValue>({
   showView = true,
   editable = false,
   Headertable,
+  onDataUpdate,
 }: DataTableProps<TData>) {
   const [tableData, setTableData] = useState<TData[]>(data || []);
   const isMultipleActionProvided = Array.isArray(action);
@@ -219,6 +221,10 @@ export default function DataTable<TData, TValue>({
       setTableData(data);
     }
   }, [isLoading, data]);
+
+  useEffect(() => {
+    onDataUpdate?.(tableData);
+  }, [tableData, onDataUpdate]);
 
   let columns: ColumnDef<any, any>[] = [];
   if (columnsData.type === 'Auto') {
