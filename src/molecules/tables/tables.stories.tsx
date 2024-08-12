@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import jsonToCsv from 'src/lib/json-to-csv';
 import { z } from 'zod';
-import Table, { tableAction } from '.';
+import Table, { TableAction } from '.';
 import { createZodObject } from '../../lib/create-zod-object';
 import {
   columns,
@@ -45,7 +45,7 @@ const autoFormArgs = {
   children: <div>Extra data</div>,
 };
 
-const action: tableAction = {
+const action: TableAction = {
   cta: 'New Record',
   type: 'Dialog',
   description: 'Add New Record',

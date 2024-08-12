@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { useState } from 'react';
 import AutoformDialog from '.';
 import { Button } from '@/components/ui/button';
-import { tableAction } from '../tables';
+import { TableAction } from '../tables';
 
 const formSchema = z.object({
   username: z
@@ -38,7 +38,7 @@ const autoFormArgs = {
   children: <div>Extra data</div>,
 };
 
-const action: tableAction = {
+const action: TableAction = {
   type: 'Dialog',
   cta: 'New Record',
   description: 'Ad New Record',

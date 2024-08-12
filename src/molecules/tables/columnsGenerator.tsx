@@ -15,7 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { autoColumnGnerator } from '.';
+import { AutoColumnGenerator } from '.';
 import { normalizeName } from './utils';
 
 const createSortableHeader = (column: any, name: string) => (
@@ -66,7 +66,7 @@ function generateColumns(tableType: any, excludeList: string[] = []) {
   return generatedTableColumns;
 }
 
-export function columnsGenerator(data: autoColumnGnerator) {
+export function columnsGenerator(data: AutoColumnGenerator) {
   const {
     // callback,
     autoFormArgs,
