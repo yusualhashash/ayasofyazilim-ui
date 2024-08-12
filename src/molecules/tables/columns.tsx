@@ -185,8 +185,13 @@ export const columnsEditable: ColumnDef<Payment>[] = [
   {
     accessorKey: 'actions',
     enableHiding: false,
-    cell: () => (
-      <Button variant="ghost">
+    cell: ({ row, table }) => (
+      <Button
+        variant="ghost"
+        onClick={() => {
+          table.options.meta?.removeRow(row.index, 'actions', null);
+        }}
+      >
         <Trash2Icon className="w-4 h-4 text-red-500" />
       </Button>
     ),
