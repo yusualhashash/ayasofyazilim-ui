@@ -41,6 +41,11 @@ import { normalizeName } from './utils';
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
+    removeRow: (
+      rowIndex: number,
+      columnId: string,
+      value: unknown | TData
+    ) => void;
     updateData: (
       rowIndex: number,
       columnId: string,
@@ -256,6 +261,10 @@ export default function DataTable<TData, TValue>({
       rowSelection,
     },
     meta: {
+      removeRow: (rowIndex) => {
+        setTableData((old) => old.filter((_row, index) => index !== rowIndex));
+        table.resetRowSelection();
+      },
       updateData: (rowIndex, columnId, value) => {
         setTableData((old) =>
           old.map((row, index) => {
