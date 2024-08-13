@@ -315,3 +315,25 @@ export const SubContent: StoryObj<typeof Table> = {
     layout: 'centered',
   },
 };
+export const DetailedFilter: StoryObj<typeof Table> = {
+  args: {
+    editable: false,
+    data,
+    columnsData: {
+      type: 'Custom',
+      data: columnsSubContent,
+    },
+    showView: false,
+    detailedFilter: [
+      {
+        name: 'dbNameOfFilter',
+        displayName: 'Display Name Of Filter',
+        type: 'string',
+        value: '',
+      },
+    ],
+  },
+  parameters: {
+    layout: 'centered',
+  },
+};
