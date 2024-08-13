@@ -28,7 +28,6 @@ export default function FilterColumn({
   setFilteredColumns,
 }: IFilterColumnProps) {
   const [filteredValue, setFilteredValue] = useState<string>(column.value);
-
   useEffect(() => {
     setFilteredValue(column.value);
   }, [column.value]);
@@ -70,7 +69,7 @@ export default function FilterColumn({
       <DialogContent className="sm:max-w-md">
         <Label htmlFor="name">{column.displayName}</Label>
         <div className="flex flex-row items-center gap-2 justify-center">
-          {column.type === 'string' && typeof filteredValue === 'string' && (
+          {column.type === 'string' && (
             <Input
               id="name"
               className="col-span-3"
@@ -97,13 +96,13 @@ export default function FilterColumn({
             <Button
               variant="secondary"
               className="px-3 py-1"
-              onClick={() => handleDelete}
+              onClick={() => handleDelete()}
             >
               <Trash2 className="w-4 h-4" />
             </Button>
           </DialogClose>
           <DialogClose asChild>
-            <Button variant="outline" onClick={() => handleSave}>
+            <Button variant="outline" onClick={() => handleSave()}>
               Filtrele
             </Button>
           </DialogClose>
