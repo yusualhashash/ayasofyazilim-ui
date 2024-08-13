@@ -38,7 +38,7 @@ export const data: Payment[] = [
 
 export type Payment = {
   amount: number;
-  date: string;
+  date?: string;
   email: string;
   id: string;
   status: 'pending' | 'processing' | 'success' | 'failed';
