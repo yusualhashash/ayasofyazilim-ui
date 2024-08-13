@@ -6,7 +6,6 @@ export default function Dashboard({
   cards,
   data,
   columnsData,
-  filterBy,
   action,
   isLoading,
   withCards,
@@ -24,7 +23,6 @@ export default function Dashboard({
       )}
       {withTable && (
         <DataTable
-          filterBy={filterBy}
           columnsData={columnsData}
           data={data}
           action={action}

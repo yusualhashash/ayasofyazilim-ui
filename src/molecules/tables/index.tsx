@@ -107,8 +107,6 @@ export type DataTableProps<TData> = {
   detailedFilter?: ColumnFilter[];
   editable?: boolean;
   fetchRequest?: any;
-  // eslint-disable-next-line react/no-unused-prop-types
-  filterBy?: string;
   isLoading?: boolean;
   onDataUpdate?: (data: TData[]) => void;
   renderSubComponent?: (row: any) => JSX.Element;
@@ -157,7 +155,6 @@ const ActionComponent = ({
  * @param {DataTableProps<TData>} props - The properties for configuring the DataTable component.
  * @param {ColumnsType} props.columnsData - Configuration for the table columns. Can be either custom-defined columns or automatically generated based on data.
  * @param {TData[]} props.data - The data to be displayed in the table.
- * @param {string} props.filterBy - The field name to filter the table data by.
  * @param {TableAction} [props.action] - Optional. Configuration for an action that can be performed on the table data, such as adding a new row.
  * @param {boolean} [props.isLoading] - Optional. Indicates whether the table is in a loading state. Defaults to false.
  *
@@ -184,7 +181,6 @@ const ActionComponent = ({
  * <DataTable
  *   columnsData={columnsConfig}
  *   data={usersData}
- *   filterBy="name"
  * />
  */
 
