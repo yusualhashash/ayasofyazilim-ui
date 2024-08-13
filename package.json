@@ -43,7 +43,10 @@
     "./{src,tests}/**/*.{ts,js,jsx,tsx}": [
       "eslint --ignore-path .gitignore --fix"
     ],
-    "*": "prettier --write"
+    "*": "prettier --write",
+    "./{src,tests}/**/*.{ts,tsx}": [
+      "tsc"
+    ]
   },
   "config": {
     "commitizen": {

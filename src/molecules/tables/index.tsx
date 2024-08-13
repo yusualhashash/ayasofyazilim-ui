@@ -16,7 +16,7 @@ import {
 import { PlusIcon, Trash2Icon } from 'lucide-react';
 import Link from 'next/link';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { AutoFormProps } from 'src/organisms/auto-form';
+import { AutoFormProps } from '../../organisms/auto-form';
 import {
   Table,
   TableBody,

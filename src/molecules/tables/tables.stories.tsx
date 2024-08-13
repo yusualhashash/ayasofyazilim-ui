@@ -335,9 +335,10 @@ export const DetailedFilter: StoryObj<typeof Table> = {
       const parsedFilter = JSON.parse(filter);
       const email = parsedFilter.email || '';
       const date = new Date(parsedFilter.date || '').getTime();
-      const filteredData = data.filter(
-        (i) => i.email.includes(email) && new Date(i.date).getTime() < date
-      );
+      const filteredData = data.filter((i) => {
+        const itemDate = new Date(i.date || '').getTime();
+        return i.email.includes(email) && itemDate < date;
+      });
       if (!email && !date) {
         setTableData(data);
         return;
