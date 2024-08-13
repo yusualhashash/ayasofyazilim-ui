@@ -3,8 +3,9 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import jsonToCsv from 'src/lib/json-to-csv';
 import { z } from 'zod';
+import { useState } from 'react';
 import { AutoFormProps } from 'src/organisms/auto-form';
-import Table, { TableAction } from '.';
+import Table, { AutoColumnGenerator, TableAction } from '.';
 import { createZodObject } from '../../lib/create-zod-object';
 import {
   columns,
@@ -90,6 +91,9 @@ const jsonSchema: any = {
     amount: {
       type: 'number',
     },
+    date: {
+      type: 'string',
+    },
   },
 };
 
@@ -137,34 +141,36 @@ export const AutoColumns: StoryObj<typeof Table> = {
     layout: 'centered',
   },
 };
+const autoColumnData: AutoColumnGenerator = {
+  callback: () => alert('Added Callback'),
+  autoFormArgs: {
+    formSchema: createZodObject(jsonSchema, [
+      'status',
+      'email',
+      'amount',
+      'date',
+    ]),
+  },
+  tableType: jsonSchema,
+  excludeList: ['id'],
+  onEdit: (values, row) => {
+    alert(
+      `OnEdit \ndata:\n${JSON.stringify(values)} \nRow:\n${JSON.stringify(row)}`
+    );
+  },
+  onDelete: (e, row) => {
+    alert(
+      `OnDelete \ndata:\n${JSON.stringify(e)} \nRow:\n${JSON.stringify(row)}`
+    );
+  },
+};
 
 export const NewPage: StoryObj<typeof Table> = {
   args: {
     data,
     columnsData: {
       type: 'Auto',
-      data: {
-        callback: () => alert('Added Callback'),
-        autoFormArgs: {
-          formSchema: createZodObject(jsonSchema, [
-            'status',
-            'email',
-            'amount',
-          ]),
-        },
-        tableType: jsonSchema,
-        excludeList: ['id'],
-        onEdit: (values, row) => {
-          alert(
-            `OnEdit \ndata:\n${JSON.stringify(values)} \nRow:\n${JSON.stringify(row)}`
-          );
-        },
-        onDelete: (e, row) => {
-          alert(
-            `OnDelete \ndata:\n${JSON.stringify(e)} \nRow:\n${JSON.stringify(row)}`
-          );
-        },
-      },
+      data: autoColumnData,
     },
     action: {
       cta: 'New Record',
@@ -312,20 +318,51 @@ export const SubContent: StoryObj<typeof Table> = {
   },
 };
 export const DetailedFilter: StoryObj<typeof Table> = {
+  render: (args) => {
+    const [tableData, setTableData] = useState(data);
+    return (
+      <Table
+        {...args}
+        data={tableData}
+        fetchRequest={(page: any, filter: any) =>
+          args.fetchRequest(filter, setTableData)
+        }
+      />
+    );
+  },
   args: {
+    fetchRequest: (filter: string, setTableData: (data: unknown[]) => any) => {
+      const parsedFilter = JSON.parse(filter);
+      const email = parsedFilter.email || '';
+      const date = new Date(parsedFilter.date || '').getTime();
+      const filteredData = data.filter(
+        (i) => i.email.includes(email) && new Date(i.date).getTime() < date
+      );
+      if (!email && !date) {
+        setTableData(data);
+        return;
+      }
+      setTableData(filteredData);
+    },
     editable: false,
     data,
     columnsData: {
-      type: 'Custom',
-      data: columnsSubContent,
+      type: 'Auto',
+      data: autoColumnData,
     },
     showView: false,
     detailedFilter: [
       {
-        name: 'dbNameOfFilter',
-        displayName: 'Display Name Of Filter',
+        name: 'email',
+        displayName: 'Email',
         type: 'string',
         value: '',
+      },
+      {
+        name: 'date',
+        displayName: 'Date Less than',
+        type: 'date',
+        value: new Date().toISOString(),
       },
     ],
   },
