@@ -16,6 +16,7 @@ import {
 import { Trash2Icon } from 'lucide-react';
 import Link from 'next/link';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import { AutoFormProps } from 'src/organisms/auto-form';
 import {
   Table,
   TableBody,
@@ -33,7 +34,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import AutoformDialog from '../dialog';
+import AutoformDialog, { AutoformDialogProps } from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import FilterColumn, { ColumnFilter } from './filter-colum';
 import { normalizeName } from './utils';
@@ -68,7 +69,7 @@ export type TableActionNewPage = {
 };
 
 export type TableActionDialog = {
-  autoFormArgs: any;
+  autoFormArgs: AutoformDialogProps;
   callback: (values: any, triggerData?: unknown) => void;
   description: string;
   type: 'Dialog' | 'Sheet';
@@ -86,7 +87,7 @@ export type MenuAction = {
 
 export type AutoColumnGenerator = {
   actionList?: MenuAction[];
-  autoFormArgs: any;
+  autoFormArgs: AutoFormProps;
   callback: any;
   excludeList: string[];
   onDelete: (e: any, originalRow: any) => void;
@@ -94,9 +95,15 @@ export type AutoColumnGenerator = {
   tableType: any;
 };
 
-export type ColumnsType = {
-  data: ColumnDef<any>[] | AutoColumnGenerator;
-  type: 'Custom' | 'Auto';
+export type ColumnsType = ColumnsCustomType | ColumntAuotType;
+type ColumnsCustomType = {
+  data: ColumnDef<any>[];
+  type: 'Custom';
+};
+
+type ColumntAuotType = {
+  data: AutoColumnGenerator;
+  type: 'Auto';
 };
 
 export type DataTableProps<TData> = {
