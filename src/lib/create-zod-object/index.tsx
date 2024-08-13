@@ -1,10 +1,11 @@
-import { ZodSchema, ZodType, z } from 'zod';
+import { ZodObjectOrWrapped } from 'src/organisms/auto-form/utils';
+import { ZodSchema, z } from 'zod';
 
 // item & sub item
 export type JsonSchema = {
   default?: any;
   description?: string | undefined;
-  displayName: string;
+  displayName?: string;
   enum?: any;
   format?: 'date-time' | 'email' | 'uuid';
   isReadOnly?: boolean;
@@ -26,7 +27,7 @@ export type JsonSchema = {
 // group
 export type SchemaType = {
   additionalProperties: Boolean;
-  displayName: string;
+  displayName?: string;
   properties: Record<string, JsonSchema | SchemaType>;
   required: ReadonlyArray<string>;
   type: String;
@@ -41,7 +42,7 @@ export function createZodObject(
   schema: SchemaType,
   positions: Array<any>,
   convertors?: Record<string, any>
-): ZodType {
+): ZodObjectOrWrapped {
   const zodSchema: Record<string, ZodSchema> = {};
   positions.forEach((element: string) => {
     const props = schema.properties[element];
