@@ -4,7 +4,7 @@ import { ZodSchema, ZodType, z } from 'zod';
 export type JsonSchema = {
   default?: any;
   description?: string | undefined;
-  displayName: string;
+  displayName?: string;
   enum?: any;
   format?: 'date-time' | 'email' | 'uuid';
   isReadOnly?: boolean;
@@ -26,7 +26,7 @@ export type JsonSchema = {
 // group
 export type SchemaType = {
   additionalProperties: Boolean;
-  displayName: string;
+  displayName?: string;
   properties: Record<string, JsonSchema | SchemaType>;
   required: ReadonlyArray<string>;
   type: String;
