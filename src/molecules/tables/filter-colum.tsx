@@ -3,12 +3,10 @@ import React, { Dispatch, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -28,6 +26,7 @@ export default function FilterColumn({
   setFilteredColumns,
 }: IFilterColumnProps) {
   const [filteredValue, setFilteredValue] = useState<string>(column.value);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(true);
   useEffect(() => {
     setFilteredValue(column.value);
   }, [column.value]);
@@ -35,6 +34,7 @@ export default function FilterColumn({
   function handleSave() {
     if (!filteredValue) {
       handleDelete();
+      setIsDropdownOpen(false);
       return;
     }
     setFilteredColumns((val) => {
@@ -44,6 +44,7 @@ export default function FilterColumn({
 
       return temp;
     });
+    setIsDropdownOpen(false);
   }
   function handleDelete() {
     setFilteredColumns((val) => {
@@ -52,23 +53,29 @@ export default function FilterColumn({
       const temp = [...val];
       return temp;
     });
+    setIsDropdownOpen(false);
   }
 
   return (
-    <Dialog defaultOpen>
-      <DialogTrigger
-        className={`border px-3 py-1 border-gray-300 rounded-full text-xs mr-2 ${
-          column.value.length === 0 ? 'hidden' : ''
-        }`}
+    <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+      <DropdownMenuTrigger
+        className={`border px-3 py-1 border-gray-300 rounded-full text-xs mr-2 `}
       >
         <span className="font-semibold">{column.displayName}</span>:{' '}
         {column.type === 'date'
-          ? new Date(column.value).toLocaleDateString()
+          ? column.value
+            ? new Date(column.value).toLocaleDateString()
+            : ''
           : column.value}
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <Label htmlFor="name">{column.displayName}</Label>
-        <div className="flex flex-row items-center gap-2 justify-center">
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="sm:max-w-md p-2">
+        <div className="flex flex-row justify-between items-center mb-2">
+          <Label htmlFor="name">{column.displayName}</Label>
+          <Button variant="ghost" onClick={() => handleDelete()}>
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+        <div className="flex flex-row items-center gap-2 justify-center mb-2">
           {column.type === 'string' && (
             <Input
               id="name"
@@ -91,8 +98,15 @@ export default function FilterColumn({
             />
           )}
         </div>
-        <DialogFooter className="sm:justify-center">
-          <DialogClose asChild>
+        <Button
+          variant="secondary"
+          onClick={() => handleSave()}
+          className="w-full"
+        >
+          Filtrele
+        </Button>
+        {/* <DropdownMenuFooter className="sm:justify-center">
+          <DropdownMenuClose asChild>
             <Button
               variant="secondary"
               className="px-3 py-1"
@@ -100,14 +114,14 @@ export default function FilterColumn({
             >
               <Trash2 className="w-4 h-4" />
             </Button>
-          </DialogClose>
-          <DialogClose asChild>
+          </DropdownMenuClose>
+          <DropdownMenuClose asChild>
             <Button variant="outline" onClick={() => handleSave()}>
               Filtrele
             </Button>
-          </DialogClose>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          </DropdownMenuClose>
+        </DropdownMenuFooter> */}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
