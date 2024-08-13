@@ -1,5 +1,5 @@
-import { ZodObjectOrWrapped } from 'src/organisms/auto-form/utils';
 import { ZodSchema, z } from 'zod';
+import { ZodObjectOrWrapped } from '../../organisms/auto-form/utils';
 
 // item & sub item
 export type JsonSchema = {
