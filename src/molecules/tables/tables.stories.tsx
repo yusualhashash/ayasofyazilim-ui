@@ -3,6 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import jsonToCsv from 'src/lib/json-to-csv';
 import { z } from 'zod';
+import { AutoFormProps } from 'src/organisms/auto-form';
 import Table, { TableAction } from '.';
 import { createZodObject } from '../../lib/create-zod-object';
 import {
@@ -32,7 +33,7 @@ const formSchema = z.object({
     }),
 });
 
-const autoFormArgs = {
+const autoFormArgs: AutoFormProps = {
   formSchema,
   fieldConfig: {
     password: {

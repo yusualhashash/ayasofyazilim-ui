@@ -38,8 +38,10 @@ const AutoFormData = (
       action?.callback(formData, triggerData);
     }}
   >
-    {action?.autoFormArgs?.children}
-    <AutoFormSubmit className="float-right">Save Changes</AutoFormSubmit>
+    <>
+      {action?.autoFormArgs?.children}
+      <AutoFormSubmit className="float-right">Save Changes</AutoFormSubmit>
+    </>
   </AutoForm>
 );
 

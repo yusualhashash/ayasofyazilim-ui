@@ -1,4 +1,5 @@
-import { ZodSchema, ZodType, z } from 'zod';
+import { ZodObjectOrWrapped } from 'src/organisms/auto-form/utils';
+import { ZodSchema, z } from 'zod';
 
 // item & sub item
 export type JsonSchema = {
@@ -41,7 +42,7 @@ export function createZodObject(
   schema: SchemaType,
   positions: Array<any>,
   convertors?: Record<string, any>
-): ZodType {
+): ZodObjectOrWrapped {
   const zodSchema: Record<string, ZodSchema> = {};
   positions.forEach((element: string) => {
     const props = schema.properties[element];

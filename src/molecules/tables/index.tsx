@@ -34,7 +34,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import AutoformDialog, { AutoformDialogProps } from '../dialog';
+import AutoformDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import FilterColumn, { ColumnFilter } from './filter-colum';
 import { normalizeName } from './utils';
@@ -69,7 +69,7 @@ export type TableActionNewPage = {
 };
 
 export type TableActionDialog = {
-  autoFormArgs: AutoformDialogProps;
+  autoFormArgs: AutoFormProps;
   callback: (values: any, triggerData?: unknown) => void;
   description: string;
   type: 'Dialog' | 'Sheet';
