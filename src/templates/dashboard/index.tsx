@@ -13,6 +13,7 @@ export default function Dashboard({
   withTable,
   rowCount,
   fetchRequest,
+  detailedFilter,
 }: DashboardProps) {
   return (
     <>
@@ -30,6 +31,7 @@ export default function Dashboard({
           isLoading={isLoading}
           rowCount={rowCount}
           fetchRequest={fetchRequest}
+          detailedFilter={detailedFilter}
         />
       )}
     </>
