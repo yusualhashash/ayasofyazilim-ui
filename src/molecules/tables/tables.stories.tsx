@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import jsonToCsv from 'src/lib/json-to-csv';
 import { z } from 'zod';
-import { AutoFormProps } from 'src/organisms/auto-form';
+import { useState } from 'react';
 import Table, { TableAction } from '.';
 import { createZodObject } from '../../lib/create-zod-object';
 import {
@@ -33,7 +33,7 @@ const formSchema = z.object({
     }),
 });
 
-const autoFormArgs: AutoFormProps = {
+const autoFormArgs = {
   formSchema,
   fieldConfig: {
     password: {
@@ -312,6 +312,16 @@ export const SubContent: StoryObj<typeof Table> = {
   },
 };
 export const DetailedFilter: StoryObj<typeof Table> = {
+  render: (args) => {
+    const [tableData, setTableData] = useState(data);
+    function fetchRequest(page: number, filter: string) {
+      const parsedFilter = JSON.parse(filter);
+      const email = parsedFilter.email || '';
+      setTableData([...data.filter((i) => i.email.includes(email))]);
+    }
+    // eslint-disable-next-line react/jsx-no-bind
+    return <Table {...args} data={tableData} fetchRequest={fetchRequest} />;
+  },
   args: {
     editable: false,
     data,
@@ -322,8 +332,8 @@ export const DetailedFilter: StoryObj<typeof Table> = {
     showView: false,
     detailedFilter: [
       {
-        name: 'dbNameOfFilter',
-        displayName: 'Display Name Of Filter',
+        name: 'email',
+        displayName: 'Email',
         type: 'string',
         value: '',
       },
