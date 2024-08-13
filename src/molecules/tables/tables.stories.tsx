@@ -68,7 +68,6 @@ export const Default: StoryObj<typeof Table> = {
       type: 'Custom',
       data: columns,
     },
-    filterBy: 'email',
     action,
   },
   parameters: {
@@ -131,7 +130,6 @@ export const AutoColumns: StoryObj<typeof Table> = {
         ],
       },
     },
-    filterBy: 'email',
     action,
   },
   parameters: {
@@ -167,7 +165,6 @@ export const NewPage: StoryObj<typeof Table> = {
         },
       },
     },
-    filterBy: 'email',
     action: {
       cta: 'New Record',
       type: 'NewPage',
@@ -207,7 +204,6 @@ export const Sheet: StoryObj<typeof Table> = {
         },
       },
     },
-    filterBy: 'email',
     action: {
       cta: 'New Record',
       description: 'Add New Record',
@@ -249,7 +245,6 @@ export const MultipleActions: StoryObj<typeof Table> = {
         },
       },
     },
-    filterBy: 'email',
     action: [
       {
         cta: 'New Record sheet',
@@ -310,6 +305,28 @@ export const SubContent: StoryObj<typeof Table> = {
     },
     showView: false,
     renderSubComponent,
+  },
+  parameters: {
+    layout: 'centered',
+  },
+};
+export const DetailedFilter: StoryObj<typeof Table> = {
+  args: {
+    editable: false,
+    data,
+    columnsData: {
+      type: 'Custom',
+      data: columnsSubContent,
+    },
+    showView: false,
+    detailedFilter: [
+      {
+        name: 'dbNameOfFilter',
+        displayName: 'Display Name Of Filter',
+        type: 'string',
+        value: '',
+      },
+    ],
   },
   parameters: {
     layout: 'centered',

@@ -3,7 +3,7 @@
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import {
   ColumnDef,
-  ColumnFiltersState,
+  // ColumnFiltersState,
   RowData,
   SortingState,
   VisibilityState,
@@ -16,16 +16,6 @@ import {
 import { Trash2Icon } from 'lucide-react';
 import Link from 'next/link';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -34,10 +24,21 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 import AutoformDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
+import FilterColumn, { ColumnFilter } from './filter-colum';
 import { normalizeName } from './utils';
-import { useDebounce } from '../../hooks/useDebounce';
+
+export type { ColumnFilter };
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -103,9 +104,9 @@ export type DataTableProps<TData> = {
   action?: TableAction | TableAction[];
   columnsData: ColumnsType;
   data: TData[];
+  detailedFilter?: ColumnFilter[];
   editable?: boolean;
   fetchRequest?: any;
-  filterBy?: string;
   isLoading?: boolean;
   onDataUpdate?: (data: TData[]) => void;
   renderSubComponent?: (row: any) => JSX.Element;
@@ -154,7 +155,6 @@ const ActionComponent = ({
  * @param {DataTableProps<TData>} props - The properties for configuring the DataTable component.
  * @param {ColumnsType} props.columnsData - Configuration for the table columns. Can be either custom-defined columns or automatically generated based on data.
  * @param {TData[]} props.data - The data to be displayed in the table.
- * @param {string} props.filterBy - The field name to filter the table data by.
  * @param {TableAction} [props.action] - Optional. Configuration for an action that can be performed on the table data, such as adding a new row.
  * @param {boolean} [props.isLoading] - Optional. Indicates whether the table is in a loading state. Defaults to false.
  *
@@ -181,14 +181,12 @@ const ActionComponent = ({
  * <DataTable
  *   columnsData={columnsConfig}
  *   data={usersData}
- *   filterBy="name"
  * />
  */
 
 export default function DataTable<TData, TValue>({
   columnsData,
   data,
-  filterBy,
   action,
   isLoading,
   rowCount,
@@ -198,6 +196,7 @@ export default function DataTable<TData, TValue>({
   editable = false,
   Headertable,
   onDataUpdate,
+  detailedFilter,
 }: DataTableProps<TData>) {
   const [tableData, setTableData] = useState<TData[]>(data || []);
   const isMultipleActionProvided = Array.isArray(action);
@@ -210,10 +209,10 @@ export default function DataTable<TData, TValue>({
     TableAction | undefined
   >(defaultAction);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const filterText = useDebounce(columnFilters?.[0]?.value, 500);
+  const [filteredColumns, setFilteredColumns] = useState<ColumnFilter[]>([]);
 
   useEffect(() => {
     if (isLoading) {
@@ -244,10 +243,10 @@ export default function DataTable<TData, TValue>({
     data: tableData,
     columns,
     onSortingChange: setSorting,
-    onColumnFiltersChange: (filters) => {
-      if (isLoading) return;
-      setColumnFilters(filters);
-    },
+    // onColumnFiltersChange: (filters) => {
+    //   if (isLoading) return;
+    //   setColumnFilters(filters);
+    // },
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     rowCount: rowCount || tableData.length,
@@ -263,7 +262,7 @@ export default function DataTable<TData, TValue>({
     },
     state: {
       sorting,
-      columnFilters,
+      // columnFilters,
       columnVisibility,
       rowSelection,
     },
@@ -291,8 +290,15 @@ export default function DataTable<TData, TValue>({
   const selectedRows = table?.getSelectedRowModel()?.rows || [];
 
   useEffect(() => {
-    fetchRequest?.(table.getState().pagination.pageIndex, filterText);
-  }, [table.getState().pagination.pageIndex, filterText]);
+    const filter: { [key: string]: string } = {};
+    filteredColumns.forEach((column: ColumnFilter) => {
+      filter[column.name] = column.value;
+    });
+    const filterString = JSON.stringify(filter);
+
+    fetchRequest?.(table.getState().pagination.pageIndex, filterString);
+  }, [table.getState().pagination.pageIndex, filteredColumns]);
+
   function selectedRowsText() {
     if (isLoading) return 'Loading...';
     return `${table.getFilteredSelectedRowModel().rows.length} of ${table.getFilteredRowModel().rows.length} row(s) selected.`;
@@ -324,18 +330,6 @@ export default function DataTable<TData, TValue>({
         />
       )}
       <div className="flex items-center py-4 gap-2">
-        {filterBy && (
-          <Input
-            placeholder="Ara..."
-            value={
-              (table.getColumn(filterBy)?.getFilterValue() as string) ?? ''
-            }
-            onChange={(event) =>
-              table.getColumn(filterBy)?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
-        )}
         {showView === true && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -366,7 +360,39 @@ export default function DataTable<TData, TValue>({
             </DropdownMenuContent>
           </DropdownMenu>
         )}
-
+        {detailedFilter &&
+          detailedFilter?.filter(
+            (column) =>
+              filteredColumns?.findIndex((f) => f.name === column.name) === -1
+          )?.length > 0 && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button disabled={isLoading} variant="outline">
+                  Filter <ChevronDownIcon className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {detailedFilter
+                  .filter(
+                    (column) =>
+                      filteredColumns.findIndex(
+                        (f) => f.name === column.name
+                      ) === -1
+                  )
+                  .map((column) => (
+                    <DropdownMenuItem
+                      key={column.name}
+                      className="capitalize"
+                      onClick={() =>
+                        setFilteredColumns((old) => [...old, column])
+                      }
+                    >
+                      {column.displayName}
+                    </DropdownMenuItem>
+                  ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         <div className="flex">
           <ActionComponent
             action={defaultAction}
@@ -414,6 +440,16 @@ export default function DataTable<TData, TValue>({
             </DropdownMenu>
           )}
         </div>
+      </div>
+      <div className="mb-2">
+        {filteredColumns &&
+          filteredColumns.map((column) => (
+            <FilterColumn
+              key={column.name}
+              column={column}
+              setFilteredColumns={setFilteredColumns}
+            />
+          ))}
       </div>
       <div className="rounded-md border relative w-full">
         <Table wrapperClassName="h-[500px] overflow-y-auto">

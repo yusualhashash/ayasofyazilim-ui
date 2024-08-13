@@ -16,7 +16,6 @@ export const Default: StoryObj<typeof Dashbaord> = {
       data: columns,
     },
     cards,
-    filterBy: 'email',
   },
   parameters: {
     layout: 'full',

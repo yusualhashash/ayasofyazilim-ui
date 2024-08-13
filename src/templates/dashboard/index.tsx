@@ -6,13 +6,13 @@ export default function Dashboard({
   cards,
   data,
   columnsData,
-  filterBy,
   action,
   isLoading,
   withCards,
   withTable,
   rowCount,
   fetchRequest,
+  detailedFilter,
 }: DashboardProps) {
   return (
     <>
@@ -23,13 +23,13 @@ export default function Dashboard({
       )}
       {withTable && (
         <DataTable
-          filterBy={filterBy}
           columnsData={columnsData}
           data={data}
           action={action}
           isLoading={isLoading}
           rowCount={rowCount}
           fetchRequest={fetchRequest}
+          detailedFilter={detailedFilter}
         />
       )}
     </>
