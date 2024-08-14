@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { AutoColumnGenerator } from '.';
 import { normalizeName } from './utils';
+import { Separator } from '@/components/ui/separator';
 
 const createSortableHeader = (column: any, name: string) => (
   <Button
@@ -55,14 +56,13 @@ function generateColumns(tableType: any, excludeList: string[] = []) {
           createSortableHeader(column, header),
       });
     }
-    if (value.type === 'integer') {
+    if (value.type === 'integer' || value.type === 'number') {
       generatedTableColumns.push({
         accessorKey,
         header,
       });
     }
   });
-
   return generatedTableColumns;
 }
 
@@ -110,6 +110,10 @@ export function columnsGenerator(data: AutoColumnGenerator) {
 
         return (
           <>
+            <Separator
+              orientation="vertical"
+              className="absolute left-0 top-0"
+            />
             <AutoformDialog
               open={open}
               onOpenChange={setOpen}
@@ -117,8 +121,10 @@ export function columnsGenerator(data: AutoColumnGenerator) {
                 type: 'Dialog',
                 autoFormArgs,
                 callback: onEdit,
-                cta: 'Edit the role',
-                description: 'Edit the role',
+                cta: data.dialogTitle ? data.dialogTitle : 'Edit',
+                description: data.dialogDescription
+                  ? data.dialogDescription
+                  : '',
               }}
               triggerData={originalRow}
             />
@@ -129,7 +135,7 @@ export function columnsGenerator(data: AutoColumnGenerator) {
                   <DotsHorizontalIcon className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" key={originalRow.dialogTitle}>
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuItem
                   // @ts-ignore

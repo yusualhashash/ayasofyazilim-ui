@@ -133,6 +133,8 @@ export const AutoColumns: StoryObj<typeof Table> = {
             callback: (e, row) => alert(`hello world ${JSON.stringify(row)}`),
           },
         ],
+        dialogTitle: undefined,
+        dialogDescription: undefined,
       },
     },
     action,
@@ -163,6 +165,8 @@ const autoColumnData: AutoColumnGenerator = {
       `OnDelete \ndata:\n${JSON.stringify(e)} \nRow:\n${JSON.stringify(row)}`
     );
   },
+  dialogTitle: undefined,
+  dialogDescription: undefined,
 };
 
 export const NewPage: StoryObj<typeof Table> = {
@@ -209,6 +213,8 @@ export const Sheet: StoryObj<typeof Table> = {
             `OnDelete \ndata:\n${JSON.stringify(e)} \nRow:\n${JSON.stringify(row)}`
           );
         },
+        dialogTitle: undefined,
+        dialogDescription: undefined,
       },
     },
     action: {
@@ -250,6 +256,8 @@ export const MultipleActions: StoryObj<typeof Table> = {
             `OnDelete \ndata:\n${JSON.stringify(e)} \nRow:\n${JSON.stringify(row)}`
           );
         },
+        dialogTitle: undefined,
+        dialogDescription: undefined,
       },
     },
     action: [

@@ -38,6 +38,7 @@ import AutoformDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import FilterColumn, { ColumnFilter } from './filter-colum';
 import { normalizeName } from './utils';
+import { cn } from '@/lib/utils';
 
 export type { ColumnFilter };
 
@@ -87,8 +88,10 @@ export type MenuAction = {
 
 export type AutoColumnGenerator = {
   actionList?: MenuAction[];
-  autoFormArgs: AutoFormProps;
+  autoFormArgs: any;
   callback: any;
+  dialogDescription: any;
+  dialogTitle: any;
   excludeList: string[];
   onDelete: (e: any, originalRow: any) => void;
   onEdit: (e: any, originalRow: any) => void;
@@ -231,6 +234,7 @@ export default function DataTable<TData, TValue>({
 
   useEffect(() => {
     onDataUpdate?.(tableData);
+    setIsOpen(false);
   }, [tableData, onDataUpdate]);
 
   let columns: ColumnDef<any, any>[] = [];
@@ -491,16 +495,26 @@ export default function DataTable<TData, TValue>({
                     data-state={row.getIsSelected() ? 'selected' : undefined}
                     className="whitespace-nowrap"
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {
-                          flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          ) as JSX.Element
-                        }
-                      </TableCell>
-                    ))}
+                    {row.getVisibleCells().map((cell) => {
+                      console.log(cell);
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          className={cn(
+                            cell.column.id === 'actions'
+                              ? 'sticky right-0  bg-white'
+                              : ''
+                          )}
+                        >
+                          {
+                            flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            ) as JSX.Element
+                          }
+                        </TableCell>
+                      );
+                    })}
                   </TableRow>
                   {row.getIsExpanded() && renderSubComponent && (
                     <TableRow>
