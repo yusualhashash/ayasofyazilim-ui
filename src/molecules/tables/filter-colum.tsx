@@ -1,7 +1,6 @@
 import { Trash2 } from 'lucide-react';
 import React, { Dispatch, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,6 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import AdvancedCalendar from '../advanced-calendar';
 
 export type ColumnFilter = {
   displayName: string;
@@ -88,13 +88,13 @@ export default function FilterColumn({
             />
           )}
           {column.type === 'date' && (
-            <Calendar
+            <AdvancedCalendar
               initialFocus
               mode="single"
               onSelect={(value) => {
                 setFilteredValue(value?.toISOString() || '');
               }}
-              selected={new Date(filteredValue || 0)}
+              selected={filteredValue ? new Date(filteredValue) : undefined}
             />
           )}
         </div>
