@@ -105,22 +105,6 @@ export default function FilterColumn({
         >
           Filtrele
         </Button>
-        {/* <DropdownMenuFooter className="sm:justify-center">
-          <DropdownMenuClose asChild>
-            <Button
-              variant="secondary"
-              className="px-3 py-1"
-              onClick={() => handleDelete()}
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
-          </DropdownMenuClose>
-          <DropdownMenuClose asChild>
-            <Button variant="outline" onClick={() => handleSave()}>
-              Filtrele
-            </Button>
-          </DropdownMenuClose>
-        </DropdownMenuFooter> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );
