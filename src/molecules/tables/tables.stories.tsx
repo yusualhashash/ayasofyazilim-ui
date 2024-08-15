@@ -379,3 +379,51 @@ export const DetailedFilter: StoryObj<typeof Table> = {
     layout: 'centered',
   },
 };
+
+const subContentDialogAction: TableAction = {
+  cta: 'New Dialog',
+  type: 'SubContentDialog',
+  description: 'Add New Record',
+  content: <div>İçerik</div>,
+};
+export const SubContentDialog: StoryObj<typeof Table> = {
+  args: {
+    data,
+    columnsData: {
+      type: 'Custom',
+      data: columns,
+    },
+    action: subContentDialogAction,
+  },
+  parameters: {
+    layout: 'centered',
+  },
+};
+
+export const SubContentMenuActionDialog: StoryObj<typeof Table> = {
+  render: (args) => <Table {...args} data={data} />,
+  args: {
+    editable: false,
+    data,
+    columnsData: {
+      type: 'Auto',
+      data: {
+        ...autoColumnData,
+        actionList: [
+          {
+            type: 'SubContentDialog',
+            cta: 'Değişiklik Geçmişi',
+            callback: async () => (
+              <div className="text-center">Değişiklik yok</div>
+            ),
+          },
+        ],
+      },
+    },
+
+    showView: false,
+  },
+  parameters: {
+    layout: 'centered',
+  },
+};

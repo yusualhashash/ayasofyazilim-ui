@@ -34,7 +34,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import AutoformDialog from '../dialog';
+import AutoformDialog, { SubContentDialog } from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import FilterColumn, { ColumnFilter } from './filter-colum';
 import { normalizeName } from './utils';
@@ -58,7 +58,12 @@ declare module '@tanstack/react-table' {
 }
 
 export type TableAction = TableActionCommon &
-  (TableActionNewPage | TableActionDialog | TableActionAction);
+  (
+    | TableActionNewPage
+    | TableActionDialog
+    | TableActionAction
+    | TableActionSubContentDialog
+  );
 
 export type TableActionCommon = {
   cta: string;
@@ -75,16 +80,26 @@ export type TableActionDialog = {
   description: string;
   type: 'Dialog' | 'Sheet';
 };
-
+export type TableActionSubContentDialog = {
+  content?: JSX.Element;
+  description: string;
+  type: 'SubContentDialog';
+};
 export type TableActionAction = {
   callback: (values: any) => void;
   type: 'Action';
 };
 
-export type MenuAction = {
+type BaseMenuAction = {
   callback: (e: any, originalRow: any) => void;
   cta: string;
 };
+type DialogMenuAction = {
+  callback: (e: any, originalRow: any) => Promise<JSX.Element>;
+  cta: string;
+  type: 'SubContentDialog';
+};
+export type MenuAction = BaseMenuAction | DialogMenuAction;
 
 export type AutoColumnGenerator = {
   actionList?: MenuAction[];
@@ -340,6 +355,15 @@ export default function DataTable<TData, TValue>({
           type={activeAction?.type}
         />
       )}
+      {activeAction &&
+        activeAction.type === 'SubContentDialog' &&
+        'content' in activeAction && (
+          <SubContentDialog
+            open={isOpen}
+            onOpenChange={setIsOpen}
+            action={activeAction}
+          />
+        )}
       <div className="flex items-center py-4 gap-2">
         {showView === true && (
           <DropdownMenu>
@@ -495,26 +519,23 @@ export default function DataTable<TData, TValue>({
                     data-state={row.getIsSelected() ? 'selected' : undefined}
                     className="whitespace-nowrap"
                   >
-                    {row.getVisibleCells().map((cell) => {
-                      console.log(cell);
-                      return (
-                        <TableCell
-                          key={cell.id}
-                          className={cn(
-                            cell.column.id === 'actions'
-                              ? 'sticky right-0  bg-white'
-                              : ''
-                          )}
-                        >
-                          {
-                            flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            ) as JSX.Element
-                          }
-                        </TableCell>
-                      );
-                    })}
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          cell.column.id === 'actions'
+                            ? 'sticky right-0  bg-white'
+                            : ''
+                        )}
+                      >
+                        {
+                          flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          ) as JSX.Element
+                        }
+                      </TableCell>
+                    ))}
                   </TableRow>
                   {row.getIsExpanded() && renderSubComponent && (
                     <TableRow>

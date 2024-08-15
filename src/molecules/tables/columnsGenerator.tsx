@@ -3,7 +3,9 @@
 import { CaretSortIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { ColumnDef } from '@tanstack/react-table';
 
-import AutoformDialog from '@repo/ayasofyazilim-ui/molecules/dialog';
+import AutoformDialog, {
+  SubContentDialog,
+} from '@repo/ayasofyazilim-ui/molecules/dialog';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -107,6 +109,13 @@ export function columnsGenerator(data: AutoColumnGenerator) {
       cell: ({ row }) => {
         const originalRow = row.original;
         const [open, setOpen] = useState(false);
+        const [subContentDialogContent, setSubContentDialogContent] = useState<
+          JSX.Element | undefined
+        >(undefined);
+        const [subContentDialogDescription, setSubContentDialogDescription] =
+          useState('');
+        const [subContentDialogOpen, setSubContentDialogOpen] = useState(false);
+        const [subContentDialogTitle, setSubContentDialogTitle] = useState('');
 
         return (
           <>
@@ -127,6 +136,16 @@ export function columnsGenerator(data: AutoColumnGenerator) {
                   : '',
               }}
               triggerData={originalRow}
+            />
+            <SubContentDialog
+              open={subContentDialogOpen}
+              onOpenChange={setSubContentDialogOpen}
+              action={{
+                type: 'SubContentDialog',
+                cta: subContentDialogTitle,
+                description: subContentDialogDescription,
+                content: subContentDialogContent,
+              }}
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -161,7 +180,22 @@ export function columnsGenerator(data: AutoColumnGenerator) {
                 </DropdownMenuItem>
                 {actionList?.map((action) => (
                   <DropdownMenuItem
-                    onClick={(e) => {
+                    onClick={async (e) => {
+                      if (
+                        'type' in action &&
+                        action.type === 'SubContentDialog'
+                      ) {
+                        setSubContentDialogTitle(action.cta);
+                        // @ts-ignore
+                        setSubContentDialogDescription(originalRow.id);
+                        setSubContentDialogOpen(true);
+                        const subContent = await action.callback(
+                          e,
+                          originalRow
+                        );
+                        setSubContentDialogContent(subContent);
+                        return;
+                      }
                       action.callback(e, originalRow);
                     }}
                   >

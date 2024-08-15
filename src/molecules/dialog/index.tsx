@@ -15,7 +15,12 @@ import AutoForm, {
   SchemaType,
 } from '../../organisms/auto-form';
 import SheetSide from '../sheet';
-import { TableActionCommon, TableActionDialog } from '../tables';
+import {
+  TableActionCommon,
+  TableActionDialog,
+  TableActionSubContentDialog,
+} from '../tables';
+import Spinner from '../spinner';
 
 export type tableAction = TableActionCommon & TableActionDialog;
 export type AutoformDialogProps = {
@@ -82,3 +87,30 @@ export default function AutoformDialog({
     </Dialog>
   );
 }
+
+export type SubContentDialogProps = {
+  action: TableActionCommon & TableActionSubContentDialog;
+  onOpenChange: (e: boolean) => void;
+  open: boolean;
+};
+export const SubContentDialog = ({
+  open,
+  onOpenChange,
+  action,
+}: SubContentDialogProps) => (
+  <Dialog open={open} onOpenChange={onOpenChange}>
+    <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-auto [&::-webkit-scrollbar]:hidden">
+      <DialogHeader>
+        <DialogTitle>{action?.cta}</DialogTitle>
+        <DialogDescription>{action?.description}</DialogDescription>
+      </DialogHeader>
+      <div className="grid gap-4 py-4">
+        {action.content ? (
+          action.content
+        ) : (
+          <Spinner fullScreen={false} variant="transparent" />
+        )}
+      </div>
+    </DialogContent>
+  </Dialog>
+);
