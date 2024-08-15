@@ -90,8 +90,8 @@ export type AutoColumnGenerator = {
   actionList?: MenuAction[];
   autoFormArgs: any;
   callback: any;
-  dialogDescription: any;
-  dialogTitle: any;
+  dialogDescription?: any;
+  dialogTitle?: any;
   excludeList: string[];
   onDelete: (e: any, originalRow: any) => void;
   onEdit: (e: any, originalRow: any) => void;
