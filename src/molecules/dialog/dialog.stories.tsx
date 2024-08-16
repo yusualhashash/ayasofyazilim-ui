@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { z } from 'zod';
 import { useState } from 'react';
-import AutoformDialog from '.';
+import CustomTableActionDialog from '.';
 import { Button } from '@/components/ui/button';
 import { TableAction } from '../tables';
 
@@ -43,15 +43,15 @@ const action: TableAction = {
   cta: 'New Record',
   description: 'Ad New Record',
   componentType: 'Autoform',
-  callback: () => {
-    console.log('callback');
-  },
+  callback: () => {},
   autoFormArgs,
 };
 
-export default { component: AutoformDialog } as Meta<typeof AutoformDialog>;
+export default { component: CustomTableActionDialog } as Meta<
+  typeof CustomTableActionDialog
+>;
 
-export const Default: StoryObj<typeof AutoformDialog> = {
+export const Default: StoryObj<typeof CustomTableActionDialog> = {
   args: {
     action,
   },
@@ -69,7 +69,7 @@ export const Default: StoryObj<typeof AutoformDialog> = {
         >
           Open Dialog
         </Button>
-        <AutoformDialog
+        <CustomTableActionDialog
           action={args.action}
           open={open}
           onOpenChange={() => {

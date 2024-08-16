@@ -22,7 +22,7 @@ import {
 } from '../tables';
 
 export type TableAction = TableActionCommon & TableActionDialog;
-export type AutoformDialogProps = {
+export type CustomTableActionDialogProps = {
   action?: TableAction;
   onOpenChange: (e: boolean) => void;
   open: boolean;
@@ -49,13 +49,13 @@ const AutoFormData = (
   </AutoForm>
 );
 
-export default function AutoformDialog({
+export default function CustomTableActionDialog({
   open,
   onOpenChange,
   action,
   triggerData,
   type = 'Dialog',
-}: AutoformDialogProps) {
+}: CustomTableActionDialogProps) {
   const [values] = useState<any>(triggerData || {});
   const autformData =
     action && 'autoFormArgs' in action

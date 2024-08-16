@@ -3,7 +3,7 @@
 import { CaretSortIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { ColumnDef } from '@tanstack/react-table';
 
-import AutoformDialog from '@repo/ayasofyazilim-ui/molecules/dialog';
+import CustomTableActionDialog from '@repo/ayasofyazilim-ui/molecules/dialog';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -125,7 +125,7 @@ export function columnsGenerator(data: AutoColumnGenerator) {
               orientation="vertical"
               className="absolute left-0 top-0"
             />
-            <AutoformDialog
+            <CustomTableActionDialog
               open={open}
               onOpenChange={setOpen}
               action={{
@@ -140,7 +140,7 @@ export function columnsGenerator(data: AutoColumnGenerator) {
               }}
               triggerData={originalRow}
             />
-            <AutoformDialog
+            <CustomTableActionDialog
               open={subContentDialogOpen}
               onOpenChange={setSubContentDialogOpen}
               action={{

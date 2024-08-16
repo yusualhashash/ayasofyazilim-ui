@@ -34,7 +34,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import AutoformDialog from '../dialog';
+import CustomTableActionDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import FilterColumn, { ColumnFilter } from './filter-colum';
 import { normalizeName } from './utils';
@@ -349,7 +349,7 @@ export default function DataTable<TData, TValue>({
     <div className="w-full">
       {activeAction &&
         ('autoFormArgs' in activeAction || 'content' in activeAction) && (
-          <AutoformDialog
+          <CustomTableActionDialog
             open={isOpen}
             onOpenChange={setIsOpen}
             action={activeAction}
