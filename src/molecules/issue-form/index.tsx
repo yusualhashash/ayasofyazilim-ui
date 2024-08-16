@@ -47,6 +47,8 @@ import { Button } from '@/components/ui/button';
 import { issueFormProps } from './type';
 import { Label } from '@/components/ui/label';
 
+export { issueFormProps } from './type';
+
 export default function Issueform({ tag }: issueFormProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-6 p-6 w-full">
