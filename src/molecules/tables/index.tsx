@@ -34,7 +34,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import AutoformDialog, { SubContentDialog } from '../dialog';
+import AutoformDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import FilterColumn, { ColumnFilter } from './filter-colum';
 import { normalizeName } from './utils';
@@ -58,12 +58,7 @@ declare module '@tanstack/react-table' {
 }
 
 export type TableAction = TableActionCommon &
-  (
-    | TableActionNewPage
-    | TableActionDialog
-    | TableActionAction
-    | TableActionSubContentDialog
-  );
+  (TableActionNewPage | TableActionDialog | TableActionAction);
 
 export type TableActionCommon = {
   cta: string;
@@ -74,17 +69,21 @@ export type TableActionNewPage = {
   type: 'NewPage';
 };
 
-export type TableActionDialog = {
+export type TableActionAutoform = {
   autoFormArgs: AutoFormProps;
   callback: (values: any, triggerData?: unknown) => void;
+  componentType: 'Autoform';
+};
+export type TableActionCustom = {
+  componentType: 'CustomComponent';
+  content?: JSX.Element;
+  contentLoading: JSX.Element;
+};
+
+export type TableActionDialog = {
   description: string;
   type: 'Dialog' | 'Sheet';
-};
-export type TableActionSubContentDialog = {
-  content?: JSX.Element;
-  description: string;
-  type: 'SubContentDialog';
-};
+} & (TableActionAutoform | TableActionCustom);
 export type TableActionAction = {
   callback: (values: any) => void;
   type: 'Action';
@@ -97,6 +96,7 @@ type BaseMenuAction = {
 type DialogMenuAction = {
   callback: (e: any, originalRow: any) => Promise<JSX.Element>;
   cta: string;
+  loadingContent: JSX.Element;
   type: 'SubContentDialog';
 };
 export type MenuAction = BaseMenuAction | DialogMenuAction;
@@ -347,23 +347,16 @@ export default function DataTable<TData, TValue>({
 
   return (
     <div className="w-full">
-      {activeAction && 'autoFormArgs' in activeAction && (
-        <AutoformDialog
-          open={isOpen}
-          onOpenChange={setIsOpen}
-          action={activeAction}
-          type={activeAction?.type}
-        />
-      )}
       {activeAction &&
-        activeAction.type === 'SubContentDialog' &&
-        'content' in activeAction && (
-          <SubContentDialog
+        ('autoFormArgs' in activeAction || 'content' in activeAction) && (
+          <AutoformDialog
             open={isOpen}
             onOpenChange={setIsOpen}
             action={activeAction}
+            type={activeAction?.type}
           />
         )}
+
       <div className="flex items-center py-4 gap-2">
         {showView === true && (
           <DropdownMenu>

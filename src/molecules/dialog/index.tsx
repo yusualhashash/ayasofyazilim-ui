@@ -16,15 +16,13 @@ import AutoForm, {
 } from '../../organisms/auto-form';
 import SheetSide from '../sheet';
 import {
+  TableActionAutoform,
   TableActionCommon,
   TableActionDialog,
-  TableActionSubContentDialog,
 } from '../tables';
-import Spinner from '../spinner';
 
-export type tableAction = TableActionCommon & TableActionDialog;
 export type AutoformDialogProps = {
-  action?: tableAction;
+  action?: TableActionCommon & TableActionDialog;
   onOpenChange: (e: boolean) => void;
   open: boolean;
   triggerData?: any;
@@ -32,7 +30,7 @@ export type AutoformDialogProps = {
 };
 
 const AutoFormData = (
-  action: TableActionCommon & TableActionDialog,
+  action: TableActionAutoform,
   values: Partial<z.infer<SchemaType>>,
   triggerData?: any
 ) => (
@@ -58,9 +56,16 @@ export default function AutoformDialog({
   type = 'Dialog',
 }: AutoformDialogProps) {
   const [values] = useState<any>(triggerData || {});
-  const autformData = action
-    ? AutoFormData(action, triggerData, values)
-    : undefined;
+  const autformData =
+    action && 'autoFormArgs' in action
+      ? AutoFormData(action, triggerData, values)
+      : undefined;
+  const content =
+    action && 'content' in action
+      ? action.content
+        ? action.content
+        : action.contentLoading
+      : undefined;
 
   return type === 'Sheet' ? (
     <SheetSide
@@ -79,7 +84,10 @@ export default function AutoformDialog({
           <DialogTitle>{action?.cta}</DialogTitle>
           <DialogDescription>{action?.description}</DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">{autformData}</div>
+        <div className="grid gap-4 py-4">
+          {autformData}
+          {content}
+        </div>
         <DialogFooter>
           {/* TODO: Dialog footer to add whatever children we need */}
         </DialogFooter>
@@ -87,30 +95,3 @@ export default function AutoformDialog({
     </Dialog>
   );
 }
-
-export type SubContentDialogProps = {
-  action: TableActionCommon & TableActionSubContentDialog;
-  onOpenChange: (e: boolean) => void;
-  open: boolean;
-};
-export const SubContentDialog = ({
-  open,
-  onOpenChange,
-  action,
-}: SubContentDialogProps) => (
-  <Dialog open={open} onOpenChange={onOpenChange}>
-    <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-auto [&::-webkit-scrollbar]:hidden">
-      <DialogHeader>
-        <DialogTitle>{action?.cta}</DialogTitle>
-        <DialogDescription>{action?.description}</DialogDescription>
-      </DialogHeader>
-      <div className="grid gap-4 py-4">
-        {action.content ? (
-          action.content
-        ) : (
-          <Spinner fullScreen={false} variant="transparent" />
-        )}
-      </div>
-    </DialogContent>
-  </Dialog>
-);

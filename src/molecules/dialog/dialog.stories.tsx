@@ -42,6 +42,7 @@ const action: TableAction = {
   type: 'Dialog',
   cta: 'New Record',
   description: 'Ad New Record',
+  componentType: 'Autoform',
   callback: () => {
     console.log('callback');
   },

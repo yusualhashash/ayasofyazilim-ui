@@ -51,6 +51,7 @@ const action: TableAction = {
   cta: 'New Record',
   type: 'Dialog',
   description: 'Add New Record',
+  componentType: 'Autoform',
   callback: () => alert('Added'),
   autoFormArgs,
 };
@@ -221,6 +222,7 @@ export const Sheet: StoryObj<typeof Table> = {
       cta: 'New Record',
       description: 'Add New Record',
       callback: () => alert('Added'),
+      componentType: 'Autoform',
       autoFormArgs,
       type: 'Sheet',
     },
@@ -266,12 +268,14 @@ export const MultipleActions: StoryObj<typeof Table> = {
         description: 'Add New Record',
         callback: () => alert('Added'),
         autoFormArgs,
+        componentType: 'Autoform',
         type: 'Sheet',
       },
       {
         cta: 'New Dialog',
         description: 'Add New Record',
         callback: () => alert('Added'),
+        componentType: 'Autoform',
         autoFormArgs,
         type: 'Dialog',
       },
@@ -382,9 +386,11 @@ export const DetailedFilter: StoryObj<typeof Table> = {
 
 const subContentDialogAction: TableAction = {
   cta: 'New Dialog',
-  type: 'SubContentDialog',
+  type: 'Dialog',
   description: 'Add New Record',
-  content: <div>İçerik</div>,
+  componentType: 'CustomComponent',
+  content: <div>Content</div>,
+  contentLoading: <div>Content Loading</div>,
 };
 export const SubContentDialog: StoryObj<typeof Table> = {
   args: {
@@ -412,10 +418,8 @@ export const SubContentMenuActionDialog: StoryObj<typeof Table> = {
         actionList: [
           {
             type: 'SubContentDialog',
-            cta: 'Değişiklik Geçmişi',
-            callback: async () => (
-              <div className="text-center">Değişiklik yok</div>
-            ),
+            cta: 'Change History',
+            callback: async () => <div className="text-center">No changes</div>,
           },
         ],
       },

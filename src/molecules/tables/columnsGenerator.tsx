@@ -3,9 +3,7 @@
 import { CaretSortIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { ColumnDef } from '@tanstack/react-table';
 
-import AutoformDialog, {
-  SubContentDialog,
-} from '@repo/ayasofyazilim-ui/molecules/dialog';
+import AutoformDialog from '@repo/ayasofyazilim-ui/molecules/dialog';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -17,9 +15,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Separator } from '@/components/ui/separator';
 import { AutoColumnGenerator } from '.';
 import { normalizeName } from './utils';
-import { Separator } from '@/components/ui/separator';
 
 const createSortableHeader = (column: any, name: string) => (
   <Button
@@ -116,6 +114,10 @@ export function columnsGenerator(data: AutoColumnGenerator) {
           useState('');
         const [subContentDialogOpen, setSubContentDialogOpen] = useState(false);
         const [subContentDialogTitle, setSubContentDialogTitle] = useState('');
+        const [
+          subContentDialogLoadingContent,
+          setSubContentDialogLoadingContent,
+        ] = useState<JSX.Element>(<>Loading...</>);
 
         return (
           <>
@@ -129,6 +131,7 @@ export function columnsGenerator(data: AutoColumnGenerator) {
               action={{
                 type: 'Dialog',
                 autoFormArgs,
+                componentType: 'Autoform',
                 callback: onEdit,
                 cta: data.dialogTitle ? data.dialogTitle : 'Edit',
                 description: data.dialogDescription
@@ -137,14 +140,16 @@ export function columnsGenerator(data: AutoColumnGenerator) {
               }}
               triggerData={originalRow}
             />
-            <SubContentDialog
+            <AutoformDialog
               open={subContentDialogOpen}
               onOpenChange={setSubContentDialogOpen}
               action={{
-                type: 'SubContentDialog',
+                type: 'Dialog',
                 cta: subContentDialogTitle,
                 description: subContentDialogDescription,
                 content: subContentDialogContent,
+                contentLoading: subContentDialogLoadingContent,
+                componentType: 'CustomComponent',
               }}
             />
             <DropdownMenu>
@@ -186,6 +191,9 @@ export function columnsGenerator(data: AutoColumnGenerator) {
                         action.type === 'SubContentDialog'
                       ) {
                         setSubContentDialogTitle(action.cta);
+                        setSubContentDialogLoadingContent(
+                          action.loadingContent
+                        );
                         // @ts-ignore
                         setSubContentDialogDescription(originalRow.id);
                         setSubContentDialogOpen(true);
