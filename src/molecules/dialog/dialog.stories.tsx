@@ -47,6 +47,24 @@ const action: TableAction = {
   autoFormArgs,
 };
 
+const actionSheet: TableAction = {
+  type: 'Sheet',
+  cta: 'New Record',
+  description: 'Ad New Record',
+  componentType: 'Autoform',
+  callback: () => {},
+  autoFormArgs,
+};
+
+const actionSheetCustomContent: TableAction = {
+  type: 'Sheet',
+  cta: 'New Record',
+  description: 'Ad New Record',
+  componentType: 'CustomComponent',
+  isLoading: false,
+  content: <div>Custom Content</div>,
+};
+
 export default { component: CustomTableActionDialog } as Meta<
   typeof CustomTableActionDialog
 >;
@@ -54,6 +72,101 @@ export default { component: CustomTableActionDialog } as Meta<
 export const Default: StoryObj<typeof CustomTableActionDialog> = {
   args: {
     action,
+  },
+  parameters: {
+    layout: 'centered',
+  },
+  render: (args) => {
+    const [open, onOpenChange] = useState(false);
+    return (
+      <>
+        <Button
+          onClick={() => {
+            onOpenChange(true);
+          }}
+        >
+          Open Dialog
+        </Button>
+        <CustomTableActionDialog
+          action={args.action}
+          open={open}
+          onOpenChange={() => {
+            onOpenChange(!open);
+          }}
+          type={args.type}
+        />
+      </>
+    );
+  },
+};
+export const Sheet: StoryObj<typeof CustomTableActionDialog> = {
+  args: {
+    action: actionSheet,
+    type: 'Sheet',
+  },
+  parameters: {
+    layout: 'centered',
+  },
+  render: (args) => {
+    const [open, onOpenChange] = useState(false);
+    return (
+      <>
+        <Button
+          onClick={() => {
+            onOpenChange(true);
+          }}
+        >
+          Open Dialog
+        </Button>
+        <CustomTableActionDialog
+          action={args.action}
+          open={open}
+          onOpenChange={() => {
+            onOpenChange(!open);
+          }}
+          type={args.type}
+        />
+      </>
+    );
+  },
+};
+
+export const SheetCustomContent: StoryObj<typeof CustomTableActionDialog> = {
+  args: {
+    action: actionSheetCustomContent,
+    type: 'Sheet',
+  },
+  parameters: {
+    layout: 'centered',
+  },
+  render: (args) => {
+    const [open, onOpenChange] = useState(false);
+    return (
+      <>
+        <Button
+          onClick={() => {
+            onOpenChange(true);
+          }}
+        >
+          Open Dialog
+        </Button>
+        <CustomTableActionDialog
+          action={args.action}
+          open={open}
+          onOpenChange={() => {
+            onOpenChange(!open);
+          }}
+          type={args.type}
+        />
+      </>
+    );
+  },
+};
+
+export const DialogCustomContent: StoryObj<typeof CustomTableActionDialog> = {
+  args: {
+    action: actionSheetCustomContent,
+    type: 'Dialog',
   },
   parameters: {
     layout: 'centered',

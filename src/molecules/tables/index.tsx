@@ -76,8 +76,16 @@ export type TableActionAutoform = {
 };
 export type TableActionCustom = {
   componentType: 'CustomComponent';
-  content?: JSX.Element;
-  contentLoading: JSX.Element;
+} & (tableActionContent | TableActionIsLoading);
+
+export type tableActionContent = {
+  content: JSX.Element;
+  isLoading: false;
+};
+
+export type TableActionIsLoading = {
+  isLoading: true;
+  loadingContent: JSX.Element;
 };
 
 export type TableActionDialog = {
