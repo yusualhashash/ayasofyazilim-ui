@@ -34,7 +34,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import AutoformDialog from '../dialog';
+import CustomTableActionDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import FilterColumn, { ColumnFilter } from './filter-colum';
 import { normalizeName } from './utils';
@@ -69,22 +69,45 @@ export type TableActionNewPage = {
   type: 'NewPage';
 };
 
-export type TableActionDialog = {
+export type TableActionAutoform = {
   autoFormArgs: AutoFormProps;
   callback: (values: any, triggerData?: unknown) => void;
-  description: string;
-  type: 'Dialog' | 'Sheet';
+  componentType: 'Autoform';
+};
+export type TableActionCustom = {
+  componentType: 'CustomComponent';
+} & (tableActionContent | TableActionIsLoading);
+
+export type tableActionContent = {
+  content: JSX.Element;
+  isLoading: false;
 };
 
+export type TableActionIsLoading = {
+  isLoading: true;
+  loadingContent: JSX.Element;
+};
+
+export type TableActionDialog = {
+  description: string;
+  type: 'Dialog' | 'Sheet';
+} & (TableActionAutoform | TableActionCustom);
 export type TableActionAction = {
   callback: (values: any) => void;
   type: 'Action';
 };
 
-export type MenuAction = {
+type BaseMenuAction = {
   callback: (e: any, originalRow: any) => void;
   cta: string;
 };
+type DialogMenuAction = {
+  callback: (e: any, originalRow: any) => Promise<JSX.Element>;
+  cta: string;
+  loadingContent: JSX.Element;
+  type: 'SubContentDialog';
+};
+export type MenuAction = BaseMenuAction | DialogMenuAction;
 
 export type AutoColumnGenerator = {
   actionList?: MenuAction[];
@@ -332,14 +355,16 @@ export default function DataTable<TData, TValue>({
 
   return (
     <div className="w-full">
-      {activeAction && 'autoFormArgs' in activeAction && (
-        <AutoformDialog
-          open={isOpen}
-          onOpenChange={setIsOpen}
-          action={activeAction}
-          type={activeAction?.type}
-        />
-      )}
+      {activeAction &&
+        ('autoFormArgs' in activeAction || 'content' in activeAction) && (
+          <CustomTableActionDialog
+            open={isOpen}
+            onOpenChange={setIsOpen}
+            action={activeAction}
+            type={activeAction?.type}
+          />
+        )}
+
       <div className="flex items-center py-4 gap-2">
         {showView === true && (
           <DropdownMenu>
@@ -495,26 +520,23 @@ export default function DataTable<TData, TValue>({
                     data-state={row.getIsSelected() ? 'selected' : undefined}
                     className="whitespace-nowrap"
                   >
-                    {row.getVisibleCells().map((cell) => {
-                      console.log(cell);
-                      return (
-                        <TableCell
-                          key={cell.id}
-                          className={cn(
-                            cell.column.id === 'actions'
-                              ? 'sticky right-0  bg-white'
-                              : ''
-                          )}
-                        >
-                          {
-                            flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            ) as JSX.Element
-                          }
-                        </TableCell>
-                      );
-                    })}
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          cell.column.id === 'actions'
+                            ? 'sticky right-0  bg-white'
+                            : ''
+                        )}
+                      >
+                        {
+                          flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          ) as JSX.Element
+                        }
+                      </TableCell>
+                    ))}
                   </TableRow>
                   {row.getIsExpanded() && renderSubComponent && (
                     <TableRow>

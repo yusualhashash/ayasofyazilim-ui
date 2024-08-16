@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { z } from 'zod';
 import {
   Dialog,
@@ -15,11 +15,15 @@ import AutoForm, {
   SchemaType,
 } from '../../organisms/auto-form';
 import SheetSide from '../sheet';
-import { TableActionCommon, TableActionDialog } from '../tables';
+import {
+  TableActionAutoform,
+  TableActionCommon,
+  TableActionDialog,
+} from '../tables';
 
-export type tableAction = TableActionCommon & TableActionDialog;
-export type AutoformDialogProps = {
-  action?: tableAction;
+export type TableAction = TableActionCommon & TableActionDialog;
+export type CustomTableActionDialogProps = {
+  action?: TableAction;
   onOpenChange: (e: boolean) => void;
   open: boolean;
   triggerData?: any;
@@ -27,7 +31,7 @@ export type AutoformDialogProps = {
 };
 
 const AutoFormData = (
-  action: TableActionCommon & TableActionDialog,
+  action: TableActionAutoform,
   values: Partial<z.infer<SchemaType>>,
   triggerData?: any
 ) => (
@@ -45,17 +49,21 @@ const AutoFormData = (
   </AutoForm>
 );
 
-export default function AutoformDialog({
+export default function CustomTableActionDialog({
   open,
   onOpenChange,
   action,
   triggerData,
   type = 'Dialog',
-}: AutoformDialogProps) {
+}: CustomTableActionDialogProps) {
   const [values] = useState<any>(triggerData || {});
-  const autformData = action
-    ? AutoFormData(action, triggerData, values)
-    : undefined;
+  const autformData =
+    action && 'autoFormArgs' in action
+      ? AutoFormData(action, triggerData, values)
+      : undefined;
+  const content = action && 'content' in action ? action.content : undefined;
+  const contentLoading =
+    action && 'contentLoading' in action ? action.contentLoading : false;
 
   return type === 'Sheet' ? (
     <SheetSide
@@ -65,7 +73,11 @@ export default function AutoformDialog({
       title={action?.cta}
       description={action?.description}
     >
-      {autformData}
+      <>
+        {autformData}
+        {content}
+        {contentLoading as React.ReactNode}
+      </>
     </SheetSide>
   ) : (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -74,7 +86,11 @@ export default function AutoformDialog({
           <DialogTitle>{action?.cta}</DialogTitle>
           <DialogDescription>{action?.description}</DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">{autformData}</div>
+        <div className="grid gap-4 py-4">
+          {autformData}
+          {content}
+          {contentLoading as React.ReactNode}
+        </div>
         <DialogFooter>
           {/* TODO: Dialog footer to add whatever children we need */}
         </DialogFooter>

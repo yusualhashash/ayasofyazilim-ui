@@ -3,7 +3,7 @@
 import { CaretSortIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { ColumnDef } from '@tanstack/react-table';
 
-import AutoformDialog from '@repo/ayasofyazilim-ui/molecules/dialog';
+import CustomTableActionDialog from '@repo/ayasofyazilim-ui/molecules/dialog';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -15,9 +15,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Separator } from '@/components/ui/separator';
 import { AutoColumnGenerator } from '.';
 import { normalizeName } from './utils';
-import { Separator } from '@/components/ui/separator';
 
 const createSortableHeader = (column: any, name: string) => (
   <Button
@@ -107,6 +107,18 @@ export function columnsGenerator(data: AutoColumnGenerator) {
       cell: ({ row }) => {
         const originalRow = row.original;
         const [open, setOpen] = useState(false);
+        const [subContentDialogContent, setSubContentDialogContent] =
+          useState<JSX.Element>(<div>Content</div>);
+        const [subContentDialogDescription, setSubContentDialogDescription] =
+          useState('');
+        const [subContentDialogOpen, setSubContentDialogOpen] = useState(false);
+        const [subContentDialogTitle, setSubContentDialogTitle] = useState('');
+        const [
+          subContentDialogLoadingContent,
+          setSubContentDialogLoadingContent,
+        ] = useState<JSX.Element>(<>Loading...</>);
+        const [isSubContentDialogLoading, setIsSubContentDialogLoading] =
+          useState(false);
 
         return (
           <>
@@ -114,12 +126,13 @@ export function columnsGenerator(data: AutoColumnGenerator) {
               orientation="vertical"
               className="absolute left-0 top-0"
             />
-            <AutoformDialog
+            <CustomTableActionDialog
               open={open}
               onOpenChange={setOpen}
               action={{
                 type: 'Dialog',
                 autoFormArgs,
+                componentType: 'Autoform',
                 callback: onEdit,
                 cta: data.dialogTitle ? data.dialogTitle : 'Edit',
                 description: data.dialogDescription
@@ -128,6 +141,34 @@ export function columnsGenerator(data: AutoColumnGenerator) {
               }}
               triggerData={originalRow}
             />
+            {isSubContentDialogLoading ? (
+              <CustomTableActionDialog
+                open={subContentDialogOpen}
+                onOpenChange={setSubContentDialogOpen}
+                action={{
+                  type: 'Dialog',
+                  componentType: 'CustomComponent',
+                  cta: subContentDialogTitle,
+                  description: subContentDialogDescription,
+                  loadingContent: subContentDialogLoadingContent,
+                  isLoading: true,
+                }}
+              />
+            ) : (
+              <CustomTableActionDialog
+                open={subContentDialogOpen}
+                onOpenChange={setSubContentDialogOpen}
+                action={{
+                  type: 'Dialog',
+                  componentType: 'CustomComponent',
+                  cta: subContentDialogTitle,
+                  description: subContentDialogDescription,
+                  content: subContentDialogContent,
+                  isLoading: false,
+                }}
+              />
+            )}
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
@@ -161,7 +202,27 @@ export function columnsGenerator(data: AutoColumnGenerator) {
                 </DropdownMenuItem>
                 {actionList?.map((action) => (
                   <DropdownMenuItem
-                    onClick={(e) => {
+                    onClick={async (e) => {
+                      if (
+                        'type' in action &&
+                        action.type === 'SubContentDialog'
+                      ) {
+                        setSubContentDialogTitle(action.cta);
+                        setSubContentDialogLoadingContent(
+                          action.loadingContent
+                        );
+                        setIsSubContentDialogLoading(true);
+                        // @ts-ignore
+                        setSubContentDialogDescription(originalRow.id);
+                        setSubContentDialogOpen(true);
+                        const subContent = await action.callback(
+                          e,
+                          originalRow
+                        );
+                        setIsSubContentDialogLoading(false);
+                        setSubContentDialogContent(subContent);
+                        return;
+                      }
                       action.callback(e, originalRow);
                     }}
                   >

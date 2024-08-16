@@ -51,6 +51,7 @@ const action: TableAction = {
   cta: 'New Record',
   type: 'Dialog',
   description: 'Add New Record',
+  componentType: 'Autoform',
   callback: () => alert('Added'),
   autoFormArgs,
 };
@@ -221,6 +222,7 @@ export const Sheet: StoryObj<typeof Table> = {
       cta: 'New Record',
       description: 'Add New Record',
       callback: () => alert('Added'),
+      componentType: 'Autoform',
       autoFormArgs,
       type: 'Sheet',
     },
@@ -266,12 +268,14 @@ export const MultipleActions: StoryObj<typeof Table> = {
         description: 'Add New Record',
         callback: () => alert('Added'),
         autoFormArgs,
+        componentType: 'Autoform',
         type: 'Sheet',
       },
       {
         cta: 'New Dialog',
         description: 'Add New Record',
         callback: () => alert('Added'),
+        componentType: 'Autoform',
         autoFormArgs,
         type: 'Dialog',
       },
@@ -374,6 +378,54 @@ export const DetailedFilter: StoryObj<typeof Table> = {
         value: new Date().toISOString(),
       },
     ],
+  },
+  parameters: {
+    layout: 'centered',
+  },
+};
+
+const subContentDialogAction: TableAction = {
+  cta: 'New Dialog',
+  type: 'Dialog',
+  description: 'Add New Record',
+  componentType: 'CustomComponent',
+  isLoading: false,
+  content: <div>Content</div>,
+};
+export const SubContentDialog: StoryObj<typeof Table> = {
+  args: {
+    data,
+    columnsData: {
+      type: 'Custom',
+      data: columns,
+    },
+    action: subContentDialogAction,
+  },
+  parameters: {
+    layout: 'centered',
+  },
+};
+
+export const SubContentMenuActionDialog: StoryObj<typeof Table> = {
+  render: (args) => <Table {...args} data={data} />,
+  args: {
+    editable: false,
+    data,
+    columnsData: {
+      type: 'Auto',
+      data: {
+        ...autoColumnData,
+        actionList: [
+          {
+            type: 'SubContentDialog',
+            cta: 'Change History',
+            callback: async () => <div className="text-center">No changes</div>,
+          },
+        ],
+      },
+    },
+
+    showView: false,
   },
   parameters: {
     layout: 'centered',
