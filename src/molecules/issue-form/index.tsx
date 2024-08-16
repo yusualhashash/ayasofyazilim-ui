@@ -44,353 +44,329 @@ import {
   Table,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import { issueFormProps } from './type';
+import { Label } from '@/components/ui/label';
 
-export const Issueform = () => (
-  <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-6 p-6 w-full">
-    <div className="grid gap-6">
-      <Card className="p-6">
-        <div className="grid gap-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold">Tag summary</h2>
-            <div className="flex items-center gap-2">
-              <CalendarDaysIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                May 2023
-              </span>
+export { issueFormProps } from './type';
+
+export default function Issueform({ tag }: issueFormProps) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-6 p-6 w-full">
+      <div className="grid gap-6">
+        <Card className="p-6">
+          <div className="grid gap-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold">Tag summary</h2>
+              <div className="flex items-center gap-2">
+                <CalendarDaysIcon className="w-5 h-5 text-gray-500 " />
+                <span className="text-sm text-gray-500 ">
+                  {tag.Summary.IssuedDate} - {tag.Summary.ExpireDate}
+                </span>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="bg-gray-100  rounded-lg p-4 flex flex-col gap-2">
+                <div className="text-sm text-gray-500 ">Tax Free Tag ID</div>
+                <div className="text-3xl font-bold">{tag.Summary.Tag}</div>
+              </div>
+              <div className="bg-gray-100  rounded-lg p-4 flex flex-col gap-2">
+                <div className="text-sm text-gray-500 ">Status</div>
+                <div className="text-3xl font-bold">
+                  {tag.Summary.Status === 1 ? 'Approved' : 'Pending'}
+                </div>
+              </div>
+              <div className="bg-gray-100  rounded-lg p-4 flex flex-col gap-2">
+                <div className="text-sm text-gray-500 ">Issued Date</div>
+                <div className="text-xl font-bold">
+                  {tag.Summary.IssuedDate}
+                </div>
+                <div className="text-sm text-gray-500 ">Expire Date</div>
+                <div className="text-xl font-bold">
+                  {tag.Summary.ExpireDate}
+                </div>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <Card className="p-4">
+                <CardTitle>Export Validation</CardTitle>
+                <div className="grid gap-2 pt-2">
+                  <div className="text-sm text-gray-500 ">
+                    Export date: {tag.ExportValidation.ExportDate}
+                  </div>
+                  <div className="text-sm text-gray-500 ">
+                    Export location: {tag.ExportValidation.ExportLocation}
+                  </div>
+                  <div className="text-sm text-gray-500 ">
+                    Stamp type:{' '}
+                    {tag.ExportValidation.StampType === 1
+                      ? 'Stamp'
+                      : 'No Stamp'}
+                  </div>
+                </div>
+              </Card>
+              <Card className="p-4">
+                <CardTitle>Refund</CardTitle>
+                <div className="grid gap-2 pt-2">
+                  <div className="text-sm text-gray-500 ">
+                    Submission date: {tag.Refund.SubmissionDate}
+                  </div>
+                  <div className="text-sm text-gray-500 ">
+                    Paid date: {tag.Refund.PaidDate}
+                  </div>
+                  <div className="text-sm text-gray-500 ">
+                    Refund location: {tag.Refund.RefundLocation.Name}
+                  </div>
+                  <div className="text-sm text-gray-500 ">
+                    Status: {tag.Refund.Status === 1 ? 'Paid' : 'Pending'}
+                  </div>
+                  <div className="text-sm text-gray-500 ">
+                    Refund method:{' '}
+                    {tag.Refund.RefundMethod === 1 ? 'Cash' : 'Credit Card'}
+                  </div>
+                </div>
+              </Card>
+              <Card className="p-4">
+                <CardTitle>Invoicing</CardTitle>
+                <div className="grid gap-2 pt-2">
+                  <div className="text-sm text-gray-500 ">
+                    Invoice date: {tag.Invoicing.InvoicingDate}
+                  </div>
+                  <div className="text-sm text-gray-500 ">
+                    Invoice number: {tag.Invoicing.InvoicingNumber}
+                  </div>
+                  <div className="text-sm text-gray-500 ">
+                    Invoice status:{' '}
+                    {tag.Invoicing.InvoicingStatus === 1 ? 'Paid' : 'Pending'}
+                  </div>
+                </div>
+              </Card>
             </div>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 flex flex-col gap-2">
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                Tax Free Tag ID
-              </div>
-              <div className="text-3xl font-bold">T252024000</div>
-            </div>
-            <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 flex flex-col gap-2">
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                Status
-              </div>
-              <div className="text-3xl font-bold">Issued</div>
-            </div>
-            <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 flex flex-col gap-2">
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                Issued Date
-              </div>
-              <div className="text-xl font-bold">3.06.2024 15:26</div>
-              {/* grey small text */}
-              <div className="text-xl font-bold">3.09.2024 15:26</div>
-            </div>
-          </div>
-          <div className="grid sm:grid-cols-3 gap-4">
-            <Card className="p-4">
-              <CardTitle>Export Validation</CardTitle>
-              <div className="grid gap-2 pt-2">
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Export date: May 15, 2023
+        </Card>
+        <div className="border shadow-sm rounded-lg overflow-hidden">
+          <Tabs defaultValue="merchants">
+            <TabsList className="bg-gray-100  grid grid-cols-3">
+              <TabsTrigger value="merchants">Purchase Details</TabsTrigger>
+              <TabsTrigger value="travelers">Tag History</TabsTrigger>
+              <TabsTrigger value="trips">Export Validation</TabsTrigger>
+            </TabsList>
+            <TabsContent value="merchants">
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-6 p-6 ">
+                <div className="grid gap-6">
+                  <Card className="p-4 max-w-96">
+                    <CardTitle>TOTALS</CardTitle>
+                    <div className="grid gap-2 pt-2">
+                      {tag.Totals.map((total) => (
+                        <div className="flex justify-between">
+                          <div className="text-sm text-gray-500 ">
+                            {total.Description}
+                          </div>
+                          <div className="text-sm text-gray-500 ">
+                            {total.Amount}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
                 </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Export location: New York, NY
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Stamp type: Standard
-                </div>
-              </div>
-            </Card>
-            <Card className="p-4">
-              <CardTitle>Refund</CardTitle>
-              <div className="grid gap-2 pt-2">
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Submission date: April 20, 2023
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Paid date: April 25, 2023
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Refund location: Los Angeles, CA
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Status: Approved
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Refund method: Credit Card
+                <div className="grid gap-6">
+                  <Card className="p-4 max-w-96">
+                    <CardTitle>EARNINGS</CardTitle>
+                    <div className="grid gap-2 pt-2">
+                      {tag.Earnings.map((earning) => (
+                        <div className="flex justify-between">
+                          <div className="text-sm text-gray-500 ">
+                            {earning.Description}
+                          </div>
+                          <div className="text-sm text-gray-500 ">
+                            {earning.Amount}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
                 </div>
               </div>
-            </Card>
-            <Card className="p-4">
-              <CardTitle>Invoicing</CardTitle>
-              <div className="grid gap-2 pt-2">
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Invoice date: June 1, 2023
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Invoice number: 12345
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Invoice status: Paid
-                </div>
-              </div>
-            </Card>
-          </div>
+            </TabsContent>
+            <TabsContent value="travelers">
+              {tag.Invoices.map((invoice) => (
+                <Card className="m-2 p-1">
+                  <div className="grid gap-4 m-2 p-1">
+                    <div className="flex justify-around">
+                      <div className="grid gap-1">
+                        <Label>Invoice ID</Label>
+                        <div className="font-medium">{invoice.Id}</div>
+                      </div>
+                      <div className="grid gap-1">
+                        <Label>Invoice Amount</Label>
+                        <div className="font-medium">{invoice.TotalAmount}</div>
+                      </div>
+                      <div className="grid gap-1">
+                        <Label>Currency</Label>
+                        <div className="font-medium">
+                          {invoice.Currency.Currency}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Product</TableHead>
+                        <TableHead className="text-right">Amount</TableHead>
+                        <TableHead className="text-right">Vat ID</TableHead>
+                        <TableHead className="text-right">Vat Rate</TableHead>
+                        <TableHead className="text-right">Vat Amount</TableHead>
+                        <TableHead className="text-right">Vat Base</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {invoice.InvoiceLines.map((invoiceLine) => (
+                        <TableRow key={invoiceLine.Id}>
+                          <TableCell>{invoiceLine.Id}</TableCell>
+                          <TableCell>
+                            {invoiceLine.ProductGroup.Description}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {invoiceLine.Amount}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {invoiceLine.Vat.Id}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {invoiceLine.Vat.Rate}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {invoiceLine.Vat.Amount}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {invoiceLine.Vat.VatBase}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Card>
+              ))}
+            </TabsContent>
+            <TabsContent value="trips">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Created on</TableHead>
+                    <TableHead>Scan by</TableHead>
+                    <TableHead>Matchd</TableHead>
+                    <TableHead>Hit</TableHead>
+                    <TableHead>Revalidated</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-medium">12.1.1990</TableCell>
+                    <TableCell>Tom Wilson</TableCell>
+                    <TableCell>✅</TableCell>
+                    <TableCell>✅</TableCell>
+                    <TableCell>✅</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TabsContent>
+          </Tabs>
         </div>
-      </Card>
-      <div className="border shadow-sm rounded-lg overflow-hidden">
-        <Tabs defaultValue="merchants">
-          <TabsList className="bg-gray-100 dark:bg-gray-800 grid grid-cols-3">
-            <TabsTrigger value="merchants">Purchase Details</TabsTrigger>
-            <TabsTrigger value="travelers">Tag History</TabsTrigger>
-            <TabsTrigger value="trips">Export Validation</TabsTrigger>
-          </TabsList>
-          <TabsContent value="merchants">
-            {/* two clolumn div */}
-
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-6 p-6 ">
-              <div className="grid gap-6">
-                <Card className="p-4 max-w-96">
-                  <CardTitle>TOTALS</CardTitle>
-                  <div className="grid gap-2 pt-2">
-                    <div className="flex justify-between">
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        SALES AMOUNT
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        2.999,90 ₺
-                      </div>
-                    </div>
-                    <div className="flex justify-between">
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        VAT
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        272,72 ₺
-                      </div>
-                    </div>
-                    <div className="flex justify-between">
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        amount
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        272,72 ₺
-                      </div>
-                    </div>{' '}
-                    <div className="flex justify-between">
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        gross
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        272,72 ₺
-                      </div>
-                    </div>{' '}
-                    <div className="flex justify-between">
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        refund
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        272,72 ₺
-                      </div>
-                    </div>
-                  </div>
-                </Card>
+      </div>
+      <div className="grid gap-6">
+        <Card className="p-6">
+          <div className="grid gap-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-bold">Merchant Details</h3>
+              <Button size="sm" variant="outline">
+                View Merchant
+              </Button>
+            </div>
+            <div className="grid gap-2">
+              <div className="flex items-center gap-2">
+                <UserIcon className="w-5 h-5 text-gray-500 " />
+                <span className="font-medium">{tag.Merchant.Name}</span>
               </div>
-              <div className="grid gap-6">
-                <Card className="p-4 max-w-96">
-                  <CardTitle>EARNINGS</CardTitle>
-                  <div className="grid gap-2 pt-2">
-                    <div className="flex justify-between">
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        Gross Commission
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        2.999,90 ₺
-                      </div>
-                    </div>
-                    <div className="flex justify-between">
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        redeeming
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        272,72 ₺
-                      </div>
-                    </div>
-                    <div className="flex justify-between">
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        Rebate
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        272,72 ₺
-                      </div>
-                    </div>{' '}
-                    <div className="flex justify-between">
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        Net Comission
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        272,72 ₺
-                      </div>
-                    </div>{' '}
-                  </div>
-                </Card>
+              <div className="flex items-center gap-2">
+                <MailIcon className="w-5 h-5 text-gray-500 " />
+                <span>
+                  product groups:
+                  {tag.Merchant.ProductGroups.map(
+                    (productGroup) => productGroup.Description
+                  ).join(',')}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <MapPinIcon className="w-5 h-5 text-gray-500 " />
+                <span>Address: {tag.Merchant.Address.FullText}</span>
               </div>
             </div>
-          </TabsContent>
-          <TabsContent value="travelers">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead className="text-right">Total Trips</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell className="font-medium">Emily Davis</TableCell>
-                  <TableCell>emily@example.com</TableCell>
-                  <TableCell>San Francisco, CA</TableCell>
-                  <TableCell className="text-right">12</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Michael Brown</TableCell>
-                  <TableCell>michael@example.com</TableCell>
-                  <TableCell>Boston, MA</TableCell>
-                  <TableCell className="text-right">8</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Olivia Wilson</TableCell>
-                  <TableCell>olivia@example.com</TableCell>
-                  <TableCell>Seattle, WA</TableCell>
-                  <TableCell className="text-right">15</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">
-                    William Anderson
-                  </TableCell>
-                  <TableCell>william@example.com</TableCell>
-                  <TableCell>Chicago, IL</TableCell>
-                  <TableCell className="text-right">9</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Sophia Martinez</TableCell>
-                  <TableCell>sophia@example.com</TableCell>
-                  <TableCell>Miami, FL</TableCell>
-                  <TableCell className="text-right">11</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TabsContent>
-          <TabsContent value="trips">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Created on</TableHead>
-                  <TableHead>Scan by</TableHead>
-                  <TableHead>Matchd</TableHead>
-                  <TableHead>Hit</TableHead>
-                  <TableHead>Revalidated</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell className="font-medium">12.1.1990</TableCell>
-                  <TableCell>Tom Wilson</TableCell>
-                  <TableCell>✅</TableCell>
-                  <TableCell>✅</TableCell>
-                  <TableCell>✅</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TabsContent>
-        </Tabs>
+          </div>
+        </Card>
+        <Card className="p-6">
+          <div className="grid gap-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-bold">Traveler Details</h3>
+              <Button size="sm" variant="outline">
+                View Traveler
+              </Button>
+            </div>
+            <div className="grid gap-2">
+              <div className="flex items-center gap-2">
+                <UserIcon className="w-5 h-5 text-gray-500 " />
+                <span className="font-medium">
+                  {`${tag.Traveller.Name} ${tag.Traveller.Surname}`}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <MailIcon className="w-5 h-5 text-gray-500 " />
+                <span>{tag.Traveller.Nationality}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <MapPinIcon className="w-5 h-5 text-gray-500 " />
+                <span>Residency: {tag.Traveller.CountryOfResidence}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <MapPinIcon className="w-5 h-5 text-gray-500 " />
+                <span>Citizeship: {tag.Traveller.Nationality}</span>
+              </div>
+            </div>
+          </div>
+        </Card>
+        <Card className="p-6">
+          <div className="grid gap-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-bold">Trip Details</h3>
+              <Button size="sm" variant="outline">
+                View Trip
+              </Button>
+            </div>
+            <div className="grid gap-2">
+              <div className="flex items-center gap-2">
+                <CalendarDaysIcon className="w-5 h-5 text-gray-500 " />
+                <span className="font-medium">Visit</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <MapPinIcon className="w-5 h-5 text-gray-500 " />
+                <span>Flight number: {tag.Trip.FlightNumber}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <PlaneIcon className="w-5 h-5 text-gray-500 " />
+                <span>Departure: {tag.Trip.DepartingAirport.Name}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <PlaneIcon className="w-5 h-5 text-gray-500 " />
+                <span>Destination: {tag.Trip.DestinationAirport.Name}</span>
+              </div>
+            </div>
+          </div>
+        </Card>
       </div>
     </div>
-    <div className="grid gap-6">
-      <Card className="p-6">
-        <div className="grid gap-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold">Merchant Details</h3>
-            <Button size="sm" variant="outline">
-              View Merchant
-            </Button>
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2">
-              <UserIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span className="font-medium">Unirefund</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MailIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span>product groups: marine parts, etc</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPinIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span>Address: New York, NY, USA</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <DollarSignIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span>$25,000 total sales</span>
-            </div>
-          </div>
-        </div>
-      </Card>
-      <Card className="p-6">
-        <div className="grid gap-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold">Traveler Details</h3>
-            <Button size="sm" variant="outline">
-              View Traveler
-            </Button>
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2">
-              <UserIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span className="font-medium">Emily Davis</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MailIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span>emily@example.com</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPinIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span>Residency: Turkey</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPinIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span>Citizeship: Turkey</span>
-            </div>
-          </div>
-        </div>
-      </Card>
-      <Card className="p-6">
-        <div className="grid gap-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold">Trip Details</h3>
-            <Button size="sm" variant="outline">
-              View Trip
-            </Button>
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2">
-              <CalendarDaysIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span className="font-medium">Visit</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPinIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span>Flight number</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <PlaneIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span>Departure: Turkey</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <PlaneIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span>Destination: Saudi Arabia</span>
-            </div>
-          </div>
-        </div>
-      </Card>
-    </div>
-  </div>
-);
+  );
+}
 
 const CalendarDaysIcon = (props: React.HTMLAttributes<SVGSVGElement>) => (
   <svg
@@ -415,24 +391,6 @@ const CalendarDaysIcon = (props: React.HTMLAttributes<SVGSVGElement>) => (
     <path d="M8 18h.01" />
     <path d="M12 18h.01" />
     <path d="M16 18h.01" />
-  </svg>
-);
-
-const DollarSignIcon = (props: React.HTMLAttributes<SVGSVGElement>) => (
-  <svg
-    {...props}
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <line x1="12" x2="12" y1="2" y2="22" />
-    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
   </svg>
 );
 
