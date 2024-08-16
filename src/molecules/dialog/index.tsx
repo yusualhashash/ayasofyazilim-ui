@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { z } from 'zod';
 import {
   Dialog,
@@ -76,7 +76,7 @@ export default function CustomTableActionDialog({
       <>
         {autformData}
         {content}
-        {contentLoading}
+        {contentLoading as React.ReactNode}
       </>
     </SheetSide>
   ) : (
@@ -89,7 +89,7 @@ export default function CustomTableActionDialog({
         <div className="grid gap-4 py-4">
           {autformData}
           {content}
-          {contentLoading}
+          {contentLoading as React.ReactNode}
         </div>
         <DialogFooter>
           {/* TODO: Dialog footer to add whatever children we need */}
