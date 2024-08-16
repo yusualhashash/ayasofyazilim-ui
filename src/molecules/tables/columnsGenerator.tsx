@@ -168,7 +168,7 @@ export function columnsGenerator(data: AutoColumnGenerator) {
                     onDelete(e, originalRow);
                   }}
                 >
-                  Delete role
+                  Delete
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
