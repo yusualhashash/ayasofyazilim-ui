@@ -21,8 +21,9 @@ import {
   TableActionDialog,
 } from '../tables';
 
+export type TableAction = TableActionCommon & TableActionDialog;
 export type AutoformDialogProps = {
-  action?: TableActionCommon & TableActionDialog;
+  action?: TableAction;
   onOpenChange: (e: boolean) => void;
   open: boolean;
   triggerData?: any;
