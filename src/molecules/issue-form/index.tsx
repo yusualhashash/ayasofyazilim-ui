@@ -47,7 +47,7 @@ import { Button } from '@/components/ui/button';
 import { issueFormProps } from './type';
 import { Label } from '@/components/ui/label';
 
-export { issueFormProps } from './type';
+export type { issueFormProps } from './type';
 
 export default function Issueform({ tag }: issueFormProps) {
   return (
