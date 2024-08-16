@@ -107,9 +107,8 @@ export function columnsGenerator(data: AutoColumnGenerator) {
       cell: ({ row }) => {
         const originalRow = row.original;
         const [open, setOpen] = useState(false);
-        const [subContentDialogContent, setSubContentDialogContent] = useState<
-          JSX.Element | undefined
-        >(undefined);
+        const [subContentDialogContent, setSubContentDialogContent] =
+          useState<JSX.Element>(<div>Content</div>);
         const [subContentDialogDescription, setSubContentDialogDescription] =
           useState('');
         const [subContentDialogOpen, setSubContentDialogOpen] = useState(false);
@@ -118,6 +117,8 @@ export function columnsGenerator(data: AutoColumnGenerator) {
           subContentDialogLoadingContent,
           setSubContentDialogLoadingContent,
         ] = useState<JSX.Element>(<>Loading...</>);
+        const [isSubContentDialogLoading, setIsSubContentDialogLoading] =
+          useState(false);
 
         return (
           <>
@@ -140,18 +141,34 @@ export function columnsGenerator(data: AutoColumnGenerator) {
               }}
               triggerData={originalRow}
             />
-            <CustomTableActionDialog
-              open={subContentDialogOpen}
-              onOpenChange={setSubContentDialogOpen}
-              action={{
-                type: 'Dialog',
-                cta: subContentDialogTitle,
-                description: subContentDialogDescription,
-                content: subContentDialogContent,
-                contentLoading: subContentDialogLoadingContent,
-                componentType: 'CustomComponent',
-              }}
-            />
+            {isSubContentDialogLoading ? (
+              <CustomTableActionDialog
+                open={subContentDialogOpen}
+                onOpenChange={setSubContentDialogOpen}
+                action={{
+                  type: 'Dialog',
+                  componentType: 'CustomComponent',
+                  cta: subContentDialogTitle,
+                  description: subContentDialogDescription,
+                  loadingContent: subContentDialogLoadingContent,
+                  isLoading: true,
+                }}
+              />
+            ) : (
+              <CustomTableActionDialog
+                open={subContentDialogOpen}
+                onOpenChange={setSubContentDialogOpen}
+                action={{
+                  type: 'Dialog',
+                  componentType: 'CustomComponent',
+                  cta: subContentDialogTitle,
+                  description: subContentDialogDescription,
+                  content: subContentDialogContent,
+                  isLoading: false,
+                }}
+              />
+            )}
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
@@ -194,6 +211,7 @@ export function columnsGenerator(data: AutoColumnGenerator) {
                         setSubContentDialogLoadingContent(
                           action.loadingContent
                         );
+                        setIsSubContentDialogLoading(true);
                         // @ts-ignore
                         setSubContentDialogDescription(originalRow.id);
                         setSubContentDialogOpen(true);
@@ -201,6 +219,7 @@ export function columnsGenerator(data: AutoColumnGenerator) {
                           e,
                           originalRow
                         );
+                        setIsSubContentDialogLoading(false);
                         setSubContentDialogContent(subContent);
                         return;
                       }

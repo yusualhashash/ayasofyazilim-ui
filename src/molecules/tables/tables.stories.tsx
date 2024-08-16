@@ -389,8 +389,8 @@ const subContentDialogAction: TableAction = {
   type: 'Dialog',
   description: 'Add New Record',
   componentType: 'CustomComponent',
+  isLoading: false,
   content: <div>Content</div>,
-  contentLoading: <div>Content Loading</div>,
 };
 export const SubContentDialog: StoryObj<typeof Table> = {
   args: {
