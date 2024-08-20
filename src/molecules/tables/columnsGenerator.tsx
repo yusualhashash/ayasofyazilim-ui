@@ -33,12 +33,29 @@ const readOnlyCheckbox = (row: any, value: string) => (
   <Checkbox checked={row.getValue(value)} disabled />
 );
 
-function generateColumns(tableType: any, excludeList: string[] = []) {
+function sortColumns(positions: string[], obj: Object) {
+  Object.assign(
+    {},
+    ...positions.map((position) => ({
+      [position]: obj[position as keyof typeof obj],
+    }))
+  );
+}
+
+function generateColumns({
+  tableType,
+  positions,
+  excludeList = [],
+}: Partial<AutoColumnGenerator>) {
   const generatedTableColumns: any = [];
-  Object.keys(tableType.properties).forEach((key) => {
+  let tempProperties = tableType.properties;
+  if (positions) {
+    tempProperties = sortColumns(positions, tableType.properties);
+  }
+  Object.keys(tempProperties).forEach((key) => {
     const accessorKey = key;
     const header = normalizeName(key);
-    const value = tableType.properties[key];
+    const value = tempProperties[key];
     if (excludeList.includes(key)) {
       return;
     }
@@ -75,6 +92,7 @@ export function columnsGenerator(data: AutoColumnGenerator) {
     onDelete,
     actionList,
     excludeList,
+    positions,
   } = data;
 
   const columns: ColumnDef<typeof data>[] = [
@@ -100,7 +118,7 @@ export function columnsGenerator(data: AutoColumnGenerator) {
       enableSorting: false,
       enableHiding: false,
     },
-    ...generateColumns(tableType, excludeList),
+    ...generateColumns({ tableType, excludeList, positions }),
     {
       id: 'actions',
       enableHiding: false,
@@ -126,55 +144,48 @@ export function columnsGenerator(data: AutoColumnGenerator) {
               orientation="vertical"
               className="absolute left-0 top-0"
             />
-            {/* 
-              Şu anda her bir row için aynı dialoglar tekrar oluşturuluyor. 
-              Bir tane dialog olmalı, action'un tetiklendiği row'a göre dialog açılmalı 
-            */}
-            {open && (
+            <CustomTableActionDialog
+              open={open}
+              onOpenChange={setOpen}
+              action={{
+                type: 'Dialog',
+                autoFormArgs,
+                componentType: 'Autoform',
+                callback: onEdit,
+                cta: data.dialogTitle ? data.dialogTitle : 'Edit',
+                description: data.dialogDescription
+                  ? data.dialogDescription
+                  : '',
+              }}
+              triggerData={originalRow}
+            />
+            {isSubContentDialogLoading ? (
               <CustomTableActionDialog
-                open={open}
-                onOpenChange={setOpen}
+                open={subContentDialogOpen}
+                onOpenChange={setSubContentDialogOpen}
                 action={{
                   type: 'Dialog',
-                  autoFormArgs,
-                  componentType: 'Autoform',
-                  callback: onEdit,
-                  cta: data.dialogTitle ? data.dialogTitle : 'Edit',
-                  description: data.dialogDescription
-                    ? data.dialogDescription
-                    : '',
+                  componentType: 'CustomComponent',
+                  cta: subContentDialogTitle,
+                  description: subContentDialogDescription,
+                  loadingContent: subContentDialogLoadingContent,
+                  isLoading: true,
                 }}
-                triggerData={originalRow}
+              />
+            ) : (
+              <CustomTableActionDialog
+                open={subContentDialogOpen}
+                onOpenChange={setSubContentDialogOpen}
+                action={{
+                  type: 'Dialog',
+                  componentType: 'CustomComponent',
+                  cta: subContentDialogTitle,
+                  description: subContentDialogDescription,
+                  content: subContentDialogContent,
+                  isLoading: false,
+                }}
               />
             )}
-            {subContentDialogOpen &&
-              (isSubContentDialogLoading ? (
-                <CustomTableActionDialog
-                  open={subContentDialogOpen}
-                  onOpenChange={setSubContentDialogOpen}
-                  action={{
-                    type: 'Dialog',
-                    componentType: 'CustomComponent',
-                    cta: subContentDialogTitle,
-                    description: subContentDialogDescription,
-                    loadingContent: subContentDialogLoadingContent,
-                    isLoading: true,
-                  }}
-                />
-              ) : (
-                <CustomTableActionDialog
-                  open={subContentDialogOpen}
-                  onOpenChange={setSubContentDialogOpen}
-                  action={{
-                    type: 'Dialog',
-                    componentType: 'CustomComponent',
-                    cta: subContentDialogTitle,
-                    description: subContentDialogDescription,
-                    content: subContentDialogContent,
-                    isLoading: false,
-                  }}
-                />
-              ))}
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
