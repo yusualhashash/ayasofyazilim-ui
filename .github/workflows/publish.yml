@@ -5,7 +5,9 @@ name: Publish
 
 on:
   workflow_dispatch:
-  push: main
+  push: 
+    branches: 
+      - main
   release:
     types: [published]
 
