@@ -1,19 +1,22 @@
 import { ZodSchema, z } from 'zod';
 import { ZodObjectOrWrapped } from '../../organisms/auto-form/utils';
 
-// item & sub item
-export type JsonSchema = {
+export interface JsonSchema {
+  additionalProperties?: boolean;
   default?: any;
   description?: string | undefined;
-  displayName?: string;
+  displayName: string;
   enum?: any;
   format?: 'date-time' | 'email' | 'uuid';
   isReadOnly?: boolean;
   isRequired?: boolean;
+  items?: SchemaType;
   maxLength?: number;
+  minLength?: number;
   nullable?: boolean;
   pattern?: RegExp;
   properties?: Record<string, JsonSchema>;
+  refine?: { callback: (_value: any) => boolean; params?: object };
   type:
     | 'string'
     | 'boolean'
@@ -22,16 +25,18 @@ export type JsonSchema = {
     | 'number'
     | 'array'
     | 'toggle'
-    | 'select';
-};
+    | 'select'
+    | 'phone';
+}
 // group
-export type SchemaType = {
-  additionalProperties: Boolean;
+export interface SchemaType {
+  additionalProperties?: boolean;
   displayName?: string;
-  properties: Record<string, JsonSchema | SchemaType>;
-  required: ReadonlyArray<string>;
-  type: String;
-};
+  items?: SchemaType;
+  properties?: Record<string, JsonSchema | SchemaType>;
+  required?: readonly string[];
+  type: string;
+}
 
 export const isJsonSchema = (object: any): object is JsonSchema =>
   'type' in object;
@@ -39,26 +44,44 @@ export const isSchemaType = (object: any): object is SchemaType =>
   'required' in object;
 
 export function createZodObject(
-  schema: SchemaType,
-  positions: Array<any>,
+  schema: any,
+  positions?: string[],
   convertors?: Record<string, any>
 ): ZodObjectOrWrapped {
   const zodSchema: Record<string, ZodSchema> = {};
-  positions.forEach((element: string) => {
-    const props = schema.properties[element];
-    const isRequired = schema.required?.includes(element);
+  const tempPositions = positions || Object.keys(schema.properties);
+  tempPositions.forEach((element: string) => {
+    if (element === 'extraProperties') return;
+    const props = schema?.properties?.[element];
+    const isRequired = schema.required?.includes(element) || false;
     if (isSchemaType(props)) {
-      Object.keys(props.properties).forEach(() => {
+      Object.keys(props.properties || {}).forEach(() => {
         zodSchema[element] = createZodObject(
           props,
-          Object.keys(props.properties)
+          Object.keys(props.properties || {})
         );
       });
     } else if (isJsonSchema(props)) {
       let zodType;
       if (convertors && Object.keys(convertors).includes(element)) {
         const newProps = props;
-        newProps.enum = convertors[element];
+        newProps.enum = convertors[element].data;
+        if (convertors[element].type === 'enum') {
+          newProps.enum = convertors[element].data;
+        }
+        if (convertors[element].type === 'static') {
+          newProps.type = 'select';
+          newProps.enum = convertors[element].data;
+        }
+        if (
+          convertors[element].type === 'async' &&
+          typeof convertors[element].data !== 'function'
+        ) {
+          newProps.type = 'select';
+          newProps.enum = convertors[element].data.map(
+            (e: any) => e[convertors[element].get]
+          );
+        }
         zodType = createZodType(newProps, isRequired);
       } else {
         zodType = createZodType(props, isRequired);
@@ -70,7 +93,6 @@ export function createZodObject(
     description: schema.displayName,
   });
 }
-
 // TODO: Handle object case and add related data and example is
 // $Volo_Abp_Identity_IdentityRoleCreateDto
 // const formSchema = z.object({
@@ -84,17 +106,17 @@ export function createZodObject(
 //         readOnly: z.boolean().optional()
 //     }).optional().nullable()
 // })
-function createZodType(
-  schema: JsonSchema,
-  isRequired: boolean
-): ZodSchema<any> {
+function createZodType(schema: JsonSchema, isRequired: boolean): ZodSchema {
   let zodType;
-  switch (schema?.type) {
+  switch (schema.type) {
     case 'string':
       zodType = z.string({ description: schema.displayName });
-      if (schema.maxLength) zodType = zodType.max(schema.maxLength);
-      if (schema.pattern) zodType = zodType.regex(schema.pattern);
       if (schema.format === 'email') zodType = zodType.email();
+      if (schema.maxLength) zodType = zodType.max(schema.maxLength);
+      if (schema.minLength) zodType = zodType.min(schema.minLength);
+      if (schema.pattern) zodType = zodType.regex(RegExp(schema.pattern));
+      if (schema.refine)
+        zodType = zodType.refine(schema.refine.callback, schema.refine.params);
       if (schema.default) zodType = zodType.default(schema.default);
       if (schema.format === 'date-time') zodType = z.coerce.date();
       break;
@@ -107,12 +129,32 @@ function createZodType(
       if (schema.default) zodType = zodType.default(schema.default === 'true');
       break;
     case 'integer':
+    case 'number':
       if (schema.enum) {
         const stringEnums = schema.enum.map((e: any) => e.toString());
         zodType = z.enum(stringEnums as [string, ...string[]]);
         break;
       }
-      zodType = z.number().int();
+      zodType = z.coerce.number();
+      break;
+    case 'object':
+      zodType = z.object({});
+      if (schema.properties) {
+        zodType = createZodObject(
+          schema as SchemaType,
+          Object.keys(schema.properties)
+        );
+      }
+      break;
+
+    case 'array':
+      if (schema.items?.properties) {
+        zodType = z.array(
+          createZodObject(schema.items, Object.keys(schema.items.properties))
+        );
+      } else {
+        zodType = z.array(z.unknown());
+      }
       break;
     default:
       zodType = z.unknown({ description: schema.displayName });
