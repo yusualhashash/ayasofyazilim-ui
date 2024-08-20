@@ -125,33 +125,41 @@ export function columnsGenerator(data: AutoColumnGenerator) {
               orientation="vertical"
               className="absolute left-0 top-0"
             />
-            <CustomTableActionDialog
-              open={open}
-              onOpenChange={setOpen}
-              action={{
-                type: 'Dialog',
-                autoFormArgs,
-                componentType: 'Autoform',
-                callback: onEdit,
-                cta: data.dialogTitle ? data.dialogTitle : 'Edit',
-                description: data.dialogDescription
-                  ? data.dialogDescription
-                  : '',
-              }}
-              triggerData={originalRow}
-            />
-            <CustomTableActionDialog
-              open={subContentDialogOpen}
-              onOpenChange={setSubContentDialogOpen}
-              action={{
-                type: 'Dialog',
-                cta: subContentDialogTitle,
-                description: subContentDialogDescription,
-                content: subContentDialogContent,
-                contentLoading: subContentDialogLoadingContent,
-                componentType: 'CustomComponent',
-              }}
-            />
+            {/* 
+              Şu anda her bir row için aynı dialoglar tekrar oluşturuluyor. 
+              Bir tane dialog olmalı, action'un tetiklendiği row'a göre dialog açılmalı 
+            */}
+            {open && (
+              <CustomTableActionDialog
+                open={open}
+                onOpenChange={setOpen}
+                action={{
+                  type: 'Dialog',
+                  autoFormArgs,
+                  componentType: 'Autoform',
+                  callback: onEdit,
+                  cta: data.dialogTitle ? data.dialogTitle : 'Edit',
+                  description: data.dialogDescription
+                    ? data.dialogDescription
+                    : '',
+                }}
+                triggerData={originalRow}
+              />
+            )}
+            {subContentDialogOpen && (
+              <CustomTableActionDialog
+                open={subContentDialogOpen}
+                onOpenChange={setSubContentDialogOpen}
+                action={{
+                  type: 'Dialog',
+                  cta: subContentDialogTitle,
+                  description: subContentDialogDescription,
+                  content: subContentDialogContent,
+                  contentLoading: subContentDialogLoadingContent,
+                  componentType: 'CustomComponent',
+                }}
+              />
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">

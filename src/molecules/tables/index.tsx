@@ -348,6 +348,7 @@ export default function DataTable<TData, TValue>({
   return (
     <div className="w-full">
       {activeAction &&
+        isOpen &&
         ('autoFormArgs' in activeAction || 'content' in activeAction) && (
           <CustomTableActionDialog
             open={isOpen}
