@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { z } from 'zod';
 import {
   Dialog,
@@ -61,12 +61,9 @@ export default function CustomTableActionDialog({
     action && 'autoFormArgs' in action
       ? AutoFormData(action, triggerData, values)
       : undefined;
-  const content =
-    action && 'content' in action
-      ? action.content
-        ? action.content
-        : action.contentLoading
-      : undefined;
+  const content = action && 'content' in action ? action.content : undefined;
+  const contentLoading =
+    action && 'contentLoading' in action ? action.contentLoading : false;
 
   return type === 'Sheet' ? (
     <SheetSide
@@ -76,7 +73,11 @@ export default function CustomTableActionDialog({
       title={action?.cta}
       description={action?.description}
     >
-      {autformData}
+      <>
+        {autformData}
+        {content}
+        {contentLoading as React.ReactNode}
+      </>
     </SheetSide>
   ) : (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -88,6 +89,7 @@ export default function CustomTableActionDialog({
         <div className="grid gap-4 py-4">
           {autformData}
           {content}
+          {contentLoading as React.ReactNode}
         </div>
         <DialogFooter>
           {/* TODO: Dialog footer to add whatever children we need */}
