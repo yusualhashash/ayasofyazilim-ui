@@ -33,14 +33,13 @@ const readOnlyCheckbox = (row: any, value: string) => (
   <Checkbox checked={row.getValue(value)} disabled />
 );
 
-function sortColumns(positions: string[], obj: Object) {
+const sortColumns = (positions: string[], obj: Object) =>
   Object.assign(
     {},
     ...positions.map((position) => ({
       [position]: obj[position as keyof typeof obj],
     }))
-  );
-}
+  ) || obj;
 
 function generateColumns({
   tableType,
