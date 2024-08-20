@@ -126,48 +126,55 @@ export function columnsGenerator(data: AutoColumnGenerator) {
               orientation="vertical"
               className="absolute left-0 top-0"
             />
-            <CustomTableActionDialog
-              open={open}
-              onOpenChange={setOpen}
-              action={{
-                type: 'Dialog',
-                autoFormArgs,
-                componentType: 'Autoform',
-                callback: onEdit,
-                cta: data.dialogTitle ? data.dialogTitle : 'Edit',
-                description: data.dialogDescription
-                  ? data.dialogDescription
-                  : '',
-              }}
-              triggerData={originalRow}
-            />
-            {isSubContentDialogLoading ? (
+            {/* 
+              Şu anda her bir row için aynı dialoglar tekrar oluşturuluyor. 
+              Bir tane dialog olmalı, action'un tetiklendiği row'a göre dialog açılmalı 
+            */}
+            {open && (
               <CustomTableActionDialog
-                open={subContentDialogOpen}
-                onOpenChange={setSubContentDialogOpen}
+                open={open}
+                onOpenChange={setOpen}
                 action={{
                   type: 'Dialog',
-                  componentType: 'CustomComponent',
-                  cta: subContentDialogTitle,
-                  description: subContentDialogDescription,
-                  loadingContent: subContentDialogLoadingContent,
-                  isLoading: true,
+                  autoFormArgs,
+                  componentType: 'Autoform',
+                  callback: onEdit,
+                  cta: data.dialogTitle ? data.dialogTitle : 'Edit',
+                  description: data.dialogDescription
+                    ? data.dialogDescription
+                    : '',
                 }}
-              />
-            ) : (
-              <CustomTableActionDialog
-                open={subContentDialogOpen}
-                onOpenChange={setSubContentDialogOpen}
-                action={{
-                  type: 'Dialog',
-                  componentType: 'CustomComponent',
-                  cta: subContentDialogTitle,
-                  description: subContentDialogDescription,
-                  content: subContentDialogContent,
-                  isLoading: false,
-                }}
+                triggerData={originalRow}
               />
             )}
+            {subContentDialogOpen &&
+              (isSubContentDialogLoading ? (
+                <CustomTableActionDialog
+                  open={subContentDialogOpen}
+                  onOpenChange={setSubContentDialogOpen}
+                  action={{
+                    type: 'Dialog',
+                    componentType: 'CustomComponent',
+                    cta: subContentDialogTitle,
+                    description: subContentDialogDescription,
+                    loadingContent: subContentDialogLoadingContent,
+                    isLoading: true,
+                  }}
+                />
+              ) : (
+                <CustomTableActionDialog
+                  open={subContentDialogOpen}
+                  onOpenChange={setSubContentDialogOpen}
+                  action={{
+                    type: 'Dialog',
+                    componentType: 'CustomComponent',
+                    cta: subContentDialogTitle,
+                    description: subContentDialogDescription,
+                    content: subContentDialogContent,
+                    isLoading: false,
+                  }}
+                />
+              ))}
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
