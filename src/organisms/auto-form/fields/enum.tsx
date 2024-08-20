@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { useEffect, useState } from 'react';
 import { FormControl, FormItem, FormMessage } from '@/components/ui/form';
 import {
   Select,
@@ -20,6 +21,7 @@ export default function AutoFormEnum({
   zodItem,
   fieldProps,
 }: AutoFormInputComponentProps) {
+  const [enabled, setEnabled] = useState(false);
   const baseValues = (getBaseSchema(zodItem) as unknown as z.ZodEnum<any>)._def
     .values;
 
@@ -31,13 +33,18 @@ export default function AutoFormEnum({
   }
 
   const findItem = (value: any) => values.find((item) => item[0] === value);
+  useEffect(() => {
+    setTimeout(() => {
+      setEnabled(true);
+    }, 1000);
+  }, []);
 
   return (
     <FormItem className={fieldProps.containerClassName}>
       <AutoFormLabel label={label} isRequired={isRequired} />
       <FormControl>
         <Select
-          onValueChange={field.onChange}
+          onValueChange={enabled ? field.onChange : undefined}
           defaultValue={field.value}
           {...fieldProps}
         >
