@@ -11,6 +11,8 @@ export enum DependencyType {
 }
 
 export type FieldConfigItem = {
+  className?: string;
+  containerClassName?: string;
   description?: React.ReactNode;
   displayName?: string;
   fieldType?:

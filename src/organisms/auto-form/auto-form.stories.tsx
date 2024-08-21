@@ -39,8 +39,12 @@ const Template: StoryFn<typeof AutoForm> = (args: AutoFormProps) => (
 export const AutoFormStory = Template.bind({});
 AutoFormStory.args = {
   formSchema,
+  formClassName: 'w-full',
+  className: 'w-full',
   fieldConfig: {
     password: {
+      className: 'w-full',
+      containerClassName: 'w-full',
       inputProps: {
         type: 'password',
         placeholder: '••••••••',
