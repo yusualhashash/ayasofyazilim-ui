@@ -67,7 +67,8 @@ export default function AutoFormObject<
         ? beautifyObjectName(item._def.description)
         : beautifyObjectName(name);
     return fieldConfig?.[name]?.displayName
-      ? fieldConfig[name].displayName
+      ? // @ts-ignore
+        fieldConfig[name].displayName
       : beautifyObjectName(name);
   }
   return (
