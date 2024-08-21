@@ -1,10 +1,10 @@
 /* eslint-disable no-alert */
 import { Meta, StoryObj } from '@storybook/react';
 
-import jsonToCsv from 'src/lib/json-to-csv';
-import { z } from 'zod';
 import { useState } from 'react';
+import jsonToCsv from 'src/lib/json-to-csv';
 import { AutoFormProps } from 'src/organisms/auto-form';
+import { z } from 'zod';
 import Table, { AutoColumnGenerator, TableAction } from '.';
 import { createZodObject } from '../../lib/create-zod-object';
 import {
@@ -124,16 +124,7 @@ export const AutoColumns: StoryObj<typeof Table> = {
             `OnDelete \ndata:\n${JSON.stringify(e)} \nRow:\n${JSON.stringify(row)}`
           );
         },
-        actionList: [
-          {
-            cta: 'Test',
-            callback: (e, row) => alert(`Test ${JSON.stringify(row)}`),
-          },
-          {
-            cta: 'Hello world',
-            callback: (e, row) => alert(`hello world ${JSON.stringify(row)}`),
-          },
-        ],
+        actionList: [],
         dialogTitle: undefined,
         dialogDescription: undefined,
       },
@@ -388,9 +379,10 @@ const subContentDialogAction: TableAction = {
   cta: 'New Dialog',
   type: 'Dialog',
   description: 'Add New Record',
+  loadingContent: <div>Loading...</div>,
   componentType: 'CustomComponent',
-  isLoading: false,
-  content: <div>Content</div>,
+  content: <>Data</>,
+  callback: async () => <div>Content</div>,
 };
 export const SubContentDialog: StoryObj<typeof Table> = {
   args: {
@@ -417,7 +409,10 @@ export const SubContentMenuActionDialog: StoryObj<typeof Table> = {
         ...autoColumnData,
         actionList: [
           {
-            type: 'SubContentDialog',
+            type: 'Dialog',
+            loadingContent: <div className="text-center">Loading...</div>,
+            description: 'Change History',
+            componentType: 'CustomComponent',
             cta: 'Change History',
             callback: async () => <div className="text-center">No changes</div>,
           },
