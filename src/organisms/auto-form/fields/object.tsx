@@ -12,6 +12,7 @@ import {
   zodToHtmlInputProps,
 } from '../utils';
 import AutoFormArray from './array';
+import { cn } from '@/lib/utils';
 
 const DefaultParent = ({ children }: { children: JSX.Element }) => children;
 
@@ -26,7 +27,9 @@ export default function AutoFormObject<
   // isDisabled = false,
   showInRow = false,
   hasParent = false,
+  className,
 }: {
+  className?: string;
   dependencies?: Dependency<z.infer<SchemaType>>[];
   fieldConfig?: FieldConfig<z.infer<SchemaType>>;
   form: ReturnType<typeof useForm>;
@@ -64,12 +67,13 @@ export default function AutoFormObject<
         ? beautifyObjectName(item._def.description)
         : beautifyObjectName(name);
     return fieldConfig?.[name]?.displayName
-      ? // @ts-ignore
-        fieldConfig[name].displayName
+      ? fieldConfig[name].displayName
       : beautifyObjectName(name);
   }
   return (
-    <div className={showInRow ? 'flex flex-row gap-3' : 'space-y-2'}>
+    <div
+      className={cn(showInRow ? 'flex flex-row gap-3' : 'space-y-2', className)}
+    >
       {Object.keys(shape).map((name: string) =>
         CreateFormObject(
           hasParent,
@@ -194,9 +198,10 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
             isDisabled ||
             isInputDisabled,
           ref: undefined,
+          containerClassName: fieldConfigItem.containerClassName,
+          className: fieldConfigItem.className,
           value,
         };
-
         if (InputComponent === undefined) {
           return <div />;
         }
@@ -210,7 +215,6 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
               isRequired={isRequired}
               zodItem={item}
               fieldProps={fieldProps}
-              className={fieldProps.className}
             />
           </ParentElement>
         );

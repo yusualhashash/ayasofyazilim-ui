@@ -39,6 +39,7 @@ export type AutoFormProps = {
   className?: string;
   dependencies?: Dependency<z.infer<SchemaType>>[];
   fieldConfig?: FieldConfig<z.infer<SchemaType>>;
+  formClassName?: string;
   formSchema: SchemaType;
   onParsedValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
   onSubmit?: (values: z.infer<SchemaType>) => void;
@@ -56,6 +57,7 @@ function AutoForm({
   fieldConfig,
   children,
   className,
+  formClassName,
   dependencies,
   showInRow,
 }: AutoFormProps) {
@@ -98,7 +100,7 @@ function AutoForm({
           onSubmit={(e) => {
             form.handleSubmit(onSubmit)(e);
           }}
-          className={cn('space-y-5', className)}
+          className={cn('space-y-5', formClassName)}
         >
           <AutoFormObject
             showInRow={showInRow}
@@ -106,6 +108,7 @@ function AutoForm({
             form={form}
             dependencies={dependencies}
             fieldConfig={fieldConfig}
+            className={className}
           />
 
           {children}
