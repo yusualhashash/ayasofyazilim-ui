@@ -3,7 +3,6 @@
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import {
   ColumnDef,
-  // ColumnFiltersState,
   RowData,
   SortingState,
   VisibilityState,
@@ -243,7 +242,6 @@ export default function DataTable<TData, TValue>({
     TableAction | undefined
   >(defaultAction);
   const [sorting, setSorting] = useState<SortingState>([]);
-  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [filteredColumns, setFilteredColumns] = useState<ColumnFilter[]>([]);
@@ -278,15 +276,10 @@ export default function DataTable<TData, TValue>({
     data: tableData,
     columns,
     onSortingChange: setSorting,
-    // onColumnFiltersChange: (filters) => {
-    //   if (isLoading) return;
-    //   setColumnFilters(filters);
-    // },
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     rowCount: rowCount || tableData.length,
     getSortedRowModel: getSortedRowModel(),
-    // getFilteredRowModel: getFilteredRowModel(),
     manualFiltering: true,
     getRowCanExpand: () => !!renderSubComponent,
     getExpandedRowModel: getExpandedRowModel(),
@@ -297,7 +290,6 @@ export default function DataTable<TData, TValue>({
     },
     state: {
       sorting,
-      // columnFilters,
       columnVisibility,
       rowSelection,
     },
