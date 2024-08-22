@@ -73,6 +73,7 @@ function generateColumns({
 
 export function columnsGenerator(data: AutoColumnGenerator) {
   const {
+    selectable = false,
     // callback,
     // autoFormArgs,
     tableType,
@@ -108,5 +109,6 @@ export function columnsGenerator(data: AutoColumnGenerator) {
     },
     ...generateColumns({ tableType, excludeList, positions }),
   ];
+  if (!selectable) return columns.filter((column) => column.id !== 'select');
   return columns;
 }

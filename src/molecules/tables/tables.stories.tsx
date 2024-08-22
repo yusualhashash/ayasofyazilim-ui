@@ -107,6 +107,7 @@ export const AutoColumns: StoryObj<typeof Table> = {
     columnsData: {
       type: 'Auto',
       data: {
+        selectable: true,
         callback: () => alert('Added Callback'),
         autoFormArgs: {
           formSchema: createZodObject(jsonSchema, [
