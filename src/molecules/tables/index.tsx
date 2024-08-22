@@ -557,16 +557,20 @@ export default function DataTable<TData, TValue>({
                                 if (action.loadingContent) {
                                   setActiveAction({
                                     ...action,
-                                    content: action.loadingContent,
+                                    content: action?.callback
+                                      ? action.loadingContent
+                                      : action.content,
                                   });
-                                  action
-                                    .callback(row.original)
-                                    .then((res: JSX.Element) => {
-                                      setActiveAction({
-                                        ...action,
-                                        content: res,
+                                  if (action?.callback) {
+                                    action
+                                      ?.callback(row.original)
+                                      .then((res: JSX.Element) => {
+                                        setActiveAction({
+                                          ...action,
+                                          content: res,
+                                        });
                                       });
-                                    });
+                                  }
                                 } else if (action.type === 'Action') {
                                   action.callback(row.original);
                                   return;
