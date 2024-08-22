@@ -81,7 +81,7 @@ export type TableActionCustom = {
 } & tableActionContent;
 
 export type tableActionContent = {
-  callback: (values?: any) => Promise<JSX.Element>;
+  callback?: (values?: any) => Promise<JSX.Element>;
   content?: JSX.Element;
   loadingContent: JSX.Element;
 };
