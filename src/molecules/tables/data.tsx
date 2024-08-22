@@ -5,6 +5,7 @@ export const data: Payment[] = [
     status: 'success',
     email: 'ken99@yahoo.com',
     date: '2024-08-13',
+    isActive: true,
   },
   {
     id: '3u1reuv4',
@@ -12,6 +13,7 @@ export const data: Payment[] = [
     status: 'success',
     email: 'Abe45@gmail.com',
     date: '2021-09-02',
+    isActive: true,
   },
   {
     id: 'derv1ws0',
@@ -19,6 +21,7 @@ export const data: Payment[] = [
     status: 'processing',
     email: 'Monserrat44@gmail.com',
     date: '2021-09-01',
+    isActive: false,
   },
   {
     id: '5kma53ae',
@@ -26,6 +29,7 @@ export const data: Payment[] = [
     status: 'success',
     email: 'Silas22@gmail.com',
     date: '2021-09-03',
+    isActive: true,
   },
   {
     id: 'bhqecj4p',
@@ -33,6 +37,7 @@ export const data: Payment[] = [
     status: 'failed',
     email: 'carmella@hotmail.com',
     date: '2021-09-05',
+    isActive: false,
   },
 ];
 
@@ -41,5 +46,6 @@ export type Payment = {
   date?: string;
   email: string;
   id: string;
+  isActive: boolean;
   status: 'pending' | 'processing' | 'success' | 'failed';
 };
