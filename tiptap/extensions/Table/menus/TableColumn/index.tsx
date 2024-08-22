@@ -77,5 +77,3 @@ export const TableColumnMenu = React.memo(
 );
 
 TableColumnMenu.displayName = 'TableColumnMenu';
-
-export default TableColumnMenu;

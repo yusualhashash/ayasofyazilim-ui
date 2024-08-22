@@ -120,5 +120,3 @@ export const ImageBlockMenu = ({
     </BaseBubbleMenu>
   );
 };
-
-export default ImageBlockMenu;

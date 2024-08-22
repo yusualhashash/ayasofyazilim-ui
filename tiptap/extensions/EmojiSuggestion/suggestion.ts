@@ -66,5 +66,3 @@ export const emojiSuggestion = {
     };
   },
 };
-
-export default emojiSuggestion;

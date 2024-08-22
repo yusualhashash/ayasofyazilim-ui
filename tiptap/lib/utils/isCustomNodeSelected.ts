@@ -50,5 +50,3 @@ export const isCustomNodeSelected = (editor: Editor, node: HTMLElement) => {
     isTableGripSelected(node)
   );
 };
-
-export default isCustomNodeSelected;

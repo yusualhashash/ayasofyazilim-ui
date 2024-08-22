@@ -32,5 +32,3 @@ export const ImageUpload = ({
     </NodeViewWrapper>
   );
 };
-
-export default ImageUpload;
