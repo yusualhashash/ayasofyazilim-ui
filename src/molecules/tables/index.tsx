@@ -97,13 +97,7 @@ export type TableActionAction = {
 
 export type AutoColumnGenerator = {
   actionList?: TableAction[];
-  autoFormArgs: any;
-  callback: any;
-  dialogDescription?: any;
-  dialogTitle?: any;
   excludeList: string[];
-  onDelete: (e: any, originalRow: any) => void;
-  onEdit: (e: any, originalRow: any) => void;
   positions?: string[];
   selectable?: boolean;
   tableType: any;

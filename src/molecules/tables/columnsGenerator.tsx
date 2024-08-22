@@ -72,17 +72,7 @@ function generateColumns({
 }
 
 export function columnsGenerator(data: AutoColumnGenerator) {
-  const {
-    selectable = false,
-    // callback,
-    // autoFormArgs,
-    tableType,
-    // onEdit,
-    // onDelete,
-    // actionList,
-    excludeList,
-    positions,
-  } = data;
+  const { selectable = false, tableType, excludeList, positions } = data;
 
   const columns: ColumnDef<typeof data>[] = [
     {
