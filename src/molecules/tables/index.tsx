@@ -1,9 +1,8 @@
 'use client';
 
-import { ChevronDownIcon } from '@radix-ui/react-icons';
+import { ChevronDownIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
 import {
   ColumnDef,
-  // ColumnFiltersState,
   RowData,
   SortingState,
   VisibilityState,
@@ -16,7 +15,18 @@ import {
 import { PlusIcon, Trash2Icon } from 'lucide-react';
 import Link from 'next/link';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { AutoFormProps } from '../../organisms/auto-form';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -25,20 +35,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Skeleton } from '@/components/ui/skeleton';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { AutoFormProps } from '../../organisms/auto-form';
 import CustomTableActionDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import FilterColumn, { ColumnFilter } from './filter-colum';
 import { normalizeName } from './utils';
-import { cn } from '@/lib/utils';
 
 export type { ColumnFilter };
 
@@ -76,15 +78,11 @@ export type TableActionAutoform = {
 };
 export type TableActionCustom = {
   componentType: 'CustomComponent';
-} & (tableActionContent | TableActionIsLoading);
+} & tableActionContent;
 
 export type tableActionContent = {
-  content: JSX.Element;
-  isLoading: false;
-};
-
-export type TableActionIsLoading = {
-  isLoading: true;
+  callback?: (values?: any) => Promise<JSX.Element>;
+  content?: JSX.Element;
   loadingContent: JSX.Element;
 };
 
@@ -97,20 +95,8 @@ export type TableActionAction = {
   type: 'Action';
 };
 
-type BaseMenuAction = {
-  callback: (e: any, originalRow: any) => void;
-  cta: string;
-};
-type DialogMenuAction = {
-  callback: (e: any, originalRow: any) => Promise<JSX.Element>;
-  cta: string;
-  loadingContent: JSX.Element;
-  type: 'SubContentDialog';
-};
-export type MenuAction = BaseMenuAction | DialogMenuAction;
-
 export type AutoColumnGenerator = {
-  actionList?: MenuAction[];
+  actionList?: TableAction[];
   autoFormArgs: any;
   callback: any;
   dialogDescription?: any;
@@ -243,8 +229,8 @@ export default function DataTable<TData, TValue>({
   const [activeAction, setActiveAction] = React.useState<
     TableAction | undefined
   >(defaultAction);
+  const [triggerData, setTriggerData] = useState<any>(null);
   const [sorting, setSorting] = useState<SortingState>([]);
-  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [filteredColumns, setFilteredColumns] = useState<ColumnFilter[]>([]);
@@ -268,7 +254,6 @@ export default function DataTable<TData, TValue>({
   } else {
     columns = columnsData.data as ColumnDef<TData, TValue>[];
   }
-
   if (isLoading) {
     columns = columns.map((column) => ({
       ...column,
@@ -279,15 +264,10 @@ export default function DataTable<TData, TValue>({
     data: tableData,
     columns,
     onSortingChange: setSorting,
-    // onColumnFiltersChange: (filters) => {
-    //   if (isLoading) return;
-    //   setColumnFilters(filters);
-    // },
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     rowCount: rowCount || tableData.length,
     getSortedRowModel: getSortedRowModel(),
-    // getFilteredRowModel: getFilteredRowModel(),
     manualFiltering: true,
     getRowCanExpand: () => !!renderSubComponent,
     getExpandedRowModel: getExpandedRowModel(),
@@ -298,7 +278,6 @@ export default function DataTable<TData, TValue>({
     },
     state: {
       sorting,
-      // columnFilters,
       columnVisibility,
       rowSelection,
     },
@@ -365,6 +344,7 @@ export default function DataTable<TData, TValue>({
             onOpenChange={setIsOpen}
             action={activeAction}
             type={activeAction?.type}
+            triggerData={triggerData}
           />
         )}
 
@@ -404,6 +384,7 @@ export default function DataTable<TData, TValue>({
           <ActionComponent
             action={defaultAction}
             callback={() => {
+              setTriggerData(null);
               setActiveAction(defaultAction);
               setIsOpen(true);
             }}
@@ -432,6 +413,7 @@ export default function DataTable<TData, TValue>({
                       <ActionComponent
                         action={actionItem}
                         callback={() => {
+                          setTriggerData(null);
                           setActiveAction(actionItem);
                           if (actionItem.type === 'Action') {
                             actionItem.callback(null);
@@ -512,6 +494,7 @@ export default function DataTable<TData, TValue>({
                     </div>
                   </TableHead>
                 ))}
+                <TableHead key="actions" />
               </TableRow>
             ))}
           </TableHeader>
@@ -524,14 +507,7 @@ export default function DataTable<TData, TValue>({
                     className="whitespace-nowrap"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={cn(
-                          cell.column.id === 'actions'
-                            ? 'sticky right-0  bg-white'
-                            : ''
-                        )}
-                      >
+                      <TableCell key={cell.id}>
                         {
                           flexRender(
                             cell.column.columnDef.cell,
@@ -540,6 +516,77 @@ export default function DataTable<TData, TValue>({
                         }
                       </TableCell>
                     ))}
+                    <TableCell className={cn('sticky right-0 bg-white')}>
+                      <Separator
+                        orientation="vertical"
+                        className="absolute left-0 top-0"
+                      />
+
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <DotsHorizontalIcon className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuItem
+                            // @ts-ignore
+                            onClick={() =>
+                              navigator.clipboard.writeText(row.original.id)
+                            }
+                          >
+                            Copy ID
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              // @ts-ignore
+                              columnsData.data?.onDelete(e, row.original);
+                            }}
+                          >
+                            Delete
+                          </DropdownMenuItem>
+
+                          {// @ts-ignore
+                          columnsData.data?.actionList?.map((action) => (
+                            <DropdownMenuItem
+                              key={action.cta}
+                              onClick={() => {
+                                if (action.loadingContent) {
+                                  setActiveAction({
+                                    ...action,
+                                    content: action?.callback
+                                      ? action.loadingContent
+                                      : action.content,
+                                  });
+                                  if (action?.callback) {
+                                    action
+                                      ?.callback(row.original)
+                                      .then((res: JSX.Element) => {
+                                        setActiveAction({
+                                          ...action,
+                                          content: res,
+                                        });
+                                      });
+                                  }
+                                } else if (action.type === 'Action') {
+                                  action.callback(row.original);
+                                  return;
+                                } else {
+                                  setActiveAction(action);
+                                }
+                                setTriggerData(row.original);
+                                setIsOpen(true);
+                              }}
+                            >
+                              {action.cta}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
                   </TableRow>
                   {row.getIsExpanded() && renderSubComponent && (
                     <TableRow>

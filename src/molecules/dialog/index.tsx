@@ -64,7 +64,6 @@ export default function CustomTableActionDialog({
   const content = action && 'content' in action ? action.content : undefined;
   const contentLoading =
     action && 'contentLoading' in action ? action.contentLoading : false;
-
   return type === 'Sheet' ? (
     <SheetSide
       open={open}

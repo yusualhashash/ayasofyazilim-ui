@@ -61,7 +61,7 @@ const actionSheetCustomContent: TableAction = {
   cta: 'New Record',
   description: 'Ad New Record',
   componentType: 'CustomComponent',
-  isLoading: false,
+  loadingContent: <>Loading...</>,
   content: <div>Custom Content</div>,
 };
 

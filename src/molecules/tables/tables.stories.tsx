@@ -128,16 +128,7 @@ export const AutoColumns: StoryObj<typeof Table> = {
             `OnDelete \ndata:\n${JSON.stringify(e)} \nRow:\n${JSON.stringify(row)}`
           );
         },
-        actionList: [
-          {
-            cta: 'Test',
-            callback: (e, row) => alert(`Test ${JSON.stringify(row)}`),
-          },
-          {
-            cta: 'Hello world',
-            callback: (e, row) => alert(`hello world ${JSON.stringify(row)}`),
-          },
-        ],
+        actionList: [],
         dialogTitle: undefined,
         dialogDescription: undefined,
       },
@@ -429,9 +420,10 @@ const subContentDialogAction: TableAction = {
   cta: 'New Dialog',
   type: 'Dialog',
   description: 'Add New Record',
+  loadingContent: <div>Loading...</div>,
   componentType: 'CustomComponent',
-  isLoading: false,
-  content: <div>Content</div>,
+  content: <>Data</>,
+  callback: async () => <div>Content</div>,
 };
 export const SubContentDialog: StoryObj<typeof Table> = {
   args: {
@@ -458,7 +450,10 @@ export const SubContentMenuActionDialog: StoryObj<typeof Table> = {
         ...autoColumnData,
         actionList: [
           {
-            type: 'SubContentDialog',
+            type: 'Dialog',
+            loadingContent: <div className="text-center">Loading...</div>,
+            description: 'Change History',
+            componentType: 'CustomComponent',
             cta: 'Change History',
             callback: async () => <div className="text-center">No changes</div>,
           },
