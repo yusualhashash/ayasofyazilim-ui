@@ -119,6 +119,7 @@ export type AutoColumnGenerator = {
   onDelete: (e: any, originalRow: any) => void;
   onEdit: (e: any, originalRow: any) => void;
   positions?: string[];
+  selectable?: boolean;
   tableType: any;
 };
 
