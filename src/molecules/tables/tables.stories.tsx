@@ -95,6 +95,9 @@ const jsonSchema: any = {
     date: {
       type: 'string',
     },
+    isActive: {
+      type: 'boolean',
+    },
   },
 };
 
@@ -143,6 +146,7 @@ const autoColumnData: AutoColumnGenerator = {
       'email',
       'amount',
       'date',
+      'isActive',
     ]),
   },
   tableType: jsonSchema,
@@ -336,17 +340,33 @@ export const DetailedFilter: StoryObj<typeof Table> = {
   args: {
     fetchRequest: (filter: string, setTableData: (data: unknown[]) => any) => {
       const parsedFilter = JSON.parse(filter);
-      const email = parsedFilter.email || '';
-      const date = new Date(parsedFilter.date || '').getTime();
-      const filteredData = data.filter((i) => {
-        const itemDate = new Date(i.date || '').getTime();
-        return i.email.includes(email) && itemDate < date;
-      });
-      if (!email && !date) {
+      if (Object.keys(parsedFilter).length === 0) {
         setTableData(data);
-        return;
       }
-      setTableData(filteredData);
+      Object.keys(parsedFilter).forEach((filterKey) => {
+        if (parsedFilter[filterKey] === '') delete parsedFilter[filterKey];
+      });
+      Object.keys(parsedFilter).forEach((filterKey) => {
+        const filteredData = data?.filter((tableItem) => {
+          if (filterKey === 'isActive') {
+            return tableItem.isActive.toString() === parsedFilter[filterKey];
+          }
+          if (filterKey === 'date') {
+            return (
+              new Date(tableItem.date || '').getTime() <
+              new Date(parsedFilter[filterKey]).getTime()
+            );
+          }
+          if (filterKey === 'email') {
+            return tableItem.email.includes(parsedFilter[filterKey]);
+          }
+          if (filterKey === 'status') {
+            return tableItem.status === parsedFilter[filterKey];
+          }
+          return true;
+        });
+        setTableData(filteredData);
+      });
     },
     editable: false,
     data,
@@ -361,6 +381,26 @@ export const DetailedFilter: StoryObj<typeof Table> = {
         displayName: 'Email',
         type: 'string',
         value: '',
+      },
+      {
+        name: 'isActive',
+        displayName: 'Is Active',
+        placeholder: 'Filter by is active',
+        type: 'boolean',
+        value: '',
+      },
+      {
+        name: 'status',
+        displayName: 'Status',
+        placeholder: 'Filter by status',
+        type: 'select',
+        value: '',
+        options: [
+          { label: 'pending', value: 'pending' },
+          { label: 'processing', value: 'processing' },
+          { label: 'success', value: 'success' },
+          { label: 'failed', value: 'failed' },
+        ],
       },
       {
         name: 'date',

@@ -8,13 +8,38 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import AdvancedCalendar from '../advanced-calendar';
 
-export type ColumnFilter = {
+export type ColumnFilter = BaseColumnFilter &
+  (StandartColumnFilter | SelectColumnFilter | BooleanColumnFilter);
+
+export type BaseColumnFilter = {
   displayName: string;
   name: string;
-  type: 'string' | 'number' | 'date';
   value: string;
+};
+export type SelectColumnFilter = {
+  options: { label: string; value: string }[];
+  placeholder: string;
+  type: 'select';
+};
+export type BooleanColumnFilter = {
+  placeholder?: string;
+  type: 'boolean';
+};
+export type StandartColumnFilter = {
+  type: 'string' | 'number' | 'date';
+};
+export type valueType<T> = {
+  value: T;
 };
 interface IFilterColumnProps {
   column: ColumnFilter;
@@ -41,7 +66,6 @@ export default function FilterColumn({
       const temp = [...val];
       const index = temp.findIndex((item) => item.name === column.name);
       temp[index] = { ...temp[index], value: filteredValue };
-
       return temp;
     });
     setIsDropdownOpen(false);
@@ -76,27 +100,11 @@ export default function FilterColumn({
           </Button>
         </div>
         <div className="flex flex-row items-center gap-2 justify-center mb-2">
-          {column.type === 'string' && (
-            <Input
-              id="name"
-              className="col-span-3"
-              onChange={(e) => {
-                setFilteredValue(e.target.value);
-              }}
-              value={filteredValue}
-              autoComplete="off"
-            />
-          )}
-          {column.type === 'date' && (
-            <AdvancedCalendar
-              initialFocus
-              mode="single"
-              onSelect={(value) => {
-                setFilteredValue(value?.toISOString() || '');
-              }}
-              selected={filteredValue ? new Date(filteredValue) : undefined}
-            />
-          )}
+          <GenerateFilterByType
+            column={column}
+            setFilteredValue={setFilteredValue}
+            filteredValue={filteredValue}
+          />
         </div>
         <Button
           variant="secondary"
@@ -108,4 +116,78 @@ export default function FilterColumn({
       </DropdownMenuContent>
     </DropdownMenu>
   );
+}
+
+function GenerateFilterByType({
+  column,
+  setFilteredValue,
+  filteredValue,
+}: {
+  column: ColumnFilter;
+  filteredValue: string;
+  setFilteredValue: Dispatch<React.SetStateAction<string>>;
+}) {
+  switch (column.type) {
+    case 'string':
+    case 'number':
+      return (
+        <Input
+          id="name"
+          className="col-span-3"
+          onChange={(e) => {
+            setFilteredValue(e.target.value);
+          }}
+          value={filteredValue}
+          type={column.type === 'number' ? 'number' : 'text'}
+          autoComplete="off"
+        />
+      );
+    case 'date':
+      return (
+        <AdvancedCalendar
+          initialFocus
+          mode="single"
+          onSelect={(value) => {
+            setFilteredValue(value?.toISOString() || '');
+          }}
+          selected={filteredValue ? new Date(filteredValue) : undefined}
+        />
+      );
+    case 'select':
+      return (
+        <Select onValueChange={(value) => setFilteredValue(value)}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder={column.placeholder} />
+          </SelectTrigger>
+          <SelectContent>
+            {column.options.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      );
+    case 'boolean':
+      return (
+        <div className="flex items-center space-x-2">
+          <Switch
+            id={`${column.name}_filter`}
+            defaultChecked={
+              column.value === '' ? false : column.value === 'true'
+            }
+            onCheckedChange={(value) =>
+              setFilteredValue(value ? 'true' : 'false')
+            }
+          />
+          {column.placeholder && (
+            <Label htmlFor={`${column.name}_filter`}>
+              {column.placeholder}
+            </Label>
+          )}
+        </div>
+      );
+    default:
+      return null;
+  }
 }
