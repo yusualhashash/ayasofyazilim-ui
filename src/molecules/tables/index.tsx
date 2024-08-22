@@ -534,14 +534,6 @@ export default function DataTable<TData, TValue>({
                             Copy ID
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={(e) => {
-                              // @ts-ignore
-                              columnsData.data?.onDelete(e, row.original);
-                            }}
-                          >
-                            Delete
-                          </DropdownMenuItem>
 
                           {// @ts-ignore
                           columnsData.data?.actionList?.map((action) => (
