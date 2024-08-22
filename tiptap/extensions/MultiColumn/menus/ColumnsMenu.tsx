@@ -89,5 +89,3 @@ export const ColumnsMenu = ({ editor, appendTo }: MenuProps) => {
     </BaseBubbleMenu>
   );
 };
-
-export default ColumnsMenu;

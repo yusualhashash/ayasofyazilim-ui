@@ -7,13 +7,13 @@ import { LinkMenu } from '@tiptap-location/components/menus';
 
 import '@tiptap-location/styles/index.css';
 
-import ImageBlockMenu from '@tiptap-location/extensions/ImageBlock/components/ImageBlockMenu';
+import { ImageBlockMenu } from '@tiptap-location/extensions/ImageBlock/components/ImageBlockMenu';
 import { ColumnsMenu } from '@tiptap-location/extensions/MultiColumn/menus';
 import {
   TableColumnMenu,
   TableRowMenu,
 } from '@tiptap-location/extensions/Table/menus';
-import ExtensionKit from '@tiptap-location/extensions/extension-kit';
+import { ExtensionKit } from '@tiptap-location/extensions/extension-kit';
 import { Content } from 'tippy.js';
 import { ContentItemMenu } from '../menus/ContentItemMenu';
 import { TextMenu } from '../menus/TextMenu';
@@ -106,5 +106,3 @@ export const BlockEditor = ({
     </div>
   );
 };
-
-export default BlockEditor;

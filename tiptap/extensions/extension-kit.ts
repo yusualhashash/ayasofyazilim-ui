@@ -143,5 +143,3 @@ export const ExtensionKit = () => [
     class: 'ProseMirror-dropcursor border-black',
   }),
 ];
-
-export default ExtensionKit;

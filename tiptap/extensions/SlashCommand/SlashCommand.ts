@@ -271,5 +271,3 @@ export const SlashCommand = Extension.create({
     };
   },
 });
-
-export default SlashCommand;

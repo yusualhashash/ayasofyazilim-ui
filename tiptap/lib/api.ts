@@ -5,5 +5,3 @@ export class API {
     return 'https://templates.tiptap.dev/placeholder-image.jpg';
   };
 }
-
-export default API;

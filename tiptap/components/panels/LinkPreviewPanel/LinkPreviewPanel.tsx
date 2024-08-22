@@ -1,7 +1,7 @@
 import { Icon } from '@tiptap-location/components/ui/Icon';
 import { Surface } from '@tiptap-location/components/ui/Surface';
 import { Toolbar } from '@tiptap-location/components/ui/Toolbar';
-import Tooltip from '@tiptap-location/components/ui/Tooltip';
+import { Tooltip } from '@tiptap-location/components/ui/Tooltip';
 
 export type LinkPreviewPanelProps = {
   url: string;

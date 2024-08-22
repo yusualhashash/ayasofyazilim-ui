@@ -79,5 +79,3 @@ export const Tooltip = ({
 
   return <>{children}</>;
 };
-
-export default Tooltip;
