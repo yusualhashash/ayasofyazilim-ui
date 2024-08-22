@@ -6,7 +6,6 @@ import jsonToCsv from 'src/lib/json-to-csv';
 import { AutoFormProps } from 'src/organisms/auto-form';
 import { z } from 'zod';
 import Table, { AutoColumnGenerator, TableAction } from '.';
-import { createZodObject } from '../../lib/create-zod-object';
 import {
   columns,
   columnsEditable,
@@ -108,29 +107,9 @@ export const AutoColumns: StoryObj<typeof Table> = {
       type: 'Auto',
       data: {
         selectable: true,
-        callback: () => alert('Added Callback'),
-        autoFormArgs: {
-          formSchema: createZodObject(jsonSchema, [
-            'status',
-            'email',
-            'amount',
-          ]),
-        },
+
         tableType: jsonSchema,
         excludeList: ['id'],
-        onEdit: (values, row) => {
-          alert(
-            `OnEdit \ndata:\n${JSON.stringify(values)} \nRow:\n${JSON.stringify(row)}`
-          );
-        },
-        onDelete: (e, row) => {
-          alert(
-            `OnDelete \ndata:\n${JSON.stringify(e)} \nRow:\n${JSON.stringify(row)}`
-          );
-        },
-        actionList: [],
-        dialogTitle: undefined,
-        dialogDescription: undefined,
       },
     },
     action,
@@ -140,30 +119,8 @@ export const AutoColumns: StoryObj<typeof Table> = {
   },
 };
 const autoColumnData: AutoColumnGenerator = {
-  callback: () => alert('Added Callback'),
-  autoFormArgs: {
-    formSchema: createZodObject(jsonSchema, [
-      'status',
-      'email',
-      'amount',
-      'date',
-      'isActive',
-    ]),
-  },
   tableType: jsonSchema,
   excludeList: ['id'],
-  onEdit: (values, row) => {
-    alert(
-      `OnEdit \ndata:\n${JSON.stringify(values)} \nRow:\n${JSON.stringify(row)}`
-    );
-  },
-  onDelete: (e, row) => {
-    alert(
-      `OnDelete \ndata:\n${JSON.stringify(e)} \nRow:\n${JSON.stringify(row)}`
-    );
-  },
-  dialogTitle: undefined,
-  dialogDescription: undefined,
 };
 
 export const NewPage: StoryObj<typeof Table> = {
@@ -190,28 +147,8 @@ export const Sheet: StoryObj<typeof Table> = {
     columnsData: {
       type: 'Auto',
       data: {
-        callback: () => alert('Added Callback'),
-        autoFormArgs: {
-          formSchema: createZodObject(jsonSchema, [
-            'status',
-            'email',
-            'amount',
-          ]),
-        },
         tableType: jsonSchema,
         excludeList: ['id'],
-        onEdit: (values, row) => {
-          alert(
-            `OnEdit \ndata:\n${JSON.stringify(values)} \nRow:\n${JSON.stringify(row)}`
-          );
-        },
-        onDelete: (e, row) => {
-          alert(
-            `OnDelete \ndata:\n${JSON.stringify(e)} \nRow:\n${JSON.stringify(row)}`
-          );
-        },
-        dialogTitle: undefined,
-        dialogDescription: undefined,
       },
     },
     action: {
@@ -234,28 +171,8 @@ export const MultipleActions: StoryObj<typeof Table> = {
     columnsData: {
       type: 'Auto',
       data: {
-        callback: () => alert('Added Callback'),
-        autoFormArgs: {
-          formSchema: createZodObject(jsonSchema, [
-            'status',
-            'email',
-            'amount',
-          ]),
-        },
         tableType: jsonSchema,
         excludeList: ['id'],
-        onEdit: (values, row) => {
-          alert(
-            `OnEdit \ndata:\n${JSON.stringify(values)} \nRow:\n${JSON.stringify(row)}`
-          );
-        },
-        onDelete: (e, row) => {
-          alert(
-            `OnDelete \ndata:\n${JSON.stringify(e)} \nRow:\n${JSON.stringify(row)}`
-          );
-        },
-        dialogTitle: undefined,
-        dialogDescription: undefined,
       },
     },
     action: [
