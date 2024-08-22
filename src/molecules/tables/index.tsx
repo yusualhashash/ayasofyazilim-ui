@@ -494,6 +494,7 @@ export default function DataTable<TData, TValue>({
                     </div>
                   </TableHead>
                 ))}
+                <TableHead key="actions" />
               </TableRow>
             ))}
           </TableHeader>
@@ -506,14 +507,7 @@ export default function DataTable<TData, TValue>({
                     className="whitespace-nowrap"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={cn(
-                          cell.column.id === 'actions'
-                            ? 'sticky right-0  bg-white'
-                            : ''
-                        )}
-                      >
+                      <TableCell key={cell.id}>
                         {
                           flexRender(
                             cell.column.columnDef.cell,
@@ -522,7 +516,7 @@ export default function DataTable<TData, TValue>({
                         }
                       </TableCell>
                     ))}
-                    <TableCell className={cn('sticky right-0 ')}>
+                    <TableCell className={cn('sticky right-0 bg-white')}>
                       <Separator
                         orientation="vertical"
                         className="absolute left-0 top-0"
@@ -573,6 +567,9 @@ export default function DataTable<TData, TValue>({
                                         content: res,
                                       });
                                     });
+                                } else if (action.type === 'Action') {
+                                  action.callback(row.original);
+                                  return;
                                 } else {
                                   setActiveAction(action);
                                 }
