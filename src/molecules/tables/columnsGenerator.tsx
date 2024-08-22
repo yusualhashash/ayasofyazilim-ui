@@ -84,6 +84,7 @@ function generateColumns({
 
 export function columnsGenerator(data: AutoColumnGenerator) {
   const {
+    selectable = false,
     // callback,
     autoFormArgs,
     tableType,
@@ -253,5 +254,6 @@ export function columnsGenerator(data: AutoColumnGenerator) {
       },
     },
   ];
+  if (!selectable) return columns.filter((column) => column.id !== 'select');
   return columns;
 }
