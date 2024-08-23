@@ -12,12 +12,15 @@ export default function AutoFormNumber({
 }: AutoFormInputComponentProps) {
   const { showLabel: _showLabel, ...fieldPropsWithoutShowLabel } = fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
-
+  const params = {
+    containerClassName: undefined,
+    ...fieldPropsWithoutShowLabel,
+  };
   return (
     <FormItem className={fieldProps.containerClassName}>
       {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
       <FormControl>
-        <Input type="number" {...fieldPropsWithoutShowLabel} />
+        <Input type="number" {...params} />
       </FormControl>
       <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
       <FormMessage />

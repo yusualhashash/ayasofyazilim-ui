@@ -38,7 +38,10 @@ export default function AutoFormEnum({
       setEnabled(true);
     }, 1000);
   }, []);
-
+  const params = {
+    containerClassName: undefined,
+    ...fieldProps,
+  };
   return (
     <FormItem className={fieldProps.containerClassName}>
       <AutoFormLabel label={label} isRequired={isRequired} />
@@ -46,7 +49,7 @@ export default function AutoFormEnum({
         <Select
           onValueChange={enabled ? field.onChange : undefined}
           defaultValue={field.value}
-          {...fieldProps}
+          {...params}
         >
           <SelectTrigger className={fieldProps.className}>
             <SelectValue placeholder={fieldConfigItem.inputProps?.placeholder}>

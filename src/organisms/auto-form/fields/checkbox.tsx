@@ -11,6 +11,10 @@ export default function AutoFormCheckbox({
   fieldConfigItem,
   fieldProps,
 }: AutoFormInputComponentProps) {
+  const params = {
+    containerClassName: undefined,
+    ...fieldProps,
+  };
   return (
     <>
       <FormItem className={fieldProps.containerClassName}>
@@ -19,7 +23,7 @@ export default function AutoFormCheckbox({
             <Checkbox
               checked={field.value}
               onCheckedChange={field.onChange}
-              {...fieldProps}
+              {...params}
             />
           </FormControl>
           <AutoFormLabel label={label} isRequired={isRequired} />

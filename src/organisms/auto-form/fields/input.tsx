@@ -14,7 +14,10 @@ export default function AutoFormInput({
   const { showLabel: _showLabel, ...fieldPropsWithoutShowLabel } = fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
   const type = fieldProps.type || 'text';
-
+  const params = {
+    containerClassName: undefined,
+    ...fieldPropsWithoutShowLabel,
+  };
   return (
     <div
       className={cn(
@@ -25,7 +28,7 @@ export default function AutoFormInput({
       <FormItem className="flex w-full flex-col justify-start">
         {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
         <FormControl>
-          <Input type={type} {...fieldPropsWithoutShowLabel} />
+          <Input type={type} {...params} />
         </FormControl>
         <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
         <FormMessage />

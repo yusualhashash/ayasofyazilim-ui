@@ -12,11 +12,15 @@ export default function AutoFormTextarea({
 }: AutoFormInputComponentProps) {
   const { showLabel: _showLabel, ...fieldPropsWithoutShowLabel } = fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
+  const params = {
+    containerClassName: undefined,
+    ...fieldPropsWithoutShowLabel,
+  };
   return (
     <FormItem className={fieldProps.containerClassName}>
       {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
       <FormControl>
-        <Textarea {...fieldPropsWithoutShowLabel} />
+        <Textarea {...params} />
       </FormControl>
       <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
       <FormMessage />
