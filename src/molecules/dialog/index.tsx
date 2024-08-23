@@ -23,7 +23,7 @@ import {
 
 export type TableAction = TableActionCommon & TableActionDialog;
 export type CustomTableActionDialogProps = {
-  action?: TableAction;
+  action: TableAction;
   onOpenChange: (e: boolean) => void;
   open: boolean;
   triggerData?: any;
@@ -61,9 +61,11 @@ export default function CustomTableActionDialog({
     action && 'autoFormArgs' in action
       ? AutoFormData(action, triggerData, values)
       : undefined;
-  const content = action && 'content' in action ? action.content : undefined;
-  const contentLoading =
-    action && 'contentLoading' in action ? action.contentLoading : false;
+  const content =
+    'loadingContent' in action
+      ? action?.content || action.loadingContent
+      : undefined;
+
   return type === 'Sheet' ? (
     <SheetSide
       open={open}
@@ -75,7 +77,6 @@ export default function CustomTableActionDialog({
       <>
         {autformData}
         {content}
-        {contentLoading as React.ReactNode}
       </>
     </SheetSide>
   ) : (
@@ -88,7 +89,6 @@ export default function CustomTableActionDialog({
         <div className="grid gap-4 py-4">
           {autformData}
           {content}
-          {contentLoading as React.ReactNode}
         </div>
         <DialogFooter>
           {/* TODO: Dialog footer to add whatever children we need */}
