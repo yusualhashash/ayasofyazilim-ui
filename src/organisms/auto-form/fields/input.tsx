@@ -17,20 +17,18 @@ export default function AutoFormInput({
   const params = fieldPropsWithoutShowLabel;
   delete params.containerClassName;
   return (
-    <div
+    <FormItem
       className={cn(
-        'flex flex-row  items-center space-x-2',
+        'flex w-full flex-col justify-start',
         fieldProps.containerClassName
       )}
     >
-      <FormItem className="flex w-full flex-col justify-start">
-        {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
-        <FormControl>
-          <Input type={type} {...params} />
-        </FormControl>
-        <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
-        <FormMessage />
-      </FormItem>
-    </div>
+      {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
+      <FormControl>
+        <Input type={type} {...params} />
+      </FormControl>
+      <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
+      <FormMessage />
+    </FormItem>
   );
 }
