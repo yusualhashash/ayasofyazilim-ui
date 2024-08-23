@@ -34,10 +34,8 @@ export default function AutoFormFile({
   const handleRemoveClick = () => {
     setFile(null);
   };
-  const params = {
-    containerClassName: undefined,
-    ...fieldPropsWithoutShowLabel,
-  };
+  const params = fieldPropsWithoutShowLabel;
+  delete params.containerClassName;
   return (
     <FormItem className={fieldProps.containerClassName}>
       {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
