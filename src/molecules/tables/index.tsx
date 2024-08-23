@@ -39,7 +39,7 @@ import { cn } from '@/lib/utils';
 import { AutoFormProps } from '../../organisms/auto-form';
 import CustomTableActionDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
-import FilterColumn, { ColumnFilter } from './filter-colum';
+import FilterColumn, { ColumnFilter } from './filter-column';
 import { normalizeName } from './utils';
 
 export type { ColumnFilter };
@@ -421,7 +421,7 @@ export default function DataTable<TData, TValue>({
           )}
         </div>
       </div>
-      <div className="mb-2">
+      <div className="mb-2 flex">
         {filteredColumns &&
           filteredColumns.map((column) => (
             <FilterColumn

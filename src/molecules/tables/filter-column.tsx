@@ -1,3 +1,4 @@
+import { Cross1Icon } from '@radix-ui/react-icons';
 import { Trash2 } from 'lucide-react';
 import React, { Dispatch, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -53,15 +54,19 @@ export default function FilterColumn({
   const [filteredValue, setFilteredValue] = useState<string>(column.value);
   const [isDropdownOpen, setIsDropdownOpen] = useState(true);
   useEffect(() => {
+    if (column.type === 'boolean') {
+      setFilteredValue(column.value ? 'true' : 'false');
+      return;
+    }
     setFilteredValue(column.value);
   }, [column.value]);
 
   function handleSave() {
-    if (!filteredValue) {
+    if (!filteredValue && column.type !== 'boolean') {
       handleDelete();
-      setIsDropdownOpen(false);
       return;
     }
+
     setFilteredColumns((val) => {
       const temp = [...val];
       const index = temp.findIndex((item) => item.name === column.name);
@@ -79,19 +84,42 @@ export default function FilterColumn({
     });
     setIsDropdownOpen(false);
   }
+  function handleOpenChange(open: boolean) {
+    if (!open && !filteredValue) {
+      handleDelete();
+    }
+    setIsDropdownOpen(open);
+  }
 
   return (
-    <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
-      <DropdownMenuTrigger
-        className={`border px-3 py-1 border-gray-300 rounded-full text-xs mr-2 `}
-      >
-        <span className="font-semibold">{column.displayName}</span>:{' '}
-        {column.type === 'date'
-          ? column.value
-            ? new Date(column.value).toLocaleDateString()
-            : ''
-          : column.value}
-      </DropdownMenuTrigger>
+    <DropdownMenu
+      open={isDropdownOpen}
+      onOpenChange={(open) => {
+        handleOpenChange(open);
+      }}
+    >
+      {column.value !== '' ? (
+        <div className="border px-3 py-1 border-gray-300 rounded-full text-xs mr-2 flex justify-center">
+          <DropdownMenuTrigger>
+            <span className="font-semibold">{column.displayName}</span>:{' '}
+            {column.type === 'date'
+              ? column.value
+                ? new Date(column.value).toLocaleDateString()
+                : ''
+              : column.value}
+          </DropdownMenuTrigger>
+          <Button
+            variant="ghost"
+            className="p-0 ml-2 h-auto"
+            onClick={() => handleDelete()}
+          >
+            <Cross1Icon className="size-3" />
+          </Button>
+        </div>
+      ) : (
+        <DropdownMenuTrigger />
+      )}
+
       <DropdownMenuContent className="sm:max-w-md p-2">
         <div className="flex flex-row justify-between items-center mb-2">
           <Label htmlFor="name">{column.displayName}</Label>
