@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { z } from 'zod';
 import {
   Dialog,
@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 import AutoForm, {
   AutoFormSubmit,
   SchemaType,
@@ -37,14 +38,18 @@ const AutoFormData = (
 ) => (
   <AutoForm
     {...action?.autoFormArgs}
-    values={values}
+    values={values || action.autoFormArgs.values}
     onSubmit={(formData) => {
       action?.callback(formData, triggerData);
     }}
   >
     <>
       {action?.autoFormArgs?.children}
-      <AutoFormSubmit className="float-right">Save Changes</AutoFormSubmit>
+      <AutoFormSubmit
+        className={cn('float-right', action?.autoFormArgs?.submit?.className)}
+      >
+        {action.autoFormArgs.submit?.cta || 'Save Changes'}
+      </AutoFormSubmit>
     </>
   </AutoForm>
 );

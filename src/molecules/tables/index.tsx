@@ -72,7 +72,12 @@ export type TableActionNewPage = {
 };
 
 export type TableActionAutoform = {
-  autoFormArgs: AutoFormProps;
+  autoFormArgs: {
+    submit?: {
+      className?: string;
+      cta?: string;
+    };
+  } & AutoFormProps;
   callback: (values: any, triggerData?: unknown) => void;
   componentType: 'Autoform';
 };
