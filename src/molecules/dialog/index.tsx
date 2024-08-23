@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { z } from 'zod';
 import {
   Dialog,
@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 import AutoForm, {
   AutoFormSubmit,
   SchemaType,
@@ -23,7 +24,7 @@ import {
 
 export type TableAction = TableActionCommon & TableActionDialog;
 export type CustomTableActionDialogProps = {
-  action?: TableAction;
+  action: TableAction;
   onOpenChange: (e: boolean) => void;
   open: boolean;
   triggerData?: any;
@@ -37,14 +38,18 @@ const AutoFormData = (
 ) => (
   <AutoForm
     {...action?.autoFormArgs}
-    values={values}
+    values={values || action.autoFormArgs.values}
     onSubmit={(formData) => {
       action?.callback(formData, triggerData);
     }}
   >
     <>
       {action?.autoFormArgs?.children}
-      <AutoFormSubmit className="float-right">Save Changes</AutoFormSubmit>
+      <AutoFormSubmit
+        className={cn('float-right', action?.autoFormArgs?.submit?.className)}
+      >
+        {action.autoFormArgs.submit?.cta || 'Save Changes'}
+      </AutoFormSubmit>
     </>
   </AutoForm>
 );
@@ -61,9 +66,11 @@ export default function CustomTableActionDialog({
     action && 'autoFormArgs' in action
       ? AutoFormData(action, triggerData, values)
       : undefined;
-  const content = action && 'content' in action ? action.content : undefined;
-  const contentLoading =
-    action && 'contentLoading' in action ? action.contentLoading : false;
+  const content =
+    'loadingContent' in action
+      ? action?.content || action.loadingContent
+      : undefined;
+
   return type === 'Sheet' ? (
     <SheetSide
       open={open}
@@ -75,7 +82,6 @@ export default function CustomTableActionDialog({
       <>
         {autformData}
         {content}
-        {contentLoading as React.ReactNode}
       </>
     </SheetSide>
   ) : (
@@ -88,7 +94,6 @@ export default function CustomTableActionDialog({
         <div className="grid gap-4 py-4">
           {autformData}
           {content}
-          {contentLoading as React.ReactNode}
         </div>
         <DialogFooter>
           {/* TODO: Dialog footer to add whatever children we need */}

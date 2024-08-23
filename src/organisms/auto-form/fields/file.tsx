@@ -34,18 +34,14 @@ export default function AutoFormFile({
   const handleRemoveClick = () => {
     setFile(null);
   };
-
+  const params = fieldPropsWithoutShowLabel;
+  delete params.containerClassName;
   return (
     <FormItem className={fieldProps.containerClassName}>
       {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
       {!file && (
         <FormControl>
-          <Input
-            type="file"
-            {...fieldPropsWithoutShowLabel}
-            onChange={handleFileChange}
-            value=""
-          />
+          <Input type="file" {...params} onChange={handleFileChange} value="" />
         </FormControl>
       )}
       {file && (

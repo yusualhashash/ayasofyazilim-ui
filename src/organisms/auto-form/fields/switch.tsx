@@ -12,6 +12,8 @@ export default function AutoFormSwitch({
   fieldConfigItem,
   fieldProps,
 }: AutoFormInputComponentProps) {
+  const params = fieldProps;
+  delete params.containerClassName;
   return (
     <div>
       <FormItem>
@@ -25,7 +27,7 @@ export default function AutoFormSwitch({
             <Switch
               checked={field.value}
               onCheckedChange={field.onChange}
-              {...fieldProps}
+              {...params}
             />
           </FormControl>
           <AutoFormLabel label={label} isRequired={isRequired} />

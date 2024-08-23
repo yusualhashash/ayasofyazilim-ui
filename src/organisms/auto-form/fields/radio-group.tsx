@@ -28,7 +28,8 @@ export default function AutoFormRadioGroup({
   } else {
     values = baseValues;
   }
-
+  const params = fieldProps;
+  delete params.containerClassName;
   return (
     <>
       <FormItem className={fieldProps.containerClassName}>
@@ -37,7 +38,7 @@ export default function AutoFormRadioGroup({
           <RadioGroup
             onValueChange={field.onChange}
             defaultValue={field.value}
-            {...fieldProps}
+            {...params}
           >
             {values?.map((value: any) => (
               <FormItem

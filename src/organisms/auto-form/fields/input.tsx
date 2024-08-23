@@ -14,22 +14,21 @@ export default function AutoFormInput({
   const { showLabel: _showLabel, ...fieldPropsWithoutShowLabel } = fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
   const type = fieldProps.type || 'text';
-
+  const params = fieldPropsWithoutShowLabel;
+  delete params.containerClassName;
   return (
-    <div
+    <FormItem
       className={cn(
-        'flex flex-row  items-center space-x-2',
+        'flex w-full flex-col justify-start',
         fieldProps.containerClassName
       )}
     >
-      <FormItem className="flex w-full flex-col justify-start">
-        {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
-        <FormControl>
-          <Input type={type} {...fieldPropsWithoutShowLabel} />
-        </FormControl>
-        <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
-        <FormMessage />
-      </FormItem>
-    </div>
+      {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
+      <FormControl>
+        <Input type={type} {...params} />
+      </FormControl>
+      <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
+      <FormMessage />
+    </FormItem>
   );
 }

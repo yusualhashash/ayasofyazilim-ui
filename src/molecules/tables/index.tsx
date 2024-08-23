@@ -39,7 +39,7 @@ import { cn } from '@/lib/utils';
 import { AutoFormProps } from '../../organisms/auto-form';
 import CustomTableActionDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
-import FilterColumn, { ColumnFilter } from './filter-colum';
+import FilterColumn, { ColumnFilter } from './filter-column';
 import { normalizeName } from './utils';
 
 export type { ColumnFilter };
@@ -72,16 +72,18 @@ export type TableActionNewPage = {
 };
 
 export type TableActionAutoform = {
-  autoFormArgs: AutoFormProps;
+  autoFormArgs: {
+    submit?: {
+      className?: string;
+      cta?: string;
+    };
+  } & AutoFormProps;
   callback: (values: any, triggerData?: unknown) => void;
   componentType: 'Autoform';
 };
 export type TableActionCustom = {
-  componentType: 'CustomComponent';
-} & tableActionContent;
-
-export type tableActionContent = {
   callback?: (values?: any) => Promise<JSX.Element>;
+  componentType: 'CustomComponent';
   content?: JSX.Element;
   loadingContent: JSX.Element;
 };
@@ -424,7 +426,7 @@ export default function DataTable<TData, TValue>({
           )}
         </div>
       </div>
-      <div className="mb-2">
+      <div className="mb-2 flex">
         {filteredColumns &&
           filteredColumns.map((column) => (
             <FilterColumn
@@ -541,12 +543,7 @@ export default function DataTable<TData, TValue>({
                               key={action.cta}
                               onClick={() => {
                                 if (action.loadingContent) {
-                                  setActiveAction({
-                                    ...action,
-                                    content: action?.callback
-                                      ? action.loadingContent
-                                      : action.content,
-                                  });
+                                  setActiveAction(action);
                                   if (action?.callback) {
                                     action
                                       ?.callback(row.original)
