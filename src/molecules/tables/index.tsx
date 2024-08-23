@@ -538,12 +538,7 @@ export default function DataTable<TData, TValue>({
                               key={action.cta}
                               onClick={() => {
                                 if (action.loadingContent) {
-                                  setActiveAction({
-                                    ...action,
-                                    content: action?.callback
-                                      ? action.loadingContent
-                                      : action.content,
-                                  });
+                                  setActiveAction(action);
                                   if (action?.callback) {
                                     action
                                       ?.callback(row.original)
