@@ -33,7 +33,8 @@ To read more about using these font, please visit the Next.js documentation:
 }
 * */
 import React from 'react';
-import { Card, CardTitle } from '@/components/ui/card';
+import { beautifyObjectName } from 'src/organisms/auto-form/utils';
+import { Card } from '@/components/ui/card';
 import { TabsTrigger, TabsList, TabsContent, Tabs } from '@/components/ui/tabs';
 import {
   TableHead,
@@ -43,9 +44,9 @@ import {
   TableBody,
   Table,
 } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { issueFormProps } from './type';
+import { issueFormProps, Tag } from './type';
 import { Label } from '@/components/ui/label';
+import Cards from './cards';
 
 export type { issueFormProps } from './type';
 
@@ -87,59 +88,37 @@ export default function Issueform({ tag }: issueFormProps) {
               </div>
             </div>
             <div className="grid sm:grid-cols-3 gap-4">
-              <Card className="p-4">
-                <CardTitle>Export Validation</CardTitle>
-                <div className="grid gap-2 pt-2">
-                  <div className="text-sm text-gray-500 ">
-                    Export date: {tag.ExportValidation.ExportDate}
-                  </div>
-                  <div className="text-sm text-gray-500 ">
-                    Export location: {tag.ExportValidation.ExportLocation}
-                  </div>
-                  <div className="text-sm text-gray-500 ">
-                    Stamp type:{' '}
-                    {tag.ExportValidation.StampType === 1
-                      ? 'Stamp'
-                      : 'No Stamp'}
-                  </div>
-                </div>
-              </Card>
-              <Card className="p-4">
-                <CardTitle>Refund</CardTitle>
-                <div className="grid gap-2 pt-2">
-                  <div className="text-sm text-gray-500 ">
-                    Submission date: {tag.Refund.SubmissionDate}
-                  </div>
-                  <div className="text-sm text-gray-500 ">
-                    Paid date: {tag.Refund.PaidDate}
-                  </div>
-                  <div className="text-sm text-gray-500 ">
-                    Refund location: {tag.Refund.RefundLocation.Name}
-                  </div>
-                  <div className="text-sm text-gray-500 ">
-                    Status: {tag.Refund.Status === 1 ? 'Paid' : 'Pending'}
-                  </div>
-                  <div className="text-sm text-gray-500 ">
-                    Refund method:{' '}
-                    {tag.Refund.RefundMethod === 1 ? 'Cash' : 'Credit Card'}
-                  </div>
-                </div>
-              </Card>
-              <Card className="p-4">
-                <CardTitle>Invoicing</CardTitle>
-                <div className="grid gap-2 pt-2">
-                  <div className="text-sm text-gray-500 ">
-                    Invoice date: {tag.Invoicing.InvoicingDate}
-                  </div>
-                  <div className="text-sm text-gray-500 ">
-                    Invoice number: {tag.Invoicing.InvoicingNumber}
-                  </div>
-                  <div className="text-sm text-gray-500 ">
-                    Invoice status:{' '}
-                    {tag.Invoicing.InvoicingStatus === 1 ? 'Paid' : 'Pending'}
-                  </div>
-                </div>
-              </Card>
+              <Cards
+                content={Object.entries(tag.ExportValidation).map(
+                  ([key, value]) => ({
+                    title: beautifyObjectName(key),
+                    info: String(value),
+                  })
+                )}
+                title="Export Validation"
+              />
+              <Cards
+                content={Object.entries(tag.Refund).map(([key, value]) => {
+                  if (typeof value === 'object') {
+                    return {
+                      title: beautifyObjectName(key),
+                      info: value.Name,
+                    };
+                  }
+                  return {
+                    title: beautifyObjectName(key),
+                    info: String(value),
+                  };
+                })}
+                title="Refund"
+              />
+              <Cards
+                content={Object.entries(tag.Invoicing).map(([key, value]) => ({
+                  title: beautifyObjectName(key),
+                  info: String(value),
+                }))}
+                title="Invoicing"
+              />
             </div>
           </div>
         </Card>
@@ -151,41 +130,27 @@ export default function Issueform({ tag }: issueFormProps) {
               <TabsTrigger value="trips">Export Validation</TabsTrigger>
             </TabsList>
             <TabsContent value="merchants">
-              <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-6 p-6 ">
-                <div className="grid gap-6">
-                  <Card className="p-4 max-w-96">
-                    <CardTitle>TOTALS</CardTitle>
-                    <div className="grid gap-2 pt-2">
-                      {tag.Totals.map((total) => (
-                        <div className="flex justify-between">
-                          <div className="text-sm text-gray-500 ">
-                            {total.Description}
-                          </div>
-                          <div className="text-sm text-gray-500 ">
-                            {total.Amount}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </Card>
-                </div>
-                <div className="grid gap-6">
-                  <Card className="p-4 max-w-96">
-                    <CardTitle>EARNINGS</CardTitle>
-                    <div className="grid gap-2 pt-2">
-                      {tag.Earnings.map((earning) => (
-                        <div className="flex justify-between">
-                          <div className="text-sm text-gray-500 ">
-                            {earning.Description}
-                          </div>
-                          <div className="text-sm text-gray-500 ">
-                            {earning.Amount}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </Card>
-                </div>
+              <div className="grid grid-cols-2 md:grid-cols-[1fr_300px] gap-6 p-6">
+                <Cards
+                  content={tag.Totals.map((total) => ({
+                    title: total.Description,
+                    info: String(total.Amount),
+                  }))}
+                  title="TOTALS"
+                  cardParams={{
+                    className: 'max-w-80',
+                  }}
+                />
+                <Cards
+                  content={tag.Earnings.map((earning) => ({
+                    title: earning.Description,
+                    info: String(earning.Amount),
+                  }))}
+                  title="EARNINGS"
+                  cardParams={{
+                    className: 'max-w-80',
+                  }}
+                />
               </div>
             </TabsContent>
             <TabsContent value="travelers">
@@ -276,93 +241,118 @@ export default function Issueform({ tag }: issueFormProps) {
         </div>
       </div>
       <div className="grid gap-6">
-        <Card className="p-6">
-          <div className="grid gap-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xl font-bold">Merchant Details</h3>
-              <Button size="sm" variant="outline">
-                View Merchant
-              </Button>
-            </div>
-            <div className="grid gap-2">
-              <div className="flex items-center gap-2">
-                <UserIcon className="w-5 h-5 text-gray-500 " />
-                <span className="font-medium">{tag.Merchant.Name}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MailIcon className="w-5 h-5 text-gray-500 " />
-                <span>
-                  product groups:
-                  {tag.Merchant.ProductGroups.map(
-                    (productGroup) => productGroup.Description
-                  ).join(',')}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
+        <Cards
+          content={Object.entries(tag.Merchant).map(([key, value]) => {
+            const IconsMap: Record<string, JSX.Element> = {
+              Id: <UserIcon className="w-5 h-5 text-gray-500 " />,
+              Address: <MapPinIcon className="w-5 h-5 text-gray-500 " />,
+              Name: <UserIcon className="w-5 h-5 text-gray-500 " />,
+              ProductGroups: <MailIcon className="w-5 h-5 text-gray-500 " />,
+            };
+
+            if (Array.isArray(value)) {
+              return {
+                title: beautifyObjectName(key),
+                info: value.map((item) => item.Description).join(', '),
+                icon: IconsMap[key],
+              };
+            }
+            if (typeof value === 'object') {
+              return {
+                title: beautifyObjectName(key),
+                info: value.FullText,
+                icon: IconsMap[key],
+              };
+            }
+            return {
+              title: beautifyObjectName(key),
+              info: String(value),
+              icon: IconsMap[key],
+            };
+          })}
+          title="Merchant Details"
+          cta={{
+            title: 'View Merchant',
+            onClick: () => {},
+          }}
+        />
+        <Cards
+          title="Traveler Details"
+          content={Object.entries(tag.Traveller).map(([key, value]) => {
+            const pass = [
+              'TravelDocumentNumber',
+              'CountryOfResidenceCode',
+              'NationalityCode',
+              'Id',
+            ];
+            if (pass.includes(key)) {
+              // pass this key
+              return undefined;
+            }
+            const IconsMap: Record<string, JSX.Element> = {
+              Name: <UserIcon className="w-5 h-5 text-gray-500 " />,
+              Surname: <UserIcon className="w-5 h-5 text-gray-500 " />,
+              CountryOfResidence: (
                 <MapPinIcon className="w-5 h-5 text-gray-500 " />
-                <span>Address: {tag.Merchant.Address.FullText}</span>
-              </div>
-            </div>
-          </div>
-        </Card>
-        <Card className="p-6">
-          <div className="grid gap-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xl font-bold">Traveler Details</h3>
-              <Button size="sm" variant="outline">
-                View Traveler
-              </Button>
-            </div>
-            <div className="grid gap-2">
-              <div className="flex items-center gap-2">
-                <UserIcon className="w-5 h-5 text-gray-500 " />
-                <span className="font-medium">
-                  {`${tag.Traveller.Name} ${tag.Traveller.Surname}`}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MailIcon className="w-5 h-5 text-gray-500 " />
-                <span>{tag.Traveller.Nationality}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPinIcon className="w-5 h-5 text-gray-500 " />
-                <span>Residency: {tag.Traveller.CountryOfResidence}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPinIcon className="w-5 h-5 text-gray-500 " />
-                <span>Citizeship: {tag.Traveller.Nationality}</span>
-              </div>
-            </div>
-          </div>
-        </Card>
-        <Card className="p-6">
-          <div className="grid gap-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xl font-bold">Trip Details</h3>
-              <Button size="sm" variant="outline">
-                View Trip
-              </Button>
-            </div>
-            <div className="grid gap-2">
-              <div className="flex items-center gap-2">
+              ),
+              Nationality: <MapPinIcon className="w-5 h-5 text-gray-500 " />,
+            };
+            if (key === 'CountryOfResidence') {
+              return {
+                title: beautifyObjectName('Residency'),
+                info: String(value),
+                icon: IconsMap[key],
+              };
+            }
+            return {
+              title: beautifyObjectName(key),
+              info: String(value),
+              icon: IconsMap[key],
+            };
+          })}
+          cta={{
+            title: 'View Traveler',
+            onClick: () => {},
+          }}
+        />
+        <Cards
+          title="Trip Details"
+          cta={{
+            title: 'View Trip',
+            onClick: () => {},
+          }}
+          content={Object.entries(tag.Trip).map(([key, value]) => {
+            const _key = key as keyof Tag['Trip'];
+            const IconsMap: Record<keyof Tag['Trip'], JSX.Element> = {
+              FlightNumber: <MapPinIcon className="w-5 h-5 text-gray-500 " />,
+              DepartingAirport: (
+                <PlaneIcon className="w-5 h-5 text-gray-500 " />
+              ),
+              DestinationAirport: (
+                <PlaneIcon className="w-5 h-5 text-gray-500 " />
+              ),
+              DepartureDate: (
                 <CalendarDaysIcon className="w-5 h-5 text-gray-500 " />
-                <span className="font-medium">Visit</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPinIcon className="w-5 h-5 text-gray-500 " />
-                <span>Flight number: {tag.Trip.FlightNumber}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <PlaneIcon className="w-5 h-5 text-gray-500 " />
-                <span>Departure: {tag.Trip.DepartingAirport.Name}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <PlaneIcon className="w-5 h-5 text-gray-500 " />
-                <span>Destination: {tag.Trip.DestinationAirport.Name}</span>
-              </div>
-            </div>
-          </div>
-        </Card>
+              ),
+              VisitingDate: (
+                <CalendarDaysIcon className="w-5 h-5 text-gray-500 " />
+              ),
+              Id: <UserIcon className="w-5 h-5 text-gray-500 " />,
+            };
+            if (typeof value === 'object') {
+              return {
+                title: beautifyObjectName(_key),
+                info: value.Name,
+                icon: IconsMap[_key],
+              };
+            }
+            return {
+              title: beautifyObjectName(_key),
+              info: String(value),
+              icon: IconsMap[_key],
+            };
+          })}
+        />
       </div>
     </div>
   );
