@@ -28,10 +28,8 @@ export default function AutoFormRadioGroup({
   } else {
     values = baseValues;
   }
-  const params = {
-    containerClassName: undefined,
-    ...fieldProps,
-  };
+  const params = fieldProps;
+  delete params.containerClassName;
   return (
     <>
       <FormItem className={fieldProps.containerClassName}>

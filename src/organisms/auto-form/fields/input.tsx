@@ -14,10 +14,8 @@ export default function AutoFormInput({
   const { showLabel: _showLabel, ...fieldPropsWithoutShowLabel } = fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
   const type = fieldProps.type || 'text';
-  const params = {
-    containerClassName: undefined,
-    ...fieldPropsWithoutShowLabel,
-  };
+  const params = fieldPropsWithoutShowLabel;
+  delete params.containerClassName;
   return (
     <div
       className={cn(

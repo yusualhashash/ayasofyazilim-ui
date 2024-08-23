@@ -12,10 +12,8 @@ export default function AutoFormNumber({
 }: AutoFormInputComponentProps) {
   const { showLabel: _showLabel, ...fieldPropsWithoutShowLabel } = fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
-  const params = {
-    containerClassName: undefined,
-    ...fieldPropsWithoutShowLabel,
-  };
+  const params = fieldPropsWithoutShowLabel;
+  delete params.containerClassName;
   return (
     <FormItem className={fieldProps.containerClassName}>
       {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}

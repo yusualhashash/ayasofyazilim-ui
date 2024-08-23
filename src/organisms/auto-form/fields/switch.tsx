@@ -12,10 +12,8 @@ export default function AutoFormSwitch({
   fieldConfigItem,
   fieldProps,
 }: AutoFormInputComponentProps) {
-  const params = {
-    containerClassName: undefined,
-    ...fieldProps,
-  };
+  const params = fieldProps;
+  delete params.containerClassName;
   return (
     <div>
       <FormItem>

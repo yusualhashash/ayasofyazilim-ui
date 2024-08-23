@@ -38,10 +38,8 @@ export default function AutoFormEnum({
       setEnabled(true);
     }, 1000);
   }, []);
-  const params = {
-    containerClassName: undefined,
-    ...fieldProps,
-  };
+  const params = fieldProps;
+  delete params.containerClassName;
   return (
     <FormItem className={fieldProps.containerClassName}>
       <AutoFormLabel label={label} isRequired={isRequired} />
