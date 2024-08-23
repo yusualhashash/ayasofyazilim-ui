@@ -194,3 +194,79 @@ export const DialogCustomContent: StoryObj<typeof CustomTableActionDialog> = {
     );
   },
 };
+
+export const WithDefaultValues: StoryObj<typeof CustomTableActionDialog> = {
+  args: {
+    action: {
+      ...action,
+      autoFormArgs: {
+        ...action.autoFormArgs,
+        values: { username: 'eduardo' },
+      },
+    },
+  },
+  parameters: {
+    layout: 'centered',
+  },
+  render: (args) => {
+    const [open, onOpenChange] = useState(false);
+    return (
+      <>
+        <Button
+          onClick={() => {
+            onOpenChange(true);
+          }}
+        >
+          Open Dialog
+        </Button>
+        <CustomTableActionDialog
+          action={args.action}
+          open={open}
+          onOpenChange={() => {
+            onOpenChange(!open);
+          }}
+          type={args.type}
+        />
+      </>
+    );
+  },
+};
+export const WithCustomSubmit: StoryObj<typeof CustomTableActionDialog> = {
+  args: {
+    action: {
+      ...action,
+      autoFormArgs: {
+        ...action.autoFormArgs,
+        submit: {
+          cta: 'Login',
+          className: 'btn btn-primary',
+        },
+      },
+    },
+  },
+  parameters: {
+    layout: 'centered',
+  },
+  render: (args) => {
+    const [open, onOpenChange] = useState(false);
+    return (
+      <>
+        <Button
+          onClick={() => {
+            onOpenChange(true);
+          }}
+        >
+          Open Dialog
+        </Button>
+        <CustomTableActionDialog
+          action={args.action}
+          open={open}
+          onOpenChange={() => {
+            onOpenChange(!open);
+          }}
+          type={args.type}
+        />
+      </>
+    );
+  },
+};
