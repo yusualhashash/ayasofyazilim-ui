@@ -77,11 +77,8 @@ export type TableActionAutoform = {
   componentType: 'Autoform';
 };
 export type TableActionCustom = {
-  componentType: 'CustomComponent';
-} & tableActionContent;
-
-export type tableActionContent = {
   callback?: (values?: any) => Promise<JSX.Element>;
+  componentType: 'CustomComponent';
   content?: JSX.Element;
   loadingContent: JSX.Element;
 };
