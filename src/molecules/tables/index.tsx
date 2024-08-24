@@ -105,13 +105,13 @@ export type AutoColumnGenerator = {
   tableType: any;
 };
 
-export type ColumnsType = ColumnsCustomType | ColumntAuotType;
+export type ColumnsType = ColumnsCustomType | ColumnAutoType;
 type ColumnsCustomType = {
   data: ColumnDef<any>[];
   type: 'Custom';
 };
 
-type ColumntAuotType = {
+type ColumnAutoType = {
   data: AutoColumnGenerator;
   type: 'Auto';
 };
