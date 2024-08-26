@@ -1,12 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -38,7 +37,7 @@ const AutoFormData = (
 ) => (
   <AutoForm
     {...action?.autoFormArgs}
-    values={values || action.autoFormArgs.values}
+    values={values}
     onSubmit={(formData) => {
       action?.callback(formData, triggerData);
     }}
@@ -61,11 +60,16 @@ export default function CustomTableActionDialog({
   triggerData,
   type = 'Dialog',
 }: CustomTableActionDialogProps) {
-  const [values] = useState<any>(triggerData || {});
-  const autformData =
-    action && 'autoFormArgs' in action
-      ? AutoFormData(action, triggerData, values)
+  const [values, setValues] = useState<any>(undefined);
+  const autoFormData =
+    action.componentType === 'Autoform'
+      ? AutoFormData(action, values, values)
       : undefined;
+  useEffect(() => {
+    if (action.componentType === 'Autoform') {
+      setValues({ ...triggerData, ...action.autoFormArgs.values } || {});
+    }
+  }, []);
   const content =
     'loadingContent' in action
       ? action?.content || action.loadingContent
@@ -80,7 +84,7 @@ export default function CustomTableActionDialog({
       description={action?.description}
     >
       <>
-        {autformData}
+        {autoFormData && autoFormData}
         {content}
       </>
     </SheetSide>
@@ -91,13 +95,13 @@ export default function CustomTableActionDialog({
           <DialogTitle>{action?.cta}</DialogTitle>
           <DialogDescription>{action?.description}</DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          {autformData}
+        <div className="grid gap-4">
+          {autoFormData && autoFormData}
           {content}
         </div>
-        <DialogFooter>
-          {/* TODO: Dialog footer to add whatever children we need */}
-        </DialogFooter>
+        {/* <DialogFooter> */}
+        {/* TODO: Dialog footer to add whatever children we need */}
+        {/* </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );
