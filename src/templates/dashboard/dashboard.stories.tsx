@@ -13,7 +13,7 @@ export const Default: StoryObj<typeof Dashbaord> = {
     // @ts-ignore
     columnsData: {
       type: 'Custom',
-      data: columns,
+      data: { columns },
     },
     cards,
   },
