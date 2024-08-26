@@ -33,7 +33,7 @@ To read more about using these font, please visit the Next.js documentation:
 }
 * */
 import React from 'react';
-import { beautifyObjectName } from 'src/organisms/auto-form/utils';
+import { beautifyObjectName } from '../../organisms/auto-form/utils';
 import { Card } from '@/components/ui/card';
 import { TabsTrigger, TabsList, TabsContent, Tabs } from '@/components/ui/tabs';
 import {
