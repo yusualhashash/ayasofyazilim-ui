@@ -337,10 +337,10 @@ const SelectedCountry = ({
     className={`${direction === 'rtl' ?? 'flex-row-reverse'} rtl:flex-row-reverse flex w-full justify-between gap-2 overflow-hidden items-center`}
   >
     {showLabel && <span className="text-xs text-black">{displayName}</span>}
-    <div className="border rounded-sm overflow-hidden w-[24px] min-h-[18.5px] block">
+    <div className="w-6 h-6">
       <img
-        className="w-6"
-        src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/4x3/${flagIcon}.svg`}
+        className="w-6 h-6 object-cover rounded-full"
+        src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/1x1/${flagIcon}.svg`}
         alt={displayName || ''}
       />
     </div>
