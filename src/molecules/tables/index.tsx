@@ -107,7 +107,7 @@ export type AutoColumnGenerator = {
 
 export type ColumnsType = ColumnsCustomType | ColumnAutoType;
 type ColumnsCustomType = {
-  data: ColumnDef<any>[];
+  data: { actionList?: TableAction[]; columns: ColumnDef<any>[] };
   type: 'Custom';
 };
 
@@ -248,7 +248,7 @@ export default function DataTable<TData, TValue>({
   if (columnsData.type === 'Auto') {
     columns = columnsGenerator(columnsData.data as AutoColumnGenerator);
   } else {
-    columns = columnsData.data as ColumnDef<TData, TValue>[];
+    columns = columnsData.data.columns as ColumnDef<TData, TValue>[];
   }
   if (isLoading) {
     columns = columns.map((column) => ({
@@ -542,7 +542,7 @@ export default function DataTable<TData, TValue>({
                             <DropdownMenuItem
                               key={action.cta}
                               onClick={() => {
-                                if (action.loadingContent) {
+                                if ('loadingContent' in action) {
                                   setActiveAction(action);
                                   if (action?.callback) {
                                     action
