@@ -68,7 +68,7 @@ export const Default: StoryObj<typeof Table> = {
     data,
     columnsData: {
       type: 'Custom',
-      data: columns,
+      data: { columns },
     },
     action,
   },
@@ -217,7 +217,7 @@ export const Editable: StoryObj<typeof Table> = {
     data,
     columnsData: {
       type: 'Custom',
-      data: columnsEditable,
+      data: { columns: columnsEditable },
     },
     showView: false,
     Headertable: filedstable,
@@ -233,7 +233,7 @@ export const SubContent: StoryObj<typeof Table> = {
     data,
     columnsData: {
       type: 'Custom',
-      data: columnsSubContent,
+      data: { columns: columnsSubContent },
     },
     showView: false,
     renderSubComponent,
@@ -347,7 +347,7 @@ export const SubContentDialog: StoryObj<typeof Table> = {
     data,
     columnsData: {
       type: 'Custom',
-      data: columns,
+      data: { columns },
     },
     action: subContentDialogAction,
   },
