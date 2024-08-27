@@ -94,7 +94,7 @@ function AutoForm({
   }, [valuesString]);
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <Form {...form}>
         <form
           onSubmit={(e) => {
