@@ -14,18 +14,14 @@ export const WithBack: StoryObj<typeof PageHeader> = {
   args: {
     title: 'Page header',
     description: 'Page header description',
-    onBackButtonClick: () => {
-      /*
-        router.push(getBaseLink("app/admin/contracts/refund/refund-tables"));
-      */
-    },
+    LinkElement: 'a',
+    href: '/back',
   },
 };
 export const Loading: StoryObj<typeof PageHeader> = {
   args: {
     title: 'Page header',
     description: 'Page header description',
-    onBackButtonClick: () => {},
     isLoading: true,
   },
 };
