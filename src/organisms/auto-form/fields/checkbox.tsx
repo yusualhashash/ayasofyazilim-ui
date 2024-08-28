@@ -3,6 +3,7 @@ import { FormControl, FormItem } from '@/components/ui/form';
 import AutoFormTooltip from '../common/tooltip';
 import { AutoFormInputComponentProps } from '../types';
 import AutoFormLabel from '../common/label';
+import { cn } from '@/lib/utils';
 
 export default function AutoFormCheckbox({
   label,
@@ -15,8 +16,13 @@ export default function AutoFormCheckbox({
   delete params.containerClassName;
   return (
     <>
-      <FormItem className={fieldProps.containerClassName}>
-        <div className="mb-3 flex items-center gap-3">
+      <FormItem>
+        <div
+          className={cn(
+            'mb-3 flex items-center gap-3',
+            fieldConfigItem.containerClassName
+          )}
+        >
           <FormControl>
             <Checkbox
               checked={field.value}

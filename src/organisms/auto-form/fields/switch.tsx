@@ -20,7 +20,7 @@ export default function AutoFormSwitch({
         <div
           className={cn(
             'flex items-center gap-3',
-            fieldProps.containerClassName
+            fieldConfigItem.containerClassName
           )}
         >
           <FormControl>
