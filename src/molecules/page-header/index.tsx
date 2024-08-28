@@ -37,10 +37,11 @@ export const PageHeader = ({
   return (
     <div className="mb-5 flex items-center gap-4">
       {LinkElement && (
-        <LinkElement className="size-12 rounded-xl cursor-pointer" href={href}>
-          <span>
-            <ArrowLeft />
-          </span>
+        <LinkElement
+          className="size-12 rounded-xl cursor-pointer border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground items-center justify-center flex"
+          href={href}
+        >
+          <ArrowLeft />
         </LinkElement>
       )}
       <div>
