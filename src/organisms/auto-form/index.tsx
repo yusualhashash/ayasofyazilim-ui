@@ -94,27 +94,25 @@ function AutoForm({
   }, [valuesString]);
 
   return (
-    <div className="w-full h-full">
-      <Form {...form}>
-        <form
-          onSubmit={(e) => {
-            form.handleSubmit(onSubmit)(e);
-          }}
-          className={cn('space-y-5', formClassName)}
-        >
-          <AutoFormObject
-            showInRow={showInRow}
-            schema={objectFormSchema}
-            form={form}
-            dependencies={dependencies}
-            fieldConfig={fieldConfig}
-            className={className}
-          />
+    <Form {...form}>
+      <form
+        onSubmit={(e) => {
+          form.handleSubmit(onSubmit)(e);
+        }}
+        className={cn('space-y-5', formClassName)}
+      >
+        <AutoFormObject
+          showInRow={showInRow}
+          schema={objectFormSchema}
+          form={form}
+          dependencies={dependencies}
+          fieldConfig={fieldConfig}
+          className={className}
+        />
 
-          {children}
-        </form>
-      </Form>
-    </div>
+        {children}
+      </form>
+    </Form>
   );
 }
 
