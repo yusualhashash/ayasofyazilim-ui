@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDownIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
+import { ChevronDownIcon } from '@radix-ui/react-icons';
 import {
   ColumnDef,
   RowData,
@@ -59,11 +59,13 @@ declare module '@tanstack/react-table' {
   }
 }
 
-export type TableAction = TableActionCommon &
+export type TableAction<T = undefined> = TableActionCommon<
+  undefined extends T ? any : T
+> &
   (TableActionNewPage | TableActionDialog | TableActionAction);
 
-export type TableActionCommon = {
-  cta: string;
+export type TableActionCommon<T = undefined> = {
+  cta: string | ((triggerData?: T) => string);
 };
 
 export type TableActionNewPage = {
@@ -146,7 +148,7 @@ const ActionComponent = ({
     return (
       <Link href={action.href || 'add'}>
         <Button variant="outline" className={className}>
-          {action.cta}
+          {action.cta.toString()}
         </Button>
       </Link>
     );
@@ -159,7 +161,7 @@ const ActionComponent = ({
       }}
       className={className}
     >
-      {action.cta}
+      {action.cta.toString()}
     </Button>
   );
 };
@@ -200,6 +202,13 @@ const ActionComponent = ({
  *   data={usersData}
  * />
  */
+
+function getCTA(cta: TableActionCommon['cta'], triggerData: undefined): string {
+  if (typeof cta === 'function') {
+    return cta(triggerData);
+  }
+  return cta || '';
+}
 
 export default function DataTable<TData, TValue>({
   columnsData,
@@ -403,7 +412,7 @@ export default function DataTable<TData, TValue>({
                   .map((actionItem) => (
                     <DropdownMenuItem
                       asChild
-                      key={actionItem.cta}
+                      key={getCTA(actionItem.cta, triggerData)}
                       className="cursor-pointer"
                     >
                       <ActionComponent
@@ -490,7 +499,7 @@ export default function DataTable<TData, TValue>({
                     </div>
                   </TableHead>
                 ))}
-                <TableHead key="actions" />
+                {!isLoading && <TableHead key="actions" />}
               </TableRow>
             ))}
           </TableHeader>
@@ -503,7 +512,7 @@ export default function DataTable<TData, TValue>({
                     className="whitespace-nowrap"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell key={cell.id} className="w-full">
                         {
                           flexRender(
                             cell.column.columnDef.cell,
@@ -512,64 +521,71 @@ export default function DataTable<TData, TValue>({
                         }
                       </TableCell>
                     ))}
-                    <TableCell className={cn('sticky right-0 bg-white')}>
-                      <Separator
-                        orientation="vertical"
-                        className="absolute left-0 top-0"
-                      />
+                    {!isLoading && (
+                      <TableCell
+                        className={cn(
+                          'sticky right-0 bg-white p-0 m-0 border-0'
+                        )}
+                      >
+                        <Separator
+                          orientation="vertical"
+                          className="absolute left-0 top-0"
+                        />
 
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <DotsHorizontalIcon className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem
-                            // @ts-ignore
-                            onClick={() =>
-                              navigator.clipboard.writeText(row.original.id)
-                            }
-                          >
-                            Copy ID
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-
-                          {// @ts-ignore
-                          columnsData.data?.actionList?.map((action) => (
-                            <DropdownMenuItem
-                              key={action.cta}
-                              onClick={() => {
-                                if ('loadingContent' in action) {
-                                  setActiveAction(action);
-                                  if (action?.callback) {
-                                    action
-                                      ?.callback(row.original)
-                                      .then((res: JSX.Element) => {
-                                        setActiveAction({
-                                          ...action,
-                                          content: res,
-                                        });
-                                      });
-                                  }
-                                } else if (action.type === 'Action') {
-                                  action.callback(row.original);
-                                  return;
-                                } else {
-                                  setActiveAction(action);
-                                }
-                                setTriggerData(row.original);
-                                setIsOpen(true);
-                              }}
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              className="rounded-none inset-0 absolute size-full"
                             >
-                              {action.cta}
+                              Actions
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                navigator.clipboard.writeText(row.original.id)
+                              }
+                            >
+                              Copy ID
                             </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+                            <DropdownMenuSeparator />
+
+                            {// @ts-ignore
+                            columnsData.data?.actionList?.map((action) => (
+                              <DropdownMenuItem
+                                key={getCTA(action.cta, row.original)}
+                                onClick={() => {
+                                  if ('loadingContent' in action) {
+                                    setActiveAction(action);
+                                    if (action?.callback) {
+                                      action
+                                        ?.callback(row.original)
+                                        .then((res: JSX.Element) => {
+                                          setActiveAction({
+                                            ...action,
+                                            content: res,
+                                          });
+                                        });
+                                    }
+                                  } else if (action.type === 'Action') {
+                                    action.callback(row.original);
+                                    return;
+                                  } else {
+                                    setActiveAction(action);
+                                  }
+                                  setTriggerData(row.original);
+                                  setIsOpen(true);
+                                }}
+                              >
+                                {getCTA(action.cta, row.original)}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    )}
                   </TableRow>
                   {row.getIsExpanded() && renderSubComponent && (
                     <TableRow>
@@ -583,7 +599,7 @@ export default function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={columns.length + 1}
                   className="h-24 text-center"
                 >
                   No results.
