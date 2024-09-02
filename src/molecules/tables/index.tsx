@@ -148,7 +148,7 @@ const ActionComponent = ({
     return (
       <Link href={action.href || 'add'}>
         <Button variant="outline" className={className}>
-          {action.cta.toString()}
+          {action.cta?.toString()}
         </Button>
       </Link>
     );
@@ -161,7 +161,7 @@ const ActionComponent = ({
       }}
       className={className}
     >
-      {action.cta.toString()}
+      {action.cta?.toString()}
     </Button>
   );
 };
@@ -489,7 +489,7 @@ export default function DataTable<TData, TValue>({
         <Table wrapperClassName="h-[500px] overflow-y-auto">
           <TableHeader className="sticky top-0 bg-slate-100 z-10">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="whitespace-nowrap">
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id}>
                     <div>
