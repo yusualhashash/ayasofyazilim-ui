@@ -203,7 +203,10 @@ const ActionComponent = ({
  * />
  */
 
-function getCTA(cta: TableActionCommon['cta'], triggerData: undefined): string {
+export function getCTA(
+  cta: TableActionCommon['cta'],
+  triggerData: undefined
+): string {
   if (typeof cta === 'function') {
     return cta(triggerData);
   }

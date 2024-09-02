@@ -16,6 +16,7 @@ import AutoForm, {
 } from '../../organisms/auto-form';
 import SheetSide from '../sheet';
 import {
+  getCTA,
   TableActionAutoform,
   TableActionCommon,
   TableActionDialog,
@@ -74,13 +75,13 @@ export default function CustomTableActionDialog({
     'loadingContent' in action
       ? action?.content || action.loadingContent
       : undefined;
-
+  const cta = getCTA(action?.cta, triggerData);
   return type === 'Sheet' ? (
     <SheetSide
       open={open}
       onOpenChange={onOpenChange}
       position="right"
-      title={action?.cta}
+      title={cta}
       description={action?.description}
     >
       <>
@@ -92,7 +93,7 @@ export default function CustomTableActionDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-auto [&::-webkit-scrollbar]:hidden">
         <DialogHeader>
-          <DialogTitle>{action?.cta}</DialogTitle>
+          <DialogTitle>{cta}</DialogTitle>
           <DialogDescription>{action?.description}</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4">
