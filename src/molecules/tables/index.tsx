@@ -529,14 +529,14 @@ export default function DataTable<TData, TValue>({
                       >
                         <Separator
                           orientation="vertical"
-                          className="absolute left-0 top-0"
+                          className="absolute left-0 top-0 -z-10"
                         />
 
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
                               variant="ghost"
-                              className="rounded-none inset-0 absolute size-full"
+                              className="rounded-none outline-none focus-visible:ring-inset"
                             >
                               Actions
                             </Button>
