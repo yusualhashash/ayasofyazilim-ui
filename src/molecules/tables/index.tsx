@@ -502,7 +502,9 @@ export default function DataTable<TData, TValue>({
                     </div>
                   </TableHead>
                 ))}
-                {!isLoading && <TableHead key="actions" />}
+                {!isLoading && (
+                  <TableHead key="actions" className="max-w-max flex ml-auto" />
+                )}
               </TableRow>
             ))}
           </TableHeader>
@@ -515,7 +517,7 @@ export default function DataTable<TData, TValue>({
                     className="whitespace-nowrap"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="w-full">
+                      <TableCell key={cell.id}>
                         {
                           flexRender(
                             cell.column.columnDef.cell,
@@ -527,7 +529,7 @@ export default function DataTable<TData, TValue>({
                     {!isLoading && (
                       <TableCell
                         className={cn(
-                          'sticky right-0 bg-white p-0 m-0 border-0'
+                          'sticky right-0 bg-white p-0 m-0 max-w-max flex ml-auto border-0'
                         )}
                       >
                         <Separator
