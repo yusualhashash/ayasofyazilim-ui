@@ -52,7 +52,7 @@ const DropdownMenuTree = ({
       <DotsHorizontalIcon className="w-5 h-5 text-gray-500 hover:text-black cursor-pointer my-1" />
     </DropdownMenuTrigger>
     <DropdownMenuContent className="w-56">
-      <DropdownMenuLabel>Aksiyonlar</DropdownMenuLabel>
+      <DropdownMenuLabel>Actions</DropdownMenuLabel>
       <DropdownMenuSeparator />
       {optionsDropdownContent}
     </DropdownMenuContent>
