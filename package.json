@@ -213,7 +213,7 @@
     "cmdk": "^0.2.1",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.0.0",
-    "google-libphonenumber": "^3.2.38",
+    "google-libphonenumber": "^3.2.37",
     "input-otp": "^1.2.4",
     "lowlight": "^2.9.0",
     "lucide-react": "^0.359.0",
