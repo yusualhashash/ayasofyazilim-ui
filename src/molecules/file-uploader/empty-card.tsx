@@ -1,20 +1,21 @@
 import React from 'react';
-import { ImageIcon } from '@radix-ui/react-icons';
+// import { ImageIcon } from '@radix-ui/react-icons';
 
 import { cn } from '@/lib/utils';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
+// import { IconProps } from '@radix-ui/react-icons/dist/types';
 
 interface EmptyCardProps extends React.ComponentPropsWithoutRef<typeof Card> {
   action?: React.ReactNode;
   description?: string;
-  icon?: React.ComponentType<{ className?: string }>;
+  // icon?: React.ForwardRefExoticComponent<IconProps & React.RefAttributes<SVGSVGElement>>;
   title: string;
 }
 
 export const EmptyCard = ({
   title,
   description,
-  icon: Icon = ImageIcon,
+  // icon: Icon = ImageIcon,
   action,
   className,
   ...props
@@ -26,9 +27,9 @@ export const EmptyCard = ({
     )}
     {...props}
   >
-    <div className="mr-4 shrink-0 rounded-full border border-dashed p-4">
+    {/* <div className="mr-4 shrink-0 rounded-full border border-dashed p-4">
       <Icon className="size-8 text-muted-foreground" aria-hidden="true" />
-    </div>
+    </div> */}
     <div className="flex flex-col items-center gap-1.5 text-center">
       <CardTitle>{title}</CardTitle>
       {description ? <CardDescription>{description}</CardDescription> : null}
