@@ -9,6 +9,7 @@ import React, {
   useMemo,
 } from 'react';
 import CustomButton from '../../molecules/button';
+import { cn } from '@/lib/utils';
 
 export interface ISeparatorProps {
   vertical?: boolean;
@@ -30,8 +31,12 @@ export interface IStepperContentProps {
   canGoBack?: boolean;
   canGoNext?: boolean;
   children?: React.ReactNode;
+  className?: string;
+  controlsClassName?: string;
   isBackDisabled?: boolean;
   isNextDisabled?: boolean;
+  nextButtonText?: string;
+  previousButtonText?: string;
   title?: string;
 }
 export const StepperContent = ({
@@ -39,22 +44,26 @@ export const StepperContent = ({
   title,
   canGoBack = true,
   canGoNext = true,
+  previousButtonText,
+  nextButtonText,
   isBackDisabled,
   isNextDisabled,
+  className,
+  controlsClassName,
 }: IStepperContentProps) => {
   const {
-    previousButtonText,
-    nextButtonText,
+    previousButtonText: defaultPreviousButtonText,
+    nextButtonText: defaultNextButtonText,
     onIndexChange,
     vertical,
     stepsLength,
   } = useContext(StepperContext);
   const [isLastStep, setIsLastStep] = React.useState(false);
   return (
-    <div id={title} className={vertical ? 'w-10/12' : 'w-full'}>
+    <div id={title} className={cn(vertical ? 'w-10/12' : 'w-full', className)}>
       {children}
       {onIndexChange && (
-        <div className="mt-5 flex justify-between">
+        <div className={cn('mt-5 flex justify-between', controlsClassName)}>
           <div>
             {canGoBack && (
               <CustomButton
@@ -69,7 +78,7 @@ export const StepperContent = ({
                   })
                 }
               >
-                {previousButtonText}
+                {previousButtonText || defaultPreviousButtonText}
               </CustomButton>
             )}
           </div>
@@ -89,7 +98,7 @@ export const StepperContent = ({
                   })
                 }
               >
-                {nextButtonText}
+                {nextButtonText || defaultNextButtonText}
               </CustomButton>
             )}
           </div>
@@ -100,7 +109,10 @@ export const StepperContent = ({
 };
 
 export interface IStepperHeaderProps {
+  activeItemClassName?: string;
   activeTabIndex: number;
+  containerClassName?: string;
+  inactiveItemClassName?: string;
   keysWithSeparator:
     | (string | { icon: any; index: number; title: any })[]
     | undefined;
@@ -111,12 +123,18 @@ export const StepperHeader = ({
   keysWithSeparator,
   activeTabIndex,
   vertical,
+  containerClassName,
+  activeItemClassName,
+  inactiveItemClassName,
 }: IStepperHeaderProps) => {
-  const containerClass = `flex gap-5 justify-between relative mb-10 ${
-    vertical ? 'flex-col items-center w-2/12' : 'w-full'
-  }`;
-  const activeItemClass = 'bg-primary text-white';
-  const inactiveItemClass = 'bg-zinc-200 text-black';
+  const containerClass = cn(
+    `flex gap-5 justify-between relative mb-10 ${
+      vertical ? 'flex-col items-center w-2/12' : 'w-full'
+    }`,
+    containerClassName
+  );
+  const activeItemClass = cn('bg-primary text-white', activeItemClassName);
+  const inactiveItemClass = cn('bg-zinc-200 text-black', inactiveItemClassName);
 
   return (
     <div className={containerClass}>
@@ -159,6 +177,8 @@ const StepperContext = createContext({
 export interface IStepperProps {
   activeTabIndex: number;
   children?: React.ReactNode[];
+  className?: string;
+  headerProps?: Partial<IStepperHeaderProps>;
   nextButtonText?: string;
   onIndexChange: Dispatch<SetStateAction<number>>;
   previousButtonText?: string;
@@ -172,6 +192,8 @@ export default function Stepper({
   nextButtonText = 'Next',
   previousButtonText = 'Previous',
   onIndexChange,
+  className,
+  headerProps,
 }: IStepperProps) {
   const keys = children?.flatMap((child, index) => {
     const item = React.isValidElement(child)
@@ -196,11 +218,12 @@ export default function Stepper({
   const filteredChildren = React.Children.toArray(children)?.[activeTabIndex];
   return (
     <StepperContext.Provider value={providerProps}>
-      <div className={vertical ? 'flex flex-row gap-10' : ''}>
+      <div className={cn(vertical ? 'flex flex-row gap-10' : '', className)}>
         <StepperHeader
           keysWithSeparator={keys}
           activeTabIndex={activeTabIndex}
           vertical={vertical}
+          {...headerProps}
         />
         {filteredChildren}
       </div>

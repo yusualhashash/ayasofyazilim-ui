@@ -51,13 +51,14 @@ export function getBaseType(schema: z.ZodAny): string {
  */
 export function getDefaultValueInZodStack(schema: z.ZodAny): any {
   const typedSchema = schema as unknown as z.ZodDefault<
-    z.ZodNumber | z.ZodString
+    z.ZodNumber | z.ZodString | z.ZodBoolean | z.ZodOptional<z.ZodAny>
   >;
-
   if (typedSchema._def.typeName === 'ZodDefault') {
     return typedSchema._def.defaultValue();
   }
-
+  if (typedSchema._def.typeName === 'ZodBoolean') {
+    return false;
+  }
   if ('innerType' in typedSchema._def) {
     return getDefaultValueInZodStack(
       typedSchema._def.innerType as unknown as z.ZodAny
@@ -87,7 +88,6 @@ export function getDefaultValues<Schema extends z.ZodObject<any, any>>(
 
   for (const key of Object.keys(shape)) {
     const item = shape[key] as z.ZodAny;
-
     if (getBaseType(item) === 'ZodObject') {
       const defaultItems = getDefaultValues(
         getBaseSchema(item) as unknown as z.ZodObject<any, any>,
