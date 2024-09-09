@@ -46,8 +46,8 @@ export const isSchemaType = (object: any): object is SchemaType =>
 export function createZodObject(
   schema: any,
   positions?: string[],
-  subPositions?: Record<string, string[]>,
-  convertors?: Record<string, any>
+  convertors?: Record<string, any>,
+  subPositions?: Record<string, string[]>
 ): ZodObjectOrWrapped {
   const zodSchema: Record<string, ZodSchema> = {};
   const tempPositions = positions || Object.keys(schema.properties);
