@@ -9,7 +9,7 @@ import Dropzone, {
 } from 'react-dropzone';
 import { toast } from 'sonner';
 
-import { replacePlaceholders } from 'src/lib/replace-placeholders';
+import { replacePlaceholders } from '../../lib/replace-placeholders';
 import { cn, formatBytes } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
