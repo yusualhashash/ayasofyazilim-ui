@@ -41,6 +41,7 @@ export type AutoFormProps = {
   fieldConfig?: FieldConfig<z.infer<SchemaType>>;
   formClassName?: string;
   formSchema: SchemaType;
+  isLoading?: boolean;
   onParsedValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
   onSubmit?: (values: z.infer<SchemaType>) => void;
   onValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
@@ -60,6 +61,7 @@ function AutoForm({
   formClassName,
   dependencies,
   showInRow,
+  isLoading,
 }: AutoFormProps) {
   const objectFormSchema = getObjectFormSchema(formSchema);
   const defaultValues: DefaultValues<z.infer<typeof objectFormSchema>> | null =
@@ -102,6 +104,7 @@ function AutoForm({
         className={cn('space-y-5', formClassName)}
       >
         <AutoFormObject
+          isLoading={isLoading}
           showInRow={showInRow}
           schema={objectFormSchema}
           form={form}

@@ -4,6 +4,7 @@ import AutoFormLabel from '../common/label';
 import AutoFormTooltip from '../common/tooltip';
 import { AutoFormInputComponentProps } from '../types';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AutoFormSwitch({
   label,
@@ -14,6 +15,17 @@ export default function AutoFormSwitch({
 }: AutoFormInputComponentProps) {
   const params = fieldProps;
   delete params.containerClassName;
+  if (fieldProps.isLoading)
+    return (
+      <div
+        className={cn(
+          'flex w-full flex-col justify-start space-y-2',
+          fieldProps.containerClassName
+        )}
+      >
+        <Skeleton className="w-full h-6" />
+      </div>
+    );
   return (
     <div>
       <FormItem>
