@@ -9,6 +9,7 @@ import Dropzone, {
 } from 'react-dropzone';
 import { toast } from 'sonner';
 
+import { replacePlaceholders } from 'src/lib/replace-placeholders';
 import { cn, formatBytes } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -16,6 +17,21 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useControllableState } from './hooks/use-controllable-state';
 
 export * from './empty-card';
+
+type FileUploaderResources = {
+  CannotUploadMoreThanOne: string;
+  'CannotUploadMoreThan{0}': string;
+  DragAndDropFilesHere: string;
+  DropTheFilesHere: string;
+  'FailedToUpload{0}': string;
+  File: string;
+  Files: string;
+  'RejectedFile{0}': string;
+  RemoveFile: string;
+  'Uploading{0}': string;
+  'YouCanUpload{0}files{1}each': string;
+  '{0}Uploaded': string;
+};
 
 interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -85,6 +101,8 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
    */
   progresses?: Record<string, number>;
 
+  resources: FileUploaderResources;
+
   /**
    * Value of the uploader.
    * @type File[]
@@ -93,6 +111,20 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
    */
   value?: File[];
 }
+const DefaultResources: FileUploaderResources = {
+  CannotUploadMoreThanOne: 'Cannot upload more than 1 file at a time',
+  'CannotUploadMoreThan{0}': 'Cannot upload more than {0} files',
+  'RejectedFile{0}': 'File {0} was rejected',
+  Files: 'files',
+  File: 'file',
+  'Uploading{0}': 'Uploading {0}...',
+  '{0}Uploaded': '{0} uploaded',
+  'FailedToUpload{0}': 'Failed to upload {0}',
+  DropTheFilesHere: 'Drop the files here',
+  DragAndDropFilesHere: "Drag'n drop files here, or click to select files",
+  'YouCanUpload{0}files{1}each': 'You can upload {0} files (up to {1} each)',
+  RemoveFile: 'Remove file',
+};
 
 export function FileUploader(props: FileUploaderProps) {
   const {
@@ -107,6 +139,7 @@ export function FileUploader(props: FileUploaderProps) {
     maxFileCount = 1,
     multiple = false,
     disabled = false,
+    resources = DefaultResources,
     className,
     ...dropzoneProps
   } = props;
@@ -119,12 +152,19 @@ export function FileUploader(props: FileUploaderProps) {
   const onDrop = React.useCallback(
     (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
       if (!multiple && maxFileCount === 1 && acceptedFiles.length > 1) {
-        toast.error('Cannot upload more than 1 file at a time');
+        toast.error(resources.CannotUploadMoreThanOne);
         return;
       }
 
       if ((files?.length ?? 0) + acceptedFiles.length > maxFileCount) {
-        toast.error(`Cannot upload more than ${maxFileCount} files`);
+        toast.error(
+          replacePlaceholders(resources['CannotUploadMoreThan{0}'], [
+            {
+              holder: '{0}',
+              replacement: maxFileCount.toString(),
+            },
+          ])
+        );
         return;
       }
 
@@ -140,7 +180,11 @@ export function FileUploader(props: FileUploaderProps) {
 
       if (rejectedFiles.length > 0) {
         rejectedFiles.forEach(({ file }) => {
-          toast.error(`File ${file.name} was rejected`);
+          toast.error(
+            replacePlaceholders(resources['RejectedFile{0}'], [
+              { holder: '{0}', replacement: file.name },
+            ])
+          );
         });
       }
 
@@ -150,15 +194,23 @@ export function FileUploader(props: FileUploaderProps) {
         updatedFiles.length <= maxFileCount
       ) {
         const target =
-          updatedFiles.length > 0 ? `${updatedFiles.length} files` : `file`;
+          updatedFiles.length > 0
+            ? `${updatedFiles.length} ${resources.Files}`
+            : resources.File;
 
         toast.promise(onUpload(updatedFiles), {
-          loading: `Uploading ${target}...`,
+          loading: replacePlaceholders(resources['Uploading{0}'], [
+            { holder: '{0}', replacement: target },
+          ]),
           success: () => {
             setFiles([]);
-            return `${target} uploaded`;
+            return replacePlaceholders(resources['{0}Uploaded'], [
+              { holder: '{0}', replacement: target },
+            ]);
           },
-          error: `Failed to upload ${target}`,
+          error: replacePlaceholders(resources['FailedToUpload{0}'], [
+            { holder: '{0}', replacement: target },
+          ]),
         });
       }
     },
@@ -228,7 +280,7 @@ export function FileUploader(props: FileUploaderProps) {
                   />
                 </div>
                 <p className="font-medium text-muted-foreground">
-                  Drop the files here
+                  {resources.DropTheFilesHere}
                 </p>
               </div>
             ) : (
@@ -241,14 +293,25 @@ export function FileUploader(props: FileUploaderProps) {
                 </div>
                 <div className="flex flex-col gap-px">
                   <p className="font-medium text-muted-foreground">
-                    Drag {`'n'`} drop files here, or click to select files
+                    {resources.DragAndDropFilesHere}
                   </p>
                   <p className="text-sm text-muted-foreground/70">
-                    You can upload
-                    {maxFileCount > 1
-                      ? ` ${maxFileCount === Infinity ? 'multiple' : maxFileCount}
-                      files (up to ${formatBytes(maxSize)} each)`
-                      : ` a file with ${formatBytes(maxSize)}`}
+                    {replacePlaceholders(
+                      resources['YouCanUpload{0}files{1}each'],
+                      [
+                        {
+                          holder: '{0}',
+                          replacement:
+                            maxFileCount === Infinity
+                              ? 'multiple'
+                              : maxFileCount,
+                        },
+                        {
+                          holder: '{1}',
+                          replacement: formatBytes(maxSize),
+                        },
+                      ]
+                    )}
                   </p>
                 </div>
               </div>
@@ -261,6 +324,7 @@ export function FileUploader(props: FileUploaderProps) {
           <div className="flex max-h-48 flex-col gap-4">
             {files?.map((file, index) => (
               <FileCard
+                resources={resources}
                 key={file.name + file.size + file.lastModified}
                 file={file}
                 onRemove={() => onRemove(index)}
@@ -278,9 +342,10 @@ interface FileCardProps {
   file: File;
   onRemove: () => void;
   progress?: number;
+  resources: Pick<FileUploaderResources, 'RemoveFile'>;
 }
 
-const FileCard = ({ file, progress, onRemove }: FileCardProps) => (
+const FileCard = ({ file, progress, onRemove, resources }: FileCardProps) => (
   <div className="relative flex items-center gap-2.5">
     <div className="flex flex-1 gap-2.5">
       {isFileWithPreview(file) ? <FilePreview file={file} /> : null}
@@ -305,7 +370,7 @@ const FileCard = ({ file, progress, onRemove }: FileCardProps) => (
         onClick={onRemove}
       >
         <Cross2Icon className="size-4" aria-hidden="true" />
-        <span className="sr-only">Remove file</span>
+        <span className="sr-only">{resources.RemoveFile}</span>
       </Button>
     </div>
   </div>
