@@ -3,6 +3,8 @@ import { Textarea } from '@/components/ui/textarea';
 import AutoFormLabel from '../common/label';
 import AutoFormTooltip from '../common/tooltip';
 import { AutoFormInputComponentProps } from '../types';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 export default function AutoFormTextarea({
   label,
@@ -14,6 +16,18 @@ export default function AutoFormTextarea({
   const showLabel = _showLabel === undefined ? true : _showLabel;
   const params = fieldPropsWithoutShowLabel;
   delete params.containerClassName;
+  if (fieldProps.isLoading)
+    return (
+      <div
+        className={cn(
+          'flex w-full flex-col justify-start space-y-2',
+          fieldProps.containerClassName
+        )}
+      >
+        {showLabel && <Skeleton className="w-1/2 h-3" />}
+        <Skeleton className="w-full h-9" />
+      </div>
+    );
   return (
     <FormItem className={fieldProps.containerClassName}>
       {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}

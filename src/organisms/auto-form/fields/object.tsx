@@ -13,6 +13,7 @@ import {
 } from '../utils';
 import AutoFormArray from './array';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const DefaultParent = ({ children }: { children: JSX.Element }) => children;
 
@@ -25,6 +26,7 @@ export default function AutoFormObject<
   path = [],
   dependencies = [],
   // isDisabled = false,
+  isLoading,
   showInRow = false,
   hasParent = false,
   className,
@@ -34,6 +36,7 @@ export default function AutoFormObject<
   fieldConfig?: FieldConfig<z.infer<SchemaType>>;
   form: ReturnType<typeof useForm>;
   hasParent?: boolean;
+  isLoading?: boolean;
   // isDisabled?: boolean;
   path?: string[];
   schema: SchemaType | z.ZodEffects<SchemaType>;
@@ -76,7 +79,7 @@ export default function AutoFormObject<
       className={cn(showInRow ? 'flex flex-row gap-3' : 'space-y-2', className)}
     >
       {Object.keys(shape).map((name: string) =>
-        CreateFormObject(
+        CreateFormObject({
           hasParent,
           name,
           shape,
@@ -86,26 +89,39 @@ export default function AutoFormObject<
           watch,
           form,
           createItemName,
-          handleIfZodNumber
-        )
+          handleIfZodNumber,
+          isLoading,
+        })
       )}
     </div>
   );
 }
 
-function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
-  hasParent: boolean,
-  name: string,
-  shape: z.ZodObject<any, any>['shape'],
-  fieldConfig: any,
-  path: string[],
-  dependencies: Dependency<z.infer<SchemaType>>[],
-  watch: any,
-  form: ReturnType<typeof useForm>,
-  createItemName: any,
-  handleIfZodNumber: (item: z.ZodAny) => z.ZodAny,
-  isInputDisabled?: boolean
-) {
+function CreateFormObject<SchemaType extends z.ZodObject<any, any>>({
+  name,
+  shape,
+  fieldConfig,
+  path,
+  dependencies,
+  watch,
+  form,
+  createItemName,
+  handleIfZodNumber,
+  isInputDisabled,
+  isLoading,
+}: {
+  createItemName: any;
+  dependencies: Dependency<z.infer<SchemaType>>[];
+  fieldConfig: any;
+  form: ReturnType<typeof useForm>;
+  handleIfZodNumber: (item: z.ZodAny) => z.ZodAny;
+  isInputDisabled?: boolean;
+  isLoading?: boolean;
+  name: string;
+  path: string[];
+  shape: z.ZodObject<any, any>['shape'];
+  watch: any;
+}) {
   let item = shape[name] as z.ZodAny;
   const itemName = createItemName(item, name) ?? name;
   item = handleIfZodNumber(item) as z.ZodAny;
@@ -127,11 +143,23 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
         key={key}
         className="flex flex-col border p-4 rounded-md bg-white flex-1 gap-2"
       >
-        <div className="text-sm font-bold">{itemName}</div>
-        <div className="text-muted-foreground text-sm">
-          {fieldConfig?.[name]?.description}
-        </div>
+        {itemName && !isLoading ? (
+          <div className="text-sm font-bold">{itemName}</div>
+        ) : (
+          <Skeleton className="w-1/2 h-3" />
+        )}
+
+        {fieldConfig?.[name]?.description && isLoading ? (
+          <Skeleton className="w-1/2 h-3" />
+        ) : (
+          fieldConfig?.[name]?.description && (
+            <div className="text-muted-foreground text-sm">
+              {fieldConfig?.[name]?.description}
+            </div>
+          )
+        )}
         <AutoFormObject
+          isLoading={isLoading}
           isDisabled={isDisabled}
           dependencies={dependencies}
           hasParent
@@ -201,6 +229,7 @@ function CreateFormObject<SchemaType extends z.ZodObject<any, any>>(
           ref: undefined,
           containerClassName: fieldConfigItem.containerClassName,
           className: fieldConfigItem.className,
+          isLoading: isLoading === true ? true : fieldConfigItem.isLoading,
           value,
         };
         if (InputComponent === undefined) {

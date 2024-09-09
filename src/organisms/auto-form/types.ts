@@ -21,10 +21,11 @@ export type FieldConfigItem = {
   inputProps?: React.InputHTMLAttributes<HTMLInputElement> & {
     showLabel?: boolean;
   };
+  isLoading?: boolean;
+
   renderParent?: (props: {
     children: React.ReactNode;
   }) => React.ReactElement | null;
-
   withoutBorder?: boolean;
 };
 
@@ -76,6 +77,7 @@ export type AutoFormInputComponentProps = {
   field: ControllerRenderProps<FieldValues, any>;
   fieldConfigItem: FieldConfigItem;
   fieldProps: any;
+  isLoading?: boolean;
   isRequired: boolean;
   label: string;
   zodInputProps: React.InputHTMLAttributes<HTMLInputElement>;
