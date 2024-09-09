@@ -131,6 +131,7 @@ export type DataTableProps<TData> = {
   renderSubComponent?: (row: any) => JSX.Element;
   rowCount?: number;
   showView?: boolean;
+  tableClassName?: string;
 };
 const SkeletonCell = () => <Skeleton className="w-20 h-3" />;
 
@@ -226,6 +227,7 @@ export default function DataTable<TData, TValue>({
   Headertable,
   onDataUpdate,
   detailedFilter,
+  tableClassName,
 }: DataTableProps<TData>) {
   const [tableData, setTableData] = useState<TData[]>(data || []);
   const isMultipleActionProvided = Array.isArray(action);
@@ -322,8 +324,8 @@ export default function DataTable<TData, TValue>({
     fetchRequest?.(table.getState().pagination.pageIndex, filterString);
   }, [table.getState().pagination.pageIndex, filteredColumns]);
 
-  function selectedRowsText() {
-    if (isLoading) return 'Loading...';
+  function selectedRowsText(): string | JSX.Element {
+    if (isLoading) return <Skeleton className="w-28 h-4" />;
     return `${table.getFilteredSelectedRowModel().rows.length} of ${table.getFilteredRowModel().rows.length} row(s) selected.`;
   }
 
@@ -355,89 +357,103 @@ export default function DataTable<TData, TValue>({
             triggerData={triggerData}
           />
         )}
-
-      <div className="flex items-center py-4 gap-2">
-        {showView === true && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                disabled={isLoading}
-                variant="outline"
-                className="ml-auto"
-              >
-                View <ChevronDownIcon className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {normalizeName(column.id)}
-                  </DropdownMenuCheckboxItem>
-                ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
-
-        <div className="flex">
-          <ActionComponent
-            action={defaultAction}
-            callback={() => {
-              setTriggerData(null);
-              setActiveAction(defaultAction);
-              setIsOpen(true);
-            }}
-            className={isMultipleActionProvided ? 'rounded-r-none' : ''}
-          />
-          {isMultipleActionProvided && action.length > 1 && (
+      {showView && defaultAction && (
+        <div className="flex items-center py-4 gap-2">
+          {showView === true && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  disabled={isLoading}
-                  variant="outline"
-                  className="rounded-l-none border-l-0 px-2"
-                >
-                  <ChevronDownIcon className="" />
-                </Button>
+                {isLoading ? (
+                  <Skeleton className="ml-auto h-9 w-32" />
+                ) : (
+                  <Button
+                    disabled={isLoading}
+                    variant="outline"
+                    className="ml-auto"
+                  >
+                    View <ChevronDownIcon className="ml-2 h-4 w-4" />
+                  </Button>
+                )}
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {action
-                  .filter((i) => i !== action[0])
-                  .map((actionItem) => (
-                    <DropdownMenuItem
-                      asChild
-                      key={getCTA(actionItem.cta, triggerData)}
-                      className="cursor-pointer"
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
                     >
-                      <ActionComponent
-                        action={actionItem}
-                        callback={() => {
-                          setTriggerData(null);
-                          setActiveAction(actionItem);
-                          if (actionItem.type === 'Action') {
-                            actionItem.callback(null);
-                            return;
-                          }
-                          setIsOpen(true);
-                        }}
-                        className="w-full border-none"
-                      />
-                    </DropdownMenuItem>
+                      {normalizeName(column.id)}
+                    </DropdownMenuCheckboxItem>
                   ))}
               </DropdownMenuContent>
             </DropdownMenu>
           )}
+
+          <div className="flex">
+            {isLoading ? (
+              <Skeleton className="w-36 h-9" />
+            ) : (
+              <ActionComponent
+                action={defaultAction}
+                callback={() => {
+                  setTriggerData(null);
+                  setActiveAction(defaultAction);
+                  setIsOpen(true);
+                }}
+                className={isMultipleActionProvided ? 'rounded-r-none' : ''}
+              />
+            )}
+            {isMultipleActionProvided && action.length > 1 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  {isLoading ? (
+                    <Skeleton className="w-36 h-9" />
+                  ) : (
+                    <Button
+                      disabled={isLoading}
+                      variant="outline"
+                      className="rounded-l-none border-l-0 px-2"
+                    >
+                      <ChevronDownIcon className="" />
+                    </Button>
+                  )}
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {action
+                    .filter((i) => i !== action[0])
+                    .map((actionItem) => (
+                      <DropdownMenuItem
+                        asChild
+                        key={getCTA(actionItem.cta, triggerData)}
+                        className="cursor-pointer"
+                      >
+                        <ActionComponent
+                          action={actionItem}
+                          callback={() => {
+                            setTriggerData(null);
+                            setActiveAction(actionItem);
+                            if (actionItem.type === 'Action') {
+                              actionItem.callback(null);
+                              return;
+                            }
+                            setIsOpen(true);
+                          }}
+                          className="w-full border-none"
+                        />
+                      </DropdownMenuItem>
+                    ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
         </div>
-      </div>
+      )}
+
       <div className="mb-2 flex">
         {filteredColumns &&
           filteredColumns.map((column) => (
@@ -486,7 +502,9 @@ export default function DataTable<TData, TValue>({
           )}
       </div>
       <div className="rounded-md border relative w-full">
-        <Table wrapperClassName="h-[500px] overflow-y-auto">
+        <Table
+          wrapperClassName={cn('h-[500px] overflow-y-auto', tableClassName)}
+        >
           <TableHeader className="sticky top-0 bg-slate-100 z-10">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="whitespace-nowrap">
@@ -643,22 +661,31 @@ export default function DataTable<TData, TValue>({
           </div>
         ) : (
           <div className="space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              Next
-            </Button>
+            {isLoading ? (
+              <>
+                <Skeleton className="inline-flex h-9 w-24" />
+                <Skeleton className="inline-flex h-9 w-24" />
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                >
+                  Next
+                </Button>
+              </>
+            )}
           </div>
         )}
       </div>
