@@ -25,19 +25,15 @@ export default function AutoFormObject<
   fieldConfig,
   path = [],
   dependencies = [],
-  // isDisabled = false,
   isLoading,
   showInRow = false,
-  hasParent = false,
   className,
 }: {
   className?: string;
   dependencies?: Dependency<z.infer<SchemaType>>[];
   fieldConfig?: FieldConfig<z.infer<SchemaType>>;
   form: ReturnType<typeof useForm>;
-  hasParent?: boolean;
   isLoading?: boolean;
-  // isDisabled?: boolean;
   path?: string[];
   schema: SchemaType | z.ZodEffects<SchemaType>;
   showInRow?: boolean;
@@ -78,26 +74,28 @@ export default function AutoFormObject<
     <div
       className={cn(showInRow ? 'flex flex-row gap-3' : 'space-y-2', className)}
     >
-      {Object.keys(shape).map((name: string) =>
-        CreateFormObject({
-          hasParent,
-          name,
-          shape,
-          fieldConfig,
-          path,
-          dependencies,
-          watch,
-          form,
-          createItemName,
-          handleIfZodNumber,
-          isLoading,
-        })
-      )}
+      {Object.keys(shape).map((name: string) => (
+        <FormObject
+          key={name}
+          {...{
+            name,
+            shape,
+            fieldConfig,
+            path,
+            dependencies,
+            watch,
+            form,
+            createItemName,
+            handleIfZodNumber,
+            isLoading,
+          }}
+        />
+      ))}
     </div>
   );
 }
 
-function CreateFormObject<SchemaType extends z.ZodObject<any, any>>({
+function FormObject<SchemaType extends z.ZodObject<any, any>>({
   name,
   shape,
   fieldConfig,
