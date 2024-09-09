@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import AutoFormLabel from '../common/label';
 import AutoFormTooltip from '../common/tooltip';
 import { AutoFormInputComponentProps } from '../types';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 export default function AutoFormFile({
   label,
@@ -36,6 +38,18 @@ export default function AutoFormFile({
   };
   const params = fieldPropsWithoutShowLabel;
   delete params.containerClassName;
+  if (fieldProps.isLoading)
+    return (
+      <div
+        className={cn(
+          'flex w-full flex-col justify-start space-y-2',
+          fieldProps.containerClassName
+        )}
+      >
+        <Skeleton className="w-1/2 h-3" />
+        <Skeleton className="w-full h-9" />
+      </div>
+    );
   return (
     <FormItem className={fieldProps.containerClassName}>
       {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}

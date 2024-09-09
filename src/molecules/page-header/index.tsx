@@ -26,10 +26,10 @@ export const PageHeader = ({
   if (isLoading) {
     return (
       <div className="mb-5 flex items-center gap-4">
-        {LinkElement && <Skeleton className="h-12 w-12 bg-gray-200" />}
+        {LinkElement && <Skeleton className="h-12 w-12 " />}
         <div>
-          <Skeleton className="h-6 w-80 bg-gray-200" />
-          <Skeleton className="h-6 w-120 bg-gray-200 mt-1" />
+          <Skeleton className="h-6 w-80 " />
+          <Skeleton className="h-6 w-120  mt-1" />
         </div>
       </div>
     );

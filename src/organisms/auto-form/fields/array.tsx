@@ -60,6 +60,7 @@ export default function AutoFormArray({
   if (itemDefType === null) {
     itemDefType = (item._def as any).innerType._def.innerType.element;
   }
+
   return (
     <div className={fieldConfig.containerClassName}>
       <Accordion type="multiple" defaultValue={[name]}>

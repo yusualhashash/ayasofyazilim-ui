@@ -3,6 +3,8 @@ import { FormControl, FormItem, FormMessage } from '@/components/ui/form';
 import AutoFormLabel from '../common/label';
 import AutoFormTooltip from '../common/tooltip';
 import { AutoFormInputComponentProps } from '../types';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 export default function AutoFormDate({
   label,
@@ -13,6 +15,18 @@ export default function AutoFormDate({
 }: AutoFormInputComponentProps) {
   const params = fieldProps;
   delete params.containerClassName;
+  if (fieldProps.isLoading)
+    return (
+      <div
+        className={cn(
+          'flex w-full flex-col justify-start space-y-2',
+          fieldProps.containerClassName
+        )}
+      >
+        <Skeleton className="w-1/2 h-3" />
+        <Skeleton className="w-full h-9" />
+      </div>
+    );
   return (
     <FormItem className={fieldProps.containerClassName}>
       <AutoFormLabel label={label} isRequired={isRequired} />
