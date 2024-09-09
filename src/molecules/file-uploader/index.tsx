@@ -101,7 +101,7 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
    */
   progresses?: Record<string, number>;
 
-  resources: FileUploaderResources;
+  resources?: FileUploaderResources;
 
   /**
    * Value of the uploader.
