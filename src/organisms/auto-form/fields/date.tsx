@@ -15,6 +15,7 @@ export default function AutoFormDate({
 }: AutoFormInputComponentProps) {
   const params = fieldProps;
   delete params.containerClassName;
+  delete params.isLoading;
   if (fieldProps.isLoading)
     return (
       <div

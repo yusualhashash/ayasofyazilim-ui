@@ -16,6 +16,7 @@ export default function AutoFormTextarea({
   const showLabel = _showLabel === undefined ? true : _showLabel;
   const params = fieldPropsWithoutShowLabel;
   delete params.containerClassName;
+  delete params.isLoading;
   if (fieldProps.isLoading)
     return (
       <div

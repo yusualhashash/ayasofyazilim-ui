@@ -38,6 +38,7 @@ export default function AutoFormFile({
   };
   const params = fieldPropsWithoutShowLabel;
   delete params.containerClassName;
+  delete params.isLoading;
   if (fieldProps.isLoading)
     return (
       <div
