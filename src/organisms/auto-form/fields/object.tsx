@@ -139,7 +139,10 @@ function FormObject<SchemaType extends z.ZodObject<any, any>>({
     return (
       <div
         key={key}
-        className="flex flex-col border p-4 rounded-md bg-white flex-1 gap-2"
+        className={cn(
+          'flex flex-col border p-4 rounded-md bg-white flex-1 gap-2',
+          fieldConfig?.[name]?.className
+        )}
       >
         {itemName && !isLoading ? (
           <div className="text-sm font-bold">{itemName}</div>
