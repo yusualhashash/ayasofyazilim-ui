@@ -17,6 +17,7 @@ export default function AutoFormInput({
   const type = fieldProps.type || 'text';
   const params = fieldPropsWithoutShowLabel;
   delete params.containerClassName;
+  delete params.isLoading;
   if (fieldProps.isLoading)
     return (
       <div
