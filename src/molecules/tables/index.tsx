@@ -357,7 +357,7 @@ export default function DataTable<TData, TValue>({
             triggerData={triggerData}
           />
         )}
-      {showView && defaultAction && (
+      {(showView || defaultAction) && (
         <div className="flex items-center py-4 gap-2">
           {showView === true && (
             <DropdownMenu>
