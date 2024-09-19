@@ -521,7 +521,14 @@ export default function DataTable<TData, TValue>({
                   </TableHead>
                 ))}
                 {!isLoading && (
-                  <TableHead key="actions" className="max-w-max flex ml-auto" />
+                  <TableHead
+                    key="actions"
+                    className={cn(
+                      'sticky right-0  bg-gray-100 text-transparent'
+                    )}
+                  >
+                    actions
+                  </TableHead>
                 )}
               </TableRow>
             ))}
@@ -546,8 +553,9 @@ export default function DataTable<TData, TValue>({
                     ))}
                     {!isLoading && (
                       <TableCell
+                        key="actions"
                         className={cn(
-                          'sticky right-0 bg-white p-0 m-0 max-w-max flex ml-auto border-0'
+                          'sticky right-0 p-0 m-0 max-w-max  border-0'
                         )}
                       >
                         <Separator
@@ -559,7 +567,7 @@ export default function DataTable<TData, TValue>({
                           <DropdownMenuTrigger asChild>
                             <Button
                               variant="ghost"
-                              className="rounded-none outline-none focus-visible:ring-inset"
+                              className="rounded-none outline-none"
                             >
                               Actions
                             </Button>
