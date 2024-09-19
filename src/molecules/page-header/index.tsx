@@ -25,7 +25,7 @@ export const PageHeader = ({
 }: IPageHeaderProps | IPageBackButtonProps) => {
   if (isLoading) {
     return (
-      <div className="mb-5 flex items-center gap-4">
+      <div className="mb-4 flex items-center gap-4 px-2">
         {LinkElement && <Skeleton className="h-12 w-12 " />}
         <div>
           <Skeleton className="h-6 w-80 " />
@@ -35,7 +35,7 @@ export const PageHeader = ({
     );
   }
   return (
-    <div className="mb-5 flex items-center gap-4">
+    <div className="mb-4 flex items-center gap-4 px-2">
       {LinkElement && (
         <LinkElement
           className="size-12 rounded-xl cursor-pointer border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground items-center justify-center flex"
