@@ -555,7 +555,7 @@ export default function DataTable<TData, TValue>({
                       <TableCell
                         key="actions"
                         className={cn(
-                          'sticky right-0 p-0 m-0 max-w-max  border-0'
+                          'sticky right-0 p-0 m-0 max-w-max border-0 bg-white'
                         )}
                       >
                         <Separator
