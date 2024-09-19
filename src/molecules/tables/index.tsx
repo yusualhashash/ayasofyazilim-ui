@@ -25,7 +25,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -555,14 +554,9 @@ export default function DataTable<TData, TValue>({
                       <TableCell
                         key="actions"
                         className={cn(
-                          'sticky right-0 p-0 m-0 max-w-max border-0 bg-white'
+                          'sticky right-0 p-0 m-0 max-w-max border-l-2 bg-white'
                         )}
                       >
-                        <Separator
-                          orientation="vertical"
-                          className="absolute left-0 top-0 -z-10"
-                        />
-
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
