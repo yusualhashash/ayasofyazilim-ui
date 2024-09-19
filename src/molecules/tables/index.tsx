@@ -502,6 +502,7 @@ export default function DataTable<TData, TValue>({
           )}
         </div>
       )}
+
       <div className="flex-1 overflow-auto">
         <Table
           wrapperClassName={cn('flex-1 border rounded-md', tableClassName)}
