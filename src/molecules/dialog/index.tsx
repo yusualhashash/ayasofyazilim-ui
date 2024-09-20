@@ -6,6 +6,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -21,6 +22,7 @@ import {
   TableActionCommon,
   TableActionDialog,
 } from '../tables';
+import CustomButton from '../button';
 
 export type TableAction = TableActionCommon & TableActionDialog;
 export type CustomTableActionDialogProps = {
@@ -100,9 +102,28 @@ export default function CustomTableActionDialog({
           {autoFormData && autoFormData}
           {content}
         </div>
-        {/* <DialogFooter> */}
-        {/* TODO: Dialog footer to add whatever children we need */}
-        {/* </DialogFooter> */}
+        {action.componentType === 'ConfimrationDialog' ? (
+          <DialogFooter>
+            <CustomButton
+              onClick={() => {
+                onOpenChange(false);
+              }}
+              variant="outline"
+            >
+              {action.cancelCTA || 'Cancel'}
+            </CustomButton>
+            <CustomButton
+              onClick={() => {
+                if (action?.callback) action?.callback(triggerData);
+                onOpenChange(false);
+              }}
+              variant={action.variant || 'primary'}
+            >
+              {cta}
+            </CustomButton>
+            {/* TODO: Dialog footer to add whatever children we need */}
+          </DialogFooter>
+        ) : null}
       </DialogContent>
     </Dialog>
   );

@@ -88,11 +88,19 @@ export type TableActionCustom = {
   content?: JSX.Element;
   loadingContent: JSX.Element;
 };
+export type TableActionConfirmation = {
+  callback?: (values?: any) => void;
+  cancelCTA?: string;
+  componentType: 'ConfimrationDialog';
+  content?: JSX.Element;
+  title: string;
+  variant: 'destructive' | 'default';
+};
 
 export type TableActionDialog = {
   description: string;
   type: 'Dialog' | 'Sheet';
-} & (TableActionAutoform | TableActionCustom);
+} & (TableActionAutoform | TableActionCustom | TableActionConfirmation);
 export type TableActionAction = {
   callback: (values: any) => void;
   type: 'Action';
@@ -345,17 +353,15 @@ export default function DataTable<TData, TValue>({
 
   return (
     <div className="w-full">
-      {activeAction &&
-        isOpen &&
-        ('autoFormArgs' in activeAction || 'content' in activeAction) && (
-          <CustomTableActionDialog
-            open={isOpen}
-            onOpenChange={setIsOpen}
-            action={activeAction}
-            type={activeAction?.type}
-            triggerData={triggerData}
-          />
-        )}
+      {activeAction && isOpen && activeAction.type === 'Dialog' && (
+        <CustomTableActionDialog
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          action={activeAction}
+          type={activeAction?.type}
+          triggerData={triggerData}
+        />
+      )}
       {(showView || defaultAction) && (
         <div className="flex items-center py-4 gap-2">
           {showView === true && (
