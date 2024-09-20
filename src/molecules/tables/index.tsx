@@ -25,7 +25,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -523,7 +522,14 @@ export default function DataTable<TData, TValue>({
                   </TableHead>
                 ))}
                 {!isLoading && (
-                  <TableHead key="actions" className="max-w-max flex ml-auto" />
+                  <TableHead
+                    key="actions"
+                    className={cn(
+                      'sticky right-0  bg-gray-100 text-transparent'
+                    )}
+                  >
+                    actions
+                  </TableHead>
                 )}
               </TableRow>
             ))}
@@ -548,20 +554,16 @@ export default function DataTable<TData, TValue>({
                     ))}
                     {!isLoading && (
                       <TableCell
+                        key="actions"
                         className={cn(
-                          'sticky right-0 bg-white p-0 m-0 max-w-max flex ml-auto border-0'
+                          'sticky right-0 p-0 m-0 max-w-max border-l-2 bg-white'
                         )}
                       >
-                        <Separator
-                          orientation="vertical"
-                          className="absolute left-0 top-0 -z-10"
-                        />
-
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
                               variant="ghost"
-                              className="rounded-none outline-none focus-visible:ring-inset"
+                              className="rounded-none outline-none"
                             >
                               Actions
                             </Button>
