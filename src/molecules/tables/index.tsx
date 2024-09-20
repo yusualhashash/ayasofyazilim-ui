@@ -352,7 +352,7 @@ export default function DataTable<TData, TValue>({
   }, [tableData]);
 
   return (
-    <div className="w-full">
+    <div className="flex flex-col h-full">
       {activeAction && isOpen && activeAction.type === 'Dialog' && (
         <CustomTableActionDialog
           open={isOpen}
@@ -363,7 +363,7 @@ export default function DataTable<TData, TValue>({
         />
       )}
       {(showView || defaultAction) && (
-        <div className="flex items-center py-4 gap-2">
+        <div className="flex items-center gap-2">
           {showView === true && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -459,17 +459,17 @@ export default function DataTable<TData, TValue>({
         </div>
       )}
 
-      <div className="mb-2 flex">
-        {filteredColumns &&
-          filteredColumns.map((column) => (
-            <FilterColumn
-              key={column.name}
-              column={column}
-              setFilteredColumns={setFilteredColumns}
-            />
-          ))}
-        {detailedFilter &&
-          detailedFilter?.filter(
+      {detailedFilter && (
+        <div className="my-3 flex">
+          {filteredColumns &&
+            filteredColumns.map((column) => (
+              <FilterColumn
+                key={column.name}
+                column={column}
+                setFilteredColumns={setFilteredColumns}
+              />
+            ))}
+          {detailedFilter?.filter(
             (column) =>
               filteredColumns?.findIndex((f) => f.name === column.name) === -1
           )?.length > 0 && (
@@ -505,10 +505,12 @@ export default function DataTable<TData, TValue>({
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-      </div>
-      <div className="rounded-md border relative w-full">
+        </div>
+      )}
+
+      <div className="flex-1 overflow-auto">
         <Table
-          wrapperClassName={cn('h-[500px] overflow-y-auto', tableClassName)}
+          wrapperClassName={cn('flex-1 border rounded-md', tableClassName)}
         >
           <TableHeader className="sticky top-0 bg-slate-100 z-10">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -640,8 +642,7 @@ export default function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex items-center py-5">
         <div className="flex-1 text-sm text-muted-foreground">
           {selectedRowsText()}
         </div>
