@@ -78,13 +78,14 @@ export default function CustomTableActionDialog({
       ? action?.content || action.loadingContent
       : undefined;
   const cta = getCTA(action?.cta, triggerData);
+  const description = getCTA(action?.description, triggerData);
   return type === 'Sheet' ? (
     <SheetSide
       open={open}
       onOpenChange={onOpenChange}
       position="right"
       title={cta}
-      description={action?.description}
+      description={description}
     >
       <>
         {autoFormData && autoFormData}
@@ -96,7 +97,7 @@ export default function CustomTableActionDialog({
       <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-auto [&::-webkit-scrollbar]:hidden">
         <DialogHeader>
           <DialogTitle>{cta}</DialogTitle>
-          <DialogDescription>{action?.description}</DialogDescription>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4">
           {autoFormData && autoFormData}
