@@ -8,9 +8,8 @@ import React, {
   useState,
 } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 export interface ISection {
   id: string;
@@ -115,7 +114,6 @@ export interface ISectionLayoutProps {
   children: React.ReactNode;
   defaultActiveSectionId?: string;
   linkElement?: any;
-  noCard?: boolean;
   sections: Array<ISection>;
   vertical?: boolean;
 }
@@ -128,7 +126,6 @@ export interface ISectionLayoutProps {
  * @param {string} [defaultActiveSectionId] - The ID of the section to be active by default.
  * @param {any} [linkElement] - The element to be used for the section links. (default: Button)
  * @param {boolean} [vertical] - Whether the layout should be rendered vertically.
- * @param {boolean} [noCard] - Whether the layout should be rendered without a card.
  * @return {JSX.Element} The rendered section layout component.
  */
 export function SectionLayout({
@@ -137,9 +134,7 @@ export function SectionLayout({
   defaultActiveSectionId,
   linkElement,
   vertical,
-  noCard,
 }: ISectionLayoutProps) {
-  const Container = noCard ? 'div' : Card;
   const [activeSectionId, setActiveSectionId] = useState(
     defaultActiveSectionId || sections?.[0].id
   );
@@ -151,10 +146,10 @@ export function SectionLayout({
   const contextValue = useMemo(() => ({ activeSectionId }), [activeSectionId]);
   return (
     <SectionLayoutContext.Provider value={contextValue}>
-      <Container
+      <div
         className={
           vertical
-            ? 'flex flex-wrap md:flex-nowrap rounded-lg h-full overflow-hidden'
+            ? 'flex flex-wrap md:flex-nowrap rounded-lg h-full overflow-hidden mb-5'
             : 'rounded-lg h-full overflow-hidden flex flex-col'
         }
       >
@@ -166,46 +161,37 @@ export function SectionLayout({
           vertical={vertical}
         />
         {children}
-      </Container>
+      </div>
     </SectionLayoutContext.Provider>
   );
 }
 
-export function SectionLayoutSkeleton({
-  vertical,
-  noCard,
-}: {
-  noCard?: boolean;
-  vertical?: boolean;
-}) {
-  const Container = noCard ? 'div' : Card;
-  return (
-    <Container
-      className={
+export const SectionLayoutSkeleton = ({ vertical }: { vertical?: boolean }) => (
+  <div
+    className={
+      vertical
+        ? 'flex flex-wrap md:flex-nowrap rounded-lg h-full overflow-hidden'
+        : 'rounded-lg h-full overflow-hidden flex flex-col'
+    }
+  >
+    <nav
+      className={cn(
+        'flex gap-4 text-sm text-center md:text-left p-5 ',
         vertical
-          ? 'flex flex-wrap md:flex-nowrap rounded-lg h-full overflow-hidden'
-          : 'rounded-lg h-full overflow-hidden flex flex-col'
-      }
+          ? 'flex-col border-b md:border-b-0 md:border-r min-w-full md:min-w-[240px] items-center md:items-start'
+          : 'flex-col md:flex-row border-b'
+      )}
     >
-      <nav
-        className={cn(
-          'flex gap-4 text-sm text-center md:text-left p-5 ',
-          vertical
-            ? 'flex-col border-b md:border-b-0 md:border-r min-w-full md:min-w-[240px] items-center md:items-start'
-            : 'flex-col md:flex-row border-b'
-        )}
-      >
-        <Skeleton className="h-6 w-full bg-gray-200" />
-        <Skeleton className="h-6 w-full bg-gray-200" />
-        <Skeleton className="h-6 w-full bg-gray-200" />
-        <Skeleton className="h-6 w-full bg-gray-200" />
-        <Skeleton className="h-6 w-full bg-gray-200" />
-      </nav>
-      <div className="w-full p-5 overflow-auto h-full flex-1">
-        <Skeleton className="h-40 w-full bg-gray-200 mb-2" />
-        <Skeleton className="h-40 w-full bg-gray-200 mb-2" />
-        <Skeleton className="h-40 w-full bg-gray-200 mb-2" />
-      </div>
-    </Container>
-  );
-}
+      <Skeleton className="h-6 w-full bg-gray-200" />
+      <Skeleton className="h-6 w-full bg-gray-200" />
+      <Skeleton className="h-6 w-full bg-gray-200" />
+      <Skeleton className="h-6 w-full bg-gray-200" />
+      <Skeleton className="h-6 w-full bg-gray-200" />
+    </nav>
+    <div className="w-full p-5 overflow-auto h-full flex-1">
+      <Skeleton className="h-40 w-full bg-gray-200 mb-2" />
+      <Skeleton className="h-40 w-full bg-gray-200 mb-2" />
+      <Skeleton className="h-40 w-full bg-gray-200 mb-2" />
+    </div>
+  </div>
+);

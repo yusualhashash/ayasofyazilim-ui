@@ -101,7 +101,7 @@ function AutoForm({
         onSubmit={(e) => {
           form.handleSubmit(onSubmit)(e);
         }}
-        className={cn('space-y-5', formClassName)}
+        className={cn('space-y-5 h-full overflow-auto', formClassName)}
       >
         <AutoFormObject
           isLoading={isLoading}
