@@ -126,7 +126,6 @@ export interface ISectionLayoutProps {
  * @param {string} [defaultActiveSectionId] - The ID of the section to be active by default.
  * @param {any} [linkElement] - The element to be used for the section links. (default: Button)
  * @param {boolean} [vertical] - Whether the layout should be rendered vertically.
- * @param {boolean} [noCard] - Whether the layout should be rendered without a card.
  * @return {JSX.Element} The rendered section layout component.
  */
 export function SectionLayout({
