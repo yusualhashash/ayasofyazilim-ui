@@ -12,7 +12,7 @@ import {
   columnsSubContent,
   renderSubComponent,
 } from './columns';
-import { data } from './data';
+import { data, Payment } from './data';
 
 const formSchema = z.object({
   username: z
@@ -381,7 +381,19 @@ export const SubContentMenuActionDialog: StoryObj<typeof Table> = {
             description: 'View Details description',
             title: 'Details title',
             variant: 'destructive',
-            callback: async (triggerData) => console.log(triggerData),
+            callback: async (triggerData: Payment) => console.log(triggerData),
+          },
+          {
+            type: 'Dialog',
+            cta: 'Delete Email',
+            componentType: 'ConfimrationDialog',
+            description: (triggerData) => {
+              const _triggerData = triggerData as Payment;
+              return `Are you sure to delete ${_triggerData.email}?`;
+            },
+            title: 'Details title',
+            variant: 'destructive',
+            callback: async (triggerData: Payment) => console.log(triggerData),
           },
         ],
       },

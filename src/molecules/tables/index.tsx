@@ -67,6 +67,11 @@ export type TableActionCommon<T = undefined> = {
   cta: string | ((triggerData?: T) => string);
 };
 
+export type TableActionDialog = {
+  description: string | ((triggerData?: unknown) => string);
+  type: 'Dialog' | 'Sheet';
+} & (TableActionAutoform | TableActionCustom | TableActionConfirmation);
+
 export type TableActionNewPage = {
   href: string;
   type: 'NewPage';
@@ -97,10 +102,6 @@ export type TableActionConfirmation = {
   variant: 'destructive' | 'default';
 };
 
-export type TableActionDialog = {
-  description: string;
-  type: 'Dialog' | 'Sheet';
-} & (TableActionAutoform | TableActionCustom | TableActionConfirmation);
 export type TableActionAction = {
   callback: (values: any) => void;
   type: 'Action';
