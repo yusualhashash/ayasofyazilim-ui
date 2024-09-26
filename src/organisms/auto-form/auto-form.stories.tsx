@@ -9,6 +9,7 @@ export default {
 } as Meta<typeof AutoForm>;
 
 const formSchema = z.object({
+  loginAs: z.enum(['admin', 'user']),
   username: z
     .string({
       required_error: 'Username is required.',
@@ -16,7 +17,6 @@ const formSchema = z.object({
     .min(2, {
       message: 'Username must be at least 2 characters.',
     }),
-
   password: z
     .string({
       required_error: 'Password is required.',
@@ -42,6 +42,10 @@ AutoFormStory.args = {
   formClassName: 'w-full',
   className: 'w-full',
   fieldConfig: {
+    loginAs: {
+      fieldType: 'select',
+      labels: ['Yönetici', 'Kullanıcı'],
+    },
     password: {
       className: 'w-full',
       containerClassName: 'w-full',
