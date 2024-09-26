@@ -178,3 +178,232 @@ export function zodToHtmlInputProps(
 
   return inputProps;
 }
+
+export interface JsonSchema {
+  additionalProperties?: boolean;
+  default?: any;
+  description?: string | undefined;
+  displayName: string;
+  enum?: any;
+  format?: 'date-time' | 'email' | 'uuid';
+  isReadOnly?: boolean;
+  isRequired?: boolean;
+  items?: SchemaType;
+  maxLength?: number;
+  minLength?: number;
+  nullable?: boolean;
+  pattern?: RegExp;
+  properties?: Record<string, JsonSchema>;
+  refine?: { callback: (_value: any) => boolean; params?: object };
+  type:
+    | 'string'
+    | 'boolean'
+    | 'object'
+    | 'integer'
+    | 'number'
+    | 'array'
+    | 'toggle'
+    | 'select'
+    | 'phone';
+}
+// group
+export interface SchemaType {
+  additionalProperties?: boolean;
+  displayName?: string;
+  items?: SchemaType;
+  properties?: Record<string, JsonSchema | SchemaType>;
+  required?: readonly string[];
+  type: string;
+}
+
+export const isJsonSchema = (object: any): object is JsonSchema =>
+  'type' in object;
+export const isSchemaType = (object: any): object is SchemaType =>
+  'required' in object;
+
+export type CreateFieldConfigWithResourceProps = {
+  constantKey: string;
+  extend?: FieldConfig<z.infer<ZodObjectOrWrapped>>;
+  resources: Record<string, any>;
+  schema: SchemaType;
+};
+export function createFieldConfigWithResource({
+  constantKey,
+  resources,
+  schema,
+  extend,
+}: CreateFieldConfigWithResourceProps): FieldConfig<
+  z.infer<ZodObjectOrWrapped>
+> {
+  const fieldConfig = resourcesFromObject({
+    object: schema,
+    resources,
+    constantKey,
+  });
+  if (extend) {
+    Object.keys(fieldConfig).forEach((key) => {
+      const _extend = extend[key];
+      if (!_extend) return;
+      fieldConfig[key] = {
+        ...fieldConfig[key],
+        ..._extend,
+      };
+    });
+  }
+  return fieldConfig;
+}
+
+export function resourcesFromObject({
+  name,
+  object,
+  resources,
+  constantKey,
+}: {
+  constantKey: string;
+  name?: string;
+  object: any;
+  resources: any;
+}) {
+  let _temp: Record<string, object> = {};
+  if (name) _temp = { [name]: {} };
+
+  Object.entries(object.properties || {}).forEach(([key, field]) => {
+    if (key === 'extraProperties') return;
+    if (!isJsonSchema(field)) return;
+    if (field.type === 'object') {
+      if (name)
+        Object.assign(
+          _temp[name],
+          resourcesFromObject({
+            name: key,
+            object: field,
+            resources,
+            constantKey,
+          })
+        );
+      else
+        Object.assign(
+          _temp,
+          resourcesFromObject({
+            name: key,
+            object: field,
+            resources,
+            constantKey,
+          })
+        );
+    } else if (field.type === 'array') {
+      if (name)
+        Object.assign(
+          _temp[name],
+          resourcesFromArray({
+            name: key,
+            array: field,
+            resources,
+            constantKey,
+          })
+        );
+      else
+        Object.assign(
+          _temp,
+          resourcesFromArray({
+            name: key,
+            array: field,
+            resources,
+            constantKey,
+          })
+        );
+    } else if (name)
+      Object.assign(_temp[name], {
+        [key]: { displayName: createValue(key, resources, constantKey) },
+      });
+    else
+      Object.assign(_temp, {
+        [key]: { displayName: createValue(key, resources, constantKey) },
+      });
+  });
+  return _temp;
+}
+
+export function resourcesFromArray({
+  name,
+  array,
+  resources,
+  constantKey,
+}: {
+  array: any;
+  constantKey: string;
+  name: string;
+  resources: any;
+}) {
+  let _temp: Record<string, object> = {};
+  if (name) _temp = { [name]: {} };
+
+  Object.entries(array.items.properties || {}).forEach(([key, field]) => {
+    if (key === 'extraProperties') return;
+    if (!isJsonSchema(field)) return;
+    if (field.type === 'object') {
+      if (name)
+        Object.assign(
+          _temp[name],
+          resourcesFromObject({
+            name: key,
+            object: field,
+            resources,
+            constantKey,
+          })
+        );
+      else
+        Object.assign(
+          _temp,
+          resourcesFromObject({
+            name: key,
+            object: field,
+            resources,
+            constantKey,
+          })
+        );
+    } else if (field.type === 'array') {
+      if (name)
+        Object.assign(
+          _temp[name],
+          resourcesFromArray({
+            name: key,
+            array: field,
+            resources,
+            constantKey,
+          })
+        );
+      else
+        Object.assign(
+          _temp,
+          resourcesFromArray({
+            name: key,
+            array: field,
+            resources,
+            constantKey,
+          })
+        );
+    } else if (name)
+      Object.assign(_temp[name], {
+        [key]: { displayName: createValue(key, resources, constantKey) },
+      });
+    else
+      Object.assign(_temp, {
+        [key]: { displayName: createValue(key, resources, constantKey) },
+      });
+  });
+  return _temp;
+}
+
+export function createValue(name: string, param: any, constantKey: string) {
+  const temp = name.split('.');
+  if (!param) return undefined;
+  if (temp.length === 1) {
+    return param[constantKey + temp[0]];
+  }
+  return createValue(
+    temp.slice(1).join('.'),
+    param[constantKey + temp[0]],
+    constantKey
+  );
+}
