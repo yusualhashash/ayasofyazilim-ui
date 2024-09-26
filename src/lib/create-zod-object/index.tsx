@@ -112,6 +112,11 @@ function createZodType(schema: JsonSchema, isRequired: boolean): ZodSchema {
   switch (schema.type) {
     case 'string':
       zodType = z.string({ description: schema.displayName });
+      if (schema.enum) {
+        const stringEnums = schema.enum.map((e: string) => e);
+        zodType = z.enum(stringEnums);
+        break;
+      }
       if (schema.format === 'email') zodType = zodType.email();
       if (schema.maxLength) zodType = zodType.max(schema.maxLength);
       if (schema.minLength) zodType = zodType.min(schema.minLength);
