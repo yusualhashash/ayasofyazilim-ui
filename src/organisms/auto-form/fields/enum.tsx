@@ -33,6 +33,13 @@ export default function AutoFormEnum({
   } else {
     values = baseValues.map((value) => [value, value]);
   }
+  if (fieldConfigItem.fieldType === 'select' && fieldConfigItem.labels) {
+    values = values.map((item, index) => {
+      const _tempItem = item;
+      _tempItem[1] = fieldConfigItem.labels[index] || item[1];
+      return _tempItem;
+    });
+  }
 
   const findItem = (value: any) => values.find((item) => item[0] === value);
   useEffect(() => {
@@ -71,7 +78,7 @@ export default function AutoFormEnum({
           </SelectTrigger>
           <SelectContent>
             {values.map(([value, _label]) => (
-              <SelectItem value={_label} key={value}>
+              <SelectItem value={value || _label} key={value}>
                 {_label}
               </SelectItem>
             ))}

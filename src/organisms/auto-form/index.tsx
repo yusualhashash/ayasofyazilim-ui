@@ -17,8 +17,8 @@ import {
   getObjectFormSchema,
 } from './utils';
 
-export * as AutoFormTypes from './types';
-export * as AutoFormUtils from './utils';
+export * from './types';
+export * from './utils';
 
 export const AutoFormSubmit = ({
   children,

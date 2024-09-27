@@ -1,7 +1,6 @@
 import { ControllerRenderProps, FieldValues } from 'react-hook-form';
 import * as z from 'zod';
 import React from 'react';
-import { INPUT_COMPONENTS } from './config';
 
 export enum DependencyType {
   DISABLES = 'DISABLES',
@@ -10,14 +9,31 @@ export enum DependencyType {
   SETS_OPTIONS = 'SETS_OPTIONS',
 }
 
-export type FieldConfigItem = {
+export type FieldConfigItem = CommonFieldConfigItem &
+  (BaseFieldConfigItem | SelectFieldConfigItem);
+export type SelectFieldConfigItem = {
+  fieldType: 'select';
+  labels: string[];
+};
+export type BaseFieldConfigItem = {
+  fieldType?:
+    | 'checkbox'
+    | 'date'
+    | 'radio'
+    | 'switch'
+    | 'textarea'
+    | 'number'
+    | 'file'
+    | 'fallback'
+    | 'phone'
+    | React.FC<AutoFormInputComponentProps>;
+};
+
+export type CommonFieldConfigItem = {
   className?: string;
   containerClassName?: string;
   description?: React.ReactNode;
   displayName?: string;
-  fieldType?:
-    | keyof typeof INPUT_COMPONENTS
-    | React.FC<AutoFormInputComponentProps>;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement> & {
     showLabel?: boolean;
   };
