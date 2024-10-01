@@ -103,7 +103,7 @@ export default function CustomTableActionDialog({
           {autoFormData && autoFormData}
           {content}
         </div>
-        {action.componentType === 'ConfimrationDialog' ? (
+        {action.componentType === 'ConfirmationDialog' ? (
           <DialogFooter>
             <CustomButton
               onClick={() => {
