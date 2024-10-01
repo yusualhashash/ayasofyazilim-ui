@@ -377,7 +377,7 @@ export const SubContentMenuActionDialog: StoryObj<typeof Table> = {
           {
             type: 'Dialog',
             cta: 'View Details',
-            componentType: 'ConfimrationDialog',
+            componentType: 'ConfirmationDialog',
             description: 'View Details description',
             title: 'Details title',
             variant: 'destructive',
@@ -386,7 +386,7 @@ export const SubContentMenuActionDialog: StoryObj<typeof Table> = {
           {
             type: 'Dialog',
             cta: 'Delete Email',
-            componentType: 'ConfimrationDialog',
+            componentType: 'ConfirmationDialog',
             description: (triggerData) => {
               const _triggerData = triggerData as Payment;
               return `Are you sure to delete ${_triggerData.email}?`;

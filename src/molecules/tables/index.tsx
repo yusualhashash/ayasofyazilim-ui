@@ -96,7 +96,7 @@ export type TableActionCustom = {
 export type TableActionConfirmation = {
   callback?: (values?: any) => void;
   cancelCTA?: string;
-  componentType: 'ConfimrationDialog';
+  componentType: 'ConfirmationDialog';
   content?: JSX.Element;
   title: string;
   variant: 'destructive' | 'default';
