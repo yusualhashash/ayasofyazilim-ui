@@ -98,7 +98,6 @@ export type TableActionConfirmation = {
   cancelCTA?: string;
   componentType: 'ConfirmationDialog';
   content?: JSX.Element;
-  title: string;
   variant: 'destructive' | 'default';
 };
 
