@@ -379,7 +379,6 @@ export const SubContentMenuActionDialog: StoryObj<typeof Table> = {
             cta: 'View Details',
             componentType: 'ConfirmationDialog',
             description: 'View Details description',
-            title: 'Details title',
             variant: 'destructive',
             callback: async (triggerData: Payment) => console.log(triggerData),
           },
@@ -391,7 +390,6 @@ export const SubContentMenuActionDialog: StoryObj<typeof Table> = {
               const _triggerData = triggerData as Payment;
               return `Are you sure to delete ${_triggerData.email}?`;
             },
-            title: 'Details title',
             variant: 'destructive',
             callback: async (triggerData: Payment) => console.log(triggerData),
           },
