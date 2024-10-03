@@ -3,6 +3,7 @@ import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
 export function FieldTemplate(props: FieldTemplateProps) {
+  console.log(props);
   const {
     id,
     classNames,
@@ -16,10 +17,12 @@ export function FieldTemplate(props: FieldTemplateProps) {
   } = props;
   return (
     <div className={cn('mb-2', classNames)} style={style}>
-      <Label htmlFor={id}>
-        {label}
-        {required ? '*' : null}
-      </Label>
+      {props.schema.type !== 'array' && (
+        <Label htmlFor={id}>
+          {label}
+          {required ? '*' : null}
+        </Label>
+      )}
       {description}
       {/* TODO : Add description field */}
       {children}
