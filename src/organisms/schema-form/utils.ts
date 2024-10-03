@@ -202,33 +202,30 @@ export function flattenGenericData(
  */
 export function generateUiSchema<T extends GenericObjectType>(
   schema: T,
-  targetKey: string,
-  properties: Record<string, any>
+  key: string,
+  prop: Record<string, any>
 ): Record<string, any> {
-  const traverseSchema = (currentObject: T): Record<string, any> => {
-    const resultObject: Record<string, any> = {};
+  const result: Record<string, any> = {};
 
-    Object.keys(currentObject).forEach((key) => {
-      if (key === targetKey) {
-        resultObject[key] = { ...properties };
-      } else if (
-        typeof currentObject[key] === 'object' &&
-        currentObject[key] !== null
-      ) {
-        if ('items' in currentObject[key]) {
-          resultObject[key] = {
-            items: traverseSchema((currentObject[key] as any).items),
+  const traverse = (obj: T, res: Record<string, any>) => {
+    for (const k in obj) {
+      if (k === key) {
+        res[k] = { ...prop };
+      } else if (typeof obj[k] === 'object' && obj[k] !== null) {
+        if (obj[k].items) {
+          res[k] = {
+            items: {},
           };
+          traverse(obj[k].items as T, res[k].items);
         } else {
-          resultObject[key] = traverseSchema(currentObject[key] as T);
+          traverse(obj[k] as T, res); // Sadece iç yapıları kontrol et
         }
       }
-    });
-
-    return resultObject;
+    }
   };
 
-  return traverseSchema(schema);
+  traverse(schema, result);
+  return result;
 }
 
 /**

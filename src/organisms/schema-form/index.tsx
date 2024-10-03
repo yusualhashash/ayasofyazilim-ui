@@ -72,7 +72,6 @@ export default function SchemaForm({ ...props }: SchemaFormProps) {
   if (props.uiSchema) {
     uiSchema = mergeUISchemaObjects(uiSchema, props.uiSchema);
   }
-
   return (
     <Form
       noHtml5Validate
