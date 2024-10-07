@@ -10,7 +10,7 @@ import {
 import { cn } from '@/lib/utils';
 
 export const CustomDate = (props: WidgetProps) => {
-  const [date, setDate] = useState<Date>();
+  const [date, setDate] = useState<Date | undefined>(new Date(props.value));
   return (
     <Popover>
       <PopoverTrigger asChild>

@@ -260,3 +260,40 @@ export function mergeUISchemaObjects<T extends UiSchema, U extends UiSchema>(
 
   return mergedResult as T & U; // Return the merged result
 }
+
+export function generateFormData(
+  formData: GenericObjectType,
+  fieldsToMerge: string[],
+  newFieldName: string
+) {
+  const _formData = { ...formData };
+  const c = {
+    [newFieldName]: {},
+  };
+  for (const field of Object.keys(_formData)) {
+    if (typeof _formData[field] === 'object') {
+      // object
+      if (Array.isArray(_formData[field])) {
+        // array
+        // console.log(field, typeof _formData[field]);
+      }
+    }
+    if (fieldsToMerge.includes(field)) {
+      Object.assign(c[newFieldName], {
+        [field]: _formData[field],
+      });
+      delete _formData[field];
+      // remove
+    }
+  }
+  // field
+  return {
+    ..._formData,
+    ...c,
+  };
+}
+
+export function hasPhoneFields(form: any) {
+  if (!form) return false;
+  return true;
+}

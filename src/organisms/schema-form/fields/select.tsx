@@ -9,18 +9,20 @@ import {
 
 export const CustomSelect = (props: WidgetProps) => (
   <Select
+    defaultValue={props.value || props.defaultValue}
+    value={props.value || props.defaultValue}
     onValueChange={(value) => {
-      props.onChange(JSON.parse(value));
+      props.onChange(value);
     }}
   >
     <SelectTrigger>
-      <SelectValue placeholder={props.placeholder} />
+      <SelectValue placeholder="aaaaa" />
     </SelectTrigger>
     <SelectContent>
       {props.options.enumOptions?.map((enumOption) => (
         <SelectItem
           key={JSON.stringify(enumOption.value)}
-          value={JSON.stringify(enumOption.value)}
+          value={enumOption.value}
         >
           {enumOption.label}
         </SelectItem>
