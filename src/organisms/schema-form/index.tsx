@@ -1,0 +1,113 @@
+import Form, { FormProps, ThemeProps } from '@rjsf/core';
+import { GenericObjectType, RJSFSchema } from '@rjsf/utils';
+import validator from '@rjsf/validator-ajv8';
+import { AsyncSelect } from './fields/async-select';
+import { CustomCheckbox } from './fields/checkbox';
+import { CustomDate } from './fields/date';
+import { FieldErrorTemplate } from './fields/error';
+import { CustomPhoneField } from './fields/phone';
+import { CustomSelect } from './fields/select';
+import { CustomTextInput } from './fields/text';
+import { AccordionArrayFieldTemplate } from './templates/array';
+import { ErrorListTemplate } from './templates/error-list';
+import { FieldTemplate } from './templates/field';
+import { ObjectFieldTemplate } from './templates/object';
+import {
+  flattenGenericData,
+  generateUiSchema,
+  mergeUISchemaObjects,
+  transformGenericSchema,
+} from './utils';
+
+const ShadcnTheme: ThemeProps = {
+  fields: {
+    phone: CustomPhoneField,
+  },
+  widgets: {
+    CheckboxWidget: CustomCheckbox,
+    SelectWidget: CustomSelect,
+    'async-select': AsyncSelect,
+    TextWidget: CustomTextInput,
+    DateTimeWidget: CustomDate,
+  },
+  templates: {
+    ArrayFieldTemplate: AccordionArrayFieldTemplate,
+    ErrorListTemplate,
+    FieldErrorTemplate,
+    FieldTemplate,
+    ObjectFieldTemplate,
+  },
+};
+
+export interface SchemaFormProps extends Omit<FormProps, 'validator'> {
+  schema: GenericObjectType;
+  usePhoneField?: boolean;
+}
+
+/**
+ * SchemaForm component that renders a form based on the provided schema and options.
+ * Extends the Form component from @rjsf/core.
+ *
+ * @param {SchemaFormProps} props - The props for the SchemaForm component.
+ * @returns {JSX.Element} - The rendered form component.
+ */
+export default function SchemaForm({ ...props }: SchemaFormProps) {
+  let uiSchema = {}; // Initialize the UI schema
+  let { schema } = props; // Start with the provided schema
+
+  // If the phone field is enabled, transform the schema and generate UI schema
+  if (props.usePhoneField) {
+    schema = transformGenericSchema(
+      props.schema,
+      ['areaCode', 'ituCountryCode', 'localNumber'], // Fields to transform
+      'phone', // The parent field name
+      ['areaCode', 'ituCountryCode', 'localNumber'] // Sub-fields
+    );
+    uiSchema = generateUiSchema(schema, 'phone', {
+      'ui:field': 'phone', // Specify the field type for UI
+    });
+  }
+
+  // Merge any additional UI schema provided via props
+  if (props.uiSchema) {
+    uiSchema = mergeUISchemaObjects(uiSchema, props.uiSchema);
+  }
+  return (
+    <Form
+      noHtml5Validate
+      liveValidate
+      focusOnFirstError
+      showErrorList={props.showErrorList || false}
+      {...props}
+      schema={schema as RJSFSchema} // Cast schema to RJSFSchema type
+      validator={validator} // Custom validator
+      fields={{ ...ShadcnTheme.fields, ...props.fields }} // Merge custom fields
+      widgets={{ ...ShadcnTheme.widgets, ...props.widgets }} // Merge custom widgets
+      templates={{ ...ShadcnTheme.templates, ...props.templates }} // Merge custom templates
+      uiSchema={uiSchema} // Set the generated UI schema
+      onChange={(e) => {
+        // Handle form data change
+        if (props.usePhoneField) {
+          e.formData = flattenGenericData(e.formData, 'phone', [
+            'areaCode',
+            'ituCountryCode',
+            'localNumber',
+          ]);
+        }
+        if (props.onChange) props.onChange(e); // Call the onChange prop if provided
+      }}
+      onSubmit={(_data, event) => {
+        const data = _data;
+        // Handle form submission
+        if (props.usePhoneField) {
+          data.formData = flattenGenericData(data.formData, 'phone', [
+            'areaCode',
+            'ituCountryCode',
+            'localNumber',
+          ]);
+        }
+        if (props.onSubmit) props.onSubmit(data, event); // Call the onSubmit prop if provided
+      }}
+    />
+  );
+}
