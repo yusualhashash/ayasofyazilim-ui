@@ -1,6 +1,7 @@
 import Form, { FormProps, ThemeProps } from '@rjsf/core';
 import { GenericObjectType, RJSFSchema } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
+import { useState } from 'react';
 import { AsyncSelect } from './fields/async-select';
 import { CustomCheckbox } from './fields/checkbox';
 import { CustomDate } from './fields/date';
@@ -14,7 +15,9 @@ import { FieldTemplate } from './templates/field';
 import { ObjectFieldTemplate } from './templates/object';
 import {
   flattenGenericData,
+  generateFormData,
   generateUiSchema,
+  hasPhoneFields,
   mergeUISchemaObjects,
   transformGenericSchema,
 } from './utils';
@@ -52,26 +55,39 @@ export interface SchemaFormProps extends Omit<FormProps, 'validator'> {
  * @returns {JSX.Element} - The rendered form component.
  */
 export default function SchemaForm({ ...props }: SchemaFormProps) {
+  const phoneFielsConfig = {
+    fields: ['areaCode', 'ituCountryCode', 'localNumber'],
+    requireds: ['areaCode', 'ituCountryCode', 'localNumber'],
+    name: 'phone',
+  };
   let uiSchema = {}; // Initialize the UI schema
   let { schema } = props; // Start with the provided schema
-
+  let statedForm = props.formData;
   // If the phone field is enabled, transform the schema and generate UI schema
   if (props.usePhoneField) {
     schema = transformGenericSchema(
       props.schema,
-      ['areaCode', 'ituCountryCode', 'localNumber'], // Fields to transform
-      'phone', // The parent field name
-      ['areaCode', 'ituCountryCode', 'localNumber'] // Sub-fields
+      phoneFielsConfig.fields, // Fields to transform
+      phoneFielsConfig.name, // The parent field name
+      phoneFielsConfig.requireds // Required fields
     );
-    uiSchema = generateUiSchema(schema, 'phone', {
-      'ui:field': 'phone', // Specify the field type for UI
+    uiSchema = generateUiSchema(schema, phoneFielsConfig.name, {
+      'ui:field': phoneFielsConfig.name, // Specify the field type for UI
     });
+    if (hasPhoneFields(statedForm)) {
+      statedForm = generateFormData(
+        props.formData,
+        phoneFielsConfig.fields, // Fields to transform
+        phoneFielsConfig.name // The parent field name
+      );
+    }
   }
 
   // Merge any additional UI schema provided via props
   if (props.uiSchema) {
     uiSchema = mergeUISchemaObjects(uiSchema, props.uiSchema);
   }
+  const [formData] = useState<any>(statedForm);
   return (
     <Form
       noHtml5Validate
@@ -79,6 +95,7 @@ export default function SchemaForm({ ...props }: SchemaFormProps) {
       focusOnFirstError
       showErrorList={props.showErrorList || false}
       {...props}
+      formData={formData}
       schema={schema as RJSFSchema} // Cast schema to RJSFSchema type
       validator={validator} // Custom validator
       fields={{ ...ShadcnTheme.fields, ...props.fields }} // Merge custom fields

@@ -8,7 +8,7 @@ export const CustomTextInput = (props: WidgetProps) => (
     className={props.className}
     required={props.required}
     onChange={(event) => props.onChange(event.target.value)}
-    defaultValue={props.defaultValue}
+    defaultValue={props.value || props.defaultValue}
     readOnly={props.readOnly}
     disabled={props.disabled || props.readOnly}
   />

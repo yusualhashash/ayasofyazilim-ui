@@ -5,7 +5,7 @@ export const FieldErrorTemplate = (props: FieldErrorProps) =>
     <ul className="space-y-1">
       {props.errors.map((error) => (
         <li
-          key={error.toString()}
+          key={error.toString() + Math.random()}
           className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-destructive"
         >
           {error.toString()}

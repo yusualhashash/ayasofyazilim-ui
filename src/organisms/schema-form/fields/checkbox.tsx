@@ -10,7 +10,7 @@ export const CustomCheckbox = (props: WidgetProps) => (
         props.onChange(!props.value);
       }}
       checked={props.value}
-      defaultValue={props.defaultValue}
+      defaultValue={props.value || props.defaultValue}
       name={props.name}
     />
     <label htmlFor={props.id}>{props.label}</label>
