@@ -2,6 +2,7 @@ import React from 'react';
 import { DefaultValues } from 'react-hook-form';
 import { z } from 'zod';
 import { FieldConfig } from './types';
+import { FieldConfigType } from '.';
 
 // TODO: This should support recursive ZodEffects but TypeScript doesn't allow circular type definitions.
 export type ZodObjectOrWrapped =
@@ -406,4 +407,60 @@ export function createValue(name: string, param: any, constantKey: string) {
     param[constantKey + temp[0]],
     constantKey
   );
+}
+
+export function createFieldTypeFieldConfig({
+  elements,
+  fieldType,
+}: {
+  elements: string[];
+  fieldType: string;
+}): FieldConfigType {
+  const fieldConfig = {};
+  for (const element of elements) {
+    Object.assign(fieldConfig, { [element]: { fieldType } });
+  }
+  return fieldConfig;
+}
+export function createReadonlyFieldConfig(elements: string[]): FieldConfigType {
+  const fieldConfig = {};
+  for (const element of elements) {
+    Object.assign(fieldConfig, {
+      [element]: { inputProps: { disabled: true } },
+    });
+  }
+  return fieldConfig;
+}
+/**
+ * Merges two FieldConfig objects recursively.
+ * @param source - The first FieldConfig object to merge.
+ * @param target - The second FieldConfig object to merge.
+ * @returns A new merged FieldConfig object.
+ */
+export function mergeFieldConfigs<
+  T extends FieldConfigType,
+  U extends FieldConfigType,
+>(source: T, target: U): T & U {
+  const targetKeys = Object.keys(target);
+  const sourceKeys = Object.keys(source);
+  const matchedKeys = sourceKeys.filter((key) => targetKeys.includes(key));
+  const uniqueKeys = sourceKeys.filter((key) => !targetKeys.includes(key));
+  const mergedObject = {};
+  for (const key of uniqueKeys) {
+    Object.assign(mergedObject, { [key]: source[key] });
+  }
+  const mergedMatchedObject = {};
+  for (const key of matchedKeys) {
+    Object.assign(mergedMatchedObject, {
+      [key]: {
+        ...source[key],
+        ...target[key],
+      },
+    });
+  }
+  const mergedResult: FieldConfigType = Object.assign(
+    mergedObject,
+    mergedMatchedObject
+  );
+  return mergedResult as T & U; // Return the merged result
 }
