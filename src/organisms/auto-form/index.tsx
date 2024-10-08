@@ -6,8 +6,8 @@ import { z } from 'zod';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { Form } from '@/components/ui/form';
+import { cn } from '@/lib/utils';
 
 import AutoFormObject from './fields/object';
 import { Dependency, FieldConfig } from './types';
@@ -34,19 +34,22 @@ export const AutoFormSubmit = ({
   </Button>
 );
 export type SchemaType = ZodObjectOrWrapped;
+export type FieldConfigType = FieldConfig<z.infer<SchemaType>>;
+export type DependenciesType = Array<Dependency<z.infer<SchemaType>>>;
+export type ValueType = Partial<z.infer<SchemaType>>;
 export type AutoFormProps = {
   children?: JSX.Element;
   className?: string;
-  dependencies?: Dependency<z.infer<SchemaType>>[];
-  fieldConfig?: FieldConfig<z.infer<SchemaType>>;
+  dependencies?: DependenciesType;
+  fieldConfig?: FieldConfigType;
   formClassName?: string;
   formSchema: SchemaType;
   isLoading?: boolean;
-  onParsedValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
+  onParsedValuesChange?: (values: ValueType) => void;
   onSubmit?: (values: z.infer<SchemaType>) => void;
-  onValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
+  onValuesChange?: (values: ValueType) => void;
   showInRow?: boolean;
-  values?: Partial<z.infer<SchemaType>>;
+  values?: ValueType;
 };
 
 function AutoForm({
