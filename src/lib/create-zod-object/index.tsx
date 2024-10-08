@@ -60,7 +60,8 @@ export function createZodObject(
       Object.keys(props.properties || {}).forEach(() => {
         zodSchema[element] = createZodObject(
           props,
-          subPositions?.[element] || Object.keys(props.properties || {})
+          subPositions?.[element] || Object.keys(props.properties || {}),
+          convertors && element in convertors ? convertors[element] : undefined
         );
       });
     } else if (isJsonSchema(props)) {
@@ -113,9 +114,9 @@ function createZodType(schema: JsonSchema, isRequired: boolean): ZodSchema {
   switch (schema.type) {
     case 'string':
       zodType = z.string({ description: schema.displayName });
-      if (schema.enum) {
+      if (schema.enum && Array.isArray(schema.enum)) {
         const stringEnums = schema.enum.map((e: string) => e);
-        zodType = z.enum(stringEnums);
+        zodType = z.enum(stringEnums as [string, ...string[]]);
         break;
       }
       if (schema.format === 'email') zodType = zodType.email();
