@@ -55,6 +55,7 @@ export function createZodObject(
     if (element === 'extraProperties') return;
     const props = schema?.properties?.[element];
     const isRequired = schema.required?.includes(element) || false;
+    if (!props) throw new Error(`${element} is not found in properties.`);
     if (isSchemaType(props)) {
       Object.keys(props.properties || {}).forEach(() => {
         zodSchema[element] = createZodObject(
