@@ -49,6 +49,8 @@ export type AutoFormProps = {
   onSubmit?: (values: z.infer<SchemaType>) => void;
   onValuesChange?: (values: ValueType) => void;
   showInRow?: boolean;
+  stickyChildren?: boolean;
+  stickyChildrenClassName?: string;
   values?: ValueType;
 };
 
@@ -65,6 +67,8 @@ function AutoForm({
   dependencies,
   showInRow,
   isLoading,
+  stickyChildren,
+  stickyChildrenClassName,
 }: AutoFormProps) {
   const objectFormSchema = getObjectFormSchema(formSchema);
   const defaultValues: DefaultValues<z.infer<typeof objectFormSchema>> | null =
@@ -116,7 +120,18 @@ function AutoForm({
           className={className}
         />
 
-        {children}
+        {stickyChildren ? (
+          <div
+            className={cn(
+              'sticky bottom-0 flex w-full items-center justify-end bg-white p-2 pr-0',
+              stickyChildrenClassName
+            )}
+          >
+            {children}
+          </div>
+        ) : (
+          children
+        )}
       </form>
     </Form>
   );
