@@ -51,7 +51,21 @@ export default function AutoFormArray({
     });
     append(object);
   }, []);
-  const title = item._def.description ?? beautifyObjectName(name);
+  function createItemName(
+    item: z.ZodArray<any> | z.ZodDefault<any>,
+    name: string = ''
+  ) {
+    if (!fieldConfig)
+      return item._def.description
+        ? beautifyObjectName(item._def.description)
+        : beautifyObjectName(name);
+    return fieldConfig?.displayName
+      ? // @ts-ignore
+        fieldConfig.displayName
+      : beautifyObjectName(name);
+  }
+  // const _title = item._def.description ?? beautifyObjectName(name);
+  const title = createItemName(item, name) ?? name;
   let itemDefType = isZodArray(item)
     ? item._def.type
     : isZodDefault(item)
