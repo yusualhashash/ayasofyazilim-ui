@@ -430,39 +430,6 @@ export function createReadonlyFieldConfig(elements: string[]): FieldConfigType {
   }
   return filterUndefinedAndEmpty(fieldConfig);
 }
-/**
- * Merges two FieldConfig objects recursively.
- * @param source - The first FieldConfig object to merge.
- * @param target - The second FieldConfig object to merge.
- * @returns A new merged FieldConfig object.
- */
-export function mergeFieldConfigs<
-  T extends FieldConfigType,
-  U extends FieldConfigType,
->(source: T, target: U): T & U {
-  const targetKeys = Object.keys(target);
-  const sourceKeys = Object.keys(source);
-  const matchedKeys = sourceKeys.filter((key) => targetKeys.includes(key));
-  const uniqueKeys = sourceKeys.filter((key) => !targetKeys.includes(key));
-  const mergedObject = {};
-  for (const key of uniqueKeys) {
-    Object.assign(mergedObject, { [key]: source[key] });
-  }
-  const mergedMatchedObject = {};
-  for (const key of matchedKeys) {
-    Object.assign(mergedMatchedObject, {
-      [key]: {
-        ...source[key],
-        ...target[key],
-      },
-    });
-  }
-  const mergedResult: FieldConfigType = Object.assign(
-    mergedObject,
-    mergedMatchedObject
-  );
-  return mergedResult as T & U; // Return the merged result
-}
 
 type FilteredObject<T> = {
   [K in keyof T]: T[K] extends object
@@ -496,4 +463,55 @@ function filterUndefinedAndEmpty<T>(obj: T): FilteredObject<T> {
   }
 
   return filtered as FilteredObject<T>;
+}
+
+/**
+ * Merges two FieldConfig objects recursively.
+ * @param source - The first FieldConfig object to merge.
+ * @param target - The second FieldConfig object to merge.
+ * @param maxDepth - The maximum depth to merge. Defaults to Infinity.
+ * @param skipKeys - An array of keys to skip during merging. Defaults to an empty array.
+ * @param debug - Whether to log the merging process. Defaults to false.
+ * @returns A new merged FieldConfig object.
+ */
+export function mergeFieldConfigs(
+  source: FieldConfigType,
+  target: FieldConfigType,
+  maxDepth: number = Infinity,
+  skipKeys: string[] = [],
+  debug: boolean = false
+): FieldConfigType {
+  const result: FieldConfigType = { ...source }; // İlk nesneyi kopyala
+  const currentDepth =
+    typeof source === 'object' && typeof target === 'object' ? 1 : 0;
+
+  for (const key in Object.keys(target)) {
+    if (!skipKeys.includes(key)) {
+      if (
+        result[key] &&
+        typeof result[key] === 'object' &&
+        typeof target[key] === 'object' &&
+        currentDepth < maxDepth
+      ) {
+        // Derinlemesine birleştir
+        if (debug) console.log(`Merging: ${key}`);
+        result[key] = mergeFieldConfigs(
+          result[key] as FieldConfigType,
+          target[key] as FieldConfigType,
+          maxDepth,
+          skipKeys
+        );
+      } else {
+        // Değerleri birleştir
+        if (result[key] !== target[key] && debug) {
+          console.log(
+            `Hit: ${key} (source: ${result[key]}, target: ${target[key]})`
+          );
+        }
+        result[key] = target[key];
+      }
+    }
+  }
+
+  return result;
 }
