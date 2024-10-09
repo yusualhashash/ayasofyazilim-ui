@@ -485,7 +485,7 @@ export function mergeFieldConfigs(
   const currentDepth =
     typeof source === 'object' && typeof target === 'object' ? 1 : 0;
 
-  for (const key in Object.keys(target)) {
+  for (const key of Object.keys(target)) {
     if (!skipKeys.includes(key)) {
       if (
         result[key] &&
