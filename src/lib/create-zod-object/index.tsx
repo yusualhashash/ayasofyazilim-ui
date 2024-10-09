@@ -87,6 +87,17 @@ export function createZodObject(
         }
         zodType = createZodType(newProps, isRequired);
       } else {
+        if (
+          props.items &&
+          subPositions &&
+          Object.keys(subPositions || {}).includes(element)
+        ) {
+          if (props.items?.properties) {
+            for (const key of subPositions[element]) {
+              delete props.items.properties[key];
+            }
+          }
+        }
         zodType = createZodType(props, isRequired);
       }
       zodSchema[element] = zodType;
