@@ -209,7 +209,7 @@ export interface JsonSchema {
 }
 // group
 export interface SchemaType {
-  additionalProperties?: boolean;
+  additionalProperties?: boolean | {};
   displayName?: string;
   items?: SchemaType;
   properties?: Record<string, JsonSchema | SchemaType>;
