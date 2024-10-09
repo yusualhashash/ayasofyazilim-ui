@@ -251,7 +251,7 @@ export function createFieldConfigWithResource({
       };
     });
   }
-  return fieldConfig;
+  return filterUndefinedAndEmpty(fieldConfig);
 }
 
 export function resourcesFromObject({
@@ -267,22 +267,21 @@ export function resourcesFromObject({
 }) {
   let _temp: Record<string, object> = {};
   if (name) _temp = { [name]: {} };
-
   Object.entries(object.properties || {}).forEach(([key, field]) => {
     if (key === 'extraProperties') return;
     if (!isJsonSchema(field)) return;
     if (field.type === 'object') {
-      if (name)
-        Object.assign(
-          _temp[name],
-          resourcesFromObject({
+      if (name) {
+        Object.assign(_temp[name], {
+          displayName: 'This was not controlled please report to @ecbakas',
+          ...resourcesFromObject({
             name: key,
             object: field,
             resources,
-            constantKey,
-          })
-        );
-      else
+            constantKey: `${constantKey}.${name}`,
+          }),
+        });
+      } else {
         Object.assign(
           _temp,
           resourcesFromObject({
@@ -292,18 +291,19 @@ export function resourcesFromObject({
             constantKey,
           })
         );
+      }
     } else if (field.type === 'array') {
-      if (name)
+      if (name) {
         Object.assign(
           _temp[name],
           resourcesFromArray({
             name: key,
             array: field,
             resources,
-            constantKey,
+            constantKey: `${constantKey}.${name}`,
           })
         );
-      else
+      } else {
         Object.assign(
           _temp,
           resourcesFromArray({
@@ -313,15 +313,25 @@ export function resourcesFromObject({
             constantKey,
           })
         );
-    } else if (name)
+      }
+    } else if (name) {
       Object.assign(_temp[name], {
-        [key]: { displayName: createValue(key, resources, constantKey) },
+        displayName: createValue(name, resources, constantKey),
+        [key]: {
+          displayName: createValue(key, resources, `${constantKey}.${name}`),
+        },
       });
-    else
+    } else {
       Object.assign(_temp, {
         [key]: { displayName: createValue(key, resources, constantKey) },
       });
+    }
   });
+  if (name) {
+    Object.assign(_temp[name], {
+      displayName: createValue(name, resources, constantKey),
+    });
+  }
   return _temp;
 }
 
@@ -343,64 +353,53 @@ export function resourcesFromArray({
     if (key === 'extraProperties') return;
     if (!isJsonSchema(field)) return;
     if (field.type === 'object') {
-      if (name)
-        Object.assign(
-          _temp[name],
-          resourcesFromObject({
-            name: key,
-            object: field,
-            resources,
-            constantKey,
-          })
-        );
-      else
-        Object.assign(
-          _temp,
-          resourcesFromObject({
-            name: key,
-            object: field,
-            resources,
-            constantKey,
-          })
-        );
+      Object.assign(
+        _temp[name],
+        resourcesFromObject({
+          name: key,
+          object: field,
+          resources,
+          constantKey: `${constantKey}.${name}`,
+        })
+      );
     } else if (field.type === 'array') {
-      if (name)
-        Object.assign(
-          _temp[name],
-          resourcesFromArray({
-            name: key,
-            array: field,
-            resources,
-            constantKey,
-          })
-        );
-      else
-        Object.assign(
-          _temp,
-          resourcesFromArray({
-            name: key,
-            array: field,
-            resources,
-            constantKey,
-          })
-        );
-    } else if (name)
       Object.assign(_temp[name], {
-        [key]: { displayName: createValue(key, resources, constantKey) },
+        displayName: createValue(name, resources, constantKey),
+        ...resourcesFromArray({
+          name: key,
+          array: field,
+          resources,
+          constantKey: `${constantKey}.${name}`,
+        }),
       });
-    else
-      Object.assign(_temp, {
-        [key]: { displayName: createValue(key, resources, constantKey) },
+    } else {
+      Object.assign(_temp[name], {
+        displayName: createValue(name, resources, constantKey),
+        [key]: {
+          displayName: createValue(key, resources, `${constantKey}.${name}`),
+        },
       });
+    }
   });
   return _temp;
 }
 
-export function createValue(name: string, param: any, constantKey: string) {
+export function createValue(
+  name: string,
+  param: any,
+  constantKey: string,
+  log = false
+) {
+  if (log)
+    console.log({
+      name,
+      constantKey,
+      param,
+    });
   const temp = name.split('.');
   if (!param) return undefined;
   if (temp.length === 1) {
-    return param[constantKey + temp[0]];
+    return param[`${constantKey}.${temp[0]}`];
   }
   return createValue(
     temp.slice(1).join('.'),
@@ -420,7 +419,7 @@ export function createFieldTypeFieldConfig({
   for (const element of elements) {
     Object.assign(fieldConfig, { [element]: { fieldType } });
   }
-  return fieldConfig;
+  return filterUndefinedAndEmpty(fieldConfig);
 }
 export function createReadonlyFieldConfig(elements: string[]): FieldConfigType {
   const fieldConfig = {};
@@ -429,7 +428,7 @@ export function createReadonlyFieldConfig(elements: string[]): FieldConfigType {
       [element]: { inputProps: { disabled: true } },
     });
   }
-  return fieldConfig;
+  return filterUndefinedAndEmpty(fieldConfig);
 }
 /**
  * Merges two FieldConfig objects recursively.
@@ -463,4 +462,38 @@ export function mergeFieldConfigs<
     mergedMatchedObject
   );
   return mergedResult as T & U; // Return the merged result
+}
+
+type FilteredObject<T> = {
+  [K in keyof T]: T[K] extends object
+    ? T[K] extends Array<any>
+      ? T[K] // Keep arrays as they are
+      : FilteredObject<T[K]>
+    : T[K] extends undefined
+      ? never
+      : T[K];
+};
+
+function filterUndefinedAndEmpty<T>(obj: T): FilteredObject<T> {
+  if (typeof obj !== 'object' || obj === null) {
+    return obj as FilteredObject<T>;
+  }
+
+  const filtered: Partial<FilteredObject<T>> = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    const filteredValue = filterUndefinedAndEmpty(value);
+    // Check if the value is not undefined and not an empty object
+    if (
+      filteredValue !== undefined &&
+      !(
+        typeof filteredValue === 'object' &&
+        Object.keys(filteredValue).length === 0
+      )
+    ) {
+      Object.assign(filtered, { [key]: filteredValue });
+    }
+  }
+
+  return filtered as FilteredObject<T>;
 }
