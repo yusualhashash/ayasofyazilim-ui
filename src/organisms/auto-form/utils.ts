@@ -224,6 +224,7 @@ export const isSchemaType = (object: any): object is SchemaType =>
 
 export type CreateFieldConfigWithResourceProps = {
   extend?: FieldConfig<z.infer<ZodObjectOrWrapped>>;
+  name?: string;
   resources: Record<string, any>;
   schema: SchemaType;
 };
@@ -231,12 +232,15 @@ export function createFieldConfigWithResource({
   resources,
   schema,
   extend,
+  name = 'Form',
 }: CreateFieldConfigWithResourceProps): FieldConfig<
   z.infer<ZodObjectOrWrapped>
 > {
-  const fieldConfig = resourcesFromObject({
+  const fieldConfig = fieldConfigFromSchema({
     object: schema,
     resources,
+    name,
+    constantKey: name,
   });
   if (extend) {
     Object.keys(fieldConfig).forEach((key) => {
@@ -248,198 +252,7 @@ export function createFieldConfigWithResource({
       };
     });
   }
-  return fieldConfig;
-}
-
-export function resourcesFromObject({
-  name,
-  object,
-  resources,
-}: {
-  name?: string;
-  object: any;
-  resources: any;
-}) {
-  let _temp: Record<string, object> = {};
-  if (name) _temp = { [name]: {} };
-  Object.entries(object.properties || {}).forEach(([key, field]) => {
-    if (key === 'extraProperties') return;
-    if (!isJsonSchema(field)) return;
-    if (field.type === 'object') {
-      if (name) {
-        Object.assign(_temp[name], {
-          displayName: 'This was not controlled please report to @ecbakas',
-          ...resourcesFromObject({
-            name: key,
-            object: field,
-            resources,
-          }),
-        });
-      } else {
-        Object.assign(
-          _temp,
-          resourcesFromObject({
-            name: key,
-            object: field,
-            resources,
-          })
-        );
-      }
-    } else if (field.type === 'array') {
-      if (name) {
-        Object.assign(
-          _temp[name],
-          resourcesFromArray({
-            name: key,
-            array: field,
-            resources,
-          })
-        );
-      } else {
-        Object.assign(
-          _temp,
-          resourcesFromArray({
-            name: key,
-            array: field,
-            resources,
-          })
-        );
-      }
-    } else if (name) {
-      // only if object enum & object array enum
-      if (Object.keys(field).includes('enum')) {
-        Object.assign(_temp[name], {
-          [key]: {
-            displayName: getDisplayNameFromResource(key, resources), // createValue(key, resources, constantKey),
-            // fieldType: 'select',
-            // labels: ['x', 'y', 'z'],
-            // CREATE ENUM VALUE GETTER AND SET LABELS HERE
-          },
-        });
-      } else {
-        Object.assign(_temp[name], {
-          displayName: getDisplayNameFromResource(name, resources), // createValue(name, resources, constantKey),
-          [key]: {
-            displayName: getDisplayNameFromResource(key, resources), // createValue(key, resources, `${constantKey}.${name}`),
-          },
-        });
-      }
-    } else if (Object.keys(field).includes('enum')) {
-      // Only if root object enum
-      Object.assign(_temp, {
-        [key]: {
-          displayName: getDisplayNameFromResource(key, resources), // createValue(key, resources, constantKey),
-          // fieldType: 'select',
-          // labels: ['1', '2', '3'],
-          // CREATE ENUM VALUE GETTER AND SET LABELS HERE
-        },
-      });
-    } else {
-      Object.assign(_temp, {
-        [key]: {
-          displayName: getDisplayNameFromResource(key, resources), // getDisplayNameFromResource(key, resources,constantKey)
-        },
-      });
-    }
-  });
-  if (name) {
-    Object.assign(_temp[name], {
-      displayName: getDisplayNameFromResource(name, resources), // createValue(name, resources, constantKey),
-    });
-  }
-  return _temp;
-}
-
-export function resourcesFromArray({
-  name,
-  array,
-  resources,
-}: {
-  array: any;
-  name: string;
-  resources: any;
-}) {
-  let _temp: Record<string, object> = {};
-  if (name) _temp = { [name]: {} };
-
-  Object.entries(array.items.properties || {}).forEach(([key, field]) => {
-    if (key === 'extraProperties') return;
-    if (!isJsonSchema(field)) return;
-    if (field.type === 'object') {
-      Object.assign(
-        _temp[name],
-        resourcesFromObject({
-          name: key,
-          object: field,
-          resources,
-        })
-      );
-    } else if (field.type === 'array') {
-      Object.assign(_temp[name], {
-        displayName: getDisplayNameFromResource(name, resources), // createValue(name, resources, constantKey),
-        ...resourcesFromArray({
-          name: key,
-          array: field,
-          resources,
-        }),
-      });
-    } else if (Object.keys(field).includes('enum')) {
-      Object.assign(_temp[name], {
-        displayName: getDisplayNameFromResource(name, resources), // createValue(name, resources, constantKey),
-        [key]: {
-          displayName: getDisplayNameFromResource(key, resources), // createValue(key, resources, `${constantKey}.${name}`),
-          // fieldType: 'select',
-          //   labels: ['a', 'b', 'c'],
-        },
-      });
-    } else {
-      Object.assign(_temp[name], {
-        displayName: getDisplayNameFromResource(name, resources), // createValue(name, resources, constantKey),
-        [key]: {
-          displayName: getDisplayNameFromResource(name, resources), // createValue(key, resources, `${constantKey}.${name}`),
-        },
-      });
-    }
-  });
-  return _temp;
-}
-
-export function createValue(
-  name: string,
-  param: any,
-  constantKey: string,
-  log = false
-) {
-  if (log)
-    console.log({
-      name,
-      constantKey,
-      param,
-    });
-  const temp = name.split('.');
-  if (!param) return undefined;
-  if (temp.length === 1) {
-    return param[`${constantKey}.${temp[0]}`];
-  }
-  return createValue(
-    temp.slice(1).join('.'),
-    param[constantKey + temp[0]],
-    constantKey
-  );
-}
-
-export function getDisplayNameFromResource(
-  name: string,
-  resources: Record<string, string>
-) {
-  let displayName = name;
-  for (const resourceKey of Object.keys(resources)) {
-    const splitted = resourceKey.split('.');
-    if (splitted.at(-1) === name) {
-      displayName = resources[resourceKey];
-    }
-  }
-  return displayName;
+  return fieldConfig[name];
 }
 
 export function createFieldTypeFieldConfig({
@@ -549,4 +362,80 @@ export function mergeFieldConfigs(
   }
 
   return result;
+}
+
+export function fieldConfigFromSchema({
+  name,
+  object,
+  resources,
+  constantKey,
+  debug = false,
+}: {
+  constantKey: string;
+  debug?: boolean;
+  name: string;
+  object: SchemaType;
+  resources: Record<string, string>;
+}) {
+  if (debug) {
+    console.log({
+      name,
+      object,
+      resources,
+      constantKey,
+    });
+  }
+
+  const fieldConfig = {
+    [name]: {},
+  };
+  // object
+  if (object.type === 'object' && object.properties) {
+    for (const property of Object.keys(object.properties)) {
+      Object.assign(fieldConfig[name], {
+        displayName: resources[constantKey],
+        ...fieldConfigFromSchema({
+          name: property,
+          object: object.properties[property],
+          resources,
+          constantKey: `${constantKey}.${property}`,
+        }),
+      });
+    }
+  }
+  // array
+  else if (object.type === 'array' && object.items && object.items.properties) {
+    for (const property of Object.keys(object.items.properties)) {
+      Object.assign(fieldConfig[name], {
+        displayName: resources[constantKey],
+        ...fieldConfigFromSchema({
+          name: property,
+          object: object.items.properties[property],
+          resources,
+          constantKey: `${constantKey}.${property}`,
+        }),
+      });
+    }
+  }
+  // plain
+  else {
+    const fieldConfigItem = {
+      displayName: resources[constantKey],
+    };
+    // enum varsa
+    if (Object.keys(object).includes('enum')) {
+      const fieldRelatedKeys = Object.keys(resources).filter((key) =>
+        key.includes(constantKey)
+      );
+      const enumKeys = fieldRelatedKeys.filter((key) => key !== constantKey);
+      const labels = enumKeys.map((key) => resources[key]);
+      Object.assign(fieldConfigItem, {
+        fieldType: 'select',
+        labels,
+      });
+    }
+
+    Object.assign(fieldConfig[name], fieldConfigItem);
+  }
+  return fieldConfig;
 }
