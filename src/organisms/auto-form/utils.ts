@@ -223,13 +223,11 @@ export const isSchemaType = (object: any): object is SchemaType =>
   'required' in object;
 
 export type CreateFieldConfigWithResourceProps = {
-  constantKey: string;
   extend?: FieldConfig<z.infer<ZodObjectOrWrapped>>;
   resources: Record<string, any>;
   schema: SchemaType;
 };
 export function createFieldConfigWithResource({
-  constantKey,
   resources,
   schema,
   extend,
@@ -239,7 +237,6 @@ export function createFieldConfigWithResource({
   const fieldConfig = resourcesFromObject({
     object: schema,
     resources,
-    constantKey,
   });
   if (extend) {
     Object.keys(fieldConfig).forEach((key) => {
@@ -251,16 +248,14 @@ export function createFieldConfigWithResource({
       };
     });
   }
-  return filterUndefinedAndEmpty(fieldConfig);
+  return fieldConfig;
 }
 
 export function resourcesFromObject({
   name,
   object,
   resources,
-  constantKey,
 }: {
-  constantKey: string;
   name?: string;
   object: any;
   resources: any;
@@ -278,7 +273,6 @@ export function resourcesFromObject({
             name: key,
             object: field,
             resources,
-            constantKey: `${constantKey}.${name}`,
           }),
         });
       } else {
@@ -288,7 +282,6 @@ export function resourcesFromObject({
             name: key,
             object: field,
             resources,
-            constantKey,
           })
         );
       }
@@ -300,7 +293,6 @@ export function resourcesFromObject({
             name: key,
             array: field,
             resources,
-            constantKey: `${constantKey}.${name}`,
           })
         );
       } else {
@@ -310,26 +302,49 @@ export function resourcesFromObject({
             name: key,
             array: field,
             resources,
-            constantKey,
           })
         );
       }
     } else if (name) {
-      Object.assign(_temp[name], {
-        displayName: createValue(name, resources, constantKey),
+      // only if object enum & object array enum
+      if (Object.keys(field).includes('enum')) {
+        Object.assign(_temp[name], {
+          [key]: {
+            displayName: getDisplayNameFromResource(key, resources), // createValue(key, resources, constantKey),
+            // fieldType: 'select',
+            // labels: ['x', 'y', 'z'],
+            // CREATE ENUM VALUE GETTER AND SET LABELS HERE
+          },
+        });
+      } else {
+        Object.assign(_temp[name], {
+          displayName: getDisplayNameFromResource(name, resources), // createValue(name, resources, constantKey),
+          [key]: {
+            displayName: getDisplayNameFromResource(key, resources), // createValue(key, resources, `${constantKey}.${name}`),
+          },
+        });
+      }
+    } else if (Object.keys(field).includes('enum')) {
+      // Only if root object enum
+      Object.assign(_temp, {
         [key]: {
-          displayName: createValue(key, resources, `${constantKey}.${name}`),
+          displayName: getDisplayNameFromResource(key, resources), // createValue(key, resources, constantKey),
+          // fieldType: 'select',
+          // labels: ['1', '2', '3'],
+          // CREATE ENUM VALUE GETTER AND SET LABELS HERE
         },
       });
     } else {
       Object.assign(_temp, {
-        [key]: { displayName: createValue(key, resources, constantKey) },
+        [key]: {
+          displayName: getDisplayNameFromResource(key, resources), // getDisplayNameFromResource(key, resources,constantKey)
+        },
       });
     }
   });
   if (name) {
     Object.assign(_temp[name], {
-      displayName: createValue(name, resources, constantKey),
+      displayName: getDisplayNameFromResource(name, resources), // createValue(name, resources, constantKey),
     });
   }
   return _temp;
@@ -339,10 +354,8 @@ export function resourcesFromArray({
   name,
   array,
   resources,
-  constantKey,
 }: {
   array: any;
-  constantKey: string;
   name: string;
   resources: any;
 }) {
@@ -359,24 +372,31 @@ export function resourcesFromArray({
           name: key,
           object: field,
           resources,
-          constantKey: `${constantKey}.${name}`,
         })
       );
     } else if (field.type === 'array') {
       Object.assign(_temp[name], {
-        displayName: createValue(name, resources, constantKey),
+        displayName: getDisplayNameFromResource(name, resources), // createValue(name, resources, constantKey),
         ...resourcesFromArray({
           name: key,
           array: field,
           resources,
-          constantKey: `${constantKey}.${name}`,
         }),
+      });
+    } else if (Object.keys(field).includes('enum')) {
+      Object.assign(_temp[name], {
+        displayName: getDisplayNameFromResource(name, resources), // createValue(name, resources, constantKey),
+        [key]: {
+          displayName: getDisplayNameFromResource(key, resources), // createValue(key, resources, `${constantKey}.${name}`),
+          // fieldType: 'select',
+          //   labels: ['a', 'b', 'c'],
+        },
       });
     } else {
       Object.assign(_temp[name], {
-        displayName: createValue(name, resources, constantKey),
+        displayName: getDisplayNameFromResource(name, resources), // createValue(name, resources, constantKey),
         [key]: {
-          displayName: createValue(key, resources, `${constantKey}.${name}`),
+          displayName: getDisplayNameFromResource(name, resources), // createValue(key, resources, `${constantKey}.${name}`),
         },
       });
     }
@@ -406,6 +426,20 @@ export function createValue(
     param[constantKey + temp[0]],
     constantKey
   );
+}
+
+export function getDisplayNameFromResource(
+  name: string,
+  resources: Record<string, string>
+) {
+  let displayName = name;
+  for (const resourceKey of Object.keys(resources)) {
+    const splitted = resourceKey.split('.');
+    if (splitted.at(-1) === name) {
+      displayName = resources[resourceKey];
+    }
+  }
+  return displayName;
 }
 
 export function createFieldTypeFieldConfig({
@@ -449,6 +483,7 @@ function filterUndefinedAndEmpty<T>(obj: T): FilteredObject<T> {
   const filtered: Partial<FilteredObject<T>> = {};
 
   for (const [key, value] of Object.entries(obj)) {
+    // console.log(value);
     const filteredValue = filterUndefinedAndEmpty(value);
     // Check if the value is not undefined and not an empty object
     if (
