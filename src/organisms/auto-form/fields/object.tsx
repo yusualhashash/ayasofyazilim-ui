@@ -214,7 +214,9 @@ function FormObject<SchemaType extends z.ZodObject<any, any>>({
         const InputComponent =
           typeof inputType === 'function'
             ? inputType
-            : INPUT_COMPONENTS[inputType];
+            : inputType !== 'array'
+              ? INPUT_COMPONENTS[inputType]
+              : undefined;
 
         const ParentElement = fieldConfigItem.renderParent ?? DefaultParent;
         const defaultValue = fieldConfigItem.inputProps?.defaultValue;

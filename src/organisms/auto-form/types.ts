@@ -10,7 +10,13 @@ export enum DependencyType {
 }
 
 export type FieldConfigItem = CommonFieldConfigItem &
-  (BaseFieldConfigItem | SelectFieldConfigItem);
+  (BaseFieldConfigItem | SelectFieldConfigItem | ArrayFieldConfigItem);
+export type ArrayFieldConfigItem = {
+  add?: string | React.ReactNode;
+  canAdd?: boolean;
+  fieldType: 'array';
+  remove?: string | React.ReactNode;
+};
 export type SelectFieldConfigItem = {
   fieldType: 'select';
   labels: string[];

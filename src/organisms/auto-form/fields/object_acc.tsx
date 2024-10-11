@@ -143,7 +143,9 @@ export default function AutoFormObject<
               const InputComponent =
                 typeof inputType === 'function'
                   ? inputType
-                  : INPUT_COMPONENTS[inputType];
+                  : inputType !== 'array'
+                    ? INPUT_COMPONENTS[inputType]
+                    : undefined;
 
               const ParentElement =
                 fieldConfigItem.renderParent ?? DefaultParent;
