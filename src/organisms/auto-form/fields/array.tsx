@@ -1,7 +1,6 @@
 import { Plus, Trash } from 'lucide-react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { useEffect } from 'react';
 import {
   AccordionContent,
   AccordionItem,
@@ -38,19 +37,19 @@ export default function AutoFormArray({
     control: form.control,
     name,
   });
-  useEffect(() => {
-    const formvalues = form.getValues();
-    if (JSON.stringify(formvalues) === '{}') {
-      return;
-    }
-    let object = formvalues;
-    path.forEach((key) => {
-      if (object[key]) {
-        object = object[key];
-      }
-    });
-    append(object);
-  }, []);
+  // useEffect(() => {
+  //   const formvalues = form.getValues();
+  //   if (JSON.stringify(formvalues) === '{}') {
+  //     return;
+  //   }
+  //   let object = formvalues;
+  //   path.forEach((key) => {
+  //     if (object[key]) {
+  //       object = object[key];
+  //     }
+  //   });
+  //   append(object);
+  // }, []);
   function createItemName(
     item: z.ZodArray<any> | z.ZodDefault<any>,
     name: string = ''
@@ -74,10 +73,10 @@ export default function AutoFormArray({
   if (itemDefType === null) {
     itemDefType = (item._def as any).innerType._def.innerType.element;
   }
-
+  // TODO ADD IF HAS VALUE OPEN BY DEFAULT
   return (
     <div className={fieldConfig.containerClassName}>
-      <Accordion type="multiple" defaultValue={[name]}>
+      <Accordion type="single" defaultValue={name}>
         <AccordionItem value={name} className="border-none">
           <AccordionTrigger>{title}</AccordionTrigger>
           <AccordionContent>
@@ -99,8 +98,14 @@ export default function AutoFormArray({
                       className=""
                       onClick={() => remove(index)}
                     >
-                      <Trash className="size-4 mr-2" />
-                      Remove {title}
+                      {fieldConfig.buttons?.remove ? (
+                        fieldConfig.buttons?.remove
+                      ) : (
+                        <>
+                          <Trash className="size-4 mr-2" />
+                          {title}
+                        </>
+                      )}
                     </Button>
                   </div>
 
@@ -108,15 +113,23 @@ export default function AutoFormArray({
                 </div>
               );
             })}
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => append({})}
-              className="mt-4 flex items-center"
-            >
-              <Plus className="mr-2" size={16} />
-              Add {title}
-            </Button>
+            {fieldConfig.buttons?.canAdd !== false && (
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => append({})}
+                className="mt-4 flex items-center"
+              >
+                {fieldConfig.buttons?.add ? (
+                  fieldConfig.buttons?.add
+                ) : (
+                  <>
+                    <Plus className="mr-2" size={16} />
+                    {title}
+                  </>
+                )}
+              </Button>
+            )}
           </AccordionContent>
         </AccordionItem>
       </Accordion>

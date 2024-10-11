@@ -228,6 +228,17 @@ export type CreateFieldConfigWithResourceProps = {
   resources: Record<string, any>;
   schema: SchemaType;
 };
+/**
+ * Creates a field configuration with resource management.
+ *
+ * @param {CreateFieldConfigWithResourceProps} params - The parameters for creating the field configuration.
+ * @param {Record<string, any>} params.resources - A record of resources to be used within the field configuration.
+ * @param {SchemaType} params.schema - The schema defining the structure and validation of the field.
+ * @param {FieldConfig<z.infer<ZodObjectOrWrapped>>} [params.extend] - An optional field configuration to merge with result of this function.
+ * @param {string} [params.name='Form'] - An optional name for the field; defaults to 'Form'.
+ *
+ * @returns {FieldConfig<z.infer<ZodObjectOrWrapped>>} The created field configuration.
+ */
 export function createFieldConfigWithResource({
   resources,
   schema,
@@ -243,14 +254,7 @@ export function createFieldConfigWithResource({
     constantKey: name,
   });
   if (extend) {
-    Object.keys(fieldConfig).forEach((key) => {
-      const _extend = extend[key];
-      if (!_extend) return;
-      fieldConfig[key] = {
-        ...fieldConfig[key],
-        ..._extend,
-      };
-    });
+    return mergeFieldConfigs(fieldConfig[name], extend);
   }
   return fieldConfig[name];
 }
