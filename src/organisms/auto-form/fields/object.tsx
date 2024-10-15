@@ -1,19 +1,20 @@
+import React from 'react';
 import { useForm, useFormContext } from 'react-hook-form';
 import * as z from 'zod';
-import React from 'react';
 import { FormField } from '@/components/ui/form';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 import { DEFAULT_ZOD_HANDLERS, INPUT_COMPONENTS } from '../config';
 import resolveDependencies from '../dependencies';
 import { Dependency, FieldConfig, FieldConfigItem } from '../types';
 import {
-  beautifyObjectName,
+  createItemName,
   getBaseSchema,
   getBaseType,
+  sortFieldsByOrder,
   zodToHtmlInputProps,
 } from '../utils';
 import AutoFormArray from './array';
-import { cn } from '@/lib/utils';
-import { Skeleton } from '@/components/ui/skeleton';
 
 const DefaultParent = ({ children }: { children: JSX.Element }) => children;
 
@@ -60,21 +61,13 @@ export default function AutoFormObject<
 
     return item;
   };
-  function createItemName(item: z.ZodAny, name: string = '') {
-    if (!fieldConfig)
-      return item._def.description
-        ? beautifyObjectName(item._def.description)
-        : beautifyObjectName(name);
-    return fieldConfig?.[name]?.displayName
-      ? // @ts-ignore
-        fieldConfig[name].displayName
-      : beautifyObjectName(name);
-  }
+
+  const sortedFieldKeys = sortFieldsByOrder(fieldConfig, Object.keys(shape));
   return (
     <div
       className={cn(showInRow ? 'flex flex-row gap-3' : 'space-y-2', className)}
     >
-      {Object.keys(shape).map((name: string) => (
+      {sortedFieldKeys.map((name: string) => (
         <FormObject
           key={name}
           {...{
@@ -85,7 +78,6 @@ export default function AutoFormObject<
             dependencies,
             watch,
             form,
-            createItemName,
             handleIfZodNumber,
             isLoading,
           }}
@@ -103,12 +95,10 @@ function FormObject<SchemaType extends z.ZodObject<any, any>>({
   dependencies,
   watch,
   form,
-  createItemName,
   handleIfZodNumber,
   isInputDisabled,
   isLoading,
 }: {
-  createItemName: any;
   dependencies: Dependency<z.infer<SchemaType>>[];
   fieldConfig: any;
   form: ReturnType<typeof useForm>;
@@ -121,7 +111,7 @@ function FormObject<SchemaType extends z.ZodObject<any, any>>({
   watch: any;
 }) {
   let item = shape[name] as z.ZodAny;
-  const itemName = createItemName(item, name) ?? name;
+  const itemName = createItemName({ fieldConfig, item, name }) ?? name;
   item = handleIfZodNumber(item) as z.ZodAny;
   const zodBaseType = getBaseType(item);
   const key = [...path, name].join('.');
@@ -238,17 +228,24 @@ function FormObject<SchemaType extends z.ZodObject<any, any>>({
         if (InputComponent === undefined) {
           return <div />;
         }
+
+        const inputProps = {
+          zodInputProps,
+          field,
+          fieldConfigItem,
+          label: itemName.toString(),
+          isRequired,
+          zodItem: item,
+          fieldProps,
+        };
+        const Renderer = fieldConfigItem.renderer;
         return (
           <ParentElement key={`${key}.parent`}>
-            <InputComponent
-              zodInputProps={zodInputProps}
-              field={field}
-              fieldConfigItem={fieldConfigItem}
-              label={itemName.toString()}
-              isRequired={isRequired}
-              zodItem={item}
-              fieldProps={fieldProps}
-            />
+            {Renderer ? (
+              <Renderer {...inputProps} />
+            ) : (
+              <InputComponent {...inputProps} />
+            )}
           </ParentElement>
         );
       }}

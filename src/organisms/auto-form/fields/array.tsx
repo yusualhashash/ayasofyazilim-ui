@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { beautifyObjectName } from '../utils';
+import { createItemName } from '../utils';
 import AutoFormObject from './object';
 
 const isZodArray = (
@@ -50,21 +50,8 @@ export default function AutoFormArray({
   //   });
   //   append(object);
   // }, []);
-  function createItemName(
-    item: z.ZodArray<any> | z.ZodDefault<any>,
-    name: string = ''
-  ) {
-    if (!fieldConfig)
-      return item._def.description
-        ? beautifyObjectName(item._def.description)
-        : beautifyObjectName(name);
-    return fieldConfig?.displayName
-      ? // @ts-ignore
-        fieldConfig.displayName
-      : beautifyObjectName(name);
-  }
   // const _title = item._def.description ?? beautifyObjectName(name);
-  const title = createItemName(item, name) ?? name;
+  const title = createItemName({ fieldConfig, item, name }) ?? name;
   let itemDefType = isZodArray(item)
     ? item._def.type
     : isZodDefault(item)

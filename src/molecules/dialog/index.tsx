@@ -13,7 +13,7 @@ import {
 import { cn } from '@/lib/utils';
 import AutoForm, {
   AutoFormSubmit,
-  SchemaType,
+  ZodObjectOrWrapped,
 } from '../../organisms/auto-form';
 import SheetSide from '../sheet';
 import {
@@ -35,7 +35,7 @@ export type CustomTableActionDialogProps = {
 
 const AutoFormData = (
   action: TableActionAutoform,
-  values: Partial<z.infer<SchemaType>>,
+  values: Partial<z.infer<ZodObjectOrWrapped>>,
   triggerData?: any
 ) => (
   <AutoForm
@@ -70,7 +70,7 @@ export default function CustomTableActionDialog({
       : undefined;
   useEffect(() => {
     if (action.componentType === 'Autoform') {
-      setValues({ ...triggerData, ...action.autoFormArgs.values } || {});
+      setValues({ ...triggerData, ...action.autoFormArgs.values });
     }
   }, []);
   const content =

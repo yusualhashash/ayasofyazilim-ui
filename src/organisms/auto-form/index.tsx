@@ -19,6 +19,7 @@ import {
 
 export * from './types';
 export * from './utils';
+export * from './fields';
 
 export const AutoFormSubmit = ({
   children,
@@ -33,20 +34,20 @@ export const AutoFormSubmit = ({
     {children ?? 'Submit'}
   </Button>
 );
-export type SchemaType = ZodObjectOrWrapped;
-export type FieldConfigType = FieldConfig<z.infer<SchemaType>>;
-export type DependenciesType = Array<Dependency<z.infer<SchemaType>>>;
-export type ValueType = Partial<z.infer<SchemaType>>;
+
+export type FieldConfigType = FieldConfig<z.infer<ZodObjectOrWrapped>>;
+export type DependenciesType = Array<Dependency<z.infer<ZodObjectOrWrapped>>>;
+export type ValueType = Partial<z.infer<ZodObjectOrWrapped>>;
 export type AutoFormProps = {
   children?: JSX.Element;
   className?: string;
   dependencies?: DependenciesType;
   fieldConfig?: FieldConfigType;
   formClassName?: string;
-  formSchema: SchemaType;
+  formSchema: ZodObjectOrWrapped;
   isLoading?: boolean;
   onParsedValuesChange?: (values: ValueType) => void;
-  onSubmit?: (values: z.infer<SchemaType>) => void;
+  onSubmit?: (values: z.infer<ZodObjectOrWrapped>) => void;
   onValuesChange?: (values: ValueType) => void;
   showInRow?: boolean;
   stickyChildren?: boolean;
@@ -90,17 +91,16 @@ function AutoForm({
     }
   }
 
-  const values = form.watch();
-  // valuesString is needed because form.watch() returns a new object every time
-  const valuesString = JSON.stringify(values);
-
   React.useEffect(() => {
-    onValuesChangeProp?.(values);
-    const parsedValues = formSchema.safeParse(values);
-    if (parsedValues.success) {
-      onParsedValuesChange?.(parsedValues.data);
-    }
-  }, [valuesString]);
+    const subscription = form.watch((values) => {
+      onValuesChangeProp?.(values);
+      const parsedValues = formSchema.safeParse(values);
+      if (parsedValues.success) {
+        onParsedValuesChange?.(parsedValues.data);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form, formSchema, onValuesChangeProp, onParsedValuesChange]);
 
   return (
     <Form {...form}>
