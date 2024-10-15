@@ -70,7 +70,7 @@ export default function CustomTableActionDialog({
       : undefined;
   useEffect(() => {
     if (action.componentType === 'Autoform') {
-      setValues({ ...triggerData, ...action.autoFormArgs.values } || {});
+      setValues({ ...triggerData, ...action.autoFormArgs.values });
     }
   }, []);
   const content =
