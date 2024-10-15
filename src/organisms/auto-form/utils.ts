@@ -448,3 +448,33 @@ export function fieldConfigFromSchema({
   }
   return fieldConfig;
 }
+
+export function sortFieldsByOrder<SchemaType extends z.ZodObject<any, any>>(
+  fieldConfig: FieldConfig<z.infer<SchemaType>> | undefined,
+  keys: string[]
+) {
+  const sortedFields = keys.sort((a, b) => {
+    const fieldA: number = (fieldConfig?.[a]?.order as number) ?? 0;
+    const fieldB = (fieldConfig?.[b]?.order as number) ?? 0;
+    return fieldA - fieldB;
+  });
+  return sortedFields;
+}
+
+export function createItemName({
+  fieldConfig,
+  item,
+  name = '',
+}: {
+  fieldConfig?: FieldConfigType;
+  item: z.ZodAny | z.ZodArray<any> | z.ZodDefault<any>;
+  name: string;
+}): string {
+  if (!fieldConfig)
+    return item._def.description
+      ? beautifyObjectName(item._def.description)
+      : beautifyObjectName(name);
+  return fieldConfig?.[name]?.displayName
+    ? (fieldConfig[name].displayName as string)
+    : beautifyObjectName(name);
+}
