@@ -19,6 +19,7 @@ import {
 
 export * from './types';
 export * from './utils';
+export * from './fields';
 
 export const AutoFormSubmit = ({
   children,

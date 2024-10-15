@@ -45,9 +45,9 @@ export type CommonFieldConfigItem = {
   };
   isLoading?: boolean;
 
-  renderParent?: (props: {
-    children: React.ReactNode;
-  }) => React.ReactElement | null;
+  order?: number;
+  renderParent?: (props: any) => React.ReactElement | null;
+  renderer?: (props: any) => React.ReactElement | null;
   withoutBorder?: boolean;
 };
 
