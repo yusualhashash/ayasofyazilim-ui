@@ -394,7 +394,7 @@ export function fieldConfigFromSchema({
     [name]: {},
   };
   // object
-  if (object.type === 'object' && object.properties) {
+  if (object && object.type === 'object' && object.properties) {
     for (const property of Object.keys(object.properties)) {
       Object.assign(fieldConfig[name], {
         displayName: resources[constantKey],
@@ -408,7 +408,12 @@ export function fieldConfigFromSchema({
     }
   }
   // array
-  else if (object.type === 'array' && object.items && object.items.properties) {
+  else if (
+    object &&
+    object.type === 'array' &&
+    object.items &&
+    object.items.properties
+  ) {
     for (const property of Object.keys(object.items.properties)) {
       Object.assign(fieldConfig[name], {
         displayName: resources[constantKey],
@@ -422,7 +427,7 @@ export function fieldConfigFromSchema({
     }
   }
   // plain
-  else {
+  else if (object) {
     const fieldConfigItem = {
       displayName: resources[constantKey],
     };
