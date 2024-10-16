@@ -250,7 +250,12 @@ export default function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [filteredColumns, setFilteredColumns] = useState<ColumnFilter[]>([]);
+  const [filteredColumns, setFilteredColumns] = useState<ColumnFilter[]>(() => {
+    if (detailedFilter) {
+      return detailedFilter.filter((i) => i.value);
+    }
+    return [];
+  });
 
   useEffect(() => {
     if (isLoading) {
@@ -322,13 +327,16 @@ export default function DataTable<TData, TValue>({
   const selectedRows = table?.getSelectedRowModel()?.rows || [];
 
   useEffect(() => {
-    const filter: { [key: string]: string } = {};
+    const filter: { [key: string]: string | string[] } = {};
     filteredColumns.forEach((column: ColumnFilter) => {
-      filter[column.name] = column.value;
+      if (column.type === 'select-multiple') {
+        filter[column.name] = column.value.split(',').filter((i) => i);
+      } else {
+        filter[column.name] = column.value;
+      }
     });
-    const filterString = JSON.stringify(filter);
 
-    fetchRequest?.(table.getState().pagination.pageIndex, filterString);
+    fetchRequest?.(table.getState().pagination.pageIndex, filter);
   }, [table.getState().pagination.pageIndex, filteredColumns]);
 
   function selectedRowsText(): string | JSX.Element {
