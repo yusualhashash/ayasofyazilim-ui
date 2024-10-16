@@ -10,13 +10,7 @@ export enum DependencyType {
 }
 
 export type FieldConfigItem = CommonFieldConfigItem &
-  (BaseFieldConfigItem | SelectFieldConfigItem | ArrayFieldConfigItem);
-export type ArrayFieldConfigItem = {
-  add?: string | React.ReactNode;
-  canAdd?: boolean;
-  fieldType: 'array';
-  remove?: string | React.ReactNode;
-};
+  (BaseFieldConfigItem | SelectFieldConfigItem);
 export type SelectFieldConfigItem = {
   fieldType: 'select';
   labels: string[];
@@ -54,8 +48,29 @@ export type CommonFieldConfigItem = {
 export type FieldConfig<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
   // If SchemaType.key is an object, create a nested FieldConfig, otherwise FieldConfigItem
   [Key in keyof SchemaType]?: SchemaType[Key] extends object
-    ? FieldConfig<z.infer<SchemaType[Key]>>
+    ? FieldConfig<z.infer<SchemaType[Key]>> &
+        (BaseFieldConfig | ArrayFieldConfig)
     : FieldConfigItem;
+};
+
+type BaseFieldConfig = {
+  type?: 'base';
+};
+
+type ArrayFieldConfig = {
+  arrayConfig?: {
+    add?: string | React.ReactNode;
+    canAdd?: boolean;
+    classNames?: {
+      accordion?: string;
+      accordionContent?: string;
+      accordionItem?: string;
+      accordionTrigger?: string;
+      fieldContainer?: string;
+    };
+    separator?: boolean;
+  };
+  type: 'array';
 };
 
 export type BaseDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> =
