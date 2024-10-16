@@ -80,6 +80,7 @@ export function CustomCombobox<T>({ ...props }: CustomComboboxProps<T>) {
       <PopoverTrigger asChild>
         <FormControl>
           <Button
+            type="button"
             variant="outline"
             role="combobox"
             className={cn(
@@ -103,6 +104,7 @@ export function CustomCombobox<T>({ ...props }: CustomComboboxProps<T>) {
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Button
+          type="button"
           variant="outline"
           className={cn(
             'text-muted-foreground w-full justify-between font-normal',
