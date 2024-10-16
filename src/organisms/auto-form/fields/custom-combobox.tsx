@@ -33,7 +33,7 @@ export function CustomCombobox<T>({
 }: {
   childrenProps: AutoFormInputComponentProps;
   emptyValue?: string;
-  list: Array<T> | undefined;
+  list: Array<T> | null | undefined;
   searchPlaceholder?: string;
   searchResultLabel?: string;
   selectIdentifier: keyof T;
@@ -50,10 +50,12 @@ export function CustomCombobox<T>({
       name: childrenProps.field.name,
     });
   const [open, setOpen] = useState(false);
-  const findValue = (id: string) =>
-    list?.find((address: T) => address[selectIdentifier] === id)?.[
+  const findValue = (id: string) => {
+    const value = list?.find((item: T) => item[selectIdentifier] === id)?.[
       selectLabel
     ] as string;
+    return value;
+  };
   return (
     <FormItem
       className={cn(
@@ -90,24 +92,24 @@ export function CustomCombobox<T>({
                 {searchResultLabel || '0 search result.'}
               </CommandEmpty>
               <CommandGroup>
-                {list?.map((address: T) => (
+                {list?.map((item: T) => (
                   <CommandItem
-                    key={address[selectIdentifier as keyof T] as string}
-                    value={address[selectIdentifier as keyof T] as string}
-                    onSelect={(currentValue) => {
+                    key={item[selectIdentifier] as string}
+                    value={item[selectIdentifier] as string}
+                    onSelect={() => {
                       childrenProps.field.onChange(
-                        currentValue === childrenProps.field.value
+                        item[selectIdentifier] === childrenProps.field.value
                           ? undefined
-                          : currentValue
+                          : item[selectIdentifier]
                       );
                       setOpen(false);
                     }}
                   >
-                    {address[selectLabel] as string}
+                    {item[selectLabel] as string}
                     <CheckIcon
                       className={cn(
                         'ml-auto h-4 w-4',
-                        childrenProps.field.value === address[selectIdentifier]
+                        childrenProps.field.value === item[selectIdentifier]
                           ? 'opacity-100'
                           : 'opacity-0'
                       )}
