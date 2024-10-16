@@ -21,6 +21,8 @@ import { createItemName } from '..';
 import AutoFormLabel from '../common/label';
 import AutoFormTooltip from '../common/tooltip';
 import { AutoFormInputComponentProps } from '../types';
+import { useMediaQuery } from '@/components/ui/useMediaQuery';
+import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 /**
  * CustomCombobox Component
  *
@@ -40,16 +42,8 @@ import { AutoFormInputComponentProps } from '../types';
  * @template T
  * @returns {JSX.Element} The rendered CustomCombobox component.
  */
-export function CustomCombobox<T>({
-  childrenProps,
-  list,
-  selectLabel,
-  selectIdentifier,
-  emptyValue,
-  searchPlaceholder,
-  searchResultLabel,
-  onValueChange,
-}: {
+
+type CustomComboboxProps<T> = {
   childrenProps: AutoFormInputComponentProps;
   emptyValue?: string;
   list: Array<T> | null | undefined;
@@ -58,7 +52,12 @@ export function CustomCombobox<T>({
   searchResultLabel?: string;
   selectIdentifier: keyof T;
   selectLabel: keyof T;
-}) {
+};
+
+export function CustomCombobox<T>({ ...props }: CustomComboboxProps<T>) {
+  const { childrenProps, list, selectLabel, selectIdentifier, emptyValue } =
+    props;
+  const isDesktop = useMediaQuery('(min-width: 768px)');
   const { showLabel: _showLabel } = childrenProps.fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
   const label =
@@ -75,6 +74,53 @@ export function CustomCombobox<T>({
     return value;
   };
   const fieldValue = findValue(childrenProps.field.value);
+
+  const DesktopContent = (
+    <Popover open={open} onOpenChange={setOpen} modal>
+      <PopoverTrigger asChild>
+        <FormControl>
+          <Button
+            variant="outline"
+            role="combobox"
+            className={cn(
+              'text-muted-foreground w-full justify-between font-normal',
+              fieldValue && 'text-black',
+              childrenProps.fieldProps.className
+            )}
+          >
+            {fieldValue || emptyValue || 'Please select'}
+            <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </FormControl>
+      </PopoverTrigger>
+      <PopoverContent className=" p-0">
+        <List {...props} setOpen={setOpen} />
+      </PopoverContent>
+    </Popover>
+  );
+
+  const MobileContent = (
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger asChild>
+        <Button
+          variant="outline"
+          className={cn(
+            'text-muted-foreground w-full justify-between font-normal',
+            fieldValue && 'text-black',
+            childrenProps.fieldProps.className
+          )}
+        >
+          {fieldValue || emptyValue || 'Please select'}
+          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <div className="mt-4 border-t">
+          <List {...props} setOpen={setOpen} />
+        </div>
+      </DrawerContent>
+    </Drawer>
+  );
   return (
     <FormItem
       className={cn(
@@ -85,89 +131,84 @@ export function CustomCombobox<T>({
       {showLabel && (
         <AutoFormLabel isRequired={childrenProps.isRequired} label={label} />
       )}
-      <Popover open={open} onOpenChange={setOpen} modal>
-        <PopoverTrigger asChild>
-          <FormControl>
-            <Button
-              variant="outline"
-              role="combobox"
-              className={cn(
-                'text-muted-foreground w-full justify-between font-normal',
-                fieldValue && 'text-black',
-                childrenProps.fieldProps.className
-              )}
-            >
-              {fieldValue || emptyValue || 'Please select'}
-              <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </FormControl>
-        </PopoverTrigger>
-        <PopoverContent className=" p-0">
-          <Command
-            filter={(commandValue, search) => {
-              const filterResult = list?.find(
-                (i) =>
-                  (i[selectIdentifier] as string)?.toLocaleLowerCase() ===
-                  commandValue.toLocaleLowerCase()
-              )?.[selectLabel] as string;
-              if (
-                commandValue.includes(search) ||
-                filterResult
-                  ?.toLocaleLowerCase()
-                  .includes(search.toLocaleLowerCase())
-              )
-                return 1;
-              return 0;
-            }}
-          >
-            <CommandInput
-              placeholder={searchPlaceholder || 'Search...'}
-              className="h-9"
-            />
-            <CommandList>
-              <CommandEmpty>
-                {searchResultLabel || '0 search result.'}
-              </CommandEmpty>
-              <CommandGroup>
-                {list?.map((item: T) => (
-                  <CommandItem
-                    key={item[selectIdentifier] as string}
-                    value={item[selectIdentifier] as string}
-                    onSelect={() => {
-                      childrenProps.field.onChange(
-                        item[selectIdentifier] === childrenProps.field.value
-                          ? undefined
-                          : item[selectIdentifier]
-                      );
-                      if (onValueChange)
-                        onValueChange(
-                          list.find(
-                            (item: T) =>
-                              item[selectIdentifier] ===
-                              childrenProps.field.value
-                          )
-                        );
-                      setOpen(false);
-                    }}
-                  >
-                    {item[selectLabel] as string}
-                    <CheckIcon
-                      className={cn(
-                        'ml-auto h-4 w-4',
-                        childrenProps.field.value === item[selectIdentifier]
-                          ? 'opacity-100'
-                          : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+      {isDesktop ? DesktopContent : MobileContent}
       <AutoFormTooltip fieldConfigItem={childrenProps.fieldConfigItem} />
       <FormMessage />
     </FormItem>
+  );
+}
+
+function List<T>({
+  setOpen,
+  ...props
+}: CustomComboboxProps<T> & {
+  setOpen: (open: boolean) => void;
+}) {
+  const {
+    childrenProps,
+    list,
+    selectLabel,
+    selectIdentifier,
+    searchPlaceholder,
+    searchResultLabel,
+    onValueChange,
+  } = props;
+  return (
+    <Command
+      filter={(commandValue, search) => {
+        const filterResult = list?.find(
+          (i) =>
+            (i[selectIdentifier] as string)?.toLocaleLowerCase() ===
+            commandValue.toLocaleLowerCase()
+        )?.[selectLabel] as string;
+        if (
+          commandValue.includes(search) ||
+          filterResult?.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+        )
+          return 1;
+        return 0;
+      }}
+    >
+      <CommandInput
+        placeholder={searchPlaceholder || 'Search...'}
+        className="h-9"
+      />
+      <CommandList>
+        <CommandEmpty>{searchResultLabel || '0 search result.'}</CommandEmpty>
+        <CommandGroup>
+          {list?.map((item: T) => (
+            <CommandItem
+              key={item[selectIdentifier] as string}
+              value={item[selectIdentifier] as string}
+              onSelect={() => {
+                childrenProps.field.onChange(
+                  item[selectIdentifier] === childrenProps.field.value
+                    ? undefined
+                    : item[selectIdentifier]
+                );
+                if (onValueChange)
+                  onValueChange(
+                    list.find(
+                      (item: T) =>
+                        item[selectIdentifier] === childrenProps.field.value
+                    )
+                  );
+                setOpen(false);
+              }}
+            >
+              {item[selectLabel] as string}
+              <CheckIcon
+                className={cn(
+                  'ml-auto h-4 w-4',
+                  childrenProps.field.value === item[selectIdentifier]
+                    ? 'opacity-100'
+                    : 'opacity-0'
+                )}
+              />
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      </CommandList>
+    </Command>
   );
 }
