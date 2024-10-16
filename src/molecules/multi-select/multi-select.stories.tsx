@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Cat, Dog, Fish, Rabbit, Turtle } from 'lucide-react';
 import { MultiSelect } from '.';
 
-const frameworksList = [
+export const frameworksList = [
   { value: 'react', label: 'React', icon: Turtle },
   { value: 'angular', label: 'Angular', icon: Cat },
   { value: 'vue', label: 'Vue', icon: Dog },
