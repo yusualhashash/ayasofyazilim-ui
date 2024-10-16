@@ -2,13 +2,14 @@ import { Plus, Trash } from 'lucide-react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as z from 'zod';
 import {
+  Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-  Accordion,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 import { createItemName } from '../utils';
 import AutoFormObject from './object';
 
@@ -62,64 +63,94 @@ export default function AutoFormArray({
   }
   // TODO ADD IF HAS VALUE OPEN BY DEFAULT
   return (
-    <div className={fieldConfig.containerClassName}>
-      <Accordion type="single" defaultValue={name}>
-        <AccordionItem value={name} className="border-none">
-          <AccordionTrigger>{title}</AccordionTrigger>
-          <AccordionContent>
-            {fields.map((_field, index) => {
-              const key = _field.id;
-              return (
-                <div className="mt-4 flex flex-col" key={`${key}`}>
-                  <AutoFormObject
-                    schema={itemDefType as z.ZodObject<any, any>}
-                    form={form}
-                    fieldConfig={fieldConfig}
-                    path={[...path, index.toString()]}
-                    className={fieldConfig.className}
-                  />
-                  <div className="my-4 flex justify-end">
-                    <Button
-                      variant="outline"
-                      type="button"
-                      className=""
-                      onClick={() => remove(index)}
-                    >
-                      {fieldConfig.buttons?.remove ? (
-                        fieldConfig.buttons?.remove
-                      ) : (
-                        <>
-                          <Trash className="size-4 mr-2" />
-                          {title}
-                        </>
-                      )}
-                    </Button>
-                  </div>
+    <Accordion
+      type="single"
+      collapsible
+      defaultValue={name}
+      className={cn('group', fieldConfig?.arrayConfig?.classNames?.accordion)}
+    >
+      <AccordionItem
+        value={name}
+        className={cn(
+          'border-0   [&>h3]:sticky [&>h3]:top-0 [&>h3]:z-10 ',
+          fieldConfig?.arrayConfig?.classNames?.accordionItem
+        )}
+      >
+        <AccordionTrigger
+          onClick={(ev) => fields.length === 0 && ev.preventDefault()}
+          className={cn(
+            'flex gap-4 overflow-hidden items-center bg-white py-2 px-4 rounded-md border relative group-has-[div>div>div>*]:rounded-b-none hover:no-underline hover:[&>span]:underline hover:bg-zinc-50/50',
+            fieldConfig?.arrayConfig?.classNames?.accordionTrigger,
+            fields.length === 0 && '[&>svg]:hidden pr-2'
+          )}
+        >
+          <span className="w-full text-left">{title}</span>
 
-                  <Separator />
-                </div>
-              );
-            })}
-            {fieldConfig.buttons?.canAdd !== false && (
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => append({})}
-                className="mt-4 flex items-center"
-              >
-                {fieldConfig.buttons?.add ? (
-                  fieldConfig.buttons?.add
+          {fieldConfig?.arrayConfig?.canAdd !== false && (
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={(ev) => {
+                ev.preventDefault();
+                append({});
+              }}
+              className="z-10 !no-underline"
+              asChild
+            >
+              <div className="">
+                {fieldConfig?.add ? (
+                  fieldConfig.add
                 ) : (
                   <>
                     <Plus className="mr-2" size={16} />
                     {title}
                   </>
                 )}
-              </Button>
-            )}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-    </div>
+              </div>
+            </Button>
+          )}
+        </AccordionTrigger>
+
+        <AccordionContent
+          className={cn(
+            'flex flex-col gap-4 has-[*]:border p-0 has-[*]:p-4 has-[*]:border-t-0 rounded-b-md',
+            fieldConfig?.arrayConfig?.classNames?.accordionContent
+          )}
+        >
+          {fields.map((_field, index) => {
+            const key = _field.id;
+            return (
+              <div
+                className={cn(
+                  'flex relative',
+                  fieldConfig?.arrayConfig?.classNames?.fieldContainer,
+                  'pr-12'
+                )}
+                key={`${key}`}
+              >
+                <AutoFormObject
+                  schema={itemDefType as z.ZodObject<any, any>}
+                  form={form}
+                  fieldConfig={fieldConfig}
+                  path={[...path, index.toString()]}
+                  className={cn('w-full', fieldConfig?.className)}
+                />
+
+                {fieldConfig?.arrayConfig?.separator !== false && <Separator />}
+                <Button
+                  variant="destructive"
+                  type="button"
+                  size="icon"
+                  className="text-destructive hover:text-white absolute right-0 top-0 h-full bg-destructive/10 rounded-l-none "
+                  onClick={() => remove(index)}
+                >
+                  <Trash className="size-4" />
+                </Button>
+              </div>
+            );
+          })}
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }
