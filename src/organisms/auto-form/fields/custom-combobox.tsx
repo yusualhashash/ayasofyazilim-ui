@@ -74,7 +74,7 @@ export function CustomCombobox<T>({
               variant="outline"
               role="combobox"
               className={cn(
-                'text-muted-foreground w-full justify-between',
+                'text-muted-foreground w-full justify-between font-normal',
                 fieldValue && 'text-black',
                 childrenProps.fieldProps.className
               )}
