@@ -103,7 +103,23 @@ export function CustomCombobox<T>({
           </FormControl>
         </PopoverTrigger>
         <PopoverContent className=" p-0">
-          <Command>
+          <Command
+            filter={(commandValue, search) => {
+              const filterResult = list?.find(
+                (i) =>
+                  (i[selectIdentifier] as string)?.toLocaleLowerCase() ===
+                  commandValue.toLocaleLowerCase()
+              )?.[selectLabel] as string;
+              if (
+                commandValue.includes(search) ||
+                filterResult
+                  ?.toLocaleLowerCase()
+                  .includes(search.toLocaleLowerCase())
+              )
+                return 1;
+              return 0;
+            }}
+          >
             <CommandInput
               placeholder={searchPlaceholder || 'Search...'}
               className="h-9"
