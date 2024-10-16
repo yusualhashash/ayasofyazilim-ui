@@ -18,9 +18,15 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import AdvancedCalendar from '../advanced-calendar';
+import { MultiSelect, MultiSelectProps } from '../multi-select';
 
 export type ColumnFilter = BaseColumnFilter &
-  (StandartColumnFilter | SelectColumnFilter | BooleanColumnFilter);
+  (
+    | StandartColumnFilter
+    | SelectColumnFilter
+    | BooleanColumnFilter
+    | MultipleFilter
+  );
 
 export type BaseColumnFilter = {
   displayName: string;
@@ -31,6 +37,11 @@ export type SelectColumnFilter = {
   options: { label: string; value: string }[];
   placeholder: string;
   type: 'select';
+};
+export type MultipleFilter = {
+  htmlProps?: MultiSelectProps;
+  multiSelectProps: MultiSelectProps;
+  type: 'select-multiple';
 };
 export type BooleanColumnFilter = {
   placeholder?: string;
@@ -215,6 +226,22 @@ function GenerateFilterByType({
           )}
         </div>
       );
+    case 'select-multiple': {
+      const defaultValue = [...filteredValue.split(',')];
+      return (
+        <MultiSelect
+          {...column.multiSelectProps}
+          {...column.htmlProps}
+          defaultValue={defaultValue}
+          onValueChange={(value) => {
+            if (value.length === 0) {
+              return;
+            }
+            setFilteredValue(value.toString());
+          }}
+        />
+      );
+    }
     default:
       return null;
   }

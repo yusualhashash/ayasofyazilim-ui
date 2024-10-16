@@ -281,6 +281,9 @@ export const DetailedFilter: StoryObj<typeof Table> = {
           if (filterKey === 'status') {
             return tableItem.status === parsedFilter[filterKey];
           }
+          if (filterKey === 'status_multiple') {
+            return parsedFilter[filterKey].includes(tableItem.status);
+          }
           return true;
         });
         setTableData(filteredData);
@@ -325,6 +328,26 @@ export const DetailedFilter: StoryObj<typeof Table> = {
         displayName: 'Date Less than',
         type: 'date',
         value: new Date().toISOString(),
+      },
+      {
+        name: 'status_multiple',
+        displayName: 'Status Multiple',
+        type: 'select-multiple',
+        value: 'failed',
+        multiSelectProps: {
+          options: [
+            { label: 'pending', value: 'pending' },
+            { label: 'processing', value: 'processing' },
+            { label: 'success', value: 'success' },
+            { label: 'failed', value: 'failed' },
+          ],
+          placeholder: 'Select frameworks',
+          variant: 'inverted',
+          animation: 0,
+          maxCount: 3,
+          modalPopover: false,
+          // onValueChange: (value) => console.log(value),
+        },
       },
     ],
   },
@@ -380,7 +403,7 @@ export const SubContentMenuActionDialog: StoryObj<typeof Table> = {
             componentType: 'ConfirmationDialog',
             description: 'View Details description',
             variant: 'destructive',
-            callback: async (triggerData: Payment) => console.log(triggerData),
+            // callback: async (triggerData: Payment) => console.log(triggerData),
           },
           {
             type: 'Dialog',
@@ -391,7 +414,7 @@ export const SubContentMenuActionDialog: StoryObj<typeof Table> = {
               return `Are you sure to delete ${_triggerData.email}?`;
             },
             variant: 'destructive',
-            callback: async (triggerData: Payment) => console.log(triggerData),
+            // callback: async (triggerData: Payment) => console.log(triggerData),
           },
         ],
       },
