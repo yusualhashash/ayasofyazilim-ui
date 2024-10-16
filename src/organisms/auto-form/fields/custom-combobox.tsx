@@ -24,17 +24,17 @@ import { AutoFormInputComponentProps } from '../types';
 
 export function CustomCombobox<T>({
   childrenProps,
-  addressList,
+  list,
   selectLabel,
   selectIdentifier,
   emptyValue,
-  placeholder,
+  searchPlaceholder,
   searchResultLabel,
 }: {
-  addressList: Array<T> | undefined;
   childrenProps: AutoFormInputComponentProps;
   emptyValue?: string;
-  placeholder?: string;
+  list: Array<T> | null | undefined;
+  searchPlaceholder?: string;
   searchResultLabel?: string;
   selectIdentifier: keyof T;
   selectLabel: keyof T;
@@ -50,10 +50,13 @@ export function CustomCombobox<T>({
       name: childrenProps.field.name,
     });
   const [open, setOpen] = useState(false);
-  const findValue = (id: string) =>
-    addressList?.find((address: T) => address[selectIdentifier] === id)?.[
+  const findValue = (id: string) => {
+    const value = list?.find((item: T) => item[selectIdentifier] === id)?.[
       selectLabel
     ] as string;
+    return value;
+  };
+  const fieldValue = findValue(childrenProps.field.value);
   return (
     <FormItem
       className={cn(
@@ -70,11 +73,13 @@ export function CustomCombobox<T>({
             <Button
               variant="outline"
               role="combobox"
-              className="text-muted-foreground w-full justify-between"
+              className={cn(
+                'text-muted-foreground w-full justify-between font-normal',
+                fieldValue && 'text-black',
+                childrenProps.fieldProps.className
+              )}
             >
-              {childrenProps.field.value
-                ? findValue(childrenProps.field.value)
-                : emptyValue || 'Please select'}
+              {fieldValue || emptyValue || 'Please select'}
               <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </FormControl>
@@ -82,7 +87,7 @@ export function CustomCombobox<T>({
         <PopoverContent className=" p-0">
           <Command>
             <CommandInput
-              placeholder={placeholder || 'Search...'}
+              placeholder={searchPlaceholder || 'Search...'}
               className="h-9"
             />
             <CommandList>
@@ -90,24 +95,24 @@ export function CustomCombobox<T>({
                 {searchResultLabel || '0 search result.'}
               </CommandEmpty>
               <CommandGroup>
-                {addressList?.map((address: T) => (
+                {list?.map((item: T) => (
                   <CommandItem
-                    key={address[selectIdentifier as keyof T] as string}
-                    value={address[selectIdentifier as keyof T] as string}
-                    onSelect={(currentValue) => {
+                    key={item[selectIdentifier] as string}
+                    value={item[selectIdentifier] as string}
+                    onSelect={() => {
                       childrenProps.field.onChange(
-                        currentValue === childrenProps.field.value
+                        item[selectIdentifier] === childrenProps.field.value
                           ? undefined
-                          : currentValue
+                          : item[selectIdentifier]
                       );
                       setOpen(false);
                     }}
                   >
-                    {address[selectLabel] as string}
+                    {item[selectLabel] as string}
                     <CheckIcon
                       className={cn(
                         'ml-auto h-4 w-4',
-                        childrenProps.field.value === address[selectIdentifier]
+                        childrenProps.field.value === item[selectIdentifier]
                           ? 'opacity-100'
                           : 'opacity-0'
                       )}
