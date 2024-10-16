@@ -24,17 +24,17 @@ import { AutoFormInputComponentProps } from '../types';
 
 export function CustomCombobox<T>({
   childrenProps,
-  addressList,
+  list,
   selectLabel,
   selectIdentifier,
   emptyValue,
-  placeholder,
+  searchPlaceholder,
   searchResultLabel,
 }: {
-  addressList: Array<T> | undefined;
   childrenProps: AutoFormInputComponentProps;
   emptyValue?: string;
-  placeholder?: string;
+  list: Array<T> | undefined;
+  searchPlaceholder?: string;
   searchResultLabel?: string;
   selectIdentifier: keyof T;
   selectLabel: keyof T;
@@ -51,7 +51,7 @@ export function CustomCombobox<T>({
     });
   const [open, setOpen] = useState(false);
   const findValue = (id: string) =>
-    addressList?.find((address: T) => address[selectIdentifier] === id)?.[
+    list?.find((address: T) => address[selectIdentifier] === id)?.[
       selectLabel
     ] as string;
   return (
@@ -82,7 +82,7 @@ export function CustomCombobox<T>({
         <PopoverContent className=" p-0">
           <Command>
             <CommandInput
-              placeholder={placeholder || 'Search...'}
+              placeholder={searchPlaceholder || 'Search...'}
               className="h-9"
             />
             <CommandList>
@@ -90,7 +90,7 @@ export function CustomCombobox<T>({
                 {searchResultLabel || '0 search result.'}
               </CommandEmpty>
               <CommandGroup>
-                {addressList?.map((address: T) => (
+                {list?.map((address: T) => (
                   <CommandItem
                     key={address[selectIdentifier as keyof T] as string}
                     value={address[selectIdentifier as keyof T] as string}
