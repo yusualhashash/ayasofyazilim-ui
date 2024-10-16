@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 export interface ISection {
+  disabled?: boolean;
   id: string;
   link?: string;
   name: string;
@@ -54,18 +55,23 @@ export function SectionLayoutNavbar({
     >
       {sections.map((section) => (
         <LinkElement
-          className={
+          className={cn(
             activeSectionId === section.id
               ? 'font-semibold text-primary hover:no-underline m-0 p-0 h-auto justify-start'
-              : 'font-normal text-muted-foreground hover:no-underline m-0 p-0 h-auto justify-start'
-          }
+              : 'font-normal text-muted-foreground hover:no-underline m-0 p-0 h-auto justify-start',
+            section.disabled
+              ? 'cursor-not-allowed opacity-50'
+              : 'cursor-pointer'
+          )}
           href={section.link || '#'}
           onClick={() => {
+            if (section.disabled) return;
             if (!linkElement && onSectionChange) {
               onSectionChange(section.id);
             }
           }}
           key={section.id}
+          tabIndex={section.disabled ? -1 : 0}
           variant="link"
         >
           {section.name}
