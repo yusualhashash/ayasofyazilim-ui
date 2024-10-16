@@ -1,6 +1,6 @@
 import { CaretSortIcon } from '@radix-ui/react-icons';
 import { CheckIcon } from 'lucide-react';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -21,7 +21,25 @@ import { createItemName } from '..';
 import AutoFormLabel from '../common/label';
 import AutoFormTooltip from '../common/tooltip';
 import { AutoFormInputComponentProps } from '../types';
-
+/**
+ * CustomCombobox Component
+ *
+ * A customizable dropdown component for selecting items from a list,
+ * featuring a search input to filter options and display the selected item.
+ *
+ * @param {Object} props - The props for the component.
+ * @param {AutoFormInputComponentProps} props.childrenProps - Props for child components, including field props and configuration.
+ * @param {string} [props.emptyValue='Please select'] - Placeholder text when no value is selected.
+ * @param {Array<T> | null | undefined} props.list - List of items to display in the dropdown.
+ * @param {Dispatch<SetStateAction<T | null | undefined>>} [props.onValueChange] - Callback for value changes.
+ * @param {string} [props.searchPlaceholder='Search...'] - Placeholder text for the search input.
+ * @param {string} [props.searchResultLabel='0 search result.'] - Text displayed when no search results are found.
+ * @param {keyof T} props.selectIdentifier - The key used to identify items in the list.
+ * @param {keyof T} props.selectLabel - The key used to display the item label in the dropdown.
+ *
+ * @template T
+ * @returns {JSX.Element} The rendered CustomCombobox component.
+ */
 export function CustomCombobox<T>({
   childrenProps,
   list,
@@ -30,16 +48,16 @@ export function CustomCombobox<T>({
   emptyValue,
   searchPlaceholder,
   searchResultLabel,
+  onValueChange,
 }: {
   childrenProps: AutoFormInputComponentProps;
   emptyValue?: string;
   list: Array<T> | null | undefined;
+  onValueChange?: Dispatch<SetStateAction<T | null | undefined>>;
   searchPlaceholder?: string;
   searchResultLabel?: string;
   selectIdentifier: keyof T;
   selectLabel: keyof T;
-  // We can implement later
-  // onValueChange?: Dispatch<React.SetStateAction<string | undefined>>;
 }) {
   const { showLabel: _showLabel } = childrenProps.fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
@@ -85,7 +103,23 @@ export function CustomCombobox<T>({
           </FormControl>
         </PopoverTrigger>
         <PopoverContent className=" p-0">
-          <Command>
+          <Command
+            filter={(commandValue, search) => {
+              const filterResult = list?.find(
+                (i) =>
+                  (i[selectIdentifier] as string)?.toLocaleLowerCase() ===
+                  commandValue.toLocaleLowerCase()
+              )?.[selectLabel] as string;
+              if (
+                commandValue.includes(search) ||
+                filterResult
+                  ?.toLocaleLowerCase()
+                  .includes(search.toLocaleLowerCase())
+              )
+                return 1;
+              return 0;
+            }}
+          >
             <CommandInput
               placeholder={searchPlaceholder || 'Search...'}
               className="h-9"
@@ -105,6 +139,14 @@ export function CustomCombobox<T>({
                           ? undefined
                           : item[selectIdentifier]
                       );
+                      if (onValueChange)
+                        onValueChange(
+                          list.find(
+                            (item: T) =>
+                              item[selectIdentifier] ===
+                              childrenProps.field.value
+                          )
+                        );
                       setOpen(false);
                     }}
                   >
