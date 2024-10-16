@@ -1,6 +1,6 @@
 import { CaretSortIcon } from '@radix-ui/react-icons';
 import { CheckIcon } from 'lucide-react';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -30,16 +30,16 @@ export function CustomCombobox<T>({
   emptyValue,
   searchPlaceholder,
   searchResultLabel,
+  onValueChange,
 }: {
   childrenProps: AutoFormInputComponentProps;
   emptyValue?: string;
   list: Array<T> | null | undefined;
+  onValueChange?: Dispatch<SetStateAction<T | null | undefined>>;
   searchPlaceholder?: string;
   searchResultLabel?: string;
   selectIdentifier: keyof T;
   selectLabel: keyof T;
-  // We can implement later
-  // onValueChange?: Dispatch<React.SetStateAction<string | undefined>>;
 }) {
   const { showLabel: _showLabel } = childrenProps.fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
@@ -105,6 +105,14 @@ export function CustomCombobox<T>({
                           ? undefined
                           : item[selectIdentifier]
                       );
+                      if (onValueChange)
+                        onValueChange(
+                          list.find(
+                            (item: T) =>
+                              item[selectIdentifier] ===
+                              childrenProps.field.value
+                          )
+                        );
                       setOpen(false);
                     }}
                   >
