@@ -56,6 +56,7 @@ export function CustomCombobox<T>({
     ] as string;
     return value;
   };
+  const fieldValue = findValue(childrenProps.field.value);
   return (
     <FormItem
       className={cn(
@@ -72,11 +73,13 @@ export function CustomCombobox<T>({
             <Button
               variant="outline"
               role="combobox"
-              className="text-muted-foreground w-full justify-between"
+              className={cn(
+                'text-muted-foreground w-full justify-between',
+                fieldValue && 'text-black',
+                childrenProps.fieldProps.className
+              )}
             >
-              {childrenProps.field.value
-                ? findValue(childrenProps.field.value)
-                : emptyValue || 'Please select'}
+              {fieldValue || emptyValue || 'Please select'}
               <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </FormControl>
