@@ -40,9 +40,7 @@ export type CommonFieldConfigItem = {
   isLoading?: boolean;
 
   order?: number;
-  renderParent?: (
-    props: AutoFormInputComponentProps
-  ) => React.ReactElement | null;
+  renderParent?: (props: any) => React.ReactElement | null;
   renderer?: (props: AutoFormInputComponentProps) => React.ReactElement | null;
   withoutBorder?: boolean;
 };
