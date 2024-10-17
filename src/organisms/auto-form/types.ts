@@ -68,7 +68,6 @@ type ArrayFieldConfig = {
       accordionTrigger?: string;
       fieldContainer?: string;
     };
-    separator?: boolean;
   };
   type: 'array';
 };
