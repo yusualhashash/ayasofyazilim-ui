@@ -256,8 +256,11 @@ export const DetailedFilter: StoryObj<typeof Table> = {
     );
   },
   args: {
-    fetchRequest: (filter: string, setTableData: (data: unknown[]) => any) => {
-      const parsedFilter = JSON.parse(filter);
+    fetchRequest: (
+      filter: Record<string, string>,
+      setTableData: (data: unknown[]) => any
+    ) => {
+      const parsedFilter = filter;
       if (Object.keys(parsedFilter).length === 0) {
         setTableData(data);
       }
