@@ -333,6 +333,12 @@ export const DetailedFilter: StoryObj<typeof Table> = {
         value: new Date().toISOString(),
       },
       {
+        name: 'select-async',
+        type: 'select-async',
+        displayName: 'select-async',
+        value: '',
+      },
+      {
         name: 'status_multiple',
         displayName: 'Status Multiple',
         type: 'select-multiple',
