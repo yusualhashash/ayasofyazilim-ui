@@ -117,7 +117,25 @@ export default function FilterColumn({
           loadingContent: <div>Loading...</div>,
           type: 'Sheet',
           componentType: 'CustomComponent',
-          content: <div>Async Filter</div>,
+          content: (
+            <>
+              Async Filter {filteredValue}
+              <Button
+                onClick={() => {
+                  setFilteredValue('test');
+                }}
+              >
+                Test
+              </Button>
+              <Button
+                onClick={() => {
+                  handleSave();
+                }}
+              >
+                Save
+              </Button>
+            </>
+          ),
         }}
         open={isDialogOpen}
         onOpenChange={(state) => {
