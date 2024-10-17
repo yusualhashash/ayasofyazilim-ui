@@ -125,9 +125,44 @@ type ColumnAutoType = {
   type: 'Auto';
 };
 
+export type DataTableClassNames = {
+  actions?: {
+    container?: string;
+    wrapper?: string;
+  };
+  container?: string;
+  filters?: {
+    container?: string;
+    items?: string;
+    wrapper?: string;
+  };
+  footer?: {
+    buttons?: {
+      container?: string;
+      next?: string;
+      previous?: string;
+    };
+    container?: string;
+    editable?: {
+      add?: string;
+      container?: string;
+      remove?: string;
+      wrapper?: string;
+    };
+    selectedRows?: string;
+  };
+  table?: {
+    body?: string;
+    container?: string;
+    header?: string;
+    wrapper?: string;
+  };
+  tableWrapper?: string;
+};
 export type DataTableProps<TData> = {
   Headertable?: any;
   action?: TableAction | TableAction[];
+  classNames?: DataTableClassNames;
   columnsData: ColumnsType;
   data: TData[];
   detailedFilter?: ColumnFilter[];
@@ -138,7 +173,6 @@ export type DataTableProps<TData> = {
   renderSubComponent?: (row: any) => JSX.Element;
   rowCount?: number;
   showView?: boolean;
-  tableClassName?: string;
 };
 const SkeletonCell = () => <Skeleton className="w-20 h-3" />;
 
@@ -234,7 +268,7 @@ export default function DataTable<TData, TValue>({
   Headertable,
   onDataUpdate,
   detailedFilter,
-  tableClassName,
+  classNames,
 }: DataTableProps<TData>) {
   const [tableData, setTableData] = useState<TData[]>(data || []);
   const isMultipleActionProvided = Array.isArray(action);
@@ -360,7 +394,7 @@ export default function DataTable<TData, TValue>({
   }, [tableData]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className={cn('flex flex-col h-full', classNames?.container)}>
       {activeAction && isOpen && activeAction.type === 'Dialog' && (
         <CustomTableActionDialog
           open={isOpen}
@@ -371,7 +405,12 @@ export default function DataTable<TData, TValue>({
         />
       )}
       {(showView || defaultAction) && (
-        <div className="flex items-center gap-2">
+        <div
+          className={cn(
+            'flex items-center gap-2',
+            classNames?.actions?.container
+          )}
+        >
           {showView === true && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -407,7 +446,7 @@ export default function DataTable<TData, TValue>({
             </DropdownMenu>
           )}
 
-          <div className="flex">
+          <div className={cn('flex', classNames?.actions?.wrapper)}>
             {isLoading ? (
               <Skeleton className="w-36 h-9" />
             ) : (
@@ -467,9 +506,9 @@ export default function DataTable<TData, TValue>({
         </div>
       )}
 
-      <div className="my-3">
+      <div className={cn('my-3', classNames?.filters?.container)}>
         {detailedFilter && (
-          <div className="flex">
+          <div className={cn('flex', classNames?.filters?.items)}>
             {filteredColumns &&
               filteredColumns.map((column) => (
                 <FilterColumn
@@ -518,11 +557,19 @@ export default function DataTable<TData, TValue>({
         )}
       </div>
 
-      <div className="flex-1 overflow-auto">
+      <div className={cn('flex-1 overflow-auto', classNames?.table?.wrapper)}>
         <Table
-          wrapperClassName={cn('flex-1 border rounded-md', tableClassName)}
+          wrapperClassName={cn(
+            'flex-1 border rounded-md',
+            classNames?.table?.container
+          )}
         >
-          <TableHeader className="sticky top-0 bg-slate-100 z-10">
+          <TableHeader
+            className={cn(
+              'sticky top-0 bg-slate-100 z-10',
+              classNames?.table?.header
+            )}
+          >
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="whitespace-nowrap">
                 {headerGroup.headers.map((header) => (
@@ -550,7 +597,7 @@ export default function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className={cn(classNames?.table?.body)}>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <Fragment key={row.id}>
@@ -652,16 +699,36 @@ export default function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center py-5">
-        <div className="flex-1 text-sm text-muted-foreground">
+      <div
+        className={cn('flex items-center py-5', classNames?.footer?.container)}
+      >
+        <div
+          className={cn(
+            'flex-1 text-sm text-muted-foreground',
+            classNames?.footer?.selectedRows
+          )}
+        >
           {selectedRowsText()}
         </div>
         {editable ? (
-          <div className="footer-buttons bg-white">
-            <div className="flex w-full justify-end items-end gap-5 py-3 px-3">
+          <div
+            className={cn(
+              'footer-buttons bg-white',
+              classNames?.footer?.editable?.container
+            )}
+          >
+            <div
+              className={cn(
+                'flex w-full justify-end items-end gap-5 py-3 px-3',
+                classNames?.footer?.editable?.wrapper
+              )}
+            >
               {selectedRows?.length > 0 && (
                 <Button
-                  className="remove-button w-44 h-10 flex items-center justify-center"
+                  className={cn(
+                    'remove-button w-44 h-10 flex items-center justify-center',
+                    classNames?.footer?.editable?.remove
+                  )}
                   variant="outline"
                   onClick={handleRemoveSelected}
                 >
@@ -670,7 +737,10 @@ export default function DataTable<TData, TValue>({
                 </Button>
               )}
               <Button
-                className="add-button w-44 h-10 flex items-center justify-center"
+                className={cn(
+                  'add-button w-44 h-10 flex items-center justify-center',
+                  classNames?.footer?.editable?.add
+                )}
                 variant="outline"
                 onClick={handleAddRow}
               >
@@ -679,7 +749,9 @@ export default function DataTable<TData, TValue>({
             </div>
           </div>
         ) : (
-          <div className="space-x-2">
+          <div
+            className={cn('space-x-2', classNames?.footer?.buttons?.container)}
+          >
             {isLoading ? (
               <>
                 <Skeleton className="inline-flex h-9 w-24" />
@@ -688,6 +760,7 @@ export default function DataTable<TData, TValue>({
             ) : (
               <>
                 <Button
+                  className={cn(classNames?.footer?.buttons?.previous)}
                   variant="outline"
                   size="sm"
                   onClick={() => table.previousPage()}
@@ -696,6 +769,7 @@ export default function DataTable<TData, TValue>({
                   Previous
                 </Button>
                 <Button
+                  className={cn(classNames?.footer?.buttons?.next)}
                   variant="outline"
                   size="sm"
                   onClick={() => table.nextPage()}
