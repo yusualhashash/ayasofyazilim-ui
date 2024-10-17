@@ -42,7 +42,7 @@ import FilterColumn, { ColumnFilter } from './filter-column';
 import { normalizeName } from './utils';
 
 export type { ColumnFilter };
-
+export type FilterColumnResult = { [key: string]: string | string[] };
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
     removeRow: (
@@ -327,7 +327,7 @@ export default function DataTable<TData, TValue>({
   const selectedRows = table?.getSelectedRowModel()?.rows || [];
 
   useEffect(() => {
-    const filter: { [key: string]: string | string[] } = {};
+    const filter: FilterColumnResult = {};
     filteredColumns.forEach((column: ColumnFilter) => {
       if (column.type === 'select-multiple') {
         filter[column.name] = column.value.split(',').filter((i) => i);
