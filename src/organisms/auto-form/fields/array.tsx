@@ -8,7 +8,6 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { createItemName } from '../utils';
 import AutoFormObject from './object';
@@ -135,8 +134,6 @@ export default function AutoFormArray({
                   path={[...path, index.toString()]}
                   className={cn('w-full', fieldConfig?.className)}
                 />
-
-                {fieldConfig?.arrayConfig?.separator !== false && <Separator />}
                 <Button
                   variant="destructive"
                   type="button"

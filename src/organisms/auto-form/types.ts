@@ -41,7 +41,7 @@ export type CommonFieldConfigItem = {
 
   order?: number;
   renderParent?: (props: any) => React.ReactElement | null;
-  renderer?: (props: any) => React.ReactElement | null;
+  renderer?: (props: AutoFormInputComponentProps) => React.ReactElement | null;
   withoutBorder?: boolean;
 };
 
@@ -68,7 +68,6 @@ type ArrayFieldConfig = {
       accordionTrigger?: string;
       fieldContainer?: string;
     };
-    separator?: boolean;
   };
   type: 'array';
 };

@@ -475,6 +475,8 @@ export function createItemName({
       ? beautifyObjectName(item._def.description)
       : beautifyObjectName(name);
   return (
-    (fieldConfig?.[name]?.displayName as string) || beautifyObjectName(name)
+    (fieldConfig?.displayName as string) ||
+    (fieldConfig?.[name]?.displayName as string) ||
+    beautifyObjectName(name)
   );
 }

@@ -111,7 +111,13 @@ function FormObject<SchemaType extends z.ZodObject<any, any>>({
   watch: any;
 }) {
   let item = shape[name] as z.ZodAny;
-  const itemName = createItemName({ fieldConfig, item, name }) ?? name;
+
+  const itemName =
+    createItemName({
+      fieldConfig: fieldConfig?.[name] || fieldConfig,
+      item,
+      name,
+    }) ?? name;
   item = handleIfZodNumber(item) as z.ZodAny;
   const zodBaseType = getBaseType(item);
   const key = [...path, name].join('.');
