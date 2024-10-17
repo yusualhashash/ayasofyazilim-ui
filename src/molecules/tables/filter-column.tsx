@@ -63,7 +63,7 @@ export default function FilterColumn({
   setFilteredColumns,
 }: IFilterColumnProps) {
   const [filteredValue, setFilteredValue] = useState<string>(column.value);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(true);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(!column.value);
   useEffect(() => {
     if (column.type === 'boolean') {
       setFilteredValue(column.value ? 'true' : 'false');
