@@ -72,7 +72,7 @@ function generateColumns({
 }
 
 export function columnsGenerator(data: AutoColumnGenerator) {
-  let onSelect;
+  let onSelect: false | Function = false;
   const { selectable, tableType, excludeList, positions } = data;
   if (selectable) {
     onSelect = data.onSelect;
