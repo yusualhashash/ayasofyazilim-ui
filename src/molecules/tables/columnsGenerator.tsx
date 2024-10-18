@@ -72,7 +72,11 @@ function generateColumns({
 }
 
 export function columnsGenerator(data: AutoColumnGenerator) {
-  const { selectable = false, tableType, excludeList, positions } = data;
+  let onSelect;
+  const { selectable, tableType, excludeList, positions } = data;
+  if (selectable) {
+    onSelect = data.onSelect;
+  }
 
   const columns: ColumnDef<typeof data>[] = [
     {
@@ -83,14 +87,26 @@ export function columnsGenerator(data: AutoColumnGenerator) {
             table.getIsAllPageRowsSelected() ||
             (table.getIsSomePageRowsSelected() && 'indeterminate')
           }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          onCheckedChange={(value) => {
+            table.toggleAllPageRowsSelected(!!value);
+            if (value) {
+              table.getRowModel().rows.forEach((row) => {
+                if (typeof onSelect === 'function') {
+                  onSelect(row.original);
+                }
+              });
+            }
+          }}
           aria-label="Select all"
         />
       ),
       cell: ({ row }) => (
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          onCheckedChange={(value) => {
+            row.toggleSelected(!!value);
+            if (value && typeof onSelect === 'function') onSelect(row.original);
+          }}
           aria-label="Select row"
         />
       ),

@@ -110,8 +110,16 @@ export type AutoColumnGenerator = {
   actionList?: TableAction[];
   excludeList: string[];
   positions?: string[];
-  selectable?: boolean;
   tableType: any;
+} & (noSelectAbleColumns | selectAbleColumns);
+
+type selectAbleColumns = {
+  onSelect: (row: unknown) => void;
+  selectable: true;
+};
+
+type noSelectAbleColumns = {
+  selectable?: false;
 };
 
 export type ColumnsType = ColumnsCustomType | ColumnAutoType;
@@ -394,7 +402,7 @@ export default function DataTable<TData, TValue>({
   }, [tableData]);
 
   return (
-    <div className={cn('flex flex-col h-full', classNames?.container)}>
+    <div className={cn('flex flex-col', classNames?.container)}>
       {activeAction && isOpen && activeAction.type === 'Dialog' && (
         <CustomTableActionDialog
           open={isOpen}
@@ -557,7 +565,7 @@ export default function DataTable<TData, TValue>({
         )}
       </div>
 
-      <div className={cn('flex-1 overflow-auto', classNames?.table?.wrapper)}>
+      <div className={cn('overflow-auto', classNames?.table?.wrapper)}>
         <Table
           wrapperClassName={cn(
             'flex-1 border rounded-md',

@@ -20,6 +20,9 @@ import { Switch } from '@/components/ui/switch';
 import AdvancedCalendar from '../advanced-calendar';
 import { MultiSelect, MultiSelectProps } from '../multi-select';
 import CustomTableActionDialog from '../dialog';
+import DataTable from '.';
+import { autoColumnData } from './tables.stories';
+import { data } from './data';
 
 export type ColumnFilter = BaseColumnFilter &
   (
@@ -120,6 +123,21 @@ export default function FilterColumn({
           content: (
             <>
               Async Filter {filteredValue}
+              <DataTable
+                columnsData={{
+                  type: 'Auto',
+                  data: {
+                    ...autoColumnData,
+                    selectable: true,
+                    onSelect(row) {
+                      console.log(row);
+                    },
+                  },
+                }}
+                showView={false}
+                rowCount={data.length}
+                data={data}
+              />
               <Button
                 onClick={() => {
                   setFilteredValue('test');

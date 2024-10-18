@@ -107,7 +107,9 @@ export const AutoColumns: StoryObj<typeof Table> = {
       type: 'Auto',
       data: {
         selectable: true,
-
+        onSelect(row) {
+          console.log(row);
+        },
         tableType: jsonSchema,
         excludeList: ['id'],
       },
@@ -118,9 +120,10 @@ export const AutoColumns: StoryObj<typeof Table> = {
     layout: 'centered',
   },
 };
-const autoColumnData: AutoColumnGenerator = {
+export const autoColumnData: AutoColumnGenerator = {
   tableType: jsonSchema,
   excludeList: ['id'],
+  selectable: false,
 };
 
 export const NewPage: StoryObj<typeof Table> = {
