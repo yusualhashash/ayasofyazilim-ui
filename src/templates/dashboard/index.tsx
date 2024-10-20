@@ -17,7 +17,7 @@ export default function Dashboard({
   return (
     <>
       {withCards && (
-        <div className="flex-row p-4 w-10/12">
+        <div className="flex flex-row p-4 w-full">
           <CardList isLoading={isLoading} cards={cards} />
         </div>
       )}

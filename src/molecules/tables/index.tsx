@@ -394,7 +394,7 @@ export default function DataTable<TData, TValue>({
   }, [tableData]);
 
   return (
-    <div className={cn('flex flex-col h-full', classNames?.container)}>
+    <div className={cn('flex flex-col p-4 h-full', classNames?.container)}>
       {activeAction && isOpen && activeAction.type === 'Dialog' && (
         <CustomTableActionDialog
           open={isOpen}
