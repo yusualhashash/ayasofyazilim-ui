@@ -19,6 +19,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import AdvancedCalendar from '../advanced-calendar';
 import { MultiSelect, MultiSelectProps } from '../multi-select';
+import CustomTableActionDialog from '../dialog';
 
 export type ColumnFilter = BaseColumnFilter &
   (
@@ -26,6 +27,7 @@ export type ColumnFilter = BaseColumnFilter &
     | SelectColumnFilter
     | BooleanColumnFilter
     | MultipleFilter
+    | AsyncFilter
   );
 
 export type BaseColumnFilter = {
@@ -42,6 +44,9 @@ export type MultipleFilter = {
   htmlProps?: MultiSelectProps;
   multiSelectProps: MultiSelectProps;
   type: 'select-multiple';
+};
+export type AsyncFilter = {
+  type: 'select-async';
 };
 export type BooleanColumnFilter = {
   placeholder?: string;
@@ -63,7 +68,7 @@ export default function FilterColumn({
   setFilteredColumns,
 }: IFilterColumnProps) {
   const [filteredValue, setFilteredValue] = useState<string>(column.value);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(true);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(!column.value);
   useEffect(() => {
     if (column.type === 'boolean') {
       setFilteredValue(column.value ? 'true' : 'false');
@@ -101,59 +106,100 @@ export default function FilterColumn({
     }
     setIsDropdownOpen(open);
   }
-
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
-    <DropdownMenu
-      open={isDropdownOpen}
-      onOpenChange={(open) => {
-        handleOpenChange(open);
-      }}
-    >
-      {column.value !== '' ? (
-        <div className="border px-3 py-1 border-gray-300 rounded-full text-xs mr-2 flex justify-center">
-          <DropdownMenuTrigger>
-            <span className="font-semibold">{column.displayName}</span>:{' '}
-            {column.type === 'date'
-              ? column.value
-                ? new Date(column.value).toLocaleDateString()
-                : ''
-              : column.value}
-          </DropdownMenuTrigger>
-          <Button
-            variant="ghost"
-            className="p-0 ml-2 h-auto"
-            onClick={() => handleDelete()}
-          >
-            <Cross1Icon className="size-3" />
-          </Button>
-        </div>
-      ) : (
-        <DropdownMenuTrigger />
-      )}
+    <>
+      <CustomTableActionDialog
+        type="Sheet"
+        action={{
+          cta: 'Submit',
+          description: 'Submit',
+          loadingContent: <div>Loading...</div>,
+          type: 'Sheet',
+          componentType: 'CustomComponent',
+          content: (
+            <>
+              Async Filter {filteredValue}
+              <Button
+                onClick={() => {
+                  setFilteredValue('test');
+                }}
+              >
+                Test
+              </Button>
+              <Button
+                onClick={() => {
+                  handleSave();
+                }}
+              >
+                Save
+              </Button>
+            </>
+          ),
+        }}
+        open={isDialogOpen}
+        onOpenChange={(state) => {
+          setIsDialogOpen(state);
+          setIsDropdownOpen(state);
+          handleOpenChange(state);
+        }}
+      />
+      <DropdownMenu
+        open={isDropdownOpen}
+        onOpenChange={(open) => {
+          handleOpenChange(open);
+        }}
+      >
+        {column.value !== '' ? (
+          <div className="border px-3 py-1 border-gray-300 rounded-full text-xs mr-2 flex justify-center">
+            <DropdownMenuTrigger>
+              <span className="font-semibold">{column.displayName}</span>:{' '}
+              {column.type === 'date'
+                ? column.value
+                  ? new Date(column.value).toLocaleDateString()
+                  : ''
+                : column.value}
+            </DropdownMenuTrigger>
+            <Button
+              variant="ghost"
+              className="p-0 ml-2 h-auto"
+              onClick={() => handleDelete()}
+            >
+              <Cross1Icon className="size-3" />
+            </Button>
+          </div>
+        ) : (
+          <DropdownMenuTrigger />
+        )}
 
-      <DropdownMenuContent className="sm:max-w-md p-2">
-        <div className="flex flex-row justify-between items-center mb-2">
-          <Label htmlFor="name">{column.displayName}</Label>
-          <Button variant="ghost" onClick={() => handleDelete()}>
-            <Trash2 className="w-4 h-4" />
+        <DropdownMenuContent className="sm:max-w-md p-2">
+          <div className="flex flex-row justify-between items-center mb-2">
+            <Label htmlFor="name">{column.displayName}</Label>
+            <Button variant="ghost" onClick={() => handleDelete()}>
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </div>
+          <div className="flex flex-row items-center gap-2 justify-center mb-2">
+            <GenerateFilterByType
+              column={column}
+              setFilteredValue={setFilteredValue}
+              filteredValue={filteredValue}
+              openDialog={(open) => {
+                setIsDropdownOpen(open);
+                setIsDialogOpen(!open);
+              }}
+            />
+          </div>
+          <Button
+            variant="secondary"
+            onClick={() => handleSave()}
+            className="w-full"
+          >
+            Filtrele
           </Button>
-        </div>
-        <div className="flex flex-row items-center gap-2 justify-center mb-2">
-          <GenerateFilterByType
-            column={column}
-            setFilteredValue={setFilteredValue}
-            filteredValue={filteredValue}
-          />
-        </div>
-        <Button
-          variant="secondary"
-          onClick={() => handleSave()}
-          className="w-full"
-        >
-          Filtrele
-        </Button>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 }
 
@@ -161,12 +207,15 @@ function GenerateFilterByType({
   column,
   setFilteredValue,
   filteredValue,
+  openDialog,
 }: {
   column: ColumnFilter;
   filteredValue: string;
+  openDialog: (open: boolean) => void;
   setFilteredValue: Dispatch<React.SetStateAction<string>>;
 }) {
-  switch (column.type) {
+  const columnType = column.type;
+  switch (columnType) {
     case 'string':
     case 'number':
       return (
@@ -242,7 +291,13 @@ function GenerateFilterByType({
         />
       );
     }
-    default:
-      return null;
+    case 'select-async': {
+      openDialog(false);
+      break;
+    }
+    default: {
+      const exhaustiveCheck: never = columnType;
+      throw new Error(`Unhandled filter case: ${exhaustiveCheck}`);
+    }
   }
 }

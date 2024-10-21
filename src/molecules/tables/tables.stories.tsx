@@ -256,8 +256,11 @@ export const DetailedFilter: StoryObj<typeof Table> = {
     );
   },
   args: {
-    fetchRequest: (filter: string, setTableData: (data: unknown[]) => any) => {
-      const parsedFilter = JSON.parse(filter);
+    fetchRequest: (
+      filter: Record<string, string>,
+      setTableData: (data: unknown[]) => any
+    ) => {
+      const parsedFilter = filter;
       if (Object.keys(parsedFilter).length === 0) {
         setTableData(data);
       }
@@ -328,6 +331,12 @@ export const DetailedFilter: StoryObj<typeof Table> = {
         displayName: 'Date Less than',
         type: 'date',
         value: new Date().toISOString(),
+      },
+      {
+        name: 'select-async',
+        type: 'select-async',
+        displayName: 'select-async',
+        value: '',
       },
       {
         name: 'status_multiple',
