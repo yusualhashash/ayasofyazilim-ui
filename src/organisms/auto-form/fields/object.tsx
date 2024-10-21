@@ -65,7 +65,11 @@ export default function AutoFormObject<
   const sortedFieldKeys = sortFieldsByOrder(fieldConfig, Object.keys(shape));
   return (
     <div
-      className={cn(showInRow ? 'flex flex-row gap-3' : 'space-y-2', className)}
+      className={cn(
+        showInRow ? 'flex flex-row gap-3' : 'space-y-2',
+        fieldConfig?.className,
+        className
+      )}
     >
       {sortedFieldKeys.map((name: string) => (
         <FormObject
