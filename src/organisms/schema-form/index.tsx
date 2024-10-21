@@ -1,5 +1,5 @@
-import Form, { FormProps, ThemeProps } from '@rjsf/core';
-import { GenericObjectType, RJSFSchema } from '@rjsf/utils';
+import Form, { ThemeProps } from '@rjsf/core';
+import { RJSFSchema } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 import { useState } from 'react';
 import { AsyncSelect } from './fields/async-select';
@@ -13,7 +13,9 @@ import { AccordionArrayFieldTemplate } from './templates/array';
 import { ErrorListTemplate } from './templates/error-list';
 import { FieldTemplate } from './templates/field';
 import { ObjectFieldTemplate } from './templates/object';
+import { SchemaFormProps } from './types';
 import {
+  applyFiltersToSchema,
   flattenGenericData,
   generateFormData,
   generateUiSchema,
@@ -42,11 +44,6 @@ const ShadcnTheme: ThemeProps = {
   },
 };
 
-export interface SchemaFormProps extends Omit<FormProps, 'validator'> {
-  schema: GenericObjectType;
-  usePhoneField?: boolean;
-}
-
 /**
  * SchemaForm component that renders a form based on the provided schema and options.
  * Extends the Form component from @rjsf/core.
@@ -54,19 +51,20 @@ export interface SchemaFormProps extends Omit<FormProps, 'validator'> {
  * @param {SchemaFormProps} props - The props for the SchemaForm component.
  * @returns {JSX.Element} - The rendered form component.
  */
-export default function SchemaForm({ ...props }: SchemaFormProps) {
+export function SchemaForm({ ...props }: SchemaFormProps) {
   const phoneFielsConfig = {
     fields: ['areaCode', 'ituCountryCode', 'localNumber'],
     requireds: ['areaCode', 'ituCountryCode', 'localNumber'],
     name: 'phone',
   };
   let uiSchema = {}; // Initialize the UI schema
-  let { schema } = props; // Start with the provided schema
+  const { usePhoneField, filter } = props; // Start with the provided schema
+  let { schema } = props;
   let statedForm = props.formData;
   // If the phone field is enabled, transform the schema and generate UI schema
-  if (props.usePhoneField) {
+  if (usePhoneField) {
     schema = transformGenericSchema(
-      props.schema,
+      schema,
       phoneFielsConfig.fields, // Fields to transform
       phoneFielsConfig.name, // The parent field name
       phoneFielsConfig.requireds // Required fields
@@ -82,7 +80,9 @@ export default function SchemaForm({ ...props }: SchemaFormProps) {
       );
     }
   }
-
+  if (filter) {
+    schema = applyFiltersToSchema({ schema, filter });
+  }
   // Merge any additional UI schema provided via props
   if (props.uiSchema) {
     uiSchema = mergeUISchemaObjects(uiSchema, props.uiSchema);

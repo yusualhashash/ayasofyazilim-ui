@@ -1,5 +1,6 @@
 import { GenericObjectType, UiSchema } from '@rjsf/utils';
 import { PhoneNumberUtil } from 'google-libphonenumber';
+import { FilterType } from './types';
 // if google-libphonenumber gives type error simply do this; pnpm add @types/google-libphonenumber
 
 /**
@@ -247,8 +248,7 @@ export function mergeUISchemaObjects<T extends UiSchema, U extends UiSchema>(
   target: U
 ): T & U {
   const mergedResult: UiSchema = { ...source }; // Copy the source UISchema object
-
-  for (const key in Object.keys(target)) {
+  for (const key of Object.keys(target)) {
     // If both keys are objects, merge them recursively
     if (isObject(mergedResult[key]) && isObject(target[key])) {
       mergedResult[key] = mergeUISchemaObjects(mergedResult[key], target[key]);
@@ -296,4 +296,46 @@ export function generateFormData(
 export function hasPhoneFields(form: any) {
   if (!form) return false;
   return true;
+}
+
+export function applyFiltersToSchema({
+  ...props
+}: {
+  filter: FilterType;
+  parentKey?: string;
+  schema: GenericObjectType;
+}): GenericObjectType {
+  const { schema, filter, parentKey } = props;
+  const filteredSchema: GenericObjectType = { ...schema };
+  if (filteredSchema.properties) {
+    filteredSchema.properties = Object.keys(filteredSchema.properties)
+      .filter((key) => {
+        const fullKey = parentKey ? `${parentKey}.${key}` : key;
+        if (filter.type === 'full') return !filter.keys?.includes(key);
+        if (filter.type === 'include') return filter.keys?.includes(fullKey);
+        return !filter.keys?.includes(fullKey);
+      })
+      .reduce(
+        (acc, key) => {
+          const fullKey = parentKey ? `${parentKey}.${key}` : key;
+          acc[key] = applyFiltersToSchema({
+            schema: filteredSchema.properties![key],
+            filter,
+            parentKey: fullKey,
+          });
+          return acc;
+        },
+        {} as { [key: string]: any }
+      );
+  }
+
+  if (filteredSchema.items) {
+    filteredSchema.items = applyFiltersToSchema({
+      schema: filteredSchema.items,
+      filter,
+      parentKey,
+    });
+  }
+
+  return filteredSchema;
 }
