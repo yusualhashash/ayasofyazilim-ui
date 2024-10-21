@@ -1,7 +1,8 @@
 import { Meta, StoryFn } from '@storybook/react';
-import SchemaForm, { SchemaFormProps } from '..';
 import { ContactInformationTypeDto } from './data';
 import { Button } from '@/components/ui/button';
+import { SchemaForm } from '..';
+import { SchemaFormProps } from '../types';
 
 export default {
   component: SchemaForm,
