@@ -42,6 +42,8 @@ export const isJsonSchema = (object: any): object is JsonSchema =>
   'type' in object;
 export const isSchemaType = (object: any): object is SchemaType =>
   'required' in object;
+export const isObject = (object: any): object is SchemaType =>
+  'properties' in object;
 
 export function createZodObject(
   schema: any,
@@ -56,7 +58,7 @@ export function createZodObject(
     const props = schema?.properties?.[element];
     const isRequired = schema.required?.includes(element) || false;
     if (!props) throw new Error(`${element} is not found in properties.`);
-    if (isSchemaType(props)) {
+    if (isObject(props)) {
       Object.keys(props.properties || {}).forEach(() => {
         zodSchema[element] = createZodObject(
           props,

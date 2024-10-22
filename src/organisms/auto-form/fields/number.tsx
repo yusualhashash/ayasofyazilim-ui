@@ -30,7 +30,12 @@ export default function AutoFormNumber({
       </div>
     );
   return (
-    <FormItem className={fieldProps.containerClassName}>
+    <FormItem
+      className={cn(
+        'flex w-full flex-col justify-start',
+        fieldProps.containerClassName
+      )}
+    >
       {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
       <FormControl>
         <Input type="number" {...params} />
