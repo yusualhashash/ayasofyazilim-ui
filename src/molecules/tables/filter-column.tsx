@@ -23,6 +23,7 @@ import CustomTableActionDialog from '../dialog';
 import DataTable from '.';
 import { autoColumnData } from './tables.stories';
 import { data } from './data';
+import { Badge } from '@/components/ui/badge';
 
 export type ColumnFilter = BaseColumnFilter &
   (
@@ -212,7 +213,7 @@ export default function FilterColumn({
         }}
       >
         {column.value !== '' ? (
-          <div className="border px-3 py-1 border-gray-300 rounded-full text-xs mr-2 flex justify-center">
+          <Badge variant="outline" className="rounded-full px-3 py-1 mr-2">
             <DropdownMenuTrigger>
               <DropDownCTA column={column} />
             </DropdownMenuTrigger>
@@ -223,7 +224,7 @@ export default function FilterColumn({
             >
               <Cross1Icon className="size-3" />
             </Button>
-          </div>
+          </Badge>
         ) : (
           <DropdownMenuTrigger />
         )}
