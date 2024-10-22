@@ -401,6 +401,36 @@ export default function DataTable<TData, TValue>({
     table.resetRowSelection();
   }, [tableData]);
 
+  const filterButton = (detailedFilter: ColumnFilter[]) => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          disabled={isLoading}
+          variant="outline"
+          className="border px-3 py-1 border-gray-300 rounded-full text-xs mr-2 h-auto"
+        >
+          Filter <PlusIcon className="ml-2 h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {detailedFilter
+          .filter(
+            (column) =>
+              filteredColumns.findIndex((f) => f.name === column.name) === -1
+          )
+          .map((column) => (
+            <DropdownMenuItem
+              key={column.name}
+              className="capitalize"
+              onClick={() => setFilteredColumns((old) => [...old, column])}
+            >
+              {column.displayName}
+            </DropdownMenuItem>
+          ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
   return (
     <div className={cn('flex flex-col p-4', classNames?.container)}>
       {activeAction && isOpen && activeAction.type === 'Dialog' && (
@@ -528,39 +558,7 @@ export default function DataTable<TData, TValue>({
             {detailedFilter?.filter(
               (column) =>
                 filteredColumns?.findIndex((f) => f.name === column.name) === -1
-            )?.length > 0 && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    disabled={isLoading}
-                    variant="outline"
-                    className="border px-3 py-1 border-gray-300 rounded-full text-xs mr-2 h-auto"
-                  >
-                    Filter <PlusIcon className="ml-2 h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {detailedFilter
-                    .filter(
-                      (column) =>
-                        filteredColumns.findIndex(
-                          (f) => f.name === column.name
-                        ) === -1
-                    )
-                    .map((column) => (
-                      <DropdownMenuItem
-                        key={column.name}
-                        className="capitalize"
-                        onClick={() =>
-                          setFilteredColumns((old) => [...old, column])
-                        }
-                      >
-                        {column.displayName}
-                      </DropdownMenuItem>
-                    ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+            )?.length > 0 && filterButton(detailedFilter)}
           </div>
         )}
       </div>
