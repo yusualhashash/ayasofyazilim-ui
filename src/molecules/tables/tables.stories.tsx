@@ -344,7 +344,7 @@ export const DetailedFilter: StoryObj<typeof Table> = {
         displayName: 'select-async',
         value: '',
         filterProperty: 'email',
-        showProperty: 'status',
+        showProperty: 'email',
       },
       {
         name: 'status_multiple',

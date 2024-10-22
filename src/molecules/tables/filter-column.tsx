@@ -68,6 +68,24 @@ interface IFilterColumnProps {
   column: ColumnFilter;
   setFilteredColumns: Dispatch<React.SetStateAction<ColumnFilter[]>>;
 }
+const badgeWithDelete = ({
+  badgeText,
+  handleDelete,
+}: {
+  badgeText: string;
+  handleDelete: () => void;
+}) => (
+  <Badge variant="outline" className="rounded-full px-3 py-1 mr-2">
+    {badgeText}
+    <Button
+      variant="ghost"
+      className="p-0 ml-2 h-auto"
+      onClick={() => handleDelete()}
+    >
+      <Cross1Icon className="size-3" />
+    </Button>
+  </Badge>
+);
 
 function DropDownCTA({ column }: { column: ColumnFilter }) {
   let { value } = column;
@@ -146,16 +164,25 @@ export default function FilterColumn({
             <>
               selected Rows
               <br />
-              {selectedRows
-                .map((row) => {
-                  const _row = row as Record<string, unknown>;
-                  if (column.type !== 'select-async') return row;
-                  const propertyName: string = column.showProperty;
-                  if (row && typeof row === 'object' && propertyName in row)
-                    return _row[propertyName];
-                  return 'not found';
-                })
-                .join(',\n')}
+              {selectedRows.map((row) => {
+                const _row = row as Record<string, unknown>;
+                if (column.type !== 'select-async') return row;
+                const propertyName: string = column.showProperty;
+                if (row && typeof row === 'object' && propertyName in row)
+                  return (
+                    <>
+                      {badgeWithDelete({
+                        badgeText: _row[propertyName] as string,
+                        handleDelete: () => {
+                          setSelectedRows([
+                            ...selectedRows.filter((r) => r !== row),
+                          ]);
+                        },
+                      })}
+                    </>
+                  );
+                return 'not found';
+              })}
               <DataTable
                 columnsData={{
                   type: 'Auto',
