@@ -291,7 +291,7 @@ export const DetailedFilter: StoryObj<typeof Table> = {
             return parsedFilter[filterKey].includes(tableItem.status);
           }
           if (filterKey === 'select-async') {
-            return parsedFilter[filterKey].includes(tableItem.email);
+            return parsedFilter[filterKey].includes(tableItem.id);
           }
           return true;
         });
@@ -343,7 +343,7 @@ export const DetailedFilter: StoryObj<typeof Table> = {
         type: 'select-async',
         displayName: 'select-async',
         value: '',
-        filterProperty: 'email',
+        filterProperty: 'id',
         showProperty: 'email',
       },
       {
