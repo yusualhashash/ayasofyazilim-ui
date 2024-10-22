@@ -68,6 +68,24 @@ interface IFilterColumnProps {
   setFilteredColumns: Dispatch<React.SetStateAction<ColumnFilter[]>>;
 }
 
+function dropDownCTA(column: ColumnFilter) {
+  let { value } = column;
+  if (column.type === 'select-multiple' || column.type === 'select-async') {
+    value = value.split(',').length > 2 ? `${value.split(',')[0]}, ...` : value;
+  } else if (column.type === 'date') {
+    value = new Date(column.value).toLocaleDateString();
+  } else if (column.type === 'boolean') {
+    value = '';
+  }
+
+  return (
+    <>
+      <span className="font-semibold">{column.displayName}</span>:{' '}
+      <span className="font-normal">{value}</span>
+    </>
+  );
+}
+
 export default function FilterColumn({
   column,
   setFilteredColumns,
@@ -195,14 +213,7 @@ export default function FilterColumn({
       >
         {column.value !== '' ? (
           <div className="border px-3 py-1 border-gray-300 rounded-full text-xs mr-2 flex justify-center">
-            <DropdownMenuTrigger>
-              <span className="font-semibold">{column.displayName}</span>:{' '}
-              {column.type === 'date'
-                ? column.value
-                  ? new Date(column.value).toLocaleDateString()
-                  : ''
-                : column.value}
-            </DropdownMenuTrigger>
+            <DropdownMenuTrigger>{dropDownCTA(column)}</DropdownMenuTrigger>
             <Button
               variant="ghost"
               className="p-0 ml-2 h-auto"

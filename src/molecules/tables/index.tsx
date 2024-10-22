@@ -401,6 +401,12 @@ export default function DataTable<TData, TValue>({
     table.resetRowSelection();
   }, [tableData]);
 
+  const getNonSelectedFilters = () =>
+    detailedFilter?.filter(
+      (column) =>
+        filteredColumns?.findIndex((f) => f.name === column.name) === -1
+    ) || [];
+
   const filterButton = (detailedFilter: ColumnFilter[]) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -555,10 +561,7 @@ export default function DataTable<TData, TValue>({
                   setFilteredColumns={setFilteredColumns}
                 />
               ))}
-            {detailedFilter?.filter(
-              (column) =>
-                filteredColumns?.findIndex((f) => f.name === column.name) === -1
-            )?.length > 0 && filterButton(detailedFilter)}
+            {getNonSelectedFilters().length > 0 && filterButton(detailedFilter)}
           </div>
         )}
       </div>
