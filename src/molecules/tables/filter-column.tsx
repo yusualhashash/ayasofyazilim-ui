@@ -174,9 +174,27 @@ export default function FilterColumn({
                       {badgeWithDelete({
                         badgeText: _row[propertyName] as string,
                         handleDelete: () => {
-                          setSelectedRows([
+                          const filteredRows = [
                             ...selectedRows.filter((r) => r !== row),
-                          ]);
+                          ];
+                          setSelectedRows(filteredRows);
+                          setFilteredValue(
+                            filteredRows
+                              .map((row) => {
+                                const _row = row as Record<string, unknown>;
+                                if (column.type !== 'select-async') return row;
+                                const propertyName: string =
+                                  column.filterProperty;
+                                if (
+                                  row &&
+                                  typeof row === 'object' &&
+                                  propertyName in row
+                                )
+                                  return _row[propertyName];
+                                return row;
+                              })
+                              .join(',')
+                          );
                         },
                       })}
                     </>
