@@ -68,7 +68,7 @@ interface IFilterColumnProps {
   setFilteredColumns: Dispatch<React.SetStateAction<ColumnFilter[]>>;
 }
 
-function dropDownCTA(column: ColumnFilter) {
+function DropDownCTA({ column }: { column: ColumnFilter }) {
   let { value } = column;
   if (column.type === 'select-multiple' || column.type === 'select-async') {
     value = value.split(',').length > 2 ? `${value.split(',')[0]}, ...` : value;
@@ -213,7 +213,9 @@ export default function FilterColumn({
       >
         {column.value !== '' ? (
           <div className="border px-3 py-1 border-gray-300 rounded-full text-xs mr-2 flex justify-center">
-            <DropdownMenuTrigger>{dropDownCTA(column)}</DropdownMenuTrigger>
+            <DropdownMenuTrigger>
+              <DropDownCTA column={column} />
+            </DropdownMenuTrigger>
             <Button
               variant="ghost"
               className="p-0 ml-2 h-auto"
