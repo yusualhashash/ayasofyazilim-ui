@@ -87,14 +87,30 @@ const badgeWithDelete = ({
   </Badge>
 );
 
-function DropDownCTA({ column }: { column: ColumnFilter }) {
+function DropDownCTA({
+  column,
+  selectedRows,
+}: {
+  column: ColumnFilter;
+  selectedRows?: Record<string, unknown>[];
+}) {
   let { value } = column;
-  if (column.type === 'select-multiple' || column.type === 'select-async') {
+  if (column.type === 'select-multiple') {
     value = value.split(',').length > 2 ? `${value.split(',')[0]}, ...` : value;
   } else if (column.type === 'date') {
     value = new Date(column.value).toLocaleDateString();
   } else if (column.type === 'boolean') {
     value = '';
+  } else if (
+    column.type === 'select-async' &&
+    selectedRows &&
+    selectedRows.length > 0
+  ) {
+    const { showProperty } = column;
+    value =
+      selectedRows?.length > 2
+        ? `${selectedRows[0][showProperty]}, ...`
+        : `${selectedRows[0][showProperty]}`;
   }
 
   return (
@@ -260,7 +276,10 @@ export default function FilterColumn({
         {column.value !== '' ? (
           <Badge variant="outline" className="rounded-full px-3 py-1 mr-2">
             <DropdownMenuTrigger>
-              <DropDownCTA column={column} />
+              <DropDownCTA
+                column={column}
+                selectedRows={selectedRows as Record<string, unknown>[]}
+              />
             </DropdownMenuTrigger>
             <Button
               variant="ghost"
