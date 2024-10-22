@@ -49,6 +49,7 @@ export type MultipleFilter = {
   type: 'select-multiple';
 };
 export type AsyncFilter = {
+  filterProperty: string;
   type: 'select-async';
 };
 export type BooleanColumnFilter = {
@@ -142,12 +143,15 @@ export default function FilterColumn({
                       setFilteredValue(
                         [...selectedRows, row]
                           .map((row) => {
+                            const _row = row as Record<string, unknown>;
+                            if (column.type !== 'select-async') return row;
+                            const propertyName: string = column.filterProperty;
                             if (
                               row &&
                               typeof row === 'object' &&
-                              'email' in row
+                              propertyName in row
                             )
-                              return row.email;
+                              return _row[propertyName];
                             return row;
                           })
                           .join(',')
