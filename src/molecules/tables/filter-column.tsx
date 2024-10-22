@@ -111,6 +111,12 @@ function DropDownCTA({
       selectedRows?.length > 2
         ? `${selectedRows[0][showProperty]}, ...`
         : `${selectedRows[0][showProperty]}`;
+  } else if (
+    column.type === 'select-async' &&
+    selectedRows &&
+    selectedRows.length === 0
+  ) {
+    value = '';
   }
 
   return (
