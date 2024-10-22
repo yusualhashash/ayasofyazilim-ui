@@ -290,6 +290,9 @@ export const DetailedFilter: StoryObj<typeof Table> = {
           if (filterKey === 'status_multiple') {
             return parsedFilter[filterKey].includes(tableItem.status);
           }
+          if (filterKey === 'select-async') {
+            return parsedFilter[filterKey].includes(tableItem.email);
+          }
           return true;
         });
         setTableData(filteredData);

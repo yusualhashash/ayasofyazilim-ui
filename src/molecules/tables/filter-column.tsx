@@ -72,6 +72,7 @@ export default function FilterColumn({
 }: IFilterColumnProps) {
   const [filteredValue, setFilteredValue] = useState<string>(column.value);
   const [isDropdownOpen, setIsDropdownOpen] = useState(!column.value);
+  const [selectedRows, setSelectedRows] = useState<unknown[]>([]);
   useEffect(() => {
     if (column.type === 'boolean') {
       setFilteredValue(column.value ? 'true' : 'false');
@@ -123,6 +124,12 @@ export default function FilterColumn({
           content: (
             <>
               Async Filter {filteredValue}
+              selected Rows{' '}
+              {selectedRows.map((row) => {
+                if (row && typeof row === 'object' && 'email' in row)
+                  return row.email;
+                return row;
+              })}
               <DataTable
                 columnsData={{
                   type: 'Auto',
@@ -130,6 +137,21 @@ export default function FilterColumn({
                     ...autoColumnData,
                     selectable: true,
                     onSelect(row) {
+                      if (!row) return;
+                      setSelectedRows([...selectedRows, row]);
+                      setFilteredValue(
+                        [...selectedRows, row]
+                          .map((row) => {
+                            if (
+                              row &&
+                              typeof row === 'object' &&
+                              'email' in row
+                            )
+                              return row.email;
+                            return row;
+                          })
+                          .join(',')
+                      );
                       console.log(row);
                     },
                   },
@@ -138,13 +160,6 @@ export default function FilterColumn({
                 rowCount={data.length}
                 data={data}
               />
-              <Button
-                onClick={() => {
-                  setFilteredValue('test');
-                }}
-              >
-                Test
-              </Button>
               <Button
                 onClick={() => {
                   handleSave();
