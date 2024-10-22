@@ -20,6 +20,9 @@ import { Switch } from '@/components/ui/switch';
 import AdvancedCalendar from '../advanced-calendar';
 import { MultiSelect, MultiSelectProps } from '../multi-select';
 import CustomTableActionDialog from '../dialog';
+import DataTable from '.';
+import { autoColumnData } from './tables.stories';
+import { data } from './data';
 
 export type ColumnFilter = BaseColumnFilter &
   (
@@ -46,6 +49,8 @@ export type MultipleFilter = {
   type: 'select-multiple';
 };
 export type AsyncFilter = {
+  filterProperty: string;
+  showProperty: string;
   type: 'select-async';
 };
 export type BooleanColumnFilter = {
@@ -63,12 +68,31 @@ interface IFilterColumnProps {
   setFilteredColumns: Dispatch<React.SetStateAction<ColumnFilter[]>>;
 }
 
+function DropDownCTA({ column }: { column: ColumnFilter }) {
+  let { value } = column;
+  if (column.type === 'select-multiple' || column.type === 'select-async') {
+    value = value.split(',').length > 2 ? `${value.split(',')[0]}, ...` : value;
+  } else if (column.type === 'date') {
+    value = new Date(column.value).toLocaleDateString();
+  } else if (column.type === 'boolean') {
+    value = '';
+  }
+
+  return (
+    <>
+      <span className="font-semibold">{column.displayName}</span>:{' '}
+      <span className="font-normal">{value}</span>
+    </>
+  );
+}
+
 export default function FilterColumn({
   column,
   setFilteredColumns,
 }: IFilterColumnProps) {
   const [filteredValue, setFilteredValue] = useState<string>(column.value);
   const [isDropdownOpen, setIsDropdownOpen] = useState(!column.value);
+  const [selectedRows, setSelectedRows] = useState<unknown[]>([]);
   useEffect(() => {
     if (column.type === 'boolean') {
       setFilteredValue(column.value ? 'true' : 'false');
@@ -119,14 +143,51 @@ export default function FilterColumn({
           componentType: 'CustomComponent',
           content: (
             <>
-              Async Filter {filteredValue}
-              <Button
-                onClick={() => {
-                  setFilteredValue('test');
+              selected Rows
+              <br />
+              {selectedRows
+                .map((row) => {
+                  const _row = row as Record<string, unknown>;
+                  if (column.type !== 'select-async') return row;
+                  const propertyName: string = column.showProperty;
+                  if (row && typeof row === 'object' && propertyName in row)
+                    return _row[propertyName];
+                  return 'not found';
+                })
+                .join(',\n')}
+              <DataTable
+                columnsData={{
+                  type: 'Auto',
+                  data: {
+                    ...autoColumnData,
+                    selectable: true,
+                    onSelect(row) {
+                      if (!row) return;
+                      setSelectedRows([...selectedRows, row]);
+                      setFilteredValue(
+                        [...selectedRows, row]
+                          .map((row) => {
+                            const _row = row as Record<string, unknown>;
+                            if (column.type !== 'select-async') return row;
+                            const propertyName: string = column.filterProperty;
+                            if (
+                              row &&
+                              typeof row === 'object' &&
+                              propertyName in row
+                            )
+                              return _row[propertyName];
+                            return row;
+                          })
+                          .join(',')
+                      );
+                      console.log(row);
+                    },
+                  },
                 }}
-              >
-                Test
-              </Button>
+                showView={false}
+                rowCount={data.length}
+                data={data}
+              />
               <Button
                 onClick={() => {
                   handleSave();
@@ -153,12 +214,7 @@ export default function FilterColumn({
         {column.value !== '' ? (
           <div className="border px-3 py-1 border-gray-300 rounded-full text-xs mr-2 flex justify-center">
             <DropdownMenuTrigger>
-              <span className="font-semibold">{column.displayName}</span>:{' '}
-              {column.type === 'date'
-                ? column.value
-                  ? new Date(column.value).toLocaleDateString()
-                  : ''
-                : column.value}
+              <DropDownCTA column={column} />
             </DropdownMenuTrigger>
             <Button
               variant="ghost"
