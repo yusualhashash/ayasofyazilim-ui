@@ -124,13 +124,18 @@ export default function FilterColumn({
           componentType: 'CustomComponent',
           content: (
             <>
-              Async Filter {filteredValue}
-              selected Rows{' '}
-              {selectedRows.map((row) => {
-                if (row && typeof row === 'object' && 'email' in row)
-                  return row.email;
-                return row;
-              })}
+              selected Rows
+              <br />
+              {selectedRows
+                .map((row) => {
+                  const _row = row as Record<string, unknown>;
+                  if (column.type !== 'select-async') return row;
+                  const propertyName: string = column.filterProperty;
+                  if (row && typeof row === 'object' && propertyName in row)
+                    return _row[propertyName];
+                  return 'not found';
+                })
+                .join(',\n')}
               <DataTable
                 columnsData={{
                   type: 'Auto',
