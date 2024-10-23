@@ -41,7 +41,12 @@ export const MyArrayFieldTemplate = (props: ArrayFieldTemplateProps) => (
 );
 
 export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => (
-  <Accordion type="single" collapsible className="w-full group">
+  <Accordion
+    type="single"
+    collapsible
+    className="w-full group"
+    defaultValue={props.title}
+  >
     <AccordionItem
       value={props.title}
       className="border-0 [&>h3]:sticky [&>h3]:top-0 [&>h3]:z-10"
