@@ -120,8 +120,16 @@ export type AutoColumnGenerator = {
   tableType: any;
 } & (noSelectAbleColumns | selectAbleColumns);
 
-type selectAbleColumns = {
-  onSelect: (row: unknown) => void;
+export type selectAbleColumns = {
+  onSelect: ({
+    row,
+    value,
+    all,
+  }: {
+    all: boolean;
+    row: unknown;
+    value: boolean;
+  }) => void;
   selectable: true;
 };
 
