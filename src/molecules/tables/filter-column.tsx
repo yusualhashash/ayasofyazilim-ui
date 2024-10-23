@@ -75,7 +75,7 @@ const BadgeWithDelete = ({
   badgeText: string;
   handleDelete: () => void;
 }) => (
-  <Badge variant="outline" className="rounded-full px-3 py-1 mr-2">
+  <Badge variant="outline" className="rounded-full px-3 py-1 mb-2 mr-2">
     {badgeText}
     <Button
       variant="ghost"
@@ -225,7 +225,65 @@ export default function FilterColumn({
                   data: {
                     ...autoColumnData,
                     selectable: true,
-                    onSelect(row) {
+                    onSelect({ row, value, all }) {
+                      if (value === false && all) {
+                        setSelectedRows([]);
+                        setFilteredValue('');
+                        return;
+                      }
+                      if (value === false) {
+                        setSelectedRows([
+                          ...selectedRows.filter((r) => r !== row),
+                        ]);
+                        setFilteredValue(
+                          [...selectedRows.filter((r) => r !== row)]
+                            .map((row) => {
+                              const _row = row as Record<string, unknown>;
+                              if (column.type !== 'select-async') return row;
+                              const propertyName: string =
+                                column.filterProperty;
+                              if (
+                                row &&
+                                typeof row === 'object' &&
+                                propertyName in row
+                              )
+                                return _row[propertyName];
+                              return row;
+                            })
+                            .join(',')
+                        );
+                        return;
+                      }
+                      if (value === true && all) {
+                        const _rows = row as unknown[];
+                        const selectedRowsLocal = [...selectedRows];
+                        _rows.forEach((r) => {
+                          const isRowAdded = selectedRowsLocal.some(
+                            (currentRow) => Object.is(currentRow, r)
+                          );
+                          if (isRowAdded) return;
+                          selectedRowsLocal.push(r);
+                        });
+                        setSelectedRows(selectedRowsLocal);
+                        setFilteredValue(
+                          selectedRowsLocal
+                            .map((row) => {
+                              const _row = row as Record<string, unknown>;
+                              if (column.type !== 'select-async') return row;
+                              const propertyName: string =
+                                column.filterProperty;
+                              if (
+                                row &&
+                                typeof row === 'object' &&
+                                propertyName in row
+                              )
+                                return _row[propertyName];
+                              return row;
+                            })
+                            .join(',')
+                        );
+                        return;
+                      }
                       if (!row) return;
                       const isRowAdded = selectedRows.some((currentRow) =>
                         Object.is(currentRow, row)
@@ -248,7 +306,6 @@ export default function FilterColumn({
                           })
                           .join(',')
                       );
-                      console.log(row);
                     },
                   },
                 }}
