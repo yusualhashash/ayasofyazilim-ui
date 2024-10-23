@@ -5,7 +5,7 @@ import { ColumnDef } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { AutoColumnGenerator, selectAbleColumns } from '.';
+import { AutoColumnGenerator, selectableColumns } from '.';
 import { normalizeName } from './utils';
 
 const createSortableHeader = (column: any, name: string) => (
@@ -72,7 +72,7 @@ function generateColumns({
 }
 
 export function columnsGenerator(data: AutoColumnGenerator) {
-  let onSelect: selectAbleColumns['onSelect'] | undefined;
+  let onSelect: selectableColumns['onSelect'] | undefined;
   const { selectable, tableType, excludeList, positions } = data;
   if (selectable) {
     onSelect = data.onSelect;

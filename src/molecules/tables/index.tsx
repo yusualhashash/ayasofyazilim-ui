@@ -118,9 +118,9 @@ export type AutoColumnGenerator = {
   excludeList: string[];
   positions?: string[];
   tableType: any;
-} & (noSelectAbleColumns | selectAbleColumns);
+} & (noSelectAbleColumns | selectableColumns);
 
-export type selectAbleColumns = {
+export type selectableColumns = {
   onSelect: ({
     row,
     value,
