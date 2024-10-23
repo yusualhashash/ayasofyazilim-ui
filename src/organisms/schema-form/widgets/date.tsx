@@ -1,5 +1,6 @@
 import { WidgetProps } from '@rjsf/utils';
 import { useState } from 'react';
+import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -10,18 +11,18 @@ import {
 import { cn } from '@/lib/utils';
 
 export const CustomDate = (props: WidgetProps) => {
-  const [date, setDate] = useState<Date | undefined>(new Date(props.value));
+  const [date, setDate] = useState<Date | undefined>(props.value);
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           className={cn(
-            'w-[240px] justify-start text-left font-normal flex',
+            'w-full justify-start text-left font-normal flex',
             !date && 'text-muted-foreground'
           )}
         >
-          {date ? date.toLocaleDateString() : <span>Pick a date</span>}
+          {date ? format(date, 'PPP') : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">

@@ -1,6 +1,6 @@
 import { GenericObjectType, UiSchema } from '@rjsf/utils';
 import { PhoneNumberUtil } from 'google-libphonenumber';
-import { FilterType } from './types';
+import { FilteredObject, FilterType, UISchemaType } from './types';
 // if google-libphonenumber gives type error simply do this; pnpm add @types/google-libphonenumber
 
 /**
@@ -298,44 +298,255 @@ export function hasPhoneFields(form: any) {
   return true;
 }
 
-export function applyFiltersToSchema({
-  ...props
+export type CreateSchemaWithFilters = {
+  filter: FilterType;
+  name?: string;
+  schema: GenericObjectType;
+};
+/**
+ * Updates the schema according to the specified filter.
+ *
+ * @param {Object} params - Function parameters.
+ * @param {GenericObjectType} params.schema - The schema to be updated.
+ * @param {FilterType} params.filter - Filter details (include, exclude, etc.).
+ * @returns {GenericObjectType} - The filtered schema.
+ */
+export function createSchemaWithFilters({
+  schema,
+  filter,
 }: {
   filter: FilterType;
-  parentKey?: string;
   schema: GenericObjectType;
 }): GenericObjectType {
-  const { schema, filter, parentKey } = props;
-  const filteredSchema: GenericObjectType = { ...schema };
-  if (filteredSchema.properties) {
-    filteredSchema.properties = Object.keys(filteredSchema.properties)
-      .filter((key) => {
-        const fullKey = parentKey ? `${parentKey}.${key}` : key;
-        if (filter.type === 'full') return !filter.keys?.includes(key);
-        if (filter.type === 'include') return filter.keys?.includes(fullKey);
-        return !filter.keys?.includes(fullKey);
-      })
-      .reduce(
-        (acc, key) => {
-          const fullKey = parentKey ? `${parentKey}.${key}` : key;
-          acc[key] = applyFiltersToSchema({
-            schema: filteredSchema.properties![key],
-            filter,
-            parentKey: fullKey,
-          });
-          return acc;
-        },
-        {} as { [key: string]: any }
-      );
-  }
+  const { keys, type } = filter;
 
-  if (filteredSchema.items) {
-    filteredSchema.items = applyFiltersToSchema({
-      schema: filteredSchema.items,
-      filter,
-      parentKey,
+  // Deep copy to preserve type
+  const modifiedSchema = structuredClone(schema);
+
+  /**
+   * Recursive function to filter properties.
+   *
+   * @param {GenericObjectType} currentObj - The current schema object.
+   * @param {string} [parentKey=''] - The parent key path of the current object.
+   */
+
+  const filterProperties = (
+    object: GenericObjectType,
+    parentKey: string = ''
+  ) => {
+    const currentObj = object;
+    if (!currentObj.properties && !currentObj.items) return;
+    const keptKeys = new Set<string>();
+    const hasKey = (key: string) => {
+      if (keys.find((k) => k === key)) return true;
+      return false;
+    };
+    const isWildCard = (key: string) => {
+      if (keys.find((k) => k === `*${key}`)) return true;
+      return false;
+    };
+    // Filtering for properties
+    if (currentObj.properties) {
+      Object.keys(currentObj.properties).forEach((key) => {
+        const property = currentObj.properties[key];
+        const currentPath = parentKey ? `${parentKey}.${key}` : key;
+        if (type === 'include') {
+          if (isWildCard(currentPath)) return;
+          if (hasKey(currentPath)) {
+            keptKeys.add(key);
+            if (property.type === 'object') {
+              filterProperties(property, currentPath);
+            } else if (property.type === 'array') {
+              filterProperties(property.items, currentPath);
+            }
+          } else {
+            delete currentObj.properties[key];
+          }
+        } else if (type === 'exclude') {
+          if (!hasKey(currentPath)) {
+            keptKeys.add(key);
+            if (property.type === 'object') {
+              filterProperties(property, currentPath);
+            } else if (property.type === 'array') {
+              filterProperties(property.items, currentPath);
+            }
+          } else {
+            delete currentObj.properties[key];
+          }
+        } else if (type === 'fullExclude') {
+          if (hasKey(currentPath)) {
+            delete currentObj.properties[key];
+          } else if (property.type === 'object') {
+            filterProperties(property, currentPath);
+          } else if (property.type === 'array') {
+            filterProperties(property.items, currentPath);
+          }
+        }
+      });
+    }
+
+    // Filtering for array items
+    if (currentObj.items && currentObj.items.properties) {
+      filterProperties(currentObj.items, `${parentKey}.items`);
+    }
+
+    // Update the required fields
+    currentObj.required =
+      currentObj.required?.filter((req: string) => keptKeys.has(req)) ||
+      undefined;
+  };
+
+  // Start filtering from the root schema
+  filterProperties(modifiedSchema);
+  return modifiedSchema;
+}
+
+export type CreateFieldConfigWithResourceProps = {
+  extend?: GenericObjectType;
+  name?: string;
+  resources: Record<string, any>;
+  schema: GenericObjectType;
+};
+/**
+ * Creates a field configuration with resource management.
+ *
+ * @param {CreateFieldConfigWithResourceProps} params - The parameters for creating the field configuration.
+ * @param {Record<string, any>} params.resources - A record of resources to be used within the field configuration.
+ * @param {GenericObjectType} params.schema - The schema defining the structure and validation of the field.
+ * @param {UISchemaType} [params.extend] - An optional field configuration to merge with result of this function.
+ * @param {string} [params.name='Form'] - An optional name for the field; defaults to 'Form'.
+ *
+ * @returns {UISchemaType} The created field configuration.
+ */
+export function createUiSchemaWithResource({
+  resources,
+  schema,
+  extend,
+  name = 'Form',
+}: CreateFieldConfigWithResourceProps): UISchemaType {
+  const uiSchema = uiSchemaFromSchema({
+    object: schema,
+    resources,
+    name,
+    constantKey: name,
+  });
+  if (extend) {
+    return mergeUISchemaObjects(uiSchema[name], extend);
+  }
+  return uiSchema[name];
+}
+
+export function uiSchemaFromSchema({
+  name,
+  object,
+  resources,
+  constantKey,
+  debug = false,
+}: {
+  constantKey: string;
+  debug?: boolean;
+  name: string;
+  object: GenericObjectType;
+  resources: Record<string, string>;
+}) {
+  if (debug) {
+    console.log({
+      name,
+      object,
+      resources,
+      constantKey,
     });
   }
 
-  return filteredSchema;
+  const uiSchema = {
+    [name]: {},
+  };
+  // object
+  if (object && object.type === 'object' && object.properties) {
+    for (const property of Object.keys(object.properties)) {
+      Object.assign(uiSchema[name], {
+        'ui:title': resources[constantKey],
+        ...uiSchemaFromSchema({
+          name: property,
+          object: object.properties[property],
+          resources,
+          constantKey: `${constantKey}.${property}`,
+        }),
+      });
+    }
+  }
+  // array
+  else if (
+    object &&
+    object.type === 'array' &&
+    object.items &&
+    object.items.properties
+  ) {
+    for (const property of Object.keys(object.items.properties)) {
+      Object.assign(uiSchema[name], {
+        'ui:title': resources[constantKey],
+        ...uiSchemaFromSchema({
+          name: property,
+          object: object.items.properties[property],
+          resources,
+          constantKey: `${constantKey}.${property}`,
+        }),
+      });
+    }
+  }
+  // plain
+  else if (object) {
+    const uiSchemaItem = {
+      'ui:title': resources[constantKey],
+    };
+    // enum varsa
+    if (Object.keys(object).includes('enum')) {
+      const fieldRelatedKeys = Object.keys(resources).filter((key) =>
+        key.includes(constantKey)
+      );
+      const placeHolderKey = fieldRelatedKeys
+        .filter((key) => key.includes('ui:placeholder'))
+        .at(0);
+
+      const enumKeys = fieldRelatedKeys.filter(
+        (key) => key !== constantKey && !key.includes('ui:placeholder')
+      );
+      const labels = enumKeys.map((key) => resources[key]);
+      Object.assign(uiSchemaItem, {
+        'ui:enumNames': labels,
+        'ui:placeholder': resources[placeHolderKey as string],
+        'ui:options': {
+          label: true,
+        },
+      });
+    }
+
+    Object.assign(uiSchema[name], uiSchemaItem);
+  }
+  return filterUndefinedAndEmpty(uiSchema);
+}
+
+export function filterUndefinedAndEmpty<T>(obj: T): FilteredObject<T> {
+  if (typeof obj !== 'object' || obj === null) {
+    return obj as FilteredObject<T>;
+  }
+
+  const filtered: Partial<FilteredObject<T>> = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    // console.log(value);
+    const filteredValue = filterUndefinedAndEmpty(value);
+    // Check if the value is not undefined and not an empty object
+    if (
+      filteredValue !== undefined &&
+      !(
+        typeof filteredValue === 'object' &&
+        Object.keys(filteredValue).length === 0
+      )
+    ) {
+      Object.assign(filtered, { [key]: filteredValue });
+    }
+  }
+
+  return filtered as FilteredObject<T>;
 }
