@@ -22,3 +22,5 @@ export type FilteredObject<T> = {
       ? never
       : T[K];
 };
+
+export { WidgetProps, FieldProps, TemplatesType } from '@rjsf/utils';
