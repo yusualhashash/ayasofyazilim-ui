@@ -68,7 +68,7 @@ interface IFilterColumnProps {
   column: ColumnFilter;
   setFilteredColumns: Dispatch<React.SetStateAction<ColumnFilter[]>>;
 }
-const badgeWithDelete = ({
+const BadgeWithDelete = ({
   badgeText,
   handleDelete,
 }: {
@@ -192,34 +192,30 @@ export default function FilterColumn({
                 const propertyName: string = column.showProperty;
                 if (row && typeof row === 'object' && propertyName in row)
                   return (
-                    <>
-                      {badgeWithDelete({
-                        badgeText: _row[propertyName] as string,
-                        handleDelete: () => {
-                          const filteredRows = [
-                            ...selectedRows.filter((r) => r !== row),
-                          ];
-                          setSelectedRows(filteredRows);
-                          setFilteredValue(
-                            filteredRows
-                              .map((row) => {
-                                const _row = row as Record<string, unknown>;
-                                if (column.type !== 'select-async') return row;
-                                const propertyName: string =
-                                  column.filterProperty;
-                                if (
-                                  row &&
-                                  typeof row === 'object' &&
-                                  propertyName in row
-                                )
-                                  return _row[propertyName];
-                                return row;
-                              })
-                              .join(',')
-                          );
-                        },
-                      })}
-                    </>
+                    <BadgeWithDelete
+                      badgeText={_row[propertyName] as string}
+                      handleDelete={() => {
+                        const filteredRows = [
+                          ...selectedRows.filter((r) => r !== row),
+                        ];
+                        const getFilteredValues = filteredRows
+                          .map((row) => {
+                            const _row = row as Record<string, unknown>;
+                            if (column.type !== 'select-async') return row;
+                            const propertyName: string = column.filterProperty;
+                            if (
+                              row &&
+                              typeof row === 'object' &&
+                              propertyName in row
+                            )
+                              return _row[propertyName];
+                            return row;
+                          })
+                          .join(',');
+                        setSelectedRows(filteredRows);
+                        setFilteredValue(getFilteredValues);
+                      }}
+                    />
                   );
                 return 'not found';
               })}
@@ -231,6 +227,10 @@ export default function FilterColumn({
                     selectable: true,
                     onSelect(row) {
                       if (!row) return;
+                      const isRowAdded = selectedRows.some((currentRow) =>
+                        Object.is(currentRow, row)
+                      );
+                      if (isRowAdded) return;
                       setSelectedRows([...selectedRows, row]);
                       setFilteredValue(
                         [...selectedRows, row]
