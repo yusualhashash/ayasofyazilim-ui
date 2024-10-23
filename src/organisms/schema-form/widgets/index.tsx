@@ -4,3 +4,4 @@ export * from './select';
 export * from './combobox';
 export * from './switch';
 export * from './text';
+export * from './password';

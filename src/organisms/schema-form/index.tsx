@@ -21,6 +21,7 @@ import {
   CustomSelect,
   CustomTextInput,
   CustomSwitch,
+  PasswordInputWidget,
 } from './widgets';
 import { AsyncSelect, CustomPhoneField, FieldErrorTemplate } from './fields';
 import {
@@ -45,6 +46,7 @@ const ShadcnTheme: ThemeProps = {
     'async-select': AsyncSelect,
     TextWidget: CustomTextInput,
     DateTimeWidget: CustomDate,
+    password: PasswordInputWidget,
   },
   templates: {
     ArrayFieldTemplate: AccordionArrayFieldTemplate,
