@@ -16,11 +16,12 @@ import {
 } from './utils';
 import {
   CustomCheckbox,
-  CustomCombobox,
+  Combobox,
   CustomDate,
   CustomSelect,
   CustomTextInput,
   CustomSwitch,
+  PasswordInputWidget,
 } from './widgets';
 import { AsyncSelect, CustomPhoneField, FieldErrorTemplate } from './fields';
 import {
@@ -32,6 +33,9 @@ import {
 
 export * from './utils';
 export * from './types';
+export * from './widgets';
+export * from './templates';
+export * from './fields';
 
 const ShadcnTheme: ThemeProps = {
   fields: {
@@ -40,11 +44,12 @@ const ShadcnTheme: ThemeProps = {
   widgets: {
     switch: CustomSwitch,
     CheckboxWidget: CustomCheckbox,
-    combobox: CustomCombobox,
+    combobox: Combobox,
     SelectWidget: CustomSelect,
     'async-select': AsyncSelect,
     TextWidget: CustomTextInput,
     DateTimeWidget: CustomDate,
+    password: PasswordInputWidget,
   },
   templates: {
     ArrayFieldTemplate: AccordionArrayFieldTemplate,
@@ -143,7 +148,7 @@ export function SchemaForm({ ...props }: SchemaFormProps) {
     >
       {!children && (
         <div className="py-4 sticky bottom-0 bg-white flex justify-end">
-          <Button type="submit">Submit</Button>
+          <Button type="submit">{props.submit}</Button>
         </div>
       )}
     </Form>
