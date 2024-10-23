@@ -75,7 +75,7 @@ const BadgeWithDelete = ({
   badgeText: string;
   handleDelete: () => void;
 }) => (
-  <Badge variant="outline" className="rounded-full px-3 py-1 mr-2">
+  <Badge variant="outline" className="rounded-full px-3 py-1 mb-2 mr-2">
     {badgeText}
     <Button
       variant="ghost"
