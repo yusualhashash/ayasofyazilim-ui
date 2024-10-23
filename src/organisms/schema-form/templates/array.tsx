@@ -68,7 +68,7 @@ export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => (
           <Button
             type="button"
             variant="secondary"
-            className="ml-2"
+            className="ml-2 z-10 !no-underline"
             onClick={(ev) => {
               ev.preventDefault();
               props.onAddClick();
@@ -90,7 +90,7 @@ export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => (
         {props.items &&
           props.items.map((itemProps) => (
             <div
-              className="flex relative pr-12 rounded-md p-4"
+              className="flex relative pr-12 rounded-md border [&>fieldset]:border-none"
               key={itemProps.key}
             >
               {itemProps.children}

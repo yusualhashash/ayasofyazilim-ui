@@ -6,6 +6,7 @@ export interface SchemaFormProps extends Omit<FormProps, 'validator'> {
   schema: GenericObjectType;
   submit: string;
   usePhoneField?: boolean;
+  withScrollArea?: boolean;
 }
 export type FilterType = {
   keys: string[];
@@ -23,4 +24,4 @@ export type FilteredObject<T> = {
       : T[K];
 };
 
-export { WidgetProps, FieldProps, TemplatesType } from '@rjsf/utils';
+export type { WidgetProps, FieldProps, TemplatesType } from '@rjsf/utils';
