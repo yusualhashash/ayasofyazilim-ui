@@ -1,7 +1,7 @@
 import { CaretSortIcon } from '@radix-ui/react-icons';
 import { WidgetProps } from '@rjsf/utils';
 import { CheckIcon } from 'lucide-react';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -20,15 +20,33 @@ import {
 import { useMediaQuery } from '@/components/ui/useMediaQuery';
 import { cn } from '@/lib/utils';
 
-export const Combobox = (props: WidgetProps) => {
-  const { label, value, defaultValue, uiSchema, options } = props;
+type CustomComboboxProps<T> = {
+  emptyValue?: string;
+  list: Array<T> | null | undefined;
+  onValueChange?: Dispatch<SetStateAction<T | null | undefined>>;
+  searchPlaceholder?: string;
+  searchResultLabel?: string;
+  selectIdentifier: keyof T;
+  selectLabel: keyof T;
+} & WidgetProps;
+
+export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
+  const {
+    label,
+    value,
+    defaultValue,
+    uiSchema,
+    list,
+    selectIdentifier,
+    selectLabel,
+  } = props;
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [open, setOpen] = useState(false);
 
   const fieldValue = value || defaultValue;
-  const fieldValueDisplayName = options.enumOptions?.find(
-    (x) => x.value === fieldValue
-  )?.label;
+  const fieldValueDisplayName = list?.find(
+    (x) => x[selectIdentifier] === fieldValue
+  )?.[selectLabel];
   const uiOptions = uiSchema?.['ui:options'];
   const DesktopContent = (
     <Popover open={open} onOpenChange={setOpen} modal>
@@ -46,6 +64,7 @@ export const Combobox = (props: WidgetProps) => {
             fieldValue ||
             uiSchema?.['ui:placeholder'] ||
             uiOptions?.['ui:placeholder'] ||
+            uiOptions?.emptyValue ||
             `Please select an ${label.toLocaleLowerCase()}` ||
             'Please select'}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -69,8 +88,8 @@ export const Combobox = (props: WidgetProps) => {
           )}
         >
           {fieldValue ||
-            props?.uiSchema?.['ui:placeholder'] ||
-            `Please select an ${props.label.toLocaleLowerCase()}` ||
+            uiSchema?.['ui:placeholder'] ||
+            `Please select an ${label.toLocaleLowerCase()}` ||
             'Please select'}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -84,23 +103,26 @@ export const Combobox = (props: WidgetProps) => {
   );
 
   return isDesktop ? DesktopContent : MobileContent;
-};
+}
 
 function List<T>({
   setOpen,
   ...props
-}: WidgetProps<T> & {
+}: CustomComboboxProps<T> & {
   setOpen: (open: boolean) => void;
 }) {
-  const { uiSchema, options } = props;
+  const { uiSchema, onChange, value, list, selectIdentifier, selectLabel } =
+    props;
   const uiOptions = uiSchema?.['ui:options'];
 
   return (
     <Command
       filter={(value, search) => {
-        const filterResult = options.enumOptions?.find(
-          (i) => i.value.toLocaleLowerCase() === value.toLocaleLowerCase()
-        )?.label;
+        const filterResult = list?.find(
+          (i) =>
+            (i[selectIdentifier] as string)?.toLocaleLowerCase() ===
+            value.toLocaleLowerCase()
+        )?.[selectLabel] as string;
         if (
           value.includes(search) ||
           filterResult?.toLocaleLowerCase().includes(search.toLocaleLowerCase())
@@ -118,23 +140,23 @@ function List<T>({
           {(uiOptions?.searchResultLabel as string) || '0 search result.'}
         </CommandEmpty>
         <CommandGroup>
-          {options.enumOptions?.map((enumOption) => (
+          {list?.map((item: T) => (
             <CommandItem
               onSelect={() => {
-                props.onChange(
+                onChange(
                   uiOptions?.allowEmpty !== false
-                    ? enumOption.value === props.value
+                    ? item[selectIdentifier] === value
                       ? undefined
-                      : enumOption.value
-                    : enumOption.value
+                      : item[selectIdentifier]
+                    : item[selectIdentifier]
                 );
                 setOpen(false);
               }}
-              key={JSON.stringify(enumOption.value)}
-              value={enumOption.value}
+              key={JSON.stringify(item[selectIdentifier])}
+              value={item[selectIdentifier] as string}
             >
-              {enumOption.label}
-              {enumOption.value === props.value && (
+              {item[selectLabel] as string}
+              {item[selectIdentifier] === value && (
                 <CheckIcon className={cn('ml-auto h-4 w-4')} />
               )}
             </CommandItem>

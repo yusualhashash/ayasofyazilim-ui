@@ -16,7 +16,7 @@ import {
 } from './utils';
 import {
   CustomCheckbox,
-  CustomCombobox,
+  Combobox,
   CustomDate,
   CustomSelect,
   CustomTextInput,
@@ -33,6 +33,9 @@ import {
 
 export * from './utils';
 export * from './types';
+export * from './widgets';
+export * from './templates';
+export * from './fields';
 
 const ShadcnTheme: ThemeProps = {
   fields: {
@@ -41,7 +44,7 @@ const ShadcnTheme: ThemeProps = {
   widgets: {
     switch: CustomSwitch,
     CheckboxWidget: CustomCheckbox,
-    combobox: CustomCombobox,
+    combobox: Combobox,
     SelectWidget: CustomSelect,
     'async-select': AsyncSelect,
     TextWidget: CustomTextInput,
