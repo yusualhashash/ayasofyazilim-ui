@@ -1,6 +1,6 @@
 import { GenericObjectType, UiSchema } from '@rjsf/utils';
 import { PhoneNumberUtil } from 'google-libphonenumber';
-import { FilteredObject, FilterType, UISchemaType } from './types';
+import { FilteredObject, FilterType } from './types';
 // if google-libphonenumber gives type error simply do this; pnpm add @types/google-libphonenumber
 
 /**
@@ -422,7 +422,7 @@ export function createUiSchemaWithResource({
   schema,
   extend,
   name = 'Form',
-}: CreateFieldConfigWithResourceProps): UISchemaType {
+}: CreateFieldConfigWithResourceProps): UiSchema {
   const uiSchema = uiSchemaFromSchema({
     object: schema,
     resources,
@@ -550,4 +550,18 @@ export function filterUndefinedAndEmpty<T>(obj: T): FilteredObject<T> {
   }
 
   return filtered as FilteredObject<T>;
+}
+
+export function bulkCreateUiSchema({
+  elements,
+  config,
+}: {
+  config: UiSchema;
+  elements: string[];
+}): UiSchema {
+  const uiSchema = {};
+  for (const element of elements) {
+    Object.assign(uiSchema, { [element]: config });
+  }
+  return filterUndefinedAndEmpty(uiSchema);
 }

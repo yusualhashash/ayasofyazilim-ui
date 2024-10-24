@@ -12,7 +12,6 @@ export type FilterType = {
   keys: string[];
   type: 'exclude' | 'include' | 'fullExclude';
 };
-export type UISchemaType = Pick<FormProps, 'uiSchema'>;
 
 export type FilteredObject<T> = {
   [K in keyof T]: T[K] extends object
