@@ -345,6 +345,9 @@ export const DetailedFilter: StoryObj<typeof Table> = {
         value: '',
         filterProperty: 'id',
         showProperty: 'email',
+        columnDataType: autoColumnData,
+        data,
+        rowCount: 10,
       },
       {
         name: 'status_multiple',
