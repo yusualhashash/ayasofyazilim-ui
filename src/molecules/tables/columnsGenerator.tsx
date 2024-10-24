@@ -5,7 +5,7 @@ import { ColumnDef } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { AutoColumnGenerator } from '.';
+import { AutoColumnGenerator, selectableColumns } from '.';
 import { normalizeName } from './utils';
 
 const createSortableHeader = (column: any, name: string) => (
@@ -72,7 +72,7 @@ function generateColumns({
 }
 
 export function columnsGenerator(data: AutoColumnGenerator) {
-  let onSelect: false | Function = false;
+  let onSelect: selectableColumns['onSelect'] | undefined;
   const { selectable, tableType, excludeList, positions } = data;
   if (selectable) {
     onSelect = data.onSelect;
@@ -89,11 +89,11 @@ export function columnsGenerator(data: AutoColumnGenerator) {
           }
           onCheckedChange={(value) => {
             table.toggleAllPageRowsSelected(!!value);
-            if (value) {
-              table.getRowModel().rows.forEach((row) => {
-                if (typeof onSelect === 'function') {
-                  onSelect(row.original);
-                }
+            if (typeof onSelect === 'function') {
+              onSelect({
+                row: table.getRowModel().rows.map((row) => row.original),
+                value: Boolean(value),
+                all: true,
               });
             }
           }}
@@ -105,7 +105,13 @@ export function columnsGenerator(data: AutoColumnGenerator) {
           checked={row.getIsSelected()}
           onCheckedChange={(value) => {
             row.toggleSelected(!!value);
-            if (value && typeof onSelect === 'function') onSelect(row.original);
+            if (typeof onSelect === 'function') {
+              onSelect({
+                row: row.original,
+                value: Boolean(value),
+                all: false,
+              });
+            }
           }}
           aria-label="Select row"
         />
