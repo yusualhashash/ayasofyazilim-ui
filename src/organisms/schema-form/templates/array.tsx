@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
-  console.log(props);
   const { items, title, required, canAdd, onAddClick, uiSchema } = props;
   const displayName = uiSchema?.['ui:title'] || title;
   return (
