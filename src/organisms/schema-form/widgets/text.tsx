@@ -1,15 +1,28 @@
 import { WidgetProps } from '@rjsf/utils';
 import { Input } from '@/components/ui/input';
 
-export const CustomTextInput = (props: WidgetProps) => (
-  <Input
-    type={props.uiSchema?.['ui:inputType'] || props.type}
-    id={props.id}
-    className={props.className}
-    required={props.required}
-    onChange={(event) => props.onChange(event.target.value)}
-    defaultValue={props.value || props.defaultValue}
-    readOnly={props.readOnly}
-    disabled={props.disabled || props.readOnly}
-  />
-);
+export const CustomTextInput = (props: WidgetProps) => {
+  const {
+    uiSchema,
+    required,
+    className,
+    id,
+    readOnly,
+    disabled,
+    onChange,
+    value,
+  } = props;
+  const uiOptions = uiSchema?.['ui:options'];
+  return (
+    <Input
+      type={uiOptions?.inputType || 'text'}
+      id={id}
+      className={className}
+      required={required}
+      onChange={(event) => onChange(event.target.value)}
+      defaultValue={value || props.defaultValue}
+      readOnly={props.readOnly}
+      disabled={disabled || readOnly}
+    />
+  );
+};
