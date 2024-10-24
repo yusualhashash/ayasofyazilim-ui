@@ -275,7 +275,6 @@ export function generateFormData(
       // object
       if (Array.isArray(_formData[field])) {
         // array
-        // console.log(field, typeof _formData[field]);
       }
     }
     if (fieldsToMerge.includes(field)) {
@@ -447,12 +446,6 @@ export function uiSchemaFromSchema({
   object: GenericObjectType;
   resources: Record<string, string>;
 }) {
-  // console.log({
-  //   name,
-  //   object,
-  //   resources,
-  //   constantKey,
-  // });
   const uiSchema = {
     [name]: {},
   };
