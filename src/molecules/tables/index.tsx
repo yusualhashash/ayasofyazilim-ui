@@ -426,7 +426,7 @@ export default function DataTable<TData, TValue>({
   useEffect(() => {
     const filter: FilterColumnResult = {};
     filteredColumns.forEach((column: ColumnFilter) => {
-      if (column.type === 'select-multiple') {
+      if (column.type === 'select-multiple' || column.type === 'select-async') {
         filter[column.name] = column.value.split(',').filter((i) => i);
       } else {
         filter[column.name] = column.value;
