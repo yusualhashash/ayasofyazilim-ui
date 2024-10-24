@@ -441,23 +441,18 @@ export function uiSchemaFromSchema({
   object,
   resources,
   constantKey,
-  debug = false,
 }: {
   constantKey: string;
-  debug?: boolean;
   name: string;
   object: GenericObjectType;
   resources: Record<string, string>;
 }) {
-  if (debug) {
-    console.log({
-      name,
-      object,
-      resources,
-      constantKey,
-    });
-  }
-
+  // console.log({
+  //   name,
+  //   object,
+  //   resources,
+  //   constantKey,
+  // });
   const uiSchema = {
     [name]: {},
   };
@@ -482,17 +477,22 @@ export function uiSchemaFromSchema({
     object.items &&
     object.items.properties
   ) {
+    const items = {};
     for (const property of Object.keys(object.items.properties)) {
-      Object.assign(uiSchema[name], {
-        'ui:title': resources[constantKey],
-        ...uiSchemaFromSchema({
+      Object.assign(
+        items,
+        uiSchemaFromSchema({
           name: property,
           object: object.items.properties[property],
           resources,
           constantKey: `${constantKey}.${property}`,
-        }),
-      });
+        })
+      );
     }
+    Object.assign(uiSchema[name], {
+      'ui:title': resources[constantKey],
+      items,
+    });
   }
   // plain
   else if (object) {
@@ -504,19 +504,34 @@ export function uiSchemaFromSchema({
       const fieldRelatedKeys = Object.keys(resources).filter((key) =>
         key.includes(constantKey)
       );
-      const placeHolderKey = fieldRelatedKeys
-        .filter((key) => key.includes('ui:placeholder'))
-        .at(0);
-
+      const valuesToExclude = [
+        'ui:placeholder',
+        'emptyValue',
+        'searchPlaceholder',
+        'searchResultLabel',
+      ];
       const enumKeys = fieldRelatedKeys.filter(
-        (key) => key !== constantKey && !key.includes('ui:placeholder')
+        (key) =>
+          key !== constantKey &&
+          !valuesToExclude.some((value) => key.includes(value))
       );
+
+      const getResourceValue = (name: string) => {
+        const key = Object.keys(resources)
+          .filter((key) => key === `${constantKey}.${name}`)
+          .at(0);
+        return key ? resources[key] : undefined;
+      };
+
       const labels = enumKeys.map((key) => resources[key]);
       Object.assign(uiSchemaItem, {
         'ui:enumNames': labels,
-        'ui:placeholder': resources[placeHolderKey as string],
+        'ui:placeholder': getResourceValue('ui:placeholder'),
         'ui:options': {
           label: true,
+          emptyValue: getResourceValue('emptyValue'),
+          searchPlaceholder: getResourceValue('searchPlaceholder'),
+          searchResultLabel: getResourceValue('searchResultLabel'),
         },
       });
     }
@@ -534,7 +549,6 @@ export function filterUndefinedAndEmpty<T>(obj: T): FilteredObject<T> {
   const filtered: Partial<FilteredObject<T>> = {};
 
   for (const [key, value] of Object.entries(obj)) {
-    // console.log(value);
     const filteredValue = filterUndefinedAndEmpty(value);
     // Check if the value is not undefined and not an empty object
     if (
