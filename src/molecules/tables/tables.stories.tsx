@@ -2,9 +2,9 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { useState } from 'react';
-import jsonToCsv from 'src/lib/json-to-csv';
 import { AutoFormProps } from 'src/organisms/auto-form';
 import { z } from 'zod';
+import jsonToCsv from '../../lib/json-to-csv';
 import Table, { AutoColumnGenerator, TableAction } from '.';
 import {
   columns,

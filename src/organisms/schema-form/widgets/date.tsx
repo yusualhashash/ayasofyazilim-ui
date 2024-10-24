@@ -11,7 +11,9 @@ import {
 import { cn } from '@/lib/utils';
 
 export const CustomDate = (props: WidgetProps) => {
-  const [date, setDate] = useState<Date | undefined>(props.value);
+  const { value, uiSchema, onChange } = props;
+  const placeholder = uiSchema?.['ui:placeholder'] || 'Pick a date';
+  const [date, setDate] = useState<Date | undefined>(value);
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -22,7 +24,7 @@ export const CustomDate = (props: WidgetProps) => {
             !date && 'text-muted-foreground'
           )}
         >
-          {date ? format(date, 'PPP') : <span>Pick a date</span>}
+          {date ? format(date, 'PPP') : <span>{placeholder}</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
@@ -31,7 +33,7 @@ export const CustomDate = (props: WidgetProps) => {
           selected={date}
           onSelect={(e) => {
             setDate(e);
-            props.onChange(e?.toISOString());
+            onChange(e?.toISOString());
           }}
           initialFocus
         />

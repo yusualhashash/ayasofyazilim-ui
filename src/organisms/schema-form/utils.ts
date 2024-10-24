@@ -496,8 +496,11 @@ export function uiSchemaFromSchema({
   }
   // plain
   else if (object) {
+    const getResourceValue = (name: string) =>
+      resources[`${constantKey}.${name}`] || undefined;
     const uiSchemaItem = {
       'ui:title': resources[constantKey],
+      'ui:placeholder': getResourceValue('ui:placeholder'),
     };
     // enum varsa
     if (Object.keys(object).includes('enum')) {
@@ -515,18 +518,9 @@ export function uiSchemaFromSchema({
           key !== constantKey &&
           !valuesToExclude.some((value) => key.includes(value))
       );
-
-      const getResourceValue = (name: string) => {
-        const key = Object.keys(resources)
-          .filter((key) => key === `${constantKey}.${name}`)
-          .at(0);
-        return key ? resources[key] : undefined;
-      };
-
       const labels = enumKeys.map((key) => resources[key]);
       Object.assign(uiSchemaItem, {
         'ui:enumNames': labels,
-        'ui:placeholder': getResourceValue('ui:placeholder'),
         'ui:options': {
           label: true,
           emptyValue: getResourceValue('emptyValue'),
