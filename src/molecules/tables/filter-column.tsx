@@ -20,9 +20,7 @@ import { Switch } from '@/components/ui/switch';
 import AdvancedCalendar from '../advanced-calendar';
 import { MultiSelect, MultiSelectProps } from '../multi-select';
 import CustomTableActionDialog from '../dialog';
-import DataTable from '.';
-import { autoColumnData } from './tables.stories';
-import { data } from './data';
+import DataTable, { AutoColumnGenerator } from '.';
 import { Badge } from '@/components/ui/badge';
 
 export type ColumnFilter = BaseColumnFilter &
@@ -50,7 +48,10 @@ export type MultipleFilter = {
   type: 'select-multiple';
 };
 export type AsyncFilter = {
+  columnDataType: AutoColumnGenerator;
+  data: unknown[];
   filterProperty: string;
+  rowCount?: number;
   showProperty: string;
   type: 'select-async';
 };
@@ -174,69 +175,32 @@ export default function FilterColumn({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
     <>
-      <CustomTableActionDialog
-        type="Sheet"
-        action={{
-          cta: 'Submit',
-          description: 'Submit',
-          loadingContent: <div>Loading...</div>,
-          type: 'Sheet',
-          componentType: 'CustomComponent',
-          content: (
-            <>
-              selected Rows
-              <br />
-              {selectedRows.map((row) => {
-                const _row = row as Record<string, unknown>;
-                if (column.type !== 'select-async') return row;
-                const propertyName: string = column.showProperty;
-                if (row && typeof row === 'object' && propertyName in row)
-                  return (
-                    <BadgeWithDelete
-                      badgeText={_row[propertyName] as string}
-                      handleDelete={() => {
-                        const filteredRows = [
-                          ...selectedRows.filter((r) => r !== row),
-                        ];
-                        const getFilteredValues = filteredRows
-                          .map((row) => {
-                            const _row = row as Record<string, unknown>;
-                            if (column.type !== 'select-async') return row;
-                            const propertyName: string = column.filterProperty;
-                            if (
-                              row &&
-                              typeof row === 'object' &&
-                              propertyName in row
-                            )
-                              return _row[propertyName];
-                            return row;
-                          })
-                          .join(',');
-                        setSelectedRows(filteredRows);
-                        setFilteredValue(getFilteredValues);
-                      }}
-                    />
-                  );
-                return 'not found';
-              })}
-              <DataTable
-                columnsData={{
-                  type: 'Auto',
-                  data: {
-                    ...autoColumnData,
-                    selectable: true,
-                    onSelect({ row, value, all }) {
-                      if (value === false && all) {
-                        setSelectedRows([]);
-                        setFilteredValue('');
-                        return;
-                      }
-                      if (value === false) {
-                        setSelectedRows([
-                          ...selectedRows.filter((r) => r !== row),
-                        ]);
-                        setFilteredValue(
-                          [...selectedRows.filter((r) => r !== row)]
+      {column.type === 'select-async' ? (
+        <CustomTableActionDialog
+          type="Sheet"
+          action={{
+            cta: 'Submit',
+            description: 'Submit',
+            loadingContent: <div>Loading...</div>,
+            type: 'Sheet',
+            componentType: 'CustomComponent',
+            content: (
+              <>
+                selected Rows
+                <br />
+                {selectedRows.map((row) => {
+                  const _row = row as Record<string, unknown>;
+                  if (column.type !== 'select-async') return row;
+                  const propertyName: string = column.showProperty;
+                  if (row && typeof row === 'object' && propertyName in row)
+                    return (
+                      <BadgeWithDelete
+                        badgeText={_row[propertyName] as string}
+                        handleDelete={() => {
+                          const filteredRows = [
+                            ...selectedRows.filter((r) => r !== row),
+                          ];
+                          const getFilteredValues = filteredRows
                             .map((row) => {
                               const _row = row as Record<string, unknown>;
                               if (column.type !== 'select-async') return row;
@@ -250,23 +214,87 @@ export default function FilterColumn({
                                 return _row[propertyName];
                               return row;
                             })
-                            .join(',')
-                        );
-                        return;
-                      }
-                      if (value === true && all) {
-                        const _rows = row as unknown[];
-                        const selectedRowsLocal = [...selectedRows];
-                        _rows.forEach((r) => {
-                          const isRowAdded = selectedRowsLocal.some(
-                            (currentRow) => Object.is(currentRow, r)
+                            .join(',');
+                          setSelectedRows(filteredRows);
+                          setFilteredValue(getFilteredValues);
+                        }}
+                      />
+                    );
+                  return 'not found';
+                })}
+                <DataTable
+                  columnsData={{
+                    type: 'Auto',
+                    data: {
+                      ...column.columnDataType,
+                      selectable: true,
+                      onSelect({ row, value, all }) {
+                        if (value === false && all) {
+                          setSelectedRows([]);
+                          setFilteredValue('');
+                          return;
+                        }
+                        if (value === false) {
+                          setSelectedRows([
+                            ...selectedRows.filter((r) => r !== row),
+                          ]);
+                          setFilteredValue(
+                            [...selectedRows.filter((r) => r !== row)]
+                              .map((row) => {
+                                const _row = row as Record<string, unknown>;
+                                if (column.type !== 'select-async') return row;
+                                const propertyName: string =
+                                  column.filterProperty;
+                                if (
+                                  row &&
+                                  typeof row === 'object' &&
+                                  propertyName in row
+                                )
+                                  return _row[propertyName];
+                                return row;
+                              })
+                              .join(',')
                           );
-                          if (isRowAdded) return;
-                          selectedRowsLocal.push(r);
-                        });
-                        setSelectedRows(selectedRowsLocal);
+                          return;
+                        }
+                        if (value === true && all) {
+                          const _rows = row as unknown[];
+                          const selectedRowsLocal = [...selectedRows];
+                          _rows.forEach((r) => {
+                            const isRowAdded = selectedRowsLocal.some(
+                              (currentRow) => Object.is(currentRow, r)
+                            );
+                            if (isRowAdded) return;
+                            selectedRowsLocal.push(r);
+                          });
+                          setSelectedRows(selectedRowsLocal);
+                          setFilteredValue(
+                            selectedRowsLocal
+                              .map((row) => {
+                                const _row = row as Record<string, unknown>;
+                                if (column.type !== 'select-async') return row;
+                                const propertyName: string =
+                                  column.filterProperty;
+                                if (
+                                  row &&
+                                  typeof row === 'object' &&
+                                  propertyName in row
+                                )
+                                  return _row[propertyName];
+                                return row;
+                              })
+                              .join(',')
+                          );
+                          return;
+                        }
+                        if (!row) return;
+                        const isRowAdded = selectedRows.some((currentRow) =>
+                          Object.is(currentRow, row)
+                        );
+                        if (isRowAdded) return;
+                        setSelectedRows([...selectedRows, row]);
                         setFilteredValue(
-                          selectedRowsLocal
+                          [...selectedRows, row]
                             .map((row) => {
                               const _row = row as Record<string, unknown>;
                               if (column.type !== 'select-async') return row;
@@ -282,54 +310,31 @@ export default function FilterColumn({
                             })
                             .join(',')
                         );
-                        return;
-                      }
-                      if (!row) return;
-                      const isRowAdded = selectedRows.some((currentRow) =>
-                        Object.is(currentRow, row)
-                      );
-                      if (isRowAdded) return;
-                      setSelectedRows([...selectedRows, row]);
-                      setFilteredValue(
-                        [...selectedRows, row]
-                          .map((row) => {
-                            const _row = row as Record<string, unknown>;
-                            if (column.type !== 'select-async') return row;
-                            const propertyName: string = column.filterProperty;
-                            if (
-                              row &&
-                              typeof row === 'object' &&
-                              propertyName in row
-                            )
-                              return _row[propertyName];
-                            return row;
-                          })
-                          .join(',')
-                      );
+                      },
                     },
-                  },
-                }}
-                showView={false}
-                rowCount={data.length}
-                data={data}
-              />
-              <Button
-                onClick={() => {
-                  handleSave();
-                }}
-              >
-                Save
-              </Button>
-            </>
-          ),
-        }}
-        open={isDialogOpen}
-        onOpenChange={(state) => {
-          setIsDialogOpen(state);
-          setIsDropdownOpen(state);
-          handleOpenChange(state);
-        }}
-      />
+                  }}
+                  showView={false}
+                  rowCount={column.rowCount}
+                  data={column.data}
+                />
+                <Button
+                  onClick={() => {
+                    handleSave();
+                  }}
+                >
+                  Save
+                </Button>
+              </>
+            ),
+          }}
+          open={isDialogOpen}
+          onOpenChange={(state) => {
+            setIsDialogOpen(state);
+            setIsDropdownOpen(state);
+            handleOpenChange(state);
+          }}
+        />
+      ) : null}
       <DropdownMenu
         open={isDropdownOpen}
         onOpenChange={(open) => {
