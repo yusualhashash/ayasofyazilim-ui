@@ -2,9 +2,9 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { useState } from 'react';
-import jsonToCsv from 'src/lib/json-to-csv';
 import { AutoFormProps } from 'src/organisms/auto-form';
 import { z } from 'zod';
+import jsonToCsv from '../../lib/json-to-csv';
 import Table, { AutoColumnGenerator, TableAction } from '.';
 import {
   columns,
@@ -107,7 +107,9 @@ export const AutoColumns: StoryObj<typeof Table> = {
       type: 'Auto',
       data: {
         selectable: true,
-
+        onSelect(row) {
+          console.log(row);
+        },
         tableType: jsonSchema,
         excludeList: ['id'],
       },
@@ -118,9 +120,10 @@ export const AutoColumns: StoryObj<typeof Table> = {
     layout: 'centered',
   },
 };
-const autoColumnData: AutoColumnGenerator = {
+export const autoColumnData: AutoColumnGenerator = {
   tableType: jsonSchema,
   excludeList: ['id'],
+  selectable: false,
 };
 
 export const NewPage: StoryObj<typeof Table> = {
@@ -287,6 +290,9 @@ export const DetailedFilter: StoryObj<typeof Table> = {
           if (filterKey === 'status_multiple') {
             return parsedFilter[filterKey].includes(tableItem.status);
           }
+          if (filterKey === 'select-async') {
+            return parsedFilter[filterKey].includes(tableItem.id);
+          }
           return true;
         });
         setTableData(filteredData);
@@ -337,6 +343,11 @@ export const DetailedFilter: StoryObj<typeof Table> = {
         type: 'select-async',
         displayName: 'select-async',
         value: '',
+        filterProperty: 'id',
+        showProperty: 'email',
+        columnDataType: autoColumnData,
+        data,
+        rowCount: 10,
       },
       {
         name: 'status_multiple',

@@ -1,15 +1,14 @@
 import { WidgetProps } from '@rjsf/utils';
-import { Input } from '@/components/ui/input';
+import { PasswordInput } from '../../../molecules/password-input';
 
-export const CustomTextInput = (props: WidgetProps) => (
-  <Input
-    type={props.uiSchema?.['ui:inputType'] || props.type}
+export const PasswordInputWidget = (props: WidgetProps) => (
+  <PasswordInput
     id={props.id}
     className={props.className}
     required={props.required}
     onChange={(event) => props.onChange(event.target.value)}
     defaultValue={props.value || props.defaultValue}
     readOnly={props.readOnly}
-    disabled={props.disabled || props.readOnly}
+    disabled={props.disabled}
   />
 );

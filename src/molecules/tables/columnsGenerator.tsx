@@ -5,7 +5,7 @@ import { ColumnDef } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { AutoColumnGenerator } from '.';
+import { AutoColumnGenerator, selectableColumns } from '.';
 import { normalizeName } from './utils';
 
 const createSortableHeader = (column: any, name: string) => (
@@ -72,7 +72,11 @@ function generateColumns({
 }
 
 export function columnsGenerator(data: AutoColumnGenerator) {
-  const { selectable = false, tableType, excludeList, positions } = data;
+  let onSelect: selectableColumns['onSelect'] | undefined;
+  const { selectable, tableType, excludeList, positions } = data;
+  if (selectable) {
+    onSelect = data.onSelect;
+  }
 
   const columns: ColumnDef<typeof data>[] = [
     {
@@ -83,14 +87,32 @@ export function columnsGenerator(data: AutoColumnGenerator) {
             table.getIsAllPageRowsSelected() ||
             (table.getIsSomePageRowsSelected() && 'indeterminate')
           }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          onCheckedChange={(value) => {
+            table.toggleAllPageRowsSelected(!!value);
+            if (typeof onSelect === 'function') {
+              onSelect({
+                row: table.getRowModel().rows.map((row) => row.original),
+                value: Boolean(value),
+                all: true,
+              });
+            }
+          }}
           aria-label="Select all"
         />
       ),
       cell: ({ row }) => (
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          onCheckedChange={(value) => {
+            row.toggleSelected(!!value);
+            if (typeof onSelect === 'function') {
+              onSelect({
+                row: row.original,
+                value: Boolean(value),
+                all: false,
+              });
+            }
+          }}
           aria-label="Select row"
         />
       ),
