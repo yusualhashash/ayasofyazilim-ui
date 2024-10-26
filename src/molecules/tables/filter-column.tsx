@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import AdvancedCalendar from '../advanced-calendar';
+import Calendar from '../calendar';
 import { MultiSelect, MultiSelectProps } from '../multi-select';
 import CustomTableActionDialog from '../dialog';
 
@@ -232,7 +232,7 @@ function GenerateFilterByType({
       );
     case 'date':
       return (
-        <AdvancedCalendar
+        <Calendar
           initialFocus
           mode="single"
           onSelect={(value) => {
