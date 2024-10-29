@@ -33,7 +33,7 @@ export default function AutoFormInput({
   return (
     <FormItem
       className={cn(
-        'flex w-full flex-col justify-start',
+        'flex w-full flex-col px-px justify-start',
         fieldProps.containerClassName
       )}
     >
