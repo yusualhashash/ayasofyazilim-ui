@@ -190,7 +190,7 @@ export type DataTableProps<TData> = {
   data: TData[];
   detailedFilter?: ColumnFilter[];
   editable?: boolean;
-  fetchRequest?: any;
+  fetchRequest?: (page: number, filter: FilterColumnResult) => void;
   isLoading?: boolean;
   onDataUpdate?: (data: TData[]) => void;
   renderSubComponent?: (row: any) => JSX.Element;
