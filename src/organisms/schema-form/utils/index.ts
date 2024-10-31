@@ -1,6 +1,6 @@
 import { GenericObjectType, UiSchema } from '@rjsf/utils';
 import { PhoneNumberUtil } from 'google-libphonenumber';
-import { FilteredObject, FilterType } from './types';
+import { FilteredObject, FilterType } from '../types';
 // if google-libphonenumber gives type error simply do this; pnpm add @types/google-libphonenumber
 
 /**
