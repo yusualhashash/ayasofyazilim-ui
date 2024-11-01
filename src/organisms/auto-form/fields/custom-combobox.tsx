@@ -160,7 +160,7 @@ function List<T>({
       filter={(commandValue, search) => {
         const filterResult = list?.find(
           (i) =>
-            (i[selectIdentifier] as string)?.toLocaleLowerCase() ===
+            i[selectIdentifier]?.toString()?.toLocaleLowerCase() ===
             commandValue.toLocaleLowerCase()
         )?.[selectLabel] as string;
         if (
@@ -180,8 +180,8 @@ function List<T>({
         <CommandGroup>
           {list?.map((item: T) => (
             <CommandItem
-              key={item[selectIdentifier] as string}
-              value={item[selectIdentifier] as string}
+              key={item[selectIdentifier]?.toString()}
+              value={item[selectIdentifier]?.toString()}
               onSelect={() => {
                 childrenProps.field.onChange(
                   item[selectIdentifier] === childrenProps.field.value
