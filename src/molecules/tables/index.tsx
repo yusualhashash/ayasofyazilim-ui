@@ -464,15 +464,17 @@ export default function DataTable<TData, TValue>({
 
   return (
     <div className={cn('flex flex-col p-4', classNames?.container)}>
-      {activeAction && isOpen && activeAction.type === 'Dialog' && (
-        <CustomTableActionDialog
-          open={isOpen}
-          onOpenChange={setIsOpen}
-          action={activeAction}
-          type={activeAction?.type}
-          triggerData={triggerData}
-        />
-      )}
+      {activeAction &&
+        isOpen &&
+        (activeAction.type === 'Dialog' || activeAction.type === 'Sheet') && (
+          <CustomTableActionDialog
+            open={isOpen}
+            onOpenChange={setIsOpen}
+            action={activeAction}
+            type={activeAction?.type}
+            triggerData={triggerData}
+          />
+        )}
       {(showView || defaultAction) && (
         <div
           className={cn(
