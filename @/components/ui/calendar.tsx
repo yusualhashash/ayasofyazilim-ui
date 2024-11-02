@@ -1,15 +1,9 @@
 import * as React from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
-import { DayPicker, useDayPicker, useNavigation } from 'react-day-picker';
-import { format, setMonth } from 'date-fns';
+import { DayPicker } from 'react-day-picker';
+
 import { cn } from '@/lib/utils';
 import { buttonVariants } from './button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from '@/components/ui/select';
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -17,12 +11,10 @@ const Calendar = ({
   className,
   classNames,
   showOutsideDays = true,
-  locale,
   ...props
 }: CalendarProps) => (
   <DayPicker
     showOutsideDays={showOutsideDays}
-    locale={locale}
     className={cn('p-3', className)}
     classNames={{
       months: 'flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0',
@@ -65,85 +57,8 @@ const Calendar = ({
       ...classNames,
     }}
     components={{
-      // eslint-disable-next-line consistent-return,react/no-unstable-nested-components
-      Dropdown: (props) => {
-        const { fromDate, fromMonth, fromYear, toDate, toMonth, toYear } =
-          useDayPicker();
-        const { goToMonth, currentMonth } = useNavigation();
-
-        if (props.name === 'months') {
-          const selectedItems = Array.from({ length: 12 }, (_, i) => ({
-            value: i.toString(),
-            label: format(setMonth(new Date(), i), 'MMMM', { locale }),
-          }));
-
-          return (
-            <Select
-              onValueChange={(newValue) => {
-                const newDate = new Date(currentMonth);
-                newDate.setMonth(parseInt(newValue, 10));
-                goToMonth(newDate);
-              }}
-            >
-              <SelectTrigger className="p-0 m-0 border-0 shadow-none outline-0">
-                {format(currentMonth, 'MMMM', { locale })}
-              </SelectTrigger>
-              <SelectContent>
-                {selectedItems.map((selectItem) => (
-                  <SelectItem value={selectItem.value}>
-                    {selectItem.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          );
-        }
-        if (props.name === 'years') {
-          const earliestYear =
-            fromYear || fromMonth?.getFullYear() || fromDate?.getFullYear();
-          const latestYear =
-            toYear || toMonth?.getFullYear() || toDate?.getFullYear();
-
-          if (earliestYear && latestYear) {
-            const yearsLength = latestYear - earliestYear + 1;
-
-            const selectedItems = Array.from(
-              { length: yearsLength },
-              (_, i) => ({
-                value: (earliestYear + i).toString(),
-                label: (earliestYear + i).toString(),
-              })
-            );
-
-            return (
-              <Select
-                onValueChange={(newValue) => {
-                  const newDate = new Date(currentMonth);
-                  newDate.setFullYear(parseInt(newValue, 10));
-                  goToMonth(newDate);
-                }}
-                value={props.value?.toString()}
-              >
-                <SelectTrigger className="p-0 m-0 border-0 shadow-none outline-0">
-                  {currentMonth.getFullYear()}
-                </SelectTrigger>
-                <SelectContent>
-                  {selectedItems.map((selectItem) => (
-                    <SelectItem value={selectItem.value}>
-                      {selectItem.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            );
-          }
-        }
-        return null;
-      },
-      // eslint-disable-next-line react/no-unstable-nested-components
-      IconLeft: () => <ChevronLeftIcon className="h-4 w-4" />,
-      // eslint-disable-next-line react/no-unstable-nested-components
-      IconRight: () => <ChevronRightIcon className="h-4 w-4" />,
+      IconLeft: ({ ...props }) => <ChevronLeftIcon className="h-4 w-4" />,
+      IconRight: ({ ...props }) => <ChevronRightIcon className="h-4 w-4" />,
     }}
     {...props}
   />

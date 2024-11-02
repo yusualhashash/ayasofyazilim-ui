@@ -1,9 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react';
-import Calendar from '.';
+import { useState } from 'react';
+import AdvancedCalendar from '.';
 
 export default {
-  title: 'molecules/calendar',
-  component: Calendar,
+  title: 'molecules/advanced-calendar',
+  component: AdvancedCalendar,
   parameters: {
     layout: 'centered',
   },
@@ -26,32 +27,31 @@ export default {
   },
   args: {
     presets: false,
-    range: false,
     view: 'single',
     className: 'w-full',
     fromYear: new Date().getFullYear() - 5,
     toYear: new Date().getFullYear(),
     type: 'buttons',
   },
-} as Meta<typeof Calendar>;
+} as Meta<typeof AdvancedCalendar>;
 
-export const Template: StoryObj<typeof Calendar> = {
+export const Template: StoryObj<typeof AdvancedCalendar> = {
   args: {
     presets: true,
-    range: true,
     view: 'multiple',
   },
-  // const [filteredValue, setFilteredValue] = useState<string>('');
-  render: (args) => (
-    <Calendar
-      {...args}
-      initialFocus
-      // onSelect={(value) => {
-      //   if ('toISOString' in value) {
-      //     setFilteredValue(value?.toISOString() || '');
-      //   }
-      // }}
-      // selected={filteredValue ? new Date(filteredValue) : undefined}
-    />
-  ),
+  render: (args) => {
+    const [filteredValue, setFilteredValue] = useState<string>('');
+    return (
+      <AdvancedCalendar
+        {...args}
+        initialFocus
+        mode="single"
+        onSelect={(value) => {
+          setFilteredValue(value?.toISOString() || '');
+        }}
+        selected={filteredValue ? new Date(filteredValue) : undefined}
+      />
+    );
+  },
 };

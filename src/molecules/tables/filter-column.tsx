@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import Calendar from '../calendar';
+import AdvancedCalendar from '../advanced-calendar';
 import { MultiSelect, MultiSelectProps } from '../multi-select';
 import CustomTableActionDialog from '../dialog';
 import DataTable, { AutoColumnGenerator } from '.';
@@ -421,11 +421,13 @@ function GenerateFilterByType({
       );
     case 'date':
       return (
-        <Calendar
+        <AdvancedCalendar
           initialFocus
           mode="single"
           onSelect={(value) => {
-            setFilteredValue(value?.toISOString() || '');
+            if (value && 'toISOString' in value) {
+              setFilteredValue(value?.toString() || '');
+            }
           }}
           selected={filteredValue ? new Date(filteredValue) : undefined}
         />

@@ -1,8 +1,7 @@
 import React from 'react';
-import { DateRange } from 'react-day-picker';
 import { CalendarIcon, CheckIcon } from '@radix-ui/react-icons';
-import { Calendar, CalendarProps } from '@/components/ui/calendar';
 
+import { Calendar, CalendarProps } from '@/components/ui/calendar';
 import {
   Command,
   CommandEmpty,
@@ -69,32 +68,25 @@ const dateOptions = [
 
 export type AdvancedCalendarProps = CalendarProps & {
   fromYear?: number;
-  onSelect: (date: Date | DateRange) => void;
-  // Union type to accommodate both
+  onSelect: (date: Date) => void;
   presets?: boolean;
-  range?: boolean;
-  // Control date for setting the start year
   toYear?: number;
-  // Control date for setting the end year
   type?: 'buttons' | 'dropdown' | 'dropdown-buttons';
-  view?: 'single' | 'multiple'; // Control for display type
+  view?: 'single' | 'multiple';
 };
 
 /**
- * A reusable localized calendar component with advanced features.
- *
+ * A reusable localized advanced-calendar component with advanced features.
  * @param presets
- * @param range
  * @param view
  * @param fromYear
  * @param toYear
  * @param type
- * @param {AdvancedCalendarProps} props - The properties for the calendar component.
- * @return {JSX.Element} The rendered calendar component.
+ * @param props
+ * @return {JSX.Element} The rendered advanced-calendar component.
  */
 export default function AdvancedCalendar({
   presets,
-  range,
   view,
   fromYear = new Date().getFullYear() - 5,
   toYear = new Date().getFullYear(),
@@ -104,20 +96,10 @@ export default function AdvancedCalendar({
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState('');
 
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
-  const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
-  const locale = getLocale();
-
-  const handleSelectSingle = React.useCallback((value: Date | undefined) => {
-    setDate(value);
-  }, []);
-
-  const handleSelectRange = React.useCallback(
-    (value: DateRange | undefined) => {
-      setDateRange(value);
-    },
-    []
+  const [month, setMonth] = React.useState<Date>(
+    props.selected instanceof Date ? props.selected : new Date()
   );
+  const locale = getLocale();
 
   function handleChange(value: string) {
     const _date = new Date();
@@ -137,14 +119,8 @@ export default function AdvancedCalendar({
       _date.setUTCMonth(0);
       _date.setUTCDate(1);
     }
-
-    // eslint-disable-next-line camelcase
-    const _date_range: DateRange = {
-      from: _date,
-      to: _date,
-    };
-    setDateRange(_date_range);
-    setDate(_date);
+    props.onSelect(_date);
+    setMonth(_date);
   }
 
   return (
@@ -197,12 +173,11 @@ export default function AdvancedCalendar({
       )}
       <Calendar
         locale={locale}
-        mode={range ? 'range' : 'single'}
-        selected={range ? dateRange : date}
         fromYear={fromYear}
         toYear={toYear}
+        month={month}
+        onMonthChange={setMonth}
         captionLayout={type}
-        onSelect={range ? handleSelectRange : handleSelectSingle}
         numberOfMonths={view === 'multiple' ? 2 : 1}
         classNames={classNames}
         {...props}
