@@ -1,33 +1,52 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-
 import AdvancedCalendar from '.';
 
 export default {
+  title: 'molecules/advanced-calendar',
   component: AdvancedCalendar,
   parameters: {
     layout: 'centered',
   },
+  argTypes: {
+    presets: {
+      control: {
+        type: 'boolean',
+      },
+    },
+    fromYear: {
+      control: { type: 'number', min: 1900, max: 2050 },
+    },
+    toYear: {
+      control: { type: 'number', min: 1900, max: 2050 },
+    },
+    type: {
+      control: 'inline-radio',
+      options: ['buttons', 'dropdown', 'dropdown-buttons'],
+    },
+  },
   args: {
-    title: 'Başarılı',
-    variant: 'default',
-    className: 'w-full text-white',
+    presets: false,
+    view: 'single',
+    className: 'w-full',
+    fromYear: new Date().getFullYear() - 5,
+    toYear: new Date().getFullYear(),
+    type: 'buttons',
   },
 } as Meta<typeof AdvancedCalendar>;
 
 export const Template: StoryObj<typeof AdvancedCalendar> = {
   args: {
-    hideSelect: false,
+    presets: true,
+    view: 'multiple',
   },
-  render: () => {
+  render: (args) => {
     const [filteredValue, setFilteredValue] = useState<string>('');
     return (
       <AdvancedCalendar
+        {...args}
         initialFocus
         mode="single"
-        fromYear={new Date().getFullYear() - 5}
-        toYear={new Date().getFullYear()}
-        captionLayout="dropdown"
         onSelect={(value) => {
           setFilteredValue(value?.toISOString() || '');
         }}
