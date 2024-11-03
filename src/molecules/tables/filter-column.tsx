@@ -425,9 +425,7 @@ function GenerateFilterByType({
           initialFocus
           mode="single"
           onSelect={(value) => {
-            if (value && 'toISOString' in value) {
-              setFilteredValue(value?.toString() || '');
-            }
+            setFilteredValue(value?.toISOString() || '');
           }}
           selected={filteredValue ? new Date(filteredValue) : undefined}
         />
