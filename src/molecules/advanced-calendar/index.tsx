@@ -87,7 +87,7 @@ export type AdvancedCalendarProps = CalendarProps & {
  */
 export default function AdvancedCalendar({
   presets,
-  view,
+  view = 'single',
   fromYear = new Date().getFullYear() - 5,
   toYear = new Date().getFullYear(),
   type = 'buttons',
