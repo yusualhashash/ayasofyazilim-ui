@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { AutoFormProps } from 'src/organisms/auto-form';
 import { z } from 'zod';
 import jsonToCsv from '../../lib/json-to-csv';
-import Table, { AutoColumnGenerator, TableAction } from '.';
+import Table, { AutoColumnGenerator, FilterColumnResult, TableAction } from '.';
 import {
   columns,
   columnsEditable,
@@ -247,25 +247,31 @@ export const SubContent: StoryObj<typeof Table> = {
 };
 export const DetailedFilter: StoryObj<typeof Table> = {
   render: (args) => {
-    const [tableData, setTableData] = useState(data);
+    const [tableData, setTableData] = useState<unknown[]>(data);
     return (
       <Table
         {...args}
         data={tableData}
-        fetchRequest={(page: any, filter: any) =>
-          args.fetchRequest(filter, setTableData)
-        }
+        fetchRequest={(page: number, filter: FilterColumnResult) => {
+          if (args.fetchRequest) {
+            const customData = args.fetchRequest(
+              page,
+              filter
+            ) as unknown as unknown[];
+            setTableData(customData);
+            return customData;
+          }
+          return undefined;
+        }}
       />
     );
   },
   args: {
-    fetchRequest: (
-      filter: Record<string, string>,
-      setTableData: (data: unknown[]) => any
-    ) => {
+    fetchRequest: (page: number, filter: FilterColumnResult) => {
+      let localData = data;
       const parsedFilter = filter;
       if (Object.keys(parsedFilter).length === 0) {
-        setTableData(data);
+        return data;
       }
       Object.keys(parsedFilter).forEach((filterKey) => {
         if (parsedFilter[filterKey] === '') delete parsedFilter[filterKey];
@@ -278,11 +284,11 @@ export const DetailedFilter: StoryObj<typeof Table> = {
           if (filterKey === 'date') {
             return (
               new Date(tableItem.date || '').getTime() <
-              new Date(parsedFilter[filterKey]).getTime()
+              new Date(parsedFilter[filterKey] as string).getTime()
             );
           }
           if (filterKey === 'email') {
-            return tableItem.email.includes(parsedFilter[filterKey]);
+            return tableItem.email.includes(parsedFilter[filterKey] as string);
           }
           if (filterKey === 'status') {
             return tableItem.status === parsedFilter[filterKey];
@@ -295,8 +301,11 @@ export const DetailedFilter: StoryObj<typeof Table> = {
           }
           return true;
         });
-        setTableData(filteredData);
+        localData = filteredData;
+        return filteredData;
       });
+
+      return localData;
     },
     editable: false,
     data,
@@ -348,6 +357,14 @@ export const DetailedFilter: StoryObj<typeof Table> = {
         columnDataType: autoColumnData,
         data,
         rowCount: 10,
+        detailedFilters: [],
+        fetchRequest: async () =>
+          Promise.resolve({
+            data: {
+              items: data,
+              totalCount: data.length,
+            },
+          }),
       },
       {
         name: 'status_multiple',

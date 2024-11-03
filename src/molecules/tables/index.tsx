@@ -190,7 +190,7 @@ export type DataTableProps<TData> = {
   data: TData[];
   detailedFilter?: ColumnFilter[];
   editable?: boolean;
-  fetchRequest?: any;
+  fetchRequest?: (page: number, filter: FilterColumnResult) => void;
   isLoading?: boolean;
   onDataUpdate?: (data: TData[]) => void;
   renderSubComponent?: (row: any) => JSX.Element;
@@ -480,12 +480,12 @@ export default function DataTable<TData, TValue>({
             classNames?.actions?.container
           )}
         >
-          {showView === true && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                {isLoading ? (
-                  <Skeleton className="ml-auto h-9 w-32" />
-                ) : (
+          {showView === true &&
+            (isLoading ? (
+              <Skeleton className="ml-auto h-9 w-32" />
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
                   <Button
                     disabled={isLoading}
                     variant="outline"
@@ -493,27 +493,26 @@ export default function DataTable<TData, TValue>({
                   >
                     View <ChevronDownIcon className="ml-2 h-4 w-4" />
                   </Button>
-                )}
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {table
-                  .getAllColumns()
-                  .filter((column) => column.getCanHide())
-                  .map((column) => (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {normalizeName(column.id)}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {table
+                    .getAllColumns()
+                    .filter((column) => column.getCanHide())
+                    .map((column) => (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {normalizeName(column.id)}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ))}
 
           <div className={cn('flex', classNames?.actions?.wrapper)}>
             {isLoading ? (
@@ -529,20 +528,16 @@ export default function DataTable<TData, TValue>({
                 className={isMultipleActionProvided ? 'rounded-r-none' : ''}
               />
             )}
-            {isMultipleActionProvided && action.length > 1 && (
+            {isMultipleActionProvided && action.length > 1 && !isLoading && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  {isLoading ? (
-                    <Skeleton className="w-36 h-9" />
-                  ) : (
-                    <Button
-                      disabled={isLoading}
-                      variant="outline"
-                      className="rounded-l-none border-l-0 px-2"
-                    >
-                      <ChevronDownIcon className="" />
-                    </Button>
-                  )}
+                  <Button
+                    disabled={isLoading}
+                    variant="outline"
+                    className="rounded-l-none border-l-0 px-2"
+                  >
+                    <ChevronDownIcon className="" />
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   {action

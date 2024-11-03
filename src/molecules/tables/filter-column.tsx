@@ -20,7 +20,11 @@ import { Switch } from '@/components/ui/switch';
 import AdvancedCalendar from '../advanced-calendar';
 import { MultiSelect, MultiSelectProps } from '../multi-select';
 import CustomTableActionDialog from '../dialog';
-import DataTable, { AutoColumnGenerator } from '.';
+import DataTable, {
+  AutoColumnGenerator,
+  DataTableProps,
+  FilterColumnResult,
+} from '.';
 import { Badge } from '@/components/ui/badge';
 
 export type ColumnFilter = BaseColumnFilter &
@@ -50,6 +54,11 @@ export type MultipleFilter = {
 export type AsyncFilter = {
   columnDataType: AutoColumnGenerator;
   data: unknown[];
+  detailedFilters: DataTableProps<unknown>['detailedFilter'];
+  fetchRequest: (
+    page: number,
+    filter?: FilterColumnResult
+  ) => Promise<{ data: { items: unknown[]; totalCount: number } }>;
   filterProperty: string;
   rowCount?: number;
   showProperty: string;
@@ -135,6 +144,19 @@ export default function FilterColumn({
   const [filteredValue, setFilteredValue] = useState<string>(column.value);
   const [isDropdownOpen, setIsDropdownOpen] = useState(!column.value);
   const [selectedRows, setSelectedRows] = useState<unknown[]>([]);
+  const [data, setData] = useState<{ items: unknown[]; totalCount: number }>({
+    items: [],
+    totalCount: 0,
+  });
+  useEffect(() => {
+    if (column.type === 'select-async') {
+      setData({
+        items: column.data,
+        totalCount: column.rowCount || 0,
+      });
+    }
+  }, []);
+
   useEffect(() => {
     if (column.type === 'boolean') {
       setFilteredValue(column.value ? 'true' : 'false');
@@ -314,8 +336,17 @@ export default function FilterColumn({
                     },
                   }}
                   showView={false}
-                  rowCount={column.rowCount}
-                  data={column.data}
+                  rowCount={data.totalCount}
+                  data={data.items}
+                  fetchRequest={(page, filter) => {
+                    if (column.fetchRequest) {
+                      column.fetchRequest(page, filter).then((response) => {
+                        console.log('response page filter column', response);
+                        setData({ ...response.data });
+                      });
+                    }
+                  }}
+                  detailedFilter={column.detailedFilters}
                 />
                 <Button
                   onClick={() => {
