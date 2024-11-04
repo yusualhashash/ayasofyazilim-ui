@@ -68,9 +68,9 @@ export function CustomCombobox<T>({ ...props }: CustomComboboxProps<T>) {
     });
   const [open, setOpen] = useState(false);
   const findValue = (id: string) => {
-    const value = list?.find((item: T) => item[selectIdentifier] === id)?.[
-      selectLabel
-    ] as string;
+    const value = list?.find(
+      (item: T) => item[selectIdentifier]?.toString() === id
+    )?.[selectLabel] as string;
     return value;
   };
   const fieldValue = findValue(childrenProps.field.value);
@@ -184,15 +184,17 @@ function List<T>({
               value={item[selectIdentifier]?.toString()}
               onSelect={() => {
                 childrenProps.field.onChange(
-                  item[selectIdentifier] === childrenProps.field.value
+                  item[selectIdentifier]?.toString() ===
+                    childrenProps.field.value
                     ? undefined
-                    : item[selectIdentifier]
+                    : item[selectIdentifier]?.toString()
                 );
                 if (onValueChange)
                   onValueChange(
                     list.find(
                       (item: T) =>
-                        item[selectIdentifier] === childrenProps.field.value
+                        item[selectIdentifier]?.toString() ===
+                        childrenProps.field.value
                     )
                   );
                 setOpen(false);
@@ -202,7 +204,8 @@ function List<T>({
               <CheckIcon
                 className={cn(
                   'ml-auto h-4 w-4',
-                  childrenProps.field.value === item[selectIdentifier]
+                  childrenProps.field.value ===
+                    item[selectIdentifier]?.toString()
                     ? 'opacity-100'
                     : 'opacity-0'
                 )}
