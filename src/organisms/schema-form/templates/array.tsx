@@ -16,7 +16,7 @@ export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
     <Accordion
       type="single"
       collapsible
-      className="w-full group"
+      className={cn('w-full group', uiSchema?.['ui:className'])}
       defaultValue={title}
     >
       <AccordionItem
