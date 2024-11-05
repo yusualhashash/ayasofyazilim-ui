@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { AutoFormProps } from 'src/organisms/auto-form';
 import { z } from 'zod';
 import jsonToCsv from '../../lib/json-to-csv';
-import Table, { AutoColumnGenerator, FilterColumnResult, TableAction } from '.';
+import Table from '.';
+import { AutoColumnGenerator, FilterColumnResult, TableAction } from './types';
 import {
   columns,
   columnsEditable,
