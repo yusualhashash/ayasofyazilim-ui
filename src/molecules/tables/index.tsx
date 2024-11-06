@@ -1,6 +1,5 @@
 'use client';
 
-import { ChevronDownIcon } from '@radix-ui/react-icons';
 import {
   ColumnDef,
   SortingState,
@@ -11,27 +10,18 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { PlusIcon, Trash2Icon } from 'lucide-react';
-import Link from 'next/link';
-import React, {
-  Dispatch,
-  Fragment,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
+import { ChevronDownIcon } from 'lucide-react';
+import { DropdownMenuCheckboxItem } from '@radix-ui/react-dropdown-menu';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -41,52 +31,25 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
-import CustomTableActionDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import FilterColumn, { ColumnFilter } from './filter-column';
-import { normalizeName } from './utils';
 import { Badge } from '@/components/ui/badge';
 import {
   AutoColumnGenerator,
   DataTableProps,
   FilterColumnResult,
   TableAction,
-  TableActionCommon,
 } from './types';
-
-const SkeletonCell = () => <Skeleton className="w-20 h-3" />;
-
-const ActionComponent = ({
-  action,
-  callback,
-  className,
-}: {
-  action?: TableAction;
-  callback?: Function;
-  className?: string;
-}) => {
-  if (!action) return null;
-  if (action.type === 'NewPage') {
-    return (
-      <Link href={action.href || 'add'}>
-        <Button variant="outline" className={className}>
-          {action.cta?.toString()}
-        </Button>
-      </Link>
-    );
-  }
-  return (
-    <Button
-      variant="outline"
-      onClick={() => {
-        if (callback) callback();
-      }}
-      className={className}
-    >
-      {action.cta?.toString()}
-    </Button>
-  );
-};
+import TableFooter from './table-footer';
+import {
+  ActionComponent,
+  FilterButton,
+  getCTA,
+  SkeletonCell,
+} from './helper-components';
+import CustomTableActionDialog from '../dialog';
+import { Skeleton } from '@/components/ui/skeleton';
+import { normalizeName } from './utils';
 
 /**
  * Renders a data table with customizable columns, sorting, filtering, and selection capabilities.
@@ -124,72 +87,22 @@ const ActionComponent = ({
  *   data={usersData}
  * />
  */
-
-export function getCTA(
-  cta: TableActionCommon['cta'],
-  triggerData: undefined
-): string {
-  if (typeof cta === 'function') {
-    return cta(triggerData);
-  }
-  return cta || '';
-}
-
-const FilterButton = ({
-  detailedFilter,
-  isLoading,
-  setFilteredColumns,
-  filteredColumns,
-}: {
-  detailedFilter: ColumnFilter[];
-  filteredColumns: ColumnFilter[];
-  isLoading: boolean;
-  setFilteredColumns: Dispatch<SetStateAction<ColumnFilter[]>>;
-}) => (
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button
-        disabled={isLoading}
-        variant="outline"
-        className="border px-3 py-1 border-gray-300 rounded-full text-xs mr-2 h-auto"
-      >
-        Filter <PlusIcon className="ml-2 h-4 w-4" />
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="end">
-      {detailedFilter
-        .filter(
-          (column) =>
-            filteredColumns.findIndex((f) => f.name === column.name) === -1
-        )
-        .map((column) => (
-          <DropdownMenuItem
-            key={column.name}
-            className="capitalize"
-            onClick={() => setFilteredColumns((old) => [...old, column])}
-          >
-            {column.displayName}
-          </DropdownMenuItem>
-        ))}
-    </DropdownMenuContent>
-  </DropdownMenu>
-);
-
-export default function DataTable<TData, TValue>({
-  columnsData,
-  data,
-  action,
-  isLoading,
-  rowCount,
-  fetchRequest,
-  renderSubComponent,
-  showView = true,
-  editable = false,
-  Headertable,
-  onDataUpdate,
-  detailedFilter,
-  classNames,
-}: DataTableProps<TData>) {
+export default function DataTable<TData, TValue>(
+  inputProps: DataTableProps<TData>
+) {
+  const {
+    columnsData,
+    data,
+    action,
+    isLoading,
+    rowCount,
+    fetchRequest,
+    renderSubComponent,
+    showView = true,
+    onDataUpdate,
+    detailedFilter,
+    classNames,
+  } = inputProps;
   const [tableData, setTableData] = useState<TData[]>(data || []);
   const isMultipleActionProvided = Array.isArray(action);
   const [isOpen, setIsOpen] = useState(false);
@@ -292,26 +205,6 @@ export default function DataTable<TData, TValue>({
 
     fetchRequest?.(table.getState().pagination.pageIndex, filter);
   }, [table.getState().pagination.pageIndex, filteredColumns]);
-
-  function selectedRowsText(): string | JSX.Element {
-    if (isLoading) return <Skeleton className="w-28 h-4" />;
-    return `${table.getFilteredSelectedRowModel().rows.length} of ${table.getFilteredRowModel().rows.length} row(s) selected.`;
-  }
-
-  const handleAddRow = () => {
-    const newRow = Headertable;
-    setTableData((prevData) => [...prevData, newRow]);
-  };
-
-  const handleRemoveSelected = useCallback(() => {
-    const selectedRows = table
-      .getSelectedRowModel()
-      .rows.map((row: any) => row.index);
-    setTableData((old) =>
-      old.filter((_row, index) => !selectedRows.includes(index))
-    );
-    table.resetRowSelection();
-  }, [tableData]);
 
   const getNonSelectedFilters = () =>
     detailedFilter?.filter(
@@ -462,7 +355,6 @@ export default function DataTable<TData, TValue>({
           </div>
         )}
       </div>
-
       <div className={cn('overflow-auto', classNames?.table?.wrapper)}>
         <Table
           wrapperClassName={cn(
@@ -605,89 +497,13 @@ export default function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div
-        className={cn('flex items-center py-5', classNames?.footer?.container)}
-      >
-        <div
-          className={cn(
-            'flex-1 text-sm text-muted-foreground',
-            classNames?.footer?.selectedRows
-          )}
-        >
-          {selectedRowsText()}
-        </div>
-        {editable ? (
-          <div
-            className={cn(
-              'footer-buttons bg-white',
-              classNames?.footer?.editable?.container
-            )}
-          >
-            <div
-              className={cn(
-                'flex w-full justify-end items-end gap-5 py-3 px-3',
-                classNames?.footer?.editable?.wrapper
-              )}
-            >
-              {selectedRows?.length > 0 && (
-                <Button
-                  className={cn(
-                    'remove-button w-44 h-10 flex items-center justify-center',
-                    classNames?.footer?.editable?.remove
-                  )}
-                  variant="outline"
-                  onClick={handleRemoveSelected}
-                >
-                  Remove Selected
-                  <Trash2Icon className="ml-2 h-4 w-4" />
-                </Button>
-              )}
-              <Button
-                className={cn(
-                  'add-button w-44 h-10 flex items-center justify-center',
-                  classNames?.footer?.editable?.add
-                )}
-                variant="outline"
-                onClick={handleAddRow}
-              >
-                Add New +
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div
-            className={cn('space-x-2', classNames?.footer?.buttons?.container)}
-          >
-            {isLoading ? (
-              <>
-                <Skeleton className="inline-flex h-9 w-24" />
-                <Skeleton className="inline-flex h-9 w-24" />
-              </>
-            ) : (
-              <>
-                <Button
-                  className={cn(classNames?.footer?.buttons?.previous)}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => table.previousPage()}
-                  disabled={!table.getCanPreviousPage()}
-                >
-                  Previous
-                </Button>
-                <Button
-                  className={cn(classNames?.footer?.buttons?.next)}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => table.nextPage()}
-                  disabled={!table.getCanNextPage()}
-                >
-                  Next
-                </Button>
-              </>
-            )}
-          </div>
-        )}
-      </div>
+      <TableFooter
+        inputProps={inputProps}
+        table={table}
+        selectedRows={selectedRows}
+        setTableData={setTableData}
+        tableData={tableData}
+      />
     </div>
   );
 }
