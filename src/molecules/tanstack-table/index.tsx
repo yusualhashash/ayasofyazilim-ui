@@ -24,6 +24,7 @@ import {
 import { TanstackTableProps } from './types';
 import { TanstackTablePagination } from './tanstack-table-pagination';
 import { TanstackTableToolbar } from './tanstack-table-toolbar';
+import { getCommonPinningStyles } from './utils';
 
 export default function TanstackTable<TData, TValue>({
   columns,
@@ -84,7 +85,10 @@ export default function TanstackTable<TData, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      style={getCommonPinningStyles({ column: cell.column })}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
