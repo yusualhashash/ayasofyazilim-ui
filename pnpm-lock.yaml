@@ -352,8 +352,8 @@ importers:
         specifier: ^8.2.7
         version: 8.2.8(react@18.3.0)(storybook@8.2.8(@babel/preset-env@7.24.8(@babel/core@7.24.9)))
       '@storybook/addon-styling-webpack':
-        specifier: ^0.0.6
-        version: 0.0.6(webpack@5.91.0(@swc/core@1.5.7(@swc/helpers@0.5.5))(esbuild@0.19.12))
+        specifier: ^1.0.1
+        version: 1.0.1(storybook@8.2.8(@babel/preset-env@7.24.8(@babel/core@7.24.9)))(webpack@5.91.0(@swc/core@1.5.7(@swc/helpers@0.5.5))(esbuild@0.19.12))
       '@storybook/addon-webpack5-compiler-swc':
         specifier: ^1.0.2
         version: 1.0.2(@swc/helpers@0.5.5)(webpack@5.91.0(@swc/core@1.5.7(@swc/helpers@0.5.5))(esbuild@0.19.12))
@@ -2786,8 +2786,8 @@ packages:
     peerDependencies:
       storybook: ^8.2.8
 
-  '@storybook/addon-styling-webpack@0.0.6':
-    resolution: {integrity: sha512-JjM2FXFiHpjbJsp7nRUEMhYBRpK6ukBKsbtWzCrAGOfUgoElcGwPY8KhSKSnRknIhebonGK1bxalh3u8bGZ/dw==}
+  '@storybook/addon-styling-webpack@1.0.1':
+    resolution: {integrity: sha512-5n+SXPfMTc4m7sWaJWPWjoHYWc6/B111M2Ia55toQ3GV4ON4vVlTgH9FX+EgCkDticElj99HLTMDJkHRj2yvkg==}
     peerDependencies:
       webpack: ^5.0.0
 
@@ -2889,8 +2889,10 @@ packages:
       webpack:
         optional: true
 
-  '@storybook/node-logger@7.6.19':
-    resolution: {integrity: sha512-2g29QC44Zl1jKY37DmQ0/dO7+VSKnGgPI/x0mwVwQffypSapxH3rwLLT5Q5XLHeFyD+fhRu5w9Cj4vTGynJgpA==}
+  '@storybook/node-logger@8.4.2':
+    resolution: {integrity: sha512-7IOAbyByGdrAr3cidEULFMnuCF4i4NyxW0emI3MKl9NKAVeWVWpeHL1tL1JvCIO57bMNH2Jko80m87TmEH82vg==}
+    peerDependencies:
+      storybook: ^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0
 
   '@storybook/preset-react-webpack@8.2.8':
     resolution: {integrity: sha512-mFeuoKXn2mielz8rix11QcOZr5sNWIIKZ8Le6PG2jPRfLmLWNgL8vJEVPy8y4lWPfzo+Q2tnNefLbMombtga5w==}
@@ -11125,10 +11127,12 @@ snapshots:
       storybook: 8.2.8(@babel/preset-env@7.24.8(@babel/core@7.24.9))
       ts-dedent: 2.2.0
 
-  '@storybook/addon-styling-webpack@0.0.6(webpack@5.91.0(@swc/core@1.5.7(@swc/helpers@0.5.5))(esbuild@0.19.12))':
+  '@storybook/addon-styling-webpack@1.0.1(storybook@8.2.8(@babel/preset-env@7.24.8(@babel/core@7.24.9)))(webpack@5.91.0(@swc/core@1.5.7(@swc/helpers@0.5.5))(esbuild@0.19.12))':
     dependencies:
-      '@storybook/node-logger': 7.6.19
+      '@storybook/node-logger': 8.4.2(storybook@8.2.8(@babel/preset-env@7.24.8(@babel/core@7.24.9)))
       webpack: 5.91.0(@swc/core@1.5.7(@swc/helpers@0.5.5))(esbuild@0.19.12)
+    transitivePeerDependencies:
+      - storybook
 
   '@storybook/addon-toolbars@8.2.8(storybook@8.2.8(@babel/preset-env@7.24.8(@babel/core@7.24.9)))':
     dependencies:
@@ -11360,7 +11364,9 @@ snapshots:
       - webpack-hot-middleware
       - webpack-plugin-serve
 
-  '@storybook/node-logger@7.6.19': {}
+  '@storybook/node-logger@8.4.2(storybook@8.2.8(@babel/preset-env@7.24.8(@babel/core@7.24.9)))':
+    dependencies:
+      storybook: 8.2.8(@babel/preset-env@7.24.8(@babel/core@7.24.9))
 
   '@storybook/preset-react-webpack@8.2.8(@swc/core@1.5.7(@swc/helpers@0.5.5))(esbuild@0.19.12)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(storybook@8.2.8(@babel/preset-env@7.24.8(@babel/core@7.24.9)))(typescript@5.4.2)':
     dependencies:
