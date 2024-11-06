@@ -18,6 +18,7 @@ import FilterColumn, {
 import { normalizeName } from './utils';
 import { ActionComponent, FilterButton, getCTA } from './helper-components';
 import { DataTableProps, TableAction } from './types';
+import { Badge } from '@/components/ui/badge';
 
 const getNonSelectedFilters = (
   detailedFilter: DataTableProps<unknown>['detailedFilter'],
@@ -65,6 +66,15 @@ export default function TableToolbar<TData>({
 
   return (
     <>
+      {filteredColumns && filteredColumns.length >= 2 && (
+        <Badge
+          variant="outline"
+          className="rounded-full cursor-pointer hover:bg-gray-50 transition"
+          onClick={() => setFilteredColumns([])}
+        >
+          Clear All
+        </Badge>
+      )}
       {activeAction &&
         isOpen &&
         (activeAction.type === 'Dialog' || activeAction.type === 'Sheet') && (
