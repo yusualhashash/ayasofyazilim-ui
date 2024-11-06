@@ -11,8 +11,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { TableCell } from '@/components/ui/table';
-import { cn } from '@/lib/utils';
 
 import { getCTA } from './helper-components';
 
@@ -153,64 +151,62 @@ export function columnsGenerator({
     {
       id: 'table-actions',
       cell: ({ row }) => (
-        <TableCell
-          key="actions"
-          className={cn('sticky right-0 p-0 m-0 max-w-max border-l-2 bg-white')}
-        >
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="rounded-none outline-none">
-                Actions
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="rounded-none outline-none m-0 w-full h-full"
+            >
+              Actions
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => {
+                if (
+                  'id' in row.original &&
+                  typeof row.original.id === 'string'
+                ) {
+                  navigator.clipboard.writeText(row.original.id);
+                }
+              }}
+            >
+              Copy ID
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+
+            {columnsData.data?.actionList?.map((action) => (
               <DropdownMenuItem
+                key={getCTA(action.cta, row.original)}
                 onClick={() => {
-                  if (
-                    'id' in row.original &&
-                    typeof row.original.id === 'string'
-                  ) {
-                    navigator.clipboard.writeText(row.original.id);
+                  if ('loadingContent' in action) {
+                    setActiveAction(action);
+                    if (action?.callback) {
+                      action
+                        ?.callback(row.original)
+                        .then((res: JSX.Element) => {
+                          setActiveAction({
+                            ...action,
+                            content: res,
+                          });
+                        });
+                    }
+                  } else if (action.type === 'Action') {
+                    action.callback(row.original);
+                    return;
+                  } else {
+                    setActiveAction(action);
                   }
+                  setTriggerData(row.original);
+                  setIsOpen(true);
                 }}
               >
-                Copy ID
+                {getCTA(action.cta, row.original)}
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-
-              {columnsData.data?.actionList?.map((action) => (
-                <DropdownMenuItem
-                  key={getCTA(action.cta, row.original)}
-                  onClick={() => {
-                    if ('loadingContent' in action) {
-                      setActiveAction(action);
-                      if (action?.callback) {
-                        action
-                          ?.callback(row.original)
-                          .then((res: JSX.Element) => {
-                            setActiveAction({
-                              ...action,
-                              content: res,
-                            });
-                          });
-                      }
-                    } else if (action.type === 'Action') {
-                      action.callback(row.original);
-                      return;
-                    } else {
-                      setActiveAction(action);
-                    }
-                    setTriggerData(row.original);
-                    setIsOpen(true);
-                  }}
-                >
-                  {getCTA(action.cta, row.original)}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </TableCell>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       ),
       enableSorting: false,
       enableHiding: false,

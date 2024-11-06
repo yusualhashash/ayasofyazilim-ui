@@ -231,16 +231,6 @@ export default function DataTable<TData, TValue>(
                     </div>
                   </TableHead>
                 ))}
-                {!isLoading && (
-                  <TableHead
-                    key="actions"
-                    className={cn(
-                      'sticky right-0  bg-gray-100 text-transparent'
-                    )}
-                  >
-                    actions
-                  </TableHead>
-                )}
               </TableRow>
             ))}
           </TableHeader>
