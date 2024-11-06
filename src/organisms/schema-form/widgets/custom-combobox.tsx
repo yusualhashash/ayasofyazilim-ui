@@ -74,7 +74,7 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
               uiSchema?.['ui:placeholder'] ||
               uiOptions?.['ui:placeholder'] ||
               emptyValue ||
-              `Please select an ${label.toLocaleLowerCase()}` ||
+              `Please select an ${label?.toLocaleLowerCase()}` ||
               'Please select'}
           </span>
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
