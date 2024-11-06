@@ -21,13 +21,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { DataTableProps } from './types';
-import { DataTablePagination } from './tanstack-table-pagination';
+import { TanstackTableProps } from './types';
+import { TanstackTablePagination } from './tanstack-table-pagination';
+import { TanstackTableToolbar } from './tanstack-table-toolbar';
 
 export default function TanstackTable<TData, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+}: TanstackTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -56,6 +57,7 @@ export default function TanstackTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
+      <TanstackTableToolbar table={table} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -104,7 +106,7 @@ export default function TanstackTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <TanstackTablePagination table={table} />
     </div>
   );
 }
