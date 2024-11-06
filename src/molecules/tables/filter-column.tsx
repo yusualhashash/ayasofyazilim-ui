@@ -350,6 +350,7 @@ export default function FilterColumn({
                 />
                 <Button
                   onClick={() => {
+                    setIsDialogOpen(false);
                     handleSave();
                   }}
                 >
