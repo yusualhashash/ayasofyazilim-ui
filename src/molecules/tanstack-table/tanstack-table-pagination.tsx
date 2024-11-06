@@ -15,12 +15,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-interface DataTablePaginationProps<TData> {
+interface TanstackTablePaginationProps<TData> {
   table: Table<TData>;
 }
 
-export function DataTablePagination<TData>(
-  props: DataTablePaginationProps<TData>
+export function TanstackTablePagination<TData>(
+  props: TanstackTablePaginationProps<TData>
 ) {
   const { table } = props;
   return (
