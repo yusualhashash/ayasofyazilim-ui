@@ -10,13 +10,14 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
-  const { items, title, required, canAdd, onAddClick, uiSchema } = props;
+  const { items, title, required, canAdd, onAddClick, uiSchema, disabled } =
+    props;
   const displayName = uiSchema?.['ui:title'] || title;
   return (
     <Accordion
       type="single"
       collapsible
-      className="w-full group"
+      className={cn('w-full group', uiSchema?.['ui:className'])}
       defaultValue={title}
     >
       <AccordionItem
@@ -27,7 +28,9 @@ export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
           onClick={(ev) => items.length === 0 && ev.preventDefault()}
           className={cn(
             'flex gap-4 overflow-hidden items-center bg-white py-2 px-4 rounded-md border relative group-has-[div>div>div>*]:rounded-b-none hover:no-underline hover:[&>span]:underline hover:bg-zinc-50',
-            items.length === 0 && '[&>svg]:hidden pr-2'
+            items.length === 0 && '[&>svg]:hidden pr-2',
+            disabled &&
+              'cursor-default pointer-events-none hover:[&>span]:no-underline text-muted-foreground opacity-50'
           )}
         >
           {displayName && (
@@ -38,13 +41,19 @@ export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
           )}
           {canAdd && (
             <Button
+              disabled={disabled}
               type="button"
               variant="secondary"
-              className="ml-2 z-10 !no-underline"
+              className={cn(
+                'ml-2 z-10 !no-underline',
+                disabled && 'pointer-events-none'
+              )}
               onClick={(ev) => {
+                if (disabled) return;
                 ev.preventDefault();
                 onAddClick();
               }}
+              role="button"
               asChild
             >
               <div>

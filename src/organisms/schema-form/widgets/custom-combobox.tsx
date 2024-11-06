@@ -39,10 +39,11 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
     list,
     selectIdentifier,
     selectLabel,
+    disabled,
+    emptyValue,
   } = props;
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [open, setOpen] = useState(false);
-
   const fieldValue = value || defaultValue;
   const fieldValueDisplayName = list?.find(
     (x) => x[selectIdentifier] === fieldValue
@@ -50,23 +51,32 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
   const uiOptions = uiSchema?.['ui:options'];
   const DesktopContent = (
     <Popover open={open} onOpenChange={setOpen} modal>
-      <PopoverTrigger asChild>
+      <PopoverTrigger
+        asChild
+        disabled={disabled}
+        className={cn(disabled && 'cursor-not-allowed')}
+      >
         <Button
           type="button"
           variant="outline"
           role="combobox"
           className={cn(
             'text-muted-foreground w-full justify-between font-normal',
-            fieldValue && 'text-black'
+            fieldValue && 'text-black',
+            disabled &&
+              'disabled:pointer-events-auto hover:bg-background hover:text-muted-foreground'
           )}
         >
-          {fieldValueDisplayName ||
-            fieldValue ||
-            uiSchema?.['ui:placeholder'] ||
-            uiOptions?.['ui:placeholder'] ||
-            uiOptions?.emptyValue ||
-            `Please select an ${label.toLocaleLowerCase()}` ||
-            'Please select'}
+          <span className=" overflow-hidden text-ellipsis">
+            {fieldValueDisplayName ||
+              fieldValue ||
+              emptyValue ||
+              uiSchema?.['ui:placeholder'] ||
+              uiOptions?.['ui:placeholder'] ||
+              emptyValue ||
+              `Please select an ${label.toLocaleLowerCase()}` ||
+              'Please select'}
+          </span>
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -81,6 +91,7 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
       <DrawerTrigger asChild>
         <Button
           type="button"
+          disabled={disabled}
           variant="outline"
           className={cn(
             'text-muted-foreground w-full justify-between font-normal',
@@ -88,6 +99,7 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
           )}
         >
           {fieldValue ||
+            emptyValue ||
             uiSchema?.['ui:placeholder'] ||
             `Please select an ${label.toLocaleLowerCase()}` ||
             'Please select'}
@@ -111,8 +123,17 @@ function List<T>({
 }: CustomComboboxProps<T> & {
   setOpen: (open: boolean) => void;
 }) {
-  const { uiSchema, onChange, value, list, selectIdentifier, selectLabel } =
-    props;
+  const {
+    uiSchema,
+    onChange,
+    value,
+    list,
+    selectIdentifier,
+    selectLabel,
+    searchPlaceholder,
+    searchResultLabel,
+    onValueChange,
+  } = props;
   const uiOptions = uiSchema?.['ui:options'];
 
   return (
@@ -132,13 +153,11 @@ function List<T>({
       }}
     >
       <CommandInput
-        placeholder={(uiOptions?.searchPlaceholder as string) || 'Search...'}
+        placeholder={searchPlaceholder || 'Search...'}
         className="h-9"
       />
       <CommandList className="w-full min-w-full max-w-full">
-        <CommandEmpty>
-          {(uiOptions?.searchResultLabel as string) || '0 search result.'}
-        </CommandEmpty>
+        <CommandEmpty>{searchResultLabel || '0 search result.'}</CommandEmpty>
         <CommandGroup>
           {list?.map((item: T) => (
             <CommandItem
@@ -150,6 +169,10 @@ function List<T>({
                       : item[selectIdentifier]
                     : item[selectIdentifier]
                 );
+                if (onValueChange)
+                  onValueChange(
+                    list.find((i) => i[selectIdentifier] === value)
+                  );
                 setOpen(false);
               }}
               key={JSON.stringify(item[selectIdentifier])}

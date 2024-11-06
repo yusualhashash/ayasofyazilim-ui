@@ -2,9 +2,17 @@ import Form, { ThemeProps } from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 import { Fragment, useState } from 'react';
-import { SchemaFormProps } from './types';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import ScrollArea from '../../molecules/scroll-area';
+import { AsyncSelect, CustomPhoneField, FieldErrorTemplate } from './fields';
+import {
+  AccordionArrayFieldTemplate,
+  ErrorListTemplate,
+  FieldTemplate,
+  ObjectFieldTemplate,
+} from './templates';
+import { SchemaFormProps } from './types';
 import {
   createSchemaWithFilters,
   flattenGenericData,
@@ -15,28 +23,14 @@ import {
   transformGenericSchema,
 } from './utils';
 import {
-  CustomCheckbox,
   Combobox,
+  CustomCheckbox,
   CustomDate,
   CustomSelect,
-  CustomTextInput,
   CustomSwitch,
+  CustomTextInput,
   PasswordInputWidget,
 } from './widgets';
-import { AsyncSelect, CustomPhoneField, FieldErrorTemplate } from './fields';
-import {
-  AccordionArrayFieldTemplate,
-  ErrorListTemplate,
-  FieldTemplate,
-  ObjectFieldTemplate,
-} from './templates';
-import ScrollArea from '../../molecules/scroll-area';
-
-export * from './utils';
-export * from './types';
-export * from './widgets';
-export * from './templates';
-export * from './fields';
 
 const ShadcnTheme: ThemeProps = {
   fields: {
@@ -151,7 +145,9 @@ export function SchemaForm({ ...props }: SchemaFormProps) {
       >
         {!children && (
           <div className="py-4 sticky bottom-0 bg-white flex justify-end z-50">
-            <Button type="submit">{props.submit}</Button>
+            <Button type="submit" disabled={props.disabled}>
+              {props.submit}
+            </Button>
           </div>
         )}
       </Form>
