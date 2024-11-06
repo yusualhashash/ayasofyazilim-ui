@@ -47,7 +47,8 @@ export default function TanstackTable<TData, TValue>({
     },
     initialState: {
       columnPinning: {
-        right: ['action'],
+        left: ['name'],
+        right: ['actions'],
       },
     },
     enableRowSelection: true,
