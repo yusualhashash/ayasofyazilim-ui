@@ -45,6 +45,7 @@ import CustomTableActionDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import FilterColumn, { ColumnFilter } from './filter-column';
 import { normalizeName } from './utils';
+import { Badge } from '@/components/ui/badge';
 import {
   AutoColumnGenerator,
   DataTableProps,
@@ -430,23 +431,34 @@ export default function DataTable<TData, TValue>({
 
       <div className={cn('my-3', classNames?.filters?.container)}>
         {detailedFilter && (
-          <div className={cn('flex', classNames?.filters?.items)}>
-            {filteredColumns &&
-              filteredColumns.map((column) => (
-                <FilterColumn
-                  key={column.name}
-                  column={column}
+          <div className="flex gap-2">
+            {filteredColumns && filteredColumns.length >= 2 && (
+              <Badge
+                variant="outline"
+                className="rounded-full cursor-pointer hover:bg-gray-50 transition"
+                onClick={() => setFilteredColumns([])}
+              >
+                Clear All
+              </Badge>
+            )}
+            <div className={cn('flex', classNames?.filters?.items)}>
+              {filteredColumns &&
+                filteredColumns.map((column) => (
+                  <FilterColumn
+                    key={column.name}
+                    column={column}
+                    setFilteredColumns={setFilteredColumns}
+                  />
+                ))}
+              {getNonSelectedFilters().length > 0 && (
+                <FilterButton
+                  detailedFilter={detailedFilter}
+                  filteredColumns={filteredColumns}
+                  isLoading={isLoading || false}
                   setFilteredColumns={setFilteredColumns}
                 />
-              ))}
-            {getNonSelectedFilters().length > 0 && (
-              <FilterButton
-                detailedFilter={detailedFilter}
-                filteredColumns={filteredColumns}
-                isLoading={isLoading || false}
-                setFilteredColumns={setFilteredColumns}
-              />
-            )}
+              )}
+            </div>
           </div>
         )}
       </div>
