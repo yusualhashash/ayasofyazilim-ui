@@ -22,6 +22,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { DataTableProps } from './types';
+import { DataTablePagination } from './tanstack-table-pagination';
 
 export default function TanstackTable<TData, TValue>({
   columns,
@@ -103,6 +104,7 @@ export default function TanstackTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+      <DataTablePagination table={table} />
     </div>
   );
 }
