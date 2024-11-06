@@ -145,7 +145,9 @@ export function SchemaForm({ ...props }: SchemaFormProps) {
       >
         {!children && (
           <div className="py-4 sticky bottom-0 bg-white flex justify-end z-50">
-            <Button type="submit">{props.submit}</Button>
+            <Button type="submit" disabled={props.disabled}>
+              {props.submit}
+            </Button>
           </div>
         )}
       </Form>
