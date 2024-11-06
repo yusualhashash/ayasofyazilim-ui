@@ -12,6 +12,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 export interface ISection {
+  children?: React.ReactNode;
+  className?: string;
   disabled?: boolean;
   id: string;
   link?: string;
@@ -61,8 +63,10 @@ export function SectionLayoutNavbar({
               : 'font-normal text-muted-foreground hover:no-underline m-0 p-0 h-auto justify-start',
             section.disabled
               ? 'cursor-not-allowed opacity-50'
-              : 'cursor-pointer'
+              : 'cursor-pointer',
+            section.className
           )}
+          data-active={activeSectionId === section.id}
           href={section.link || '#'}
           onClick={() => {
             if (section.disabled) return;
@@ -74,7 +78,8 @@ export function SectionLayoutNavbar({
           tabIndex={section.disabled ? -1 : 0}
           variant="link"
         >
-          {section.name}
+          {section.children && section.children}
+          {!section.children && section.name}
         </LinkElement>
       ))}
     </nav>
