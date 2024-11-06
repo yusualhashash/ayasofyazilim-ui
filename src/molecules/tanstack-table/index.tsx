@@ -24,6 +24,7 @@ import {
 import { TanstackTableProps } from './types';
 import { TanstackTablePagination } from './tanstack-table-pagination';
 import { TanstackTableToolbar } from './tanstack-table-toolbar';
+import { getCommonPinningStyles } from './utils';
 
 export default function TanstackTable<TData, TValue>({
   columns,
@@ -43,6 +44,12 @@ export default function TanstackTable<TData, TValue>({
       sorting,
       columnVisibility,
       columnFilters,
+    },
+    initialState: {
+      columnPinning: {
+        left: ['name'],
+        right: ['actions'],
+      },
     },
     enableRowSelection: true,
     enableColumnPinning: true,
@@ -64,7 +71,13 @@ export default function TanstackTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    style={getCommonPinningStyles({
+                      column: header.column,
+                      withBorder: true,
+                    })}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -84,7 +97,13 @@ export default function TanstackTable<TData, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      style={getCommonPinningStyles({
+                        column: cell.column,
+                        withBorder: true,
+                      })}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
