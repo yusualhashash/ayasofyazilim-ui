@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { useState } from 'react';
 import CustomTableActionDialog from '.';
 import { Button } from '@/components/ui/button';
-import { TableAction } from '../tables';
+import { TableAction } from '../tables/types';
 
 const formSchema = z.object({
   username: z

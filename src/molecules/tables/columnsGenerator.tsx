@@ -5,7 +5,7 @@ import { ColumnDef } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { AutoColumnGenerator, selectableColumns } from '.';
+import { AutoColumnGenerator, selectableColumns } from './types';
 import { normalizeName } from './utils';
 
 const createSortableHeader = (column: any, name: string) => (
