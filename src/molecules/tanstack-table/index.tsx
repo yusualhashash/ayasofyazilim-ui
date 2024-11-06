@@ -45,6 +45,11 @@ export default function TanstackTable<TData, TValue>({
       columnVisibility,
       columnFilters,
     },
+    initialState: {
+      columnPinning: {
+        right: ['action'],
+      },
+    },
     enableRowSelection: true,
     enableColumnPinning: true,
     getCoreRowModel: getCoreRowModel(),
@@ -65,7 +70,13 @@ export default function TanstackTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    style={getCommonPinningStyles({
+                      column: header.column,
+                      withBorder: true,
+                    })}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -87,7 +98,10 @@ export default function TanstackTable<TData, TValue>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      style={getCommonPinningStyles({ column: cell.column })}
+                      style={getCommonPinningStyles({
+                        column: cell.column,
+                        withBorder: true,
+                      })}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
