@@ -2,10 +2,28 @@
 
 import { CaretSortIcon } from '@radix-ui/react-icons';
 import { ColumnDef } from '@tanstack/react-table';
+import { Dispatch, SetStateAction } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { TableCell } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
+
+import { getCTA } from './helper-components';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { AutoColumnGenerator, selectableColumns } from './types';
+import {
+  AutoColumnGenerator,
+  ColumnsType,
+  selectableColumns,
+  TableAction,
+} from './types';
 import { normalizeName } from './utils';
 
 const createSortableHeader = (column: any, name: string) => (
@@ -71,7 +89,19 @@ function generateColumns({
   return generatedTableColumns;
 }
 
-export function columnsGenerator(data: AutoColumnGenerator) {
+export function columnsGenerator({
+  columnsData,
+  data,
+  setActiveAction,
+  setTriggerData,
+  setIsOpen,
+}: {
+  columnsData: ColumnsType;
+  data: AutoColumnGenerator;
+  setActiveAction: Dispatch<SetStateAction<TableAction | undefined>>;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  setTriggerData: Dispatch<SetStateAction<any>>;
+}) {
   let onSelect: selectableColumns['onSelect'] | undefined;
   const { selectable, tableType, excludeList, positions } = data;
   if (selectable) {
@@ -120,6 +150,71 @@ export function columnsGenerator(data: AutoColumnGenerator) {
       enableHiding: false,
     },
     ...generateColumns({ tableType, excludeList, positions }),
+    {
+      id: 'table-actions',
+      cell: ({ row }) => (
+        <TableCell
+          key="actions"
+          className={cn('sticky right-0 p-0 m-0 max-w-max border-l-2 bg-white')}
+        >
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="rounded-none outline-none">
+                Actions
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => {
+                  if (
+                    'id' in row.original &&
+                    typeof row.original.id === 'string'
+                  ) {
+                    navigator.clipboard.writeText(row.original.id);
+                  }
+                }}
+              >
+                Copy ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+
+              {columnsData.data?.actionList?.map((action) => (
+                <DropdownMenuItem
+                  key={getCTA(action.cta, row.original)}
+                  onClick={() => {
+                    if ('loadingContent' in action) {
+                      setActiveAction(action);
+                      if (action?.callback) {
+                        action
+                          ?.callback(row.original)
+                          .then((res: JSX.Element) => {
+                            setActiveAction({
+                              ...action,
+                              content: res,
+                            });
+                          });
+                      }
+                    } else if (action.type === 'Action') {
+                      action.callback(row.original);
+                      return;
+                    } else {
+                      setActiveAction(action);
+                    }
+                    setTriggerData(row.original);
+                    setIsOpen(true);
+                  }}
+                >
+                  {getCTA(action.cta, row.original)}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </TableCell>
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
   ];
   if (!selectable) return columns.filter((column) => column.id !== 'select');
   return columns;
