@@ -17,16 +17,16 @@ import AutoForm, {
 } from '../../organisms/auto-form';
 import SheetSide from '../sheet';
 import {
-  getCTA,
   TableActionAutoform,
   TableActionCommon,
   TableActionDialog,
-} from '../tables';
+} from '../tables/types';
+import { getCTA } from '../tables';
 import CustomButton from '../button';
 
-export type TableAction = TableActionCommon & TableActionDialog;
+export type TableActionCustomDialog = TableActionCommon & TableActionDialog;
 export type CustomTableActionDialogProps = {
-  action: TableAction;
+  action: TableActionCustomDialog;
   onOpenChange: (e: boolean) => void;
   open: boolean;
   triggerData?: any;

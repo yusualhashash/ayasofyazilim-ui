@@ -20,11 +20,12 @@ import { Switch } from '@/components/ui/switch';
 import AdvancedCalendar from '../advanced-calendar';
 import { MultiSelect, MultiSelectProps } from '../multi-select';
 import CustomTableActionDialog from '../dialog';
-import DataTable, {
+import {
   AutoColumnGenerator,
   DataTableProps,
   FilterColumnResult,
-} from '.';
+} from './types';
+import DataTable from '.';
 import { Badge } from '@/components/ui/badge';
 
 export type ColumnFilter = BaseColumnFilter &

@@ -41,7 +41,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
-import CustomTableActionDialog, { TableAction } from '../dialog';
+import CustomTableActionDialog from '../dialog';
 import { columnsGenerator } from './columnsGenerator';
 import FilterColumn, { ColumnFilter } from './filter-column';
 import { normalizeName } from './utils';
@@ -49,6 +49,7 @@ import {
   AutoColumnGenerator,
   DataTableProps,
   FilterColumnResult,
+  TableAction,
   TableActionCommon,
 } from './types';
 
