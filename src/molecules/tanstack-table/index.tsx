@@ -30,10 +30,15 @@ export default function TanstackTable<TData, TValue>({
   columns,
   data,
   filters,
+  excludeColumns,
 }: TanstackTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+    React.useState<VisibilityState>(
+      excludeColumns
+        ? Object.fromEntries(excludeColumns?.map((item) => [item, false]))
+        : {}
+    );
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
