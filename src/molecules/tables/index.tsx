@@ -11,8 +11,6 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import React, { Fragment, useEffect, useState } from 'react';
-import { ChevronDownIcon } from 'lucide-react';
-import { DropdownMenuCheckboxItem } from '@radix-ui/react-dropdown-menu';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -32,8 +30,7 @@ import {
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { columnsGenerator } from './columnsGenerator';
-import FilterColumn, { ColumnFilter } from './filter-column';
-import { Badge } from '@/components/ui/badge';
+import { ColumnFilter } from './filter-column';
 import {
   AutoColumnGenerator,
   DataTableProps,
@@ -41,15 +38,8 @@ import {
   TableAction,
 } from './types';
 import TableFooter from './table-footer';
-import {
-  ActionComponent,
-  FilterButton,
-  getCTA,
-  SkeletonCell,
-} from './helper-components';
-import CustomTableActionDialog from '../dialog';
-import { Skeleton } from '@/components/ui/skeleton';
-import { normalizeName } from './utils';
+import { getCTA, SkeletonCell } from './helper-components';
+import TableToolbar from './table-toolbar';
 
 /**
  * Renders a data table with customizable columns, sorting, filtering, and selection capabilities.
@@ -98,7 +88,6 @@ export default function DataTable<TData, TValue>(
     rowCount,
     fetchRequest,
     renderSubComponent,
-    showView = true,
     onDataUpdate,
     detailedFilter,
     classNames,
@@ -206,155 +195,23 @@ export default function DataTable<TData, TValue>(
     fetchRequest?.(table.getState().pagination.pageIndex, filter);
   }, [table.getState().pagination.pageIndex, filteredColumns]);
 
-  const getNonSelectedFilters = () =>
-    detailedFilter?.filter(
-      (column) =>
-        filteredColumns?.findIndex((f) => f.name === column.name) === -1
-    ) || [];
-
   return (
     <div className={cn('flex flex-col p-4', classNames?.container)}>
-      {activeAction &&
-        isOpen &&
-        (activeAction.type === 'Dialog' || activeAction.type === 'Sheet') && (
-          <CustomTableActionDialog
-            open={isOpen}
-            onOpenChange={setIsOpen}
-            action={activeAction}
-            type={activeAction?.type}
-            triggerData={triggerData}
-          />
-        )}
-      {(showView || defaultAction) && (
-        <div
-          className={cn(
-            'flex items-center gap-2',
-            classNames?.actions?.container
-          )}
-        >
-          {showView === true &&
-            (isLoading ? (
-              <Skeleton className="ml-auto h-9 w-32" />
-            ) : (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    disabled={isLoading}
-                    variant="outline"
-                    className="ml-auto"
-                  >
-                    View <ChevronDownIcon className="ml-2 h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {table
-                    .getAllColumns()
-                    .filter((column) => column.getCanHide())
-                    .map((column) => (
-                      <DropdownMenuCheckboxItem
-                        key={column.id}
-                        className="capitalize"
-                        checked={column.getIsVisible()}
-                        onCheckedChange={(value) =>
-                          column.toggleVisibility(!!value)
-                        }
-                      >
-                        {normalizeName(column.id)}
-                      </DropdownMenuCheckboxItem>
-                    ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ))}
-
-          <div className={cn('flex', classNames?.actions?.wrapper)}>
-            {isLoading ? (
-              <Skeleton className="w-36 h-9" />
-            ) : (
-              <ActionComponent
-                action={defaultAction}
-                callback={() => {
-                  setTriggerData(null);
-                  setActiveAction(defaultAction);
-                  setIsOpen(true);
-                }}
-                className={isMultipleActionProvided ? 'rounded-r-none' : ''}
-              />
-            )}
-            {isMultipleActionProvided && action.length > 1 && !isLoading && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    disabled={isLoading}
-                    variant="outline"
-                    className="rounded-l-none border-l-0 px-2"
-                  >
-                    <ChevronDownIcon className="" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {action
-                    .filter((i) => i !== action[0])
-                    .map((actionItem) => (
-                      <DropdownMenuItem
-                        asChild
-                        key={getCTA(actionItem.cta, triggerData)}
-                        className="cursor-pointer"
-                      >
-                        <ActionComponent
-                          action={actionItem}
-                          callback={() => {
-                            setTriggerData(null);
-                            setActiveAction(actionItem);
-                            if (actionItem.type === 'Action') {
-                              actionItem.callback(null);
-                              return;
-                            }
-                            setIsOpen(true);
-                          }}
-                          className="w-full border-none"
-                        />
-                      </DropdownMenuItem>
-                    ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-          </div>
-        </div>
-      )}
-
-      <div className={cn('my-3', classNames?.filters?.container)}>
-        {detailedFilter && (
-          <div className="flex gap-2">
-            {filteredColumns && filteredColumns.length >= 2 && (
-              <Badge
-                variant="outline"
-                className="rounded-full cursor-pointer hover:bg-gray-50 transition"
-                onClick={() => setFilteredColumns([])}
-              >
-                Clear All
-              </Badge>
-            )}
-            <div className={cn('flex', classNames?.filters?.items)}>
-              {filteredColumns &&
-                filteredColumns.map((column) => (
-                  <FilterColumn
-                    key={column.name}
-                    column={column}
-                    setFilteredColumns={setFilteredColumns}
-                  />
-                ))}
-              {getNonSelectedFilters().length > 0 && (
-                <FilterButton
-                  detailedFilter={detailedFilter}
-                  filteredColumns={filteredColumns}
-                  isLoading={isLoading || false}
-                  setFilteredColumns={setFilteredColumns}
-                />
-              )}
-            </div>
-          </div>
-        )}
-      </div>
+      <TableToolbar
+        inputProps={inputProps}
+        activeAction={activeAction}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        triggerData={triggerData}
+        defaultAction={defaultAction}
+        table={table}
+        isMultipleActionProvided={isMultipleActionProvided}
+        filteredColumns={filteredColumns}
+        setTriggerData={setTriggerData}
+        setActiveAction={setActiveAction}
+        detailedFilter={detailedFilter}
+        setFilteredColumns={setFilteredColumns}
+      />
       <div className={cn('overflow-auto', classNames?.table?.wrapper)}>
         <Table
           wrapperClassName={cn(

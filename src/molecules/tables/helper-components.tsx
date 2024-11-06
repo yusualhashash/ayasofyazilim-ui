@@ -49,8 +49,8 @@ export const ActionComponent = ({
 };
 
 export function getCTA(
-  cta: TableActionCommon['cta'],
-  triggerData: undefined
+  cta: TableActionCommon<unknown>['cta'],
+  triggerData: unknown
 ): string {
   if (typeof cta === 'function') {
     return cta(triggerData);

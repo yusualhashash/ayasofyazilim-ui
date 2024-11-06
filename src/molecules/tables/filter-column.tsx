@@ -75,7 +75,7 @@ export type StandartColumnFilter = {
 export type valueType<T> = {
   value: T;
 };
-interface IFilterColumnProps {
+export interface IFilterColumnProps {
   column: ColumnFilter;
   setFilteredColumns: Dispatch<React.SetStateAction<ColumnFilter[]>>;
 }
