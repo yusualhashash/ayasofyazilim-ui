@@ -21,7 +21,7 @@ import {
   TableActionCommon,
   TableActionDialog,
 } from '../tables/types';
-import { getCTA } from '../tables';
+import { getCTA } from '../tables/helper-components';
 import CustomButton from '../button';
 
 export type TableActionCustomDialog = TableActionCommon & TableActionDialog;
