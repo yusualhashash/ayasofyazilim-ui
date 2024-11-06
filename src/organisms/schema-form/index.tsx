@@ -1,6 +1,6 @@
 import Form, { ThemeProps } from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
-import validator from '@rjsf/validator-ajv8';
+import { customizeValidator } from '@rjsf/validator-ajv8';
 import { Fragment, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -114,7 +114,11 @@ export function SchemaForm({ ...props }: SchemaFormProps) {
         className={cn('p-px', props.className)}
         formData={formData}
         schema={schema as RJSFSchema} // Cast schema to RJSFSchema type
-        validator={validator} // Custom validator
+        validator={customizeValidator({
+          ajvOptionsOverrides: {
+            removeAdditional: true,
+          },
+        })} // Custom validator
         fields={{ ...ShadcnTheme.fields, ...props.fields }} // Merge custom fields
         widgets={{ ...ShadcnTheme.widgets, ...props.widgets }} // Merge custom widgets
         templates={{ ...ShadcnTheme.templates, ...props.templates }} // Merge custom templates
