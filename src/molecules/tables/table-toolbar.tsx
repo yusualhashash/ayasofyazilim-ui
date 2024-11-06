@@ -66,15 +66,6 @@ export default function TableToolbar<TData>({
 
   return (
     <>
-      {filteredColumns && filteredColumns.length >= 2 && (
-        <Badge
-          variant="outline"
-          className="rounded-full cursor-pointer hover:bg-gray-50 transition"
-          onClick={() => setFilteredColumns([])}
-        >
-          Clear All
-        </Badge>
-      )}
       {activeAction &&
         isOpen &&
         (activeAction.type === 'Dialog' || activeAction.type === 'Sheet') && (
@@ -190,6 +181,15 @@ export default function TableToolbar<TData>({
       <div className={cn('my-3', classNames?.filters?.container)}>
         {detailedFilter && (
           <div className={cn('flex', classNames?.filters?.items)}>
+            {filteredColumns && filteredColumns.length >= 2 && (
+              <Badge
+                variant="outline"
+                className="rounded-full cursor-pointer hover:bg-gray-50 transition mr-2"
+                onClick={() => setFilteredColumns([])}
+              >
+                Clear All
+              </Badge>
+            )}
             {filteredColumns &&
               filteredColumns.map((column) => (
                 <FilterColumn
