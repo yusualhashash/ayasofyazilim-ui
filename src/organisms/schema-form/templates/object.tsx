@@ -14,7 +14,7 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
       )}
     >
       {title && uiSchema?.displayLabel !== false && (
-        <Label>
+        <Label className="w-full col-span-full">
           {title}
           {required ? <span className="text-destructive">*</span> : null}
         </Label>
