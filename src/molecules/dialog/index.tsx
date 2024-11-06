@@ -77,8 +77,8 @@ export default function CustomTableActionDialog({
     'loadingContent' in action
       ? action?.content || action.loadingContent
       : undefined;
-  const cta = getCTA(action?.cta, triggerData);
-  const description = getCTA(action?.description, triggerData);
+  const cta = getCTA<undefined>(action?.cta, triggerData);
+  const description = getCTA<undefined>(action?.description, triggerData);
   return type === 'Sheet' ? (
     <SheetSide
       open={open}
