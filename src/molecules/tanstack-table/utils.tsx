@@ -40,11 +40,11 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
   languageData?: Record<string, string>;
   row: Record<string, string | number | boolean | Date | null>;
 }) {
-  const { row } = params;
+  const { row, languageData } = params;
   const columns: ColumnDef<T>[] = [];
 
   Object.keys(row).forEach((accessorKey) => {
-    const title = params.languageData?.[accessorKey] || accessorKey;
+    const title = languageData?.[accessorKey] || accessorKey;
 
     columns.push({
       accessorKey,
