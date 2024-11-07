@@ -19,6 +19,16 @@ Default.args = {
   columns: tanstackTableCreateColumnsByRowData({
     row: users[0],
     languageData: { userName: 'Kullanıcı Adı' },
+    links: {
+      userName: {
+        targetAccessorKey: 'id',
+        prefix: 'http://192.168.1.105:1453/tr/app/admin',
+        suffix: '/edit',
+      },
+      email: {
+        prefix: 'http://192.168.1.105:1453/tr/app/',
+      },
+    },
   }),
   data: users,
   filters: {
