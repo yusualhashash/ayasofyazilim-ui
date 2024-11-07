@@ -24,18 +24,19 @@ import {
 } from './types';
 import { normalizeName } from './utils';
 
-function createSortableHeader<TData>(column: Column<TData>, name: string) {
-  return (
-    <Button
-      className="p-0"
-      variant="ghost"
-      onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-    >
-      {name}
-      <CaretSortIcon className="ml-2 h-4 w-4" />
-    </Button>
-  );
-}
+const createSortableHeader = <TData,>(
+  column: Column<TData, unknown>,
+  name: string
+) => (
+  <Button
+    className="p-0"
+    variant="ghost"
+    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+  >
+    {name}
+    <CaretSortIcon className="ml-2 h-4 w-4" />
+  </Button>
+);
 const readOnlyCheckbox = (row: Row<AutoColumnGenerator>, value: string) => (
   <Checkbox checked={row.getValue(value)} disabled />
 );
@@ -72,10 +73,10 @@ function generateColumns({
         header,
         cell: (row) => {
           const customCell = customCells[key];
-          if (typeof customCell === "string") {
+          if (typeof customCell === 'string') {
             return customCell;
           }
-          if (typeof customCell === "function") {
+          if (typeof customCell === 'function') {
             return customCell(row);
           }
           return null; // Handle the case where customCell is neither a string nor a function
@@ -93,8 +94,7 @@ function generateColumns({
     if (value.type === 'string') {
       generatedTableColumns.push({
         accessorKey,
-        header: ({ column }) =>
-          createSortableHeader(column, header),
+        header: ({ column }) => createSortableHeader(column, header),
       });
     }
     if (value.type === 'integer' || value.type === 'number') {
