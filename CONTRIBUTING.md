@@ -116,7 +116,9 @@ To start with your contributions we suggest you to follow the next:
 - clone the project locally
 - install related packages `pnpm install`
 - start the project and run it. 
-- then find one of the `good-first-issues` to work on it. 
+- then find one of the `good-first-issues` to work on it.
+
+- Make sure to have your work on a different branch follow conventional commits
 
 Good first issues is usually easy and well documented issues that you can work on it easily, feel free to work on other issues and opening pull request if it interests you. 
 
