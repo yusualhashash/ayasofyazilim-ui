@@ -18,4 +18,20 @@ Default.args = {
   // @ts-ignore
   columns,
   data: users,
+  filters: {
+    textFilters: ['userName'],
+    facetedFilters: {
+      status: [
+        {
+          value: 'inactive',
+          label: 'Inactive',
+        },
+        {
+          value: 'active',
+          label: 'Active',
+        },
+      ],
+    },
+  },
+  excludeColumns: ['rtn'],
 };

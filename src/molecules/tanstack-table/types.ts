@@ -4,6 +4,7 @@ import { ComponentType } from 'react';
 export type TanstackTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  excludeColumns?: string[];
   filters?: TanstackTableFiltersType;
 };
 
