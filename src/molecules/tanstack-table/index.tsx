@@ -29,10 +29,16 @@ import { getCommonPinningStyles } from './utils';
 export default function TanstackTable<TData, TValue>({
   columns,
   data,
+  filters,
+  excludeColumns,
 }: TanstackTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+    React.useState<VisibilityState>(
+      excludeColumns
+        ? Object.fromEntries(excludeColumns?.map((item) => [item, false]))
+        : {}
+    );
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -64,7 +70,7 @@ export default function TanstackTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <TanstackTableToolbar table={table} />
+      <TanstackTableToolbar table={table} filters={filters} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
