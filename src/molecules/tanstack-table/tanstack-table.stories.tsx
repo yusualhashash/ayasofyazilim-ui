@@ -1,6 +1,7 @@
 import { Meta, StoryFn } from '@storybook/react';
 import TanstackTable from '.';
-import { columns, users } from './tanstack-table.stories.data';
+import { users } from './tanstack-table.stories.data';
+import { tanstackTableCreateColumnsByRowData } from './utils';
 
 export default {
   component: TanstackTable,
@@ -15,8 +16,10 @@ const template: StoryFn<typeof TanstackTable> = (args) => (
 );
 export const Default = template.bind({});
 Default.args = {
-  // @ts-ignore
-  columns,
+  columns: tanstackTableCreateColumnsByRowData({
+    row: users[0],
+    languageData: { userName: 'Kullanıcı Adı' },
+  }),
   data: users,
   filters: {
     textFilters: ['userName'],
