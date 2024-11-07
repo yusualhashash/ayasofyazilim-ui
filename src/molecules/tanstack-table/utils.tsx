@@ -1,5 +1,6 @@
 import { Column, ColumnDef, Row } from '@tanstack/react-table';
 import { CSSProperties } from 'react';
+import Link from 'next/link';
 import { TanstackTableColumnHeader } from './tanstack-table-column-header';
 import {
   TanstackTableColumnLink,
@@ -85,9 +86,9 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       url += `/${link.suffix}`;
     }
     return (
-      <a href={url} className="font-medium underline">
+      <Link href={url} className="font-medium underline">
         {content}
-      </a>
+      </Link>
     );
   }
 
