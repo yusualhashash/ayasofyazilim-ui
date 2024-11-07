@@ -92,7 +92,7 @@ type noSelectAbleColumns = {
   selectable?: false;
 };
 
-export type ColumnsType<TData> =
+export type ColumnsType<TData = unknown> =
   | ColumnsCustomType<TData>
   | ColumnAutoType<TData>;
 type ColumnsCustomType<TData> = {
