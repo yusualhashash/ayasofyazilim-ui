@@ -16,7 +16,10 @@ const template: StoryFn<typeof TanstackTable> = (args) => (
 );
 export const Default = template.bind({});
 Default.args = {
-  columns: tanstackTableCreateColumnsByRowData({ row: users[0] }),
+  columns: tanstackTableCreateColumnsByRowData({
+    row: users[0],
+    languageData: { userName: 'Kullanıcı Adı' },
+  }),
   data: users,
   filters: {
     textFilters: ['userName'],
