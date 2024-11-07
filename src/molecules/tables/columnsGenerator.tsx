@@ -66,9 +66,7 @@ function generateColumns({
     if (excludeList.includes(key)) {
       return;
     }
-    console.log(customCells);
     if (customCells && customCells[key]) {
-      console.log(customCells[key]);
       generatedTableColumns.push({
         accessorKey,
         header,
@@ -76,7 +74,7 @@ function generateColumns({
           if (typeof customCells[key] === "string") {
             return customCells[key];
           }
-          if (customCells[key]) {
+          if (typeof customCells[key] === "function") {
             return customCells[key](row);
           }
         },
