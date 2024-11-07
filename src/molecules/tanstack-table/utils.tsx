@@ -1,7 +1,10 @@
 import { Column, ColumnDef, Row } from '@tanstack/react-table';
 import { CSSProperties } from 'react';
 import { TanstackTableColumnHeader } from './tanstack-table-column-header';
-import { TanstackTableColumnLink } from './types';
+import {
+  TanstackTableColumnLink,
+  TanstackTableFacetedFilterType,
+} from './types';
 
 export function getCommonPinningStyles<TData>({
   column,
@@ -38,6 +41,7 @@ export function getCommonPinningStyles<TData>({
 }
 
 export function tanstackTableCreateColumnsByRowData<T>(params: {
+  faceted?: Record<string, TanstackTableFacetedFilterType[]>;
   languageData?: Record<string, string>;
   links?: Record<string, TanstackTableColumnLink>;
   row: Record<string, string | number | boolean | Date | null>;
@@ -45,10 +49,29 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
   function createCell(
     accessorKey: string,
     row: Row<T>,
-    link?: TanstackTableColumnLink
+    link?: TanstackTableColumnLink,
+    faceted?: TanstackTableFacetedFilterType[]
   ) {
+    let content: JSX.Element | string =
+      row.getValue(accessorKey)?.toString() || '';
+    if (faceted) {
+      const facetedItem = faceted.find(
+        (item) => item.value === row.getValue(accessorKey)
+      );
+
+      if (facetedItem) {
+        content = (
+          <div className="flex items-center">
+            {facetedItem.icon && (
+              <facetedItem.icon className="text-muted-foreground mr-2 h-4 w-4" />
+            )}
+            <span>{facetedItem.label}</span>
+          </div>
+        );
+      }
+    }
     if (!link) {
-      return <div>{row.getValue(accessorKey)?.toString()}</div>;
+      return <div>{content}</div>;
     }
     let url = link.prefix;
     if (link.targetAccessorKey) {
@@ -63,26 +86,31 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
     }
     return (
       <a href={url} className="font-medium underline">
-        {row.getValue(accessorKey)?.toString()}
+        {content}
       </a>
     );
   }
 
-  const { row, languageData, links } = params;
+  const { row, languageData, links, faceted } = params;
   const columns: ColumnDef<T>[] = [];
 
   Object.keys(row).forEach((accessorKey) => {
     const title = languageData?.[accessorKey] || accessorKey;
     const link = links?.[accessorKey];
 
-    columns.push({
+    const column: ColumnDef<T> = {
       accessorKey,
       meta: title,
       header: ({ column }) => (
         <TanstackTableColumnHeader column={column} title={title} />
       ),
-      cell: ({ row }) => createCell(accessorKey, row, link),
-    });
+      cell: ({ row }) =>
+        createCell(accessorKey, row, link, faceted?.[accessorKey]),
+    };
+    if (faceted?.[accessorKey]) {
+      column.filterFn = (row, id, value) => value.includes(row.getValue(id));
+    }
+    columns.push(column);
   });
 
   return columns;
