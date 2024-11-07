@@ -1,7 +1,7 @@
 'use client';
 
 import { CaretSortIcon } from '@radix-ui/react-icons';
-import { ColumnDef } from '@tanstack/react-table';
+import { Column, ColumnDef, Row } from '@tanstack/react-table';
 import { Dispatch, SetStateAction } from 'react';
 import {
   DropdownMenu,
@@ -24,17 +24,19 @@ import {
 } from './types';
 import { normalizeName } from './utils';
 
-const createSortableHeader = (column: any, name: string) => (
-  <Button
-    className="p-0"
-    variant="ghost"
-    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-  >
-    {name}
-    <CaretSortIcon className="ml-2 h-4 w-4" />
-  </Button>
-);
-const readOnlyCheckbox = (row: any, value: string) => (
+function createSortableHeader<TData>(column: Column<TData>, name: string) {
+  return (
+    <Button
+      className="p-0"
+      variant="ghost"
+      onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+    >
+      {name}
+      <CaretSortIcon className="ml-2 h-4 w-4" />
+    </Button>
+  );
+}
+const readOnlyCheckbox = (row: Row<AutoColumnGenerator>, value: string) => (
   <Checkbox checked={row.getValue(value)} disabled />
 );
 
@@ -51,7 +53,7 @@ function generateColumns({
   positions,
   excludeList = [],
 }: Partial<AutoColumnGenerator>) {
-  const generatedTableColumns: any = [];
+  const generatedTableColumns: ColumnDef<AutoColumnGenerator>[] = [];
   let tempProperties = tableType.properties;
   if (positions) {
     tempProperties = sortColumns(positions, tableType.properties);
@@ -67,13 +69,13 @@ function generateColumns({
       generatedTableColumns.push({
         accessorKey,
         header,
-        cell: ({ row }: { row: any }) => readOnlyCheckbox(row, key),
+        cell: ({ row }) => readOnlyCheckbox(row, key),
       });
     }
     if (value.type === 'string') {
       generatedTableColumns.push({
         accessorKey,
-        header: ({ column }: { column: any }) =>
+        header: ({ column }) =>
           createSortableHeader(column, header),
       });
     }
