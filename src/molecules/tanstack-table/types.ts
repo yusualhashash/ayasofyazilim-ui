@@ -17,3 +17,9 @@ export type TanstackTableFiltersType = {
   facetedFilters?: Record<string, TanstackTableFacetedFilterType[]>;
   textFilters?: string[];
 };
+
+export type TanstackTableColumnLink = {
+  prefix: string;
+  suffix?: string;
+  targetAccessorKey?: string;
+};

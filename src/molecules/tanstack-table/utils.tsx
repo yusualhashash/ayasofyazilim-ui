@@ -1,6 +1,7 @@
-import { Column, ColumnDef } from '@tanstack/react-table';
+import { Column, ColumnDef, Row } from '@tanstack/react-table';
 import { CSSProperties } from 'react';
 import { TanstackTableColumnHeader } from './tanstack-table-column-header';
+import { TanstackTableColumnLink } from './types';
 
 export function getCommonPinningStyles<TData>({
   column,
@@ -38,13 +39,41 @@ export function getCommonPinningStyles<TData>({
 
 export function tanstackTableCreateColumnsByRowData<T>(params: {
   languageData?: Record<string, string>;
+  links?: Record<string, TanstackTableColumnLink>;
   row: Record<string, string | number | boolean | Date | null>;
 }) {
-  const { row, languageData } = params;
+  function createCell(
+    accessorKey: string,
+    row: Row<T>,
+    link?: TanstackTableColumnLink
+  ) {
+    if (!link) {
+      return <div>{row.getValue(accessorKey)?.toString()}</div>;
+    }
+    let url = link.prefix;
+    if (link.targetAccessorKey) {
+      url +=
+        `/${row
+          ._getAllCellsByColumnId()
+          ?.[link.targetAccessorKey || ''].getValue()
+          ?.toString()}` || '';
+    }
+    if (link.suffix) {
+      url += `/${link.suffix}`;
+    }
+    return (
+      <a href={url} className="font-medium underline">
+        {row.getValue(accessorKey)?.toString()}
+      </a>
+    );
+  }
+
+  const { row, languageData, links } = params;
   const columns: ColumnDef<T>[] = [];
 
   Object.keys(row).forEach((accessorKey) => {
     const title = languageData?.[accessorKey] || accessorKey;
+    const link = links?.[accessorKey];
 
     columns.push({
       accessorKey,
@@ -52,6 +81,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       header: ({ column }) => (
         <TanstackTableColumnHeader column={column} title={title} />
       ),
+      cell: ({ row }) => createCell(accessorKey, row, link),
     });
   });
 
