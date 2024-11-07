@@ -71,12 +71,14 @@ function generateColumns({
         accessorKey,
         header,
         cell: (row) => {
-          if (typeof customCells[key] === "string") {
-            return customCells[key];
+          const customCell = customCells[key];
+          if (typeof customCell === "string") {
+            return customCell;
           }
-          if (typeof customCells[key] === "function") {
-            return customCells[key](row);
+          if (typeof customCell === "function") {
+            return customCell(row);
           }
+          return null; // Handle the case where customCell is neither a string nor a function
         },
       });
       return;
