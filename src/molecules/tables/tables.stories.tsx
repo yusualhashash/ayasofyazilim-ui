@@ -14,6 +14,7 @@ import {
   renderSubComponent,
 } from './columns';
 import { data, Payment } from './data';
+import Link from 'next/link';
 
 const formSchema = z.object({
   username: z
@@ -125,6 +126,11 @@ export const autoColumnData: AutoColumnGenerator = {
   tableType: jsonSchema,
   excludeList: ['id'],
   selectable: false,
+  customCells: {
+    status: ({ row }) => {;
+      return <Link href={"https://google.com"} className='text-blue-600'>{row.getValue('status')}</Link>;
+    },
+  }
 };
 
 export const NewPage: StoryObj<typeof Table> = {

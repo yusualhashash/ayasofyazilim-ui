@@ -51,6 +51,7 @@ const sortColumns = (positions: string[], obj: Object) =>
 function generateColumns({
   tableType,
   positions,
+  customCells,
   excludeList = [],
 }: Partial<AutoColumnGenerator>) {
   const generatedTableColumns: ColumnDef<AutoColumnGenerator>[] = [];
@@ -63,6 +64,23 @@ function generateColumns({
     const header = normalizeName(key);
     const value = tempProperties[key];
     if (excludeList.includes(key)) {
+      return;
+    }
+    console.log(customCells);
+    if (customCells && customCells[key]) {
+      console.log(customCells[key]);
+      generatedTableColumns.push({
+        accessorKey,
+        header,
+        cell: (row) => {
+          if (typeof customCells[key] === "string") {
+            return customCells[key];
+          }
+          if (customCells[key]) {
+            return customCells[key](row);
+          }
+        },
+      });
       return;
     }
     if (value.type === 'boolean') {
@@ -103,7 +121,7 @@ export function columnsGenerator({
   setTriggerData: Dispatch<SetStateAction<any>>;
 }) {
   let onSelect: selectableColumns['onSelect'] | undefined;
-  const { selectable, tableType, excludeList, positions } = data;
+  const { selectable, tableType, excludeList, positions, customCells } = data;
   if (selectable) {
     onSelect = data.onSelect;
   }
@@ -149,7 +167,7 @@ export function columnsGenerator({
       enableSorting: false,
       enableHiding: false,
     },
-    ...generateColumns({ tableType, excludeList, positions }),
+    ...generateColumns({ tableType, excludeList, positions, customCells }),
     {
       id: 'table-actions',
       cell: ({ row }) => (

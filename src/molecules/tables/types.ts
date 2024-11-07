@@ -72,6 +72,7 @@ export type AutoColumnGenerator = {
   excludeList: string[];
   positions?: string[];
   tableType: any;
+  customCells?: Record<string, ColumnDef<AutoColumnGenerator>["cell"]>;
 } & (noSelectAbleColumns | selectableColumns);
 
 export type selectableColumns = {
