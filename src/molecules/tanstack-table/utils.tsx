@@ -1,4 +1,4 @@
-import { Column } from '@tanstack/react-table';
+import { Column, ColumnDef } from '@tanstack/react-table';
 import { CSSProperties } from 'react';
 
 export function getCommonPinningStyles<TData>({
@@ -33,4 +33,22 @@ export function getCommonPinningStyles<TData>({
     background: isPinned ? 'hsl(var(--background))' : 'hsl(var(--background))',
     zIndex: isPinned ? 1 : 0,
   };
+}
+
+export function tanstackTableCreateColumnsByRowData<T>(params: {
+  row: Record<string, string | number | boolean | Date | null>;
+}) {
+  const { row } = params;
+  const columns: ColumnDef<T>[] = [];
+
+  Object.keys(row).forEach((accessorKey) => {
+    const title = accessorKey;
+
+    columns.push({
+      accessorKey,
+      meta: title,
+    });
+  });
+
+  return columns;
 }
