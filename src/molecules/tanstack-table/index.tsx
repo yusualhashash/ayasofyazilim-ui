@@ -67,23 +67,10 @@ export default function TanstackTable<TData, TValue>({
   const tableColumns = useMemo(() => {
     const _columns = [...columns];
     if (actions) {
-      if (actions) {
-        _columns.push({
-          id: 'actions',
-          cell: ({ row }) => CellWithActions(row, actions, setRowAction),
-        });
-      }
-
-      // _columns.push({
-      //   id: 'actions',
-      //   cell: ({ row }) => (
-      //     <TanstackTableRowActions
-      //       row={row.original}
-      //       actions={actions}
-      //       setRowAction={setRowAction}
-      //     />
-      //   ),
-      // });
+      _columns.push({
+        id: 'actions',
+        cell: ({ row }) => CellWithActions(row, actions, setRowAction),
+      });
     }
     return _columns;
   }, [columns, actions]);
