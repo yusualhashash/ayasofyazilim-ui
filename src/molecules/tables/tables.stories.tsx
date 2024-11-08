@@ -4,6 +4,8 @@ import { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import { AutoFormProps } from 'src/organisms/auto-form';
 import { z } from 'zod';
+import Link from 'next/link';
+import { ColumnDef } from '@tanstack/react-table';
 import jsonToCsv from '../../lib/json-to-csv';
 import Table from '.';
 import { AutoColumnGenerator, FilterColumnResult, TableAction } from './types';
@@ -69,7 +71,7 @@ export const Default: StoryObj<typeof Table> = {
     data,
     columnsData: {
       type: 'Custom',
-      data: { columns },
+      data: { columns: columns as ColumnDef<unknown>[] },
     },
     action,
   },
@@ -125,6 +127,13 @@ export const autoColumnData: AutoColumnGenerator = {
   tableType: jsonSchema,
   excludeList: ['id'],
   selectable: false,
+  customCells: {
+    status: ({ cell }: { cell: any }) => (
+      <Link href="https://google.com" className="text-blue-600">
+        {cell.getValue('status')}
+      </Link>
+    ),
+  },
 };
 
 export const NewPage: StoryObj<typeof Table> = {
@@ -177,6 +186,7 @@ export const MultipleActions: StoryObj<typeof Table> = {
       data: {
         tableType: jsonSchema,
         excludeList: ['id'],
+        hideAction: true,
       },
     },
     action: [
@@ -221,7 +231,7 @@ export const Editable: StoryObj<typeof Table> = {
     data,
     columnsData: {
       type: 'Custom',
-      data: { columns: columnsEditable },
+      data: { columns: columnsEditable as ColumnDef<unknown>[] },
     },
     showView: false,
     Headertable: filedstable,
@@ -237,7 +247,7 @@ export const SubContent: StoryObj<typeof Table> = {
     data,
     columnsData: {
       type: 'Custom',
-      data: { columns: columnsSubContent },
+      data: { columns: columnsSubContent as ColumnDef<unknown>[] },
     },
     showView: false,
     renderSubComponent,
@@ -408,7 +418,7 @@ export const SubContentDialog: StoryObj<typeof Table> = {
     data,
     columnsData: {
       type: 'Custom',
-      data: { columns },
+      data: { columns: columns as ColumnDef<unknown>[] },
     },
     action: subContentDialogAction,
   },

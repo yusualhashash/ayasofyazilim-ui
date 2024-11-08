@@ -1,7 +1,7 @@
 'use client';
 
 import { CaretSortIcon } from '@radix-ui/react-icons';
-import { ColumnDef } from '@tanstack/react-table';
+import { CellContext, Column, ColumnDef, Row } from '@tanstack/react-table';
 import { Dispatch, SetStateAction } from 'react';
 import {
   DropdownMenu,
@@ -24,7 +24,10 @@ import {
 } from './types';
 import { normalizeName } from './utils';
 
-const createSortableHeader = (column: any, name: string) => (
+const createSortableHeader = <TData,>(
+  column: Column<TData, unknown>,
+  name: string
+) => (
   <Button
     className="p-0"
     variant="ghost"
@@ -34,7 +37,7 @@ const createSortableHeader = (column: any, name: string) => (
     <CaretSortIcon className="ml-2 h-4 w-4" />
   </Button>
 );
-const readOnlyCheckbox = (row: any, value: string) => (
+const readOnlyCheckbox = (row: Row<AutoColumnGenerator>, value: string) => (
   <Checkbox checked={row.getValue(value)} disabled />
 );
 
@@ -46,12 +49,13 @@ const sortColumns = (positions: string[], obj: Object) =>
     }))
   ) || obj;
 
-function generateColumns({
+function generateColumns<Tdata>({
   tableType,
   positions,
+  customCells,
   excludeList = [],
-}: Partial<AutoColumnGenerator>) {
-  const generatedTableColumns: any = [];
+}: Partial<AutoColumnGenerator<Tdata>>) {
+  const generatedTableColumns: ColumnDef<AutoColumnGenerator<Tdata>>[] = [];
   let tempProperties = tableType.properties;
   if (positions) {
     tempProperties = sortColumns(positions, tableType.properties);
@@ -63,18 +67,39 @@ function generateColumns({
     if (excludeList.includes(key)) {
       return;
     }
+    const _key = key as keyof Tdata;
+    if (
+      typeof customCells === 'object' &&
+      key in customCells &&
+      customCells[_key]
+    ) {
+      generatedTableColumns.push({
+        accessorKey,
+        header,
+        cell: (row) => {
+          const customCell = customCells[_key];
+          if (typeof customCell === 'string') {
+            return customCell;
+          }
+          if (typeof customCell === 'function') {
+            return customCell(row as unknown as CellContext<Tdata, unknown>);
+          }
+          return null; // Handle the case where customCell is neither a string nor a function
+        },
+      });
+      return;
+    }
     if (value.type === 'boolean') {
       generatedTableColumns.push({
         accessorKey,
         header,
-        cell: ({ row }: { row: any }) => readOnlyCheckbox(row, key),
+        cell: ({ row }) => readOnlyCheckbox(row, key),
       });
     }
     if (value.type === 'string') {
       generatedTableColumns.push({
         accessorKey,
-        header: ({ column }: { column: any }) =>
-          createSortableHeader(column, header),
+        header: ({ column }) => createSortableHeader(column, header),
       });
     }
     if (value.type === 'integer' || value.type === 'number') {
@@ -87,21 +112,21 @@ function generateColumns({
   return generatedTableColumns;
 }
 
-export function columnsGenerator({
+export function columnsGenerator<Tdata>({
   columnsData,
   data,
   setActiveAction,
   setTriggerData,
   setIsOpen,
 }: {
-  columnsData: ColumnsType;
-  data: AutoColumnGenerator;
-  setActiveAction: Dispatch<SetStateAction<TableAction | undefined>>;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
-  setTriggerData: Dispatch<SetStateAction<any>>;
+  columnsData?: ColumnsType;
+  data: AutoColumnGenerator<Tdata>;
+  setActiveAction?: Dispatch<SetStateAction<TableAction | undefined>>;
+  setIsOpen?: Dispatch<SetStateAction<boolean>>;
+  setTriggerData?: Dispatch<SetStateAction<any>>;
 }) {
   let onSelect: selectableColumns['onSelect'] | undefined;
-  const { selectable, tableType, excludeList, positions } = data;
+  const { selectable, tableType, excludeList, positions, hideAction, customCells } = data;
   if (selectable) {
     onSelect = data.onSelect;
   }
@@ -147,7 +172,7 @@ export function columnsGenerator({
       enableSorting: false,
       enableHiding: false,
     },
-    ...generateColumns({ tableType, excludeList, positions }),
+    ...generateColumns({ tableType, excludeList, positions, customCells }),
     {
       id: 'table-actions',
       cell: ({ row }) => (
@@ -176,30 +201,32 @@ export function columnsGenerator({
             </DropdownMenuItem>
             <DropdownMenuSeparator />
 
-            {columnsData.data?.actionList?.map((action) => (
+            {columnsData?.data?.actionList?.map((action) => (
               <DropdownMenuItem
                 key={getCTA(action.cta, row.original)}
                 onClick={() => {
                   if ('loadingContent' in action) {
-                    setActiveAction(action);
+                    if (typeof setActiveAction === 'function')
+                      setActiveAction(action);
                     if (action?.callback) {
                       action
                         ?.callback(row.original)
                         .then((res: JSX.Element) => {
-                          setActiveAction({
-                            ...action,
-                            content: res,
-                          });
+                          if (typeof setActiveAction === 'function')
+                            setActiveAction({
+                              ...action,
+                              content: res,
+                            });
                         });
                     }
                   } else if (action.type === 'Action') {
                     action.callback(row.original);
                     return;
-                  } else {
+                  } else if (typeof setActiveAction === 'function')
                     setActiveAction(action);
-                  }
-                  setTriggerData(row.original);
-                  setIsOpen(true);
+                  if (typeof setTriggerData === 'function')
+                    setTriggerData(row.original);
+                  if (typeof setIsOpen === 'function') setIsOpen(true);
                 }}
               >
                 {getCTA(action.cta, row.original)}
@@ -212,6 +239,14 @@ export function columnsGenerator({
       enableHiding: false,
     },
   ];
-  if (!selectable) return columns.filter((column) => column.id !== 'select');
-  return columns;
+  let finalColumns = columns;
+  if (!selectable) {
+    finalColumns = finalColumns.filter((column) => column.id !== 'select');
+  }
+  if (hideAction) {
+    finalColumns = finalColumns.filter(
+      (column) => column.id !== 'table-actions'
+    );
+  }
+  return finalColumns;
 }
