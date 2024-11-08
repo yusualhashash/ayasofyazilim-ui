@@ -28,6 +28,7 @@ import { TanstackTableConfirmationDialog } from './tanstack-table-row-actions-co
 import { TanstackTableToolbar } from './tanstack-table-toolbar';
 import { TanstackTableProps, TanstackTableRowActionsType } from './types';
 import { getCommonPinningStyles } from './utils';
+import { TanstackTableCustomDialog } from './tanstack-table-row-actions-custom-dialog';
 
 const CellWithActions = <TData,>(
   row: Row<TData>,
@@ -182,6 +183,19 @@ export default function TanstackTable<TData, TValue>({
           onConfirm={rowAction.onConfirm}
           onCancel={rowAction.onCancel}
           type="confirmation-dialog"
+        />
+      )}
+      {rowAction?.type === 'custom-dialog' && (
+        <TanstackTableCustomDialog<TData>
+          setDialogOpen={() => setRowAction(null)}
+          row={rowAction.row}
+          title={rowAction.title}
+          content={rowAction.content}
+          confirmationText={rowAction.confirmationText}
+          cancelText={rowAction.cancelText}
+          onConfirm={rowAction.onConfirm}
+          onCancel={rowAction.onCancel}
+          type="custom-dialog"
         />
       )}
     </div>
