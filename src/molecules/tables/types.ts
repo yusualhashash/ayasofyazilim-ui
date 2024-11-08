@@ -67,9 +67,10 @@ export type TableActionAction = {
   type: 'Action';
 };
 
-export type AutoColumnGenerator = {
+export type AutoColumnGenerator<TData = unknown> = {
   actionList?: TableAction[];
-  excludeList: string[];
+  customCells?: Partial<Record<keyof TData, ColumnDef<TData>['cell']>>;
+  excludeList?: string[];
   hideAction?: boolean;
   positions?: string[];
   tableType: any;
@@ -85,21 +86,23 @@ export type selectableColumns = {
     row: unknown;
     value: boolean;
   }) => void;
-  selectable: true;
+  selectable?: true;
 };
 
 type noSelectAbleColumns = {
   selectable?: false;
 };
 
-export type ColumnsType = ColumnsCustomType | ColumnAutoType;
-type ColumnsCustomType = {
-  data: { actionList?: TableAction[]; columns: ColumnDef<any>[] };
+export type ColumnsType<TData = unknown> =
+  | ColumnsCustomType<TData>
+  | ColumnAutoType<TData>;
+type ColumnsCustomType<TData> = {
+  data: { actionList?: TableAction[]; columns: ColumnDef<TData>[] };
   type: 'Custom';
 };
 
-type ColumnAutoType = {
-  data: AutoColumnGenerator;
+type ColumnAutoType<TData> = {
+  data: AutoColumnGenerator<TData>;
   type: 'Auto';
 };
 
@@ -141,7 +144,7 @@ export type DataTableProps<TData> = {
   Headertable?: any;
   action?: TableAction | TableAction[];
   classNames?: DataTableClassNames;
-  columnsData: ColumnsType;
+  columnsData: ColumnsType<TData>;
   data: TData[];
   detailedFilter?: ColumnFilter[];
   editable?: boolean;
