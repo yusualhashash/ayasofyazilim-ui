@@ -54,7 +54,7 @@ export type TanstackTableRowActionsAutoformDialog<TData> = Omit<
   'cancelText' | 'onCancel' | 'confirmationText' | 'onConfirm'
 > & {
   className?: { autoform: string; submit: string };
-  onSubmit: (row: TData) => void;
+  onSubmit: (row: TData, values: Partial<z.infer<ZodObjectOrWrapped>>) => void;
   schema: ZodObjectOrWrapped;
   submitText: string;
   type: 'autoform-dialog';
