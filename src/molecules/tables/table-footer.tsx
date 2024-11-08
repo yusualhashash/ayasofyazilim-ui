@@ -62,6 +62,17 @@ export default function TableFooter<TData>({
     <div
       className={cn('flex items-center py-5', classNames?.footer?.container)}
     >
+      <div
+        className={cn(
+          'flex-1 text-sm text-muted-foreground',
+          classNames?.footer?.selectedRows
+        )}
+      >
+        {selectedRowsText<TData>({
+          isLoading,
+          table,
+        })}
+      </div>
       {editable && (
         <div
           className={cn(
@@ -89,21 +100,11 @@ export default function TableFooter<TData>({
         </div>
       )}
       <div className="flex items-center justify-between px-2">
-        <div
-          className={cn(
-            'flex-1 text-sm text-muted-foreground',
-            classNames?.footer?.selectedRows
-          )}
-        >
-          {selectedRowsText<TData>({
-            isLoading,
-            table,
-          })}
-        </div>
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
             <p className="text-sm font-medium">Rows per page</p>
             <Select
+              disabled={isLoading}
               value={`${table.getState().pagination.pageSize}`}
               onValueChange={(value) => {
                 table.setPageSize(Number(value));
@@ -132,7 +133,7 @@ export default function TableFooter<TData>({
               variant="outline"
               className="hidden h-8 w-8 p-0 lg:flex"
               onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
+              disabled={!table.getCanPreviousPage() || isLoading}
             >
               <span className="sr-only">Go to first page</span>
               <DoubleArrowLeftIcon className="h-4 w-4" />
@@ -141,7 +142,7 @@ export default function TableFooter<TData>({
               variant="outline"
               className="h-8 w-8 p-0"
               onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
+              disabled={!table.getCanPreviousPage() || isLoading}
             >
               <span className="sr-only">Go to previous page</span>
               <ChevronLeftIcon className="h-4 w-4" />
@@ -150,7 +151,7 @@ export default function TableFooter<TData>({
               variant="outline"
               className="h-8 w-8 p-0"
               onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
+              disabled={!table.getCanNextPage() || isLoading}
             >
               <span className="sr-only">Go to next page</span>
               <ChevronRightIcon className="h-4 w-4" />
@@ -159,7 +160,7 @@ export default function TableFooter<TData>({
               variant="outline"
               className="hidden h-8 w-8 p-0 lg:flex"
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
+              disabled={!table.getCanNextPage() || isLoading}
             >
               <span className="sr-only">Go to last page</span>
               <DoubleArrowRightIcon className="h-4 w-4" />
