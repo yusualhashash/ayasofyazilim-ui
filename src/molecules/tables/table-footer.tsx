@@ -59,77 +59,52 @@ export default function TableFooter<TData>({
           table,
         })}
       </div>
-      {editable ? (
+      {editable && (
         <div
           className={cn(
-            'footer-buttons bg-white',
+            'space-x-2 px-2',
             classNames?.footer?.editable?.container
           )}
         >
-          <div
-            className={cn(
-              'flex w-full justify-end items-end gap-5 py-3 px-3',
-              classNames?.footer?.editable?.wrapper
-            )}
-          >
-            {selectedRows?.length > 0 && (
-              <Button
-                className={cn(
-                  'remove-button w-44 h-10 flex items-center justify-center',
-                  classNames?.footer?.editable?.remove
-                )}
-                variant="outline"
-                onClick={handleRemoveSelected}
-              >
-                Remove Selected
-                <Trash2Icon className="ml-2 h-4 w-4" />
-              </Button>
-            )}
+          {selectedRows?.length > 0 && (
             <Button
-              className={cn(
-                'add-button w-44 h-10 flex items-center justify-center',
-                classNames?.footer?.editable?.add
-              )}
+              className={cn(classNames?.footer?.editable?.remove)}
               variant="outline"
-              onClick={handleAddRow}
+              onClick={handleRemoveSelected}
             >
-              Add New +
+              Remove Selected
+              <Trash2Icon className="ml-2 h-4 w-4" />
             </Button>
-          </div>
-        </div>
-      ) : (
-        <div
-          className={cn('space-x-2', classNames?.footer?.buttons?.container)}
-        >
-          {isLoading ? (
-            <>
-              <Skeleton className="inline-flex h-9 w-24" />
-              <Skeleton className="inline-flex h-9 w-24" />
-            </>
-          ) : (
-            <>
-              <Button
-                className={cn(classNames?.footer?.buttons?.previous)}
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                Previous
-              </Button>
-              <Button
-                className={cn(classNames?.footer?.buttons?.next)}
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Next
-              </Button>
-            </>
           )}
+          <Button
+            className={cn(classNames?.footer?.editable?.add)}
+            variant="outline"
+            onClick={handleAddRow}
+          >
+            Add New +
+          </Button>
         </div>
       )}
+      <div className={cn('space-x-2', classNames?.footer?.buttons?.container)}>
+        <Button
+          className={cn(classNames?.footer?.buttons?.previous)}
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={isLoading || !table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          className={cn(classNames?.footer?.buttons?.next)}
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={isLoading || !table.getCanNextPage()}
+        >
+          Next
+        </Button>
+      </div>
     </div>
   );
 }
