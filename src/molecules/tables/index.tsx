@@ -26,7 +26,6 @@ import { DataTableProps, FilterColumnResult, TableAction } from './types';
 import TableFooter from './table-footer';
 import { SkeletonCell } from './helper-components';
 import TableToolbar from './table-toolbar';
-
 /**
  * Renders a data table with customizable columns, sorting, filtering, and selection capabilities.
  * The table can display data in either a custom format defined by the user or automatically generate columns based on provided data.
@@ -98,6 +97,10 @@ export default function DataTable<TData, TValue>(
     }
     return [];
   });
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
   useEffect(() => {
     if (isLoading) {
@@ -136,6 +139,7 @@ export default function DataTable<TData, TValue>(
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
+    onPaginationChange: setPagination,
     rowCount: rowCount || tableData.length,
     getSortedRowModel: getSortedRowModel(),
     manualFiltering: true,
@@ -150,6 +154,7 @@ export default function DataTable<TData, TValue>(
       sorting,
       columnVisibility,
       rowSelection,
+      pagination,
     },
     meta: {
       removeRow: (rowIndex) => {
@@ -236,32 +241,38 @@ export default function DataTable<TData, TValue>(
           </TableHeader>
           <TableBody className={cn(classNames?.table?.body)}>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <Fragment key={row.id}>
-                  <TableRow
-                    data-state={row.getIsSelected() ? 'selected' : undefined}
-                    className="whitespace-nowrap"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {
-                          flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          ) as JSX.Element
-                        }
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                  {row.getIsExpanded() && renderSubComponent && (
-                    <TableRow>
-                      <TableCell colSpan={row.getVisibleCells().length}>
-                        {renderSubComponent({ row })}
-                      </TableCell>
+              table
+                .getRowModel()
+                .rows.slice(
+                  pagination.pageIndex * pagination.pageSize,
+                  (pagination.pageIndex + 1) * pagination.pageSize
+                )
+                .map((row) => (
+                  <Fragment key={row.id}>
+                    <TableRow
+                      data-state={row.getIsSelected() ? 'selected' : undefined}
+                      className="whitespace-nowrap"
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {
+                            flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            ) as JSX.Element
+                          }
+                        </TableCell>
+                      ))}
                     </TableRow>
-                  )}
-                </Fragment>
-              ))
+                    {row.getIsExpanded() && renderSubComponent && (
+                      <TableRow>
+                        <TableCell colSpan={row.getVisibleCells().length}>
+                          {renderSubComponent({ row })}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </Fragment>
+                ))
             ) : (
               <TableRow>
                 <TableCell
