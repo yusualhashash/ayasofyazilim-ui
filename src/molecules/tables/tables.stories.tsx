@@ -177,6 +177,7 @@ export const MultipleActions: StoryObj<typeof Table> = {
       data: {
         tableType: jsonSchema,
         excludeList: ['id'],
+        hideAction: true,
       },
     },
     action: [

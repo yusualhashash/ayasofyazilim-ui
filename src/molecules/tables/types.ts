@@ -70,6 +70,7 @@ export type TableActionAction = {
 export type AutoColumnGenerator = {
   actionList?: TableAction[];
   excludeList: string[];
+  hideAction?: boolean;
   positions?: string[];
   tableType: any;
 } & (noSelectAbleColumns | selectableColumns);
