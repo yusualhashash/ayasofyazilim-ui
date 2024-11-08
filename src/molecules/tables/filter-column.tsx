@@ -339,7 +339,7 @@ export default function FilterColumn({
                   showView={false}
                   rowCount={data.totalCount}
                   data={data.items}
-                  fetchRequest={(page, filter) => {
+                  fetchRequest={({ page, filter }) => {
                     if (column.fetchRequest) {
                       column.fetchRequest(page, filter).then((response) => {
                         console.log('response page filter column', response);
