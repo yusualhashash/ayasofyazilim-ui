@@ -83,7 +83,7 @@ export default function CustomTableActionDialog({
     <SheetSide
       open={open}
       onOpenChange={onOpenChange}
-      position="right"
+      position="bottom"
       title={cta}
       description={description}
     >
