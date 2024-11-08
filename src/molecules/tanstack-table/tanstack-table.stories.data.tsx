@@ -1,5 +1,7 @@
-import { CheckCircledIcon, CrossCircledIcon } from '@radix-ui/react-icons';
-import { ColumnDef } from '@tanstack/react-table';
+import { PersonIcon, TrashIcon } from '@radix-ui/react-icons';
+import { Building2, EyeIcon, KeyIcon } from 'lucide-react';
+import { TanstackTableRowActionsType } from './types';
+import { tanstackTableCreateColumnsByRowData } from './utils';
 
 export type User = {
   createdAt?: Date;
@@ -196,87 +198,64 @@ export const users: User[] = [
     updatedAt: new Date('2024-02-18T20:48:13.120Z'),
   },
 ];
-const usersStatus = [
-  {
-    value: 'active',
-    label: 'Active',
-    icon: CheckCircledIcon,
-  },
-  {
-    value: 'inactive',
-    label: 'Inactive',
-    icon: CrossCircledIcon,
-  },
-];
 
-export const usersRole = [
-  {
-    value: 'client',
-    label: 'Client',
-  },
-  {
-    value: 'provider',
-    label: 'Provider',
-  },
-];
-
-export const columns: ColumnDef<User, unknown>[] = [
-  {
-    accessorKey: 'userName',
-    cell: ({ row }) => (
-      <div className="font-medium">{row.getValue('userName')}</div>
-    ),
-  },
-  {
-    accessorKey: 'phone',
-  },
-  {
-    accessorKey: 'email',
-  },
-  {
-    accessorKey: 'location',
-  },
-  {
-    accessorKey: 'role',
-    cell: ({ row }) => {
-      const role = usersRole.find(
-        (role) => role.value === row.getValue('role')
-      );
-
-      if (!role) {
-        // If a value is not what you expect or does not exist you can return null.
-        return null;
-      }
-
-      return <span>{role.label}</span>;
+export const col = tanstackTableCreateColumnsByRowData<User>({
+  row: users[0],
+  languageData: { userName: 'Kullanıcı Adı' },
+  links: {
+    userName: {
+      targetAccessorKey: 'id',
+      prefix: 'http://192.168.1.105:1453/tr/app/admin',
+      suffix: '/edit',
+    },
+    email: {
+      prefix: 'http://192.168.1.105:1453/tr/app/',
     },
   },
-  {
-    accessorKey: 'rtn',
+  faceted: {
+    status: [
+      { value: 'inactive', label: 'Inactive', icon: Building2 },
+      { value: 'active', label: 'Active', icon: PersonIcon },
+    ],
   },
-  {
-    accessorKey: 'otherInformation',
+});
+export const actions: TanstackTableRowActionsType<User>[] = [];
+actions.push({
+  cancelText: 'Cancel',
+  confirmationText: 'Yes, Delete',
+  cta: 'Delete User',
+  icon: TrashIcon,
+  type: 'confirmation-dialog',
+  description: 'Are you sure you want to delete this user?',
+  title: (row) => row.userName,
+  onConfirm: (row) => {
+    console.log(row.phone);
   },
-  {
-    accessorKey: 'status',
-    cell: ({ row }) => {
-      const status = usersStatus.find(
-        (status) => status.value === row.getValue('status')
-      );
-
-      if (!status) {
-        return null;
-      }
-
-      return (
-        <div>
-          {status.icon && (
-            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-          )}
-          <span>{status.label}</span>
-        </div>
-      );
-    },
-    filterFn: (row, id, value) => value.includes(row.getValue(id)),
+  onCancel: (row) => {
+    console.log(row.userName);
   },
-];
+});
+actions.push({
+  cta: 'View User',
+  icon: EyeIcon,
+  type: 'link',
+  onClick: (row) => {
+    alert('Redirecting...');
+    window.location.href = `/app/admin/users/${row.id}`;
+  },
+});
+actions.push({
+  type: 'custom-dialog',
+  cta: 'Permissions',
+  content: (row) => <div>{row.userName} does not have any permissions. </div>,
+  cancelText: 'Cancel',
+  confirmationText: 'Close',
+  icon: KeyIcon,
+  title: (row) => row.userName,
+  onConfirm: (row) => {
+    console.log(row.phone);
+  },
+  onCancel: (row) => {
+    console.log(row.userName);
+  },
+});
