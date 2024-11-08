@@ -183,8 +183,16 @@ export default function DataTable<TData, TValue>(
       }
     });
 
-    fetchRequest?.(table.getState().pagination.pageIndex, filter);
-  }, [table.getState().pagination.pageIndex, filteredColumns]);
+    fetchRequest?.({
+      page: table.getState().pagination.pageIndex,
+      filter,
+      pageSize: table.getState().pagination.pageSize,
+    });
+  }, [
+    table.getState().pagination.pageIndex,
+    filteredColumns,
+    table.getState().pagination.pageSize,
+  ]);
 
   return (
     <div className={cn('flex flex-col p-4', classNames?.container)}>

@@ -149,10 +149,16 @@ export type DataTableProps<TData> = {
   data: TData[];
   detailedFilter?: ColumnFilter[];
   editable?: boolean;
-  fetchRequest?: (page: number, filter: FilterColumnResult) => void;
+  fetchRequest?: (props: fetchRequestProps) => void;
   isLoading?: boolean;
   onDataUpdate?: (data: TData[]) => void;
   renderSubComponent?: (row: any) => JSX.Element;
   rowCount?: number;
   showView?: boolean;
+};
+
+export type fetchRequestProps = {
+  filter: FilterColumnResult;
+  page: number;
+  pageSize?: number;
 };
