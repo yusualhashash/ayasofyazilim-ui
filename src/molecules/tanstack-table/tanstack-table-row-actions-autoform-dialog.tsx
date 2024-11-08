@@ -1,7 +1,6 @@
 'use client';
 
-import * as React from 'react';
-
+import { TypeOf } from 'zod';
 import {
   Dialog,
   DialogContent,
@@ -9,7 +8,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
-import AutoForm, { AutoFormSubmit } from '../../organisms/auto-form';
+import AutoForm, {
+  AutoFormSubmit,
+  ZodObjectOrWrapped,
+} from '../../organisms/auto-form';
 import { TanstackTableRowActionsAutoformDialog } from './types';
 
 type TanstackTableAutoformDialogProps<TData> = {
@@ -40,7 +42,7 @@ export function TanstackTableAutoformDialog<TData>({
           className={className?.autoform}
           values={autoformValues}
           onSubmit={(formData) => {
-            onSubmit(formData as TData);
+            onSubmit(row, formData as Partial<TypeOf<ZodObjectOrWrapped>>);
           }}
         >
           <AutoFormSubmit className={cn('float-right', className?.submit)}>

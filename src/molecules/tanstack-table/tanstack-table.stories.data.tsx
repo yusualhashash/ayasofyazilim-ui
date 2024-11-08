@@ -1,5 +1,6 @@
 import { PersonIcon, TrashIcon } from '@radix-ui/react-icons';
-import { Building2, EyeIcon, KeyIcon } from 'lucide-react';
+import { Building2, Edit, EyeIcon, KeyIcon } from 'lucide-react';
+import { createZodObject } from 'src/lib/create-zod-object';
 import { TanstackTableRowActionsType } from './types';
 import { tanstackTableCreateColumnsByRowData } from './utils';
 
@@ -219,22 +220,31 @@ export const col = tanstackTableCreateColumnsByRowData<User>({
     ],
   },
 });
+const $schema = {
+  required: ['displayName'],
+  type: 'object',
+  properties: {
+    extraProperties: {
+      type: 'object',
+      additionalProperties: {},
+      nullable: true,
+      readOnly: true,
+    },
+    displayName: {
+      maxLength: 128,
+      minLength: 0,
+      type: 'string',
+    },
+    concurrencyStamp: {
+      type: 'string',
+      nullable: true,
+    },
+  },
+  additionalProperties: false,
+} as const;
+
 export const actions: TanstackTableRowActionsType<User>[] = [];
-actions.push({
-  cancelText: 'Cancel',
-  confirmationText: 'Yes, Delete',
-  cta: 'Delete User',
-  icon: TrashIcon,
-  type: 'confirmation-dialog',
-  description: 'Are you sure you want to delete this user?',
-  title: (row) => row.userName,
-  onConfirm: (row) => {
-    console.log(row.phone);
-  },
-  onCancel: (row) => {
-    console.log(row.userName);
-  },
-});
+
 actions.push({
   cta: 'View User',
   icon: EyeIcon,
@@ -245,12 +255,42 @@ actions.push({
   },
 });
 actions.push({
+  type: 'autoform-dialog',
+  cta: 'Edit',
+  icon: Edit,
+  submitText: 'Save',
+  title: (row) => `Edit ${row.userName}`,
+  values: (row) => ({ displayName: row.userName }),
+
+  onSubmit(row, values) {
+    alert(`${JSON.stringify(row)} ${JSON.stringify(values)}`);
+  },
+
+  schema: createZodObject($schema, ['displayName']),
+});
+actions.push({
   type: 'custom-dialog',
   cta: 'Permissions',
   content: (row) => <div>{row.userName} does not have any permissions. </div>,
   cancelText: 'Cancel',
   confirmationText: 'Close',
   icon: KeyIcon,
+  title: (row) => row.userName,
+  onConfirm: (row) => {
+    console.log(row.phone);
+  },
+  onCancel: (row) => {
+    console.log(row.userName);
+  },
+});
+
+actions.push({
+  cancelText: 'Cancel',
+  confirmationText: 'Yes, Delete',
+  cta: 'Delete User',
+  icon: TrashIcon,
+  type: 'confirmation-dialog',
+  description: 'Are you sure you want to delete this user?',
   title: (row) => row.userName,
   onConfirm: (row) => {
     console.log(row.phone);
