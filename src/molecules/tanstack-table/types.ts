@@ -30,19 +30,28 @@ export type TanstackTableRowActionsLink<TData> = {
   type: 'link';
 };
 
-export type TanstackTableRowActionsConfirmationDialog<TData> = {
+export type TanstackTableRowDialog<TData> = {
   cancelText: string;
   confirmationText: string;
-  description: string;
   onCancel: (row: TData) => void;
   onConfirm: (row: TData) => void;
   title: string | ((row: TData) => string);
-  type: 'confirmation-dialog';
 };
+export type TanstackTableRowActionsCustomDialog<TData> =
+  TanstackTableRowDialog<TData> & {
+    content: JSX.Element | ((row: TData) => JSX.Element);
+    type: 'custom-dialog';
+  };
+export type TanstackTableRowActionsConfirmationDialog<TData> =
+  TanstackTableRowDialog<TData> & {
+    description: string;
+    type: 'confirmation-dialog';
+  };
 export type TanstackTableRowActionsType<TData> = {
   cta: string;
   icon?: ComponentType<{ className?: string }>;
 } & (
   | TanstackTableRowActionsConfirmationDialog<TData>
   | TanstackTableRowActionsLink<TData>
+  | TanstackTableRowActionsCustomDialog<TData>
 );
