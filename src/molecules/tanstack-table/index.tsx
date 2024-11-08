@@ -7,11 +7,12 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  Row,
   SortingState,
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table';
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import {
   Table,
@@ -21,16 +22,33 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { TanstackTableProps } from './types';
 import { TanstackTablePagination } from './tanstack-table-pagination';
+import { TanstackTableRowActions } from './tanstack-table-row-actions';
+import { TanstackTableConfirmationDialog } from './tanstack-table-row-actions-confirmation';
 import { TanstackTableToolbar } from './tanstack-table-toolbar';
+import { TanstackTableProps, TanstackTableRowActionsType } from './types';
 import { getCommonPinningStyles } from './utils';
+
+const CellWithActions = <TData,>(
+  row: Row<TData>,
+  actions: TanstackTableRowActionsType<TData>[],
+  setRowAction: (
+    actions: TanstackTableRowActionsType<TData> & { row: TData }
+  ) => void
+) => (
+  <TanstackTableRowActions
+    row={row.original}
+    actions={actions}
+    setRowAction={setRowAction}
+  />
+);
 
 export default function TanstackTable<TData, TValue>({
   columns,
   data,
   filters,
   excludeColumns,
+  actions,
 }: TanstackTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] =
@@ -42,10 +60,31 @@ export default function TanstackTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  const [rowAction, setRowAction] = React.useState<
+    (TanstackTableRowActionsType<TData> & { row: TData }) | null
+  >(null);
+
+  const tableColumns = useMemo(() => {
+    const _columns = [...columns];
+    if (actions) {
+      _columns.push({
+        id: 'actions',
+        cell: ({ row }) => CellWithActions(row, actions, setRowAction),
+      });
+    }
+    return _columns;
+  }, [columns, actions]);
+
+  useEffect(() => {
+    if (rowAction?.type === 'link') {
+      rowAction.onClick(rowAction.row);
+      setRowAction(null);
+    }
+  }, [rowAction]);
 
   const table = useReactTable({
     data,
-    columns,
+    columns: tableColumns,
     state: {
       sorting,
       columnVisibility,
@@ -132,6 +171,19 @@ export default function TanstackTable<TData, TValue>({
         </Table>
       </div>
       <TanstackTablePagination table={table} />
+      {rowAction?.type === 'confirmation-dialog' && (
+        <TanstackTableConfirmationDialog<TData>
+          setDialogOpen={() => setRowAction(null)}
+          row={rowAction.row}
+          title={rowAction.title}
+          description={rowAction.description}
+          confirmationText={rowAction.confirmationText}
+          cancelText={rowAction.cancelText}
+          onConfirm={rowAction.onConfirm}
+          onCancel={rowAction.onCancel}
+          type="confirmation-dialog"
+        />
+      )}
     </div>
   );
 }
