@@ -29,6 +29,7 @@ import { TanstackTableToolbar } from './tanstack-table-toolbar';
 import { TanstackTableProps, TanstackTableRowActionsType } from './types';
 import { getCommonPinningStyles } from './utils';
 import { TanstackTableCustomDialog } from './tanstack-table-row-actions-custom-dialog';
+import { TanstackTableAutoformDialog } from './tanstack-table-row-actions-autoform-dialog';
 
 const CellWithActions = <TData,>(
   row: Row<TData>,
@@ -196,6 +197,18 @@ export default function TanstackTable<TData, TValue>({
           onConfirm={rowAction.onConfirm}
           onCancel={rowAction.onCancel}
           type="custom-dialog"
+        />
+      )}
+      {rowAction?.type === 'autoform-dialog' && (
+        <TanstackTableAutoformDialog<TData>
+          setDialogOpen={() => setRowAction(null)}
+          row={rowAction.row}
+          title={rowAction.title}
+          schema={rowAction.schema}
+          submitText={rowAction.submitText}
+          onSubmit={rowAction.onSubmit}
+          values={rowAction.values}
+          type="autoform-dialog"
         />
       )}
     </div>
