@@ -25,6 +25,11 @@ export type TanstackTableColumnLink = {
   targetAccessorKey?: string;
 };
 
+export type TanstackTableRowActionsLink<TData> = {
+  onClick: (row: TData) => void;
+  type: 'link';
+};
+
 export type TanstackTableRowActionsConfirmationDialog<TData> = {
   cancelText: string;
   confirmationText: string;
@@ -37,4 +42,7 @@ export type TanstackTableRowActionsConfirmationDialog<TData> = {
 export type TanstackTableRowActionsType<TData> = {
   cta: string;
   icon?: ComponentType<{ className?: string }>;
-} & TanstackTableRowActionsConfirmationDialog<TData>;
+} & (
+  | TanstackTableRowActionsConfirmationDialog<TData>
+  | TanstackTableRowActionsLink<TData>
+);

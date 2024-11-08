@@ -12,7 +12,7 @@ import {
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import {
   Table,
@@ -74,6 +74,13 @@ export default function TanstackTable<TData, TValue>({
     }
     return _columns;
   }, [columns, actions]);
+
+  useEffect(() => {
+    if (rowAction?.type === 'link') {
+      rowAction.onClick(rowAction.row);
+      setRowAction(null);
+    }
+  }, [rowAction]);
 
   const table = useReactTable({
     data,
