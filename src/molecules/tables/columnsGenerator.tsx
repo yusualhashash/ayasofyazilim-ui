@@ -126,7 +126,7 @@ export function columnsGenerator<Tdata>({
   setTriggerData?: Dispatch<SetStateAction<any>>;
 }) {
   let onSelect: selectableColumns['onSelect'] | undefined;
-  const { selectable, tableType, excludeList, positions, customCells } = data;
+  const { selectable, tableType, excludeList, positions, hideAction, customCells } = data;
   if (selectable) {
     onSelect = data.onSelect;
   }
@@ -239,6 +239,14 @@ export function columnsGenerator<Tdata>({
       enableHiding: false,
     },
   ];
-  if (!selectable) return columns.filter((column) => column.id !== 'select');
-  return columns;
+  let finalColumns = columns;
+  if (!selectable) {
+    finalColumns = finalColumns.filter((column) => column.id !== 'select');
+  }
+  if (hideAction) {
+    finalColumns = finalColumns.filter(
+      (column) => column.id !== 'table-actions'
+    );
+  }
+  return finalColumns;
 }

@@ -71,6 +71,7 @@ export type AutoColumnGenerator<TData = unknown> = {
   actionList?: TableAction[];
   customCells?: Partial<Record<keyof TData, ColumnDef<TData>['cell']>>;
   excludeList?: string[];
+  hideAction?: boolean;
   positions?: string[];
   tableType: any;
 } & (noSelectAbleColumns | selectableColumns);
