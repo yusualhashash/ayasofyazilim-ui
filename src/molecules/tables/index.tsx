@@ -257,16 +257,21 @@ export default function DataTable<TData, TValue>(
                       data-state={row.getIsSelected() ? 'selected' : undefined}
                       className="whitespace-nowrap"
                     >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {
-                            flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            ) as JSX.Element
-                          }
-                        </TableCell>
-                      ))}
+                      {row.getVisibleCells().map((cell) => {
+                        const className = cell.id.includes('actions')
+                          ? 'p-0'
+                          : 'p-2';
+                        return (
+                          <TableCell key={cell.id} className={className}>
+                            {
+                              flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              ) as JSX.Element
+                            }
+                          </TableCell>
+                        );
+                      })}
                     </TableRow>
                     {row.getIsExpanded() && renderSubComponent && (
                       <TableRow>
