@@ -97,10 +97,6 @@ export default function DataTable<TData, TValue>(
     }
     return [];
   });
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 10,
-  });
 
   useEffect(() => {
     if (isLoading) {
@@ -139,7 +135,6 @@ export default function DataTable<TData, TValue>(
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
-    onPaginationChange: setPagination,
     rowCount: rowCount || tableData.length,
     getSortedRowModel: getSortedRowModel(),
     manualFiltering: true,
@@ -154,7 +149,6 @@ export default function DataTable<TData, TValue>(
       sorting,
       columnVisibility,
       rowSelection,
-      pagination,
     },
     meta: {
       removeRow: (rowIndex) => {
@@ -244,8 +238,10 @@ export default function DataTable<TData, TValue>(
               table
                 .getRowModel()
                 .rows.slice(
-                  pagination.pageIndex * pagination.pageSize,
-                  (pagination.pageIndex + 1) * pagination.pageSize
+                  table.getState().pagination.pageIndex *
+                    table.getState().pagination.pageSize,
+                  (table.getState().pagination.pageIndex + 1) *
+                    table.getState().pagination.pageSize
                 )
                 .map((row) => (
                   <Fragment key={row.id}>
