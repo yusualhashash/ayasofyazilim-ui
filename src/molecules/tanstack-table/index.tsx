@@ -34,6 +34,7 @@ import {
   TanstackTableTableActionsType,
 } from './types';
 import { getCommonPinningStyles } from './utils';
+import { TanstackTableTableAutoformDialog } from './tanstack-table-table-actions-autoform-dialog';
 
 const CellWithActions = <TData,>(
   row: Row<TData>,
@@ -71,7 +72,7 @@ export default function TanstackTable<TData, TValue>({
   const [rowAction, setRowAction] = React.useState<
     (TanstackTableRowActionsType<TData> & { row: TData }) | null
   >(null);
-  const [, setTableAction] =
+  const [tableAction, setTableAction] =
     React.useState<TanstackTableTableActionsType | null>(null);
 
   const tableColumns = useMemo(() => {
@@ -223,6 +224,17 @@ export default function TanstackTable<TData, TValue>({
           submitText={rowAction.submitText}
           onSubmit={rowAction.onSubmit}
           values={rowAction.values}
+          type="autoform-dialog"
+        />
+      )}
+      {tableAction?.type === 'autoform-dialog' && (
+        <TanstackTableTableAutoformDialog
+          setDialogOpen={() => setTableAction(null)}
+          title={tableAction.title}
+          schema={tableAction.schema}
+          submitText={tableAction.submitText}
+          onSubmit={tableAction.onSubmit}
+          values={tableAction.values}
           type="autoform-dialog"
         />
       )}
