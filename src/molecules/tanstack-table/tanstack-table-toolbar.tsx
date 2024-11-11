@@ -1,19 +1,26 @@
 'use client';
 
 import { Table } from '@tanstack/react-table';
-import { TanstackTableViewOptions } from './tanstack-table-view-options';
-import { TanstackTableFiltersType } from './types';
-import { TanstackTableTextFilter } from './tanstack-table-filter-text';
 import { TanstackTableFacetedFilter } from './tanstack-table-filter-faceted';
+import { TanstackTableTextFilter } from './tanstack-table-filter-text';
+import { TanstackTableViewOptions } from './tanstack-table-view-options';
+import {
+  TanstackTableFiltersType,
+  TanstackTableTableActionsType,
+} from './types';
 
 interface TanstackTableToolbarProps<TData> {
   filters?: TanstackTableFiltersType;
+  setTableAction: (actions: TanstackTableTableActionsType) => void;
   table: Table<TData>;
+  tableActions?: TanstackTableTableActionsType[];
 }
 
 export const TanstackTableToolbar = <TData,>({
   table,
   filters,
+  tableActions,
+  setTableAction,
 }: TanstackTableToolbarProps<TData>) => (
   <div className="flex w-full items-center justify-between">
     <div className="flex flex-1 items-center space-x-2">
@@ -36,6 +43,10 @@ export const TanstackTableToolbar = <TData,>({
           />
         ))}
     </div>
-    <TanstackTableViewOptions table={table} />
+    <TanstackTableViewOptions
+      table={table}
+      tableActions={tableActions}
+      setTableAction={setTableAction}
+    />
   </div>
 );
