@@ -32,7 +32,7 @@ import {
   PasswordInputWidget,
 } from './widgets';
 
-const ShadcnTheme: ThemeProps = {
+const Default: ThemeProps = {
   fields: {
     phone: CustomPhoneField,
   },
@@ -63,7 +63,13 @@ const ShadcnTheme: ThemeProps = {
  * @returns {JSX.Element} - The rendered form component.
  */
 export function SchemaForm({ ...props }: SchemaFormProps) {
-  const { usePhoneField, filter, children, withScrollArea } = props; // Start with the provided schema
+  const {
+    usePhoneField,
+    filter,
+    children,
+    withScrollArea = true,
+    useDefaultSubmit = true,
+  } = props; // Start with the provided schema
   const Wrapper = withScrollArea ? ScrollArea : Fragment;
   const phoneFieldsConfig = {
     fields: ['areaCode', 'ituCountryCode', 'localNumber'],
@@ -119,9 +125,9 @@ export function SchemaForm({ ...props }: SchemaFormProps) {
             removeAdditional: true,
           },
         })} // Custom validator
-        fields={{ ...ShadcnTheme.fields, ...props.fields }} // Merge custom fields
-        widgets={{ ...ShadcnTheme.widgets, ...props.widgets }} // Merge custom widgets
-        templates={{ ...ShadcnTheme.templates, ...props.templates }} // Merge custom templates
+        fields={{ ...Default.fields, ...props.fields }} // Merge custom fields
+        widgets={{ ...Default.widgets, ...props.widgets }} // Merge custom widgets
+        templates={{ ...Default.templates, ...props.templates }} // Merge custom templates
         uiSchema={uiSchema} // Set the generated UI schema
         onChange={(e) => {
           // Handle form data change
@@ -147,14 +153,28 @@ export function SchemaForm({ ...props }: SchemaFormProps) {
           if (props.onSubmit) props.onSubmit(data, event); // Call the onSubmit prop if provided
         }}
       >
-        {!children && (
-          <div className="py-4 sticky bottom-0 bg-white flex justify-end z-50">
-            <Button type="submit" disabled={props.disabled}>
-              {props.submit}
-            </Button>
-          </div>
+        {children}
+        {useDefaultSubmit && (
+          <SchemaFormSubmit
+            submit={props.submitText || 'Submit'}
+            disabled={props.disabled}
+          />
         )}
       </Form>
     </Wrapper>
   );
 }
+
+export const SchemaFormSubmit = ({
+  submit,
+  disabled,
+}: {
+  disabled?: boolean;
+  submit: string;
+}) => (
+  <div className="py-4 sticky bottom-0 bg-white flex justify-end z-50">
+    <Button type="submit" disabled={disabled}>
+      {submit}
+    </Button>
+  </div>
+);
