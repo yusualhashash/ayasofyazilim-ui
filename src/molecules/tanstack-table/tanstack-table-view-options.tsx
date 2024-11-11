@@ -87,7 +87,7 @@ export function TanstackTableViewOptions<TData>(
             {selectedRowAction?.icon && (
               <selectedRowAction.icon className="mr-2 h-4 w-4" />
             )}
-            {selectedRowAction.cta?.toString()}
+            {`${selectedRowAction.cta?.toString()} (${selectedRowCount})`}
           </Button>
         </div>
       )}
