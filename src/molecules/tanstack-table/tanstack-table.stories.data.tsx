@@ -1,7 +1,10 @@
 import { PersonIcon, TrashIcon } from '@radix-ui/react-icons';
-import { Building2, Edit, EyeIcon, KeyIcon } from 'lucide-react';
+import { Building2, Edit, EyeIcon, KeyIcon, PlusIcon } from 'lucide-react';
 import { createZodObject } from 'src/lib/create-zod-object';
-import { TanstackTableRowActionsType } from './types';
+import {
+  TanstackTableRowActionsType,
+  TanstackTableTableActionsType,
+} from './types';
 import { tanstackTableCreateColumnsByRowData } from './utils';
 
 export type User = {
@@ -242,6 +245,22 @@ const $schema = {
   },
   additionalProperties: false,
 } as const;
+export const tableAct: TanstackTableTableActionsType[] = [
+  {
+    type: 'autoform-dialog',
+    actionLocation: 'table',
+    cta: 'New',
+    icon: PlusIcon,
+    submitText: 'Save',
+    title: 'Create',
+    values: { displayName: 'test' },
+    onSubmit(row) {
+      alert(JSON.stringify(row));
+    },
+
+    schema: createZodObject($schema, ['displayName']),
+  },
+];
 
 export const actions: TanstackTableRowActionsType<User>[] = [];
 

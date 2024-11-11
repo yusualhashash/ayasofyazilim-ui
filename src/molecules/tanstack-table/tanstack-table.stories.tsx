@@ -1,7 +1,7 @@
 import { Meta, StoryFn } from '@storybook/react';
 import { Trash2 } from 'lucide-react';
 import TanstackTable from '.';
-import { actions, col, users } from './tanstack-table.stories.data';
+import { actions, col, tableAct, users } from './tanstack-table.stories.data';
 
 export default {
   component: TanstackTable,
@@ -25,6 +25,7 @@ const template: StoryFn<typeof TanstackTable> = (args) => (
         alert(`deleted rows:\n${selectedIds}`);
       },
     }}
+    tableActions={tableAct}
   />
 );
 
