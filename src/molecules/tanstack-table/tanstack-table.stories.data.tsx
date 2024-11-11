@@ -246,15 +246,17 @@ const $schema = {
 export const actions: TanstackTableRowActionsType<User>[] = [];
 
 actions.push({
+  actionLocation: 'row',
   cta: 'View User',
   icon: EyeIcon,
-  type: 'link',
+  type: 'simple',
   onClick: (row) => {
     alert('Redirecting...');
     window.location.href = `/app/admin/users/${row.id}`;
   },
 });
 actions.push({
+  actionLocation: 'row',
   type: 'autoform-dialog',
   cta: 'Edit',
   icon: Edit,
@@ -269,6 +271,7 @@ actions.push({
   schema: createZodObject($schema, ['displayName']),
 });
 actions.push({
+  actionLocation: 'row',
   type: 'custom-dialog',
   cta: 'Permissions',
   content: (row) => <div>{row.userName} does not have any permissions. </div>,
@@ -285,6 +288,7 @@ actions.push({
 });
 
 actions.push({
+  actionLocation: 'row',
   cancelText: 'Cancel',
   confirmationText: 'Yes, Delete',
   cta: 'Delete User',
