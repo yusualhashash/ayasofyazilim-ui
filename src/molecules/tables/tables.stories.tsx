@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { ColumnDef } from '@tanstack/react-table';
 import jsonToCsv from '../../lib/json-to-csv';
 import Table from '.';
-import { AutoColumnGenerator, FilterColumnResult, TableAction } from './types';
+import { AutoColumnGenerator, TableAction } from './types';
 import {
   columns,
   columnsEditable,
@@ -263,12 +263,12 @@ export const DetailedFilter: StoryObj<typeof Table> = {
       <Table
         {...args}
         data={tableData}
-        fetchRequest={(page: number, filter: FilterColumnResult) => {
+        fetchRequest={({ page, filter }) => {
           if (args.fetchRequest) {
-            const customData = args.fetchRequest(
+            const customData = args.fetchRequest({
               page,
-              filter
-            ) as unknown as unknown[];
+              filter,
+            }) as unknown as unknown[];
             setTableData(customData);
             return customData;
           }
@@ -278,7 +278,7 @@ export const DetailedFilter: StoryObj<typeof Table> = {
     );
   },
   args: {
-    fetchRequest: (page: number, filter: FilterColumnResult) => {
+    fetchRequest: ({ filter }) => {
       let localData = data;
       const parsedFilter = filter;
       if (Object.keys(parsedFilter).length === 0) {
