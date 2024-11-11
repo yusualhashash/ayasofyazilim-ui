@@ -26,6 +26,7 @@ import { DataTableProps, FilterColumnResult, TableAction } from './types';
 import TableFooter from './table-footer';
 import { SkeletonCell } from './helper-components';
 import TableToolbar from './table-toolbar';
+
 /**
  * Renders a data table with customizable columns, sorting, filtering, and selection capabilities.
  * The table can display data in either a custom format defined by the user or automatically generate columns based on provided data.
