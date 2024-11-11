@@ -24,7 +24,9 @@ import {
 } from '@/components/ui/table';
 import { TanstackTablePagination } from './tanstack-table-pagination';
 import { TanstackTableRowActions } from './tanstack-table-row-actions';
+import { TanstackTableAutoformDialog } from './tanstack-table-row-actions-autoform-dialog';
 import { TanstackTableConfirmationDialog } from './tanstack-table-row-actions-confirmation';
+import { TanstackTableCustomDialog } from './tanstack-table-row-actions-custom-dialog';
 import { TanstackTableToolbar } from './tanstack-table-toolbar';
 import { TanstackTableProps, TanstackTableRowActionsType } from './types';
 import { getCommonPinningStyles } from './utils';
@@ -101,16 +103,17 @@ export default function TanstackTable<TData, TValue>({
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 flex flex-col h-full">
       <TanstackTableToolbar table={table} filters={filters} />
-      <div className="rounded-md border">
+      <div className="rounded-md border overflow-auto">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-slate-100">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
+                    className="bg-slate-100"
                     style={getCommonPinningStyles({
                       column: header.column,
                       withBorder: true,
@@ -175,6 +178,31 @@ export default function TanstackTable<TData, TValue>({
           onConfirm={rowAction.onConfirm}
           onCancel={rowAction.onCancel}
           type="confirmation-dialog"
+        />
+      )}
+      {rowAction?.type === 'custom-dialog' && (
+        <TanstackTableCustomDialog<TData>
+          setDialogOpen={() => setRowAction(null)}
+          row={rowAction.row}
+          title={rowAction.title}
+          content={rowAction.content}
+          confirmationText={rowAction.confirmationText}
+          cancelText={rowAction.cancelText}
+          onConfirm={rowAction.onConfirm}
+          onCancel={rowAction.onCancel}
+          type="custom-dialog"
+        />
+      )}
+      {rowAction?.type === 'autoform-dialog' && (
+        <TanstackTableAutoformDialog<TData>
+          setDialogOpen={() => setRowAction(null)}
+          row={rowAction.row}
+          title={rowAction.title}
+          schema={rowAction.schema}
+          submitText={rowAction.submitText}
+          onSubmit={rowAction.onSubmit}
+          values={rowAction.values}
+          type="autoform-dialog"
         />
       )}
     </div>
