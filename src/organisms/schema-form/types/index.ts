@@ -4,7 +4,8 @@ import { GenericObjectType } from '@rjsf/utils';
 export interface SchemaFormProps extends Omit<FormProps, 'validator'> {
   filter?: FilterType;
   schema: GenericObjectType;
-  submit: string;
+  submitText?: string;
+  useDefaultSubmit?: boolean;
   usePhoneField?: boolean;
   withScrollArea?: boolean;
 }
