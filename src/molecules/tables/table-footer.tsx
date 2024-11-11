@@ -1,10 +1,24 @@
 import { Trash2Icon } from 'lucide-react';
 import React, { useCallback } from 'react';
 import { Table, Row } from '@tanstack/react-table';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  DoubleArrowLeftIcon,
+  DoubleArrowRightIcon,
+} from '@radix-ui/react-icons';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { DataTableProps } from './types';
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 function selectedRowsText<TData>({
   isLoading,
@@ -59,77 +73,101 @@ export default function TableFooter<TData>({
           table,
         })}
       </div>
-      {editable ? (
+      {editable && (
         <div
           className={cn(
-            'footer-buttons bg-white',
+            'space-x-2 px-2',
             classNames?.footer?.editable?.container
           )}
         >
-          <div
-            className={cn(
-              'flex w-full justify-end items-end gap-5 py-3 px-3',
-              classNames?.footer?.editable?.wrapper
-            )}
-          >
-            {selectedRows?.length > 0 && (
-              <Button
-                className={cn(
-                  'remove-button w-44 h-10 flex items-center justify-center',
-                  classNames?.footer?.editable?.remove
-                )}
-                variant="outline"
-                onClick={handleRemoveSelected}
-              >
-                Remove Selected
-                <Trash2Icon className="ml-2 h-4 w-4" />
-              </Button>
-            )}
+          {selectedRows?.length > 0 && (
             <Button
-              className={cn(
-                'add-button w-44 h-10 flex items-center justify-center',
-                classNames?.footer?.editable?.add
-              )}
+              className={cn(classNames?.footer?.editable?.remove)}
               variant="outline"
-              onClick={handleAddRow}
+              onClick={handleRemoveSelected}
             >
-              Add New +
+              Remove Selected
+              <Trash2Icon className="ml-2 h-4 w-4" />
+            </Button>
+          )}
+          <Button
+            className={cn(classNames?.footer?.editable?.add)}
+            variant="outline"
+            onClick={handleAddRow}
+          >
+            Add New +
+          </Button>
+        </div>
+      )}
+      <div className="flex items-center justify-between px-2">
+        <div className="flex items-center space-x-6 lg:space-x-8">
+          <div className="flex items-center space-x-2">
+            <p className="text-sm font-medium">Rows per page</p>
+            <Select
+              disabled={isLoading}
+              value={`${table.getState().pagination.pageSize}`}
+              onValueChange={(value) => {
+                table.setPageSize(Number(value));
+              }}
+            >
+              <SelectTrigger className="h-8 w-[70px]">
+                <SelectValue
+                  placeholder={table.getState().pagination.pageSize}
+                />
+              </SelectTrigger>
+              <SelectContent side="top">
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+            Page {table.getState().pagination.pageIndex + 1} of{' '}
+            {table.getPageCount()}
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              className="hidden h-8 w-8 p-0 lg:flex"
+              onClick={() => table.setPageIndex(0)}
+              disabled={!table.getCanPreviousPage() || isLoading}
+            >
+              <span className="sr-only">Go to first page</span>
+              <DoubleArrowLeftIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage() || isLoading}
+            >
+              <span className="sr-only">Go to previous page</span>
+              <ChevronLeftIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage() || isLoading}
+            >
+              <span className="sr-only">Go to next page</span>
+              <ChevronRightIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              className="hidden h-8 w-8 p-0 lg:flex"
+              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              disabled={!table.getCanNextPage() || isLoading}
+            >
+              <span className="sr-only">Go to last page</span>
+              <DoubleArrowRightIcon className="h-4 w-4" />
             </Button>
           </div>
         </div>
-      ) : (
-        <div
-          className={cn('space-x-2', classNames?.footer?.buttons?.container)}
-        >
-          {isLoading ? (
-            <>
-              <Skeleton className="inline-flex h-9 w-24" />
-              <Skeleton className="inline-flex h-9 w-24" />
-            </>
-          ) : (
-            <>
-              <Button
-                className={cn(classNames?.footer?.buttons?.previous)}
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                Previous
-              </Button>
-              <Button
-                className={cn(classNames?.footer?.buttons?.next)}
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Next
-              </Button>
-            </>
-          )}
-        </div>
-      )}
+      </div>
     </div>
   );
 }
