@@ -6,11 +6,13 @@ import { TanstackTableTextFilter } from './tanstack-table-filter-text';
 import { TanstackTableViewOptions } from './tanstack-table-view-options';
 import {
   TanstackTableFiltersType,
+  TanstackTableSelectedRowActionType,
   TanstackTableTableActionsType,
 } from './types';
 
 interface TanstackTableToolbarProps<TData> {
   filters?: TanstackTableFiltersType;
+  selectedRowAction?: TanstackTableSelectedRowActionType;
   setTableAction: (actions: TanstackTableTableActionsType) => void;
   table: Table<TData>;
   tableActions?: TanstackTableTableActionsType[];
@@ -19,6 +21,7 @@ interface TanstackTableToolbarProps<TData> {
 export const TanstackTableToolbar = <TData,>({
   table,
   filters,
+  selectedRowAction,
   tableActions,
   setTableAction,
 }: TanstackTableToolbarProps<TData>) => (
@@ -45,6 +48,7 @@ export const TanstackTableToolbar = <TData,>({
     </div>
     <TanstackTableViewOptions
       table={table}
+      selectedRowAction={selectedRowAction}
       tableActions={tableActions}
       setTableAction={setTableAction}
     />

@@ -9,6 +9,7 @@ export type TanstackTableProps<TData, TValue> = {
   excludeColumns?: string[];
   filters?: TanstackTableFiltersType;
   rowActions?: TanstackTableRowActionsType<TData>[];
+  selectedRowAction?: TanstackTableSelectedRowActionType;
   tableActions?: TanstackTableTableActionsType[];
 };
 
@@ -28,7 +29,7 @@ export type TanstackTableColumnLink = {
   targetAccessorKey?: string;
 };
 
-export type TanstackTableRowActionsLink<TData> = {
+export type TanstackTableRowActionsSimple<TData> = {
   onClick: (row: TData) => void;
   type: 'simple';
 };
@@ -67,12 +68,12 @@ export type TanstackTableRowActionsType<TData> = {
   icon?: ComponentType<{ className?: string }>;
 } & (
   | TanstackTableRowActionsConfirmationDialog<TData>
-  | TanstackTableRowActionsLink<TData>
+  | TanstackTableRowActionsSimple<TData>
   | TanstackTableRowActionsCustomDialog<TData>
   | TanstackTableRowActionsAutoformDialog<TData>
 );
 
-export type TanstackTableActionsLink = {
+export type TanstackTableActionsSimple = {
   actionLocation: 'table';
   onClick: () => void;
   type: 'simple';
@@ -104,7 +105,13 @@ export type TanstackTableTableActionsType = {
   cta: string;
   icon?: ComponentType<{ className?: string }>;
 } & (
-  | TanstackTableActionsLink
+  | TanstackTableActionsSimple
   | TanstackTableActionsCustomDialog
   | TanstackTableActionsAutoformDialog
 );
+export type TanstackTableSelectedRowActionType = {
+  actionLocation: 'table';
+  cta: string;
+  icon?: ComponentType<{ className?: string }>;
+  onClick: (selectedIds: string[]) => void;
+};
