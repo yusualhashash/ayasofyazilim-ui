@@ -25,7 +25,7 @@ export const TanstackTableRowActions = <TData,>({
   actions,
 }: TanstackTableRowActionsProps<TData>) => {
   function handleOnActionClick(action: TanstackTableRowActionsType<TData>) {
-    if (action.type === 'link') {
+    if (action.type === 'simple') {
       action.onClick(row);
       return;
     }

@@ -4,11 +4,13 @@ import { ZodObjectOrWrapped } from 'src/organisms/auto-form';
 import { z } from 'zod';
 
 export type TanstackTableProps<TData, TValue> = {
-  actions?: TanstackTableRowActionsType<TData>[];
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   excludeColumns?: string[];
   filters?: TanstackTableFiltersType;
+  rowActions?: TanstackTableRowActionsType<TData>[];
+  selectedRowAction?: TanstackTableSelectedRowActionType;
+  tableActions?: TanstackTableTableActionsType[];
 };
 
 export type TanstackTableFacetedFilterType = {
@@ -27,9 +29,9 @@ export type TanstackTableColumnLink = {
   targetAccessorKey?: string;
 };
 
-export type TanstackTableRowActionsLink<TData> = {
+export type TanstackTableRowActionsSimple<TData> = {
   onClick: (row: TData) => void;
-  type: 'link';
+  type: 'simple';
 };
 
 export type TanstackTableRowDialog<TData> = {
@@ -61,11 +63,55 @@ export type TanstackTableRowActionsAutoformDialog<TData> = Omit<
   values?: (row: TData) => Partial<z.infer<ZodObjectOrWrapped>>;
 };
 export type TanstackTableRowActionsType<TData> = {
+  actionLocation: 'row';
   cta: string;
   icon?: ComponentType<{ className?: string }>;
 } & (
   | TanstackTableRowActionsConfirmationDialog<TData>
-  | TanstackTableRowActionsLink<TData>
+  | TanstackTableRowActionsSimple<TData>
   | TanstackTableRowActionsCustomDialog<TData>
   | TanstackTableRowActionsAutoformDialog<TData>
 );
+
+export type TanstackTableActionsSimple = {
+  actionLocation: 'table';
+  onClick: () => void;
+  type: 'simple';
+};
+export type TanstackTableActionsDialog = {
+  cancelText: string;
+  confirmationText: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+  title: string;
+};
+export type TanstackTableActionsAutoformDialog = Omit<
+  TanstackTableActionsDialog,
+  'cancelText' | 'onCancel' | 'confirmationText' | 'onConfirm'
+> & {
+  className?: { autoform: string; submit: string };
+  onSubmit: (values: Partial<z.infer<ZodObjectOrWrapped>>) => void;
+  schema: ZodObjectOrWrapped;
+  submitText: string;
+  type: 'autoform-dialog';
+  values?: Partial<z.infer<ZodObjectOrWrapped>>;
+};
+export type TanstackTableActionsCustomDialog = TanstackTableActionsDialog & {
+  content: JSX.Element;
+  type: 'custom-dialog';
+};
+export type TanstackTableTableActionsType = {
+  actionLocation: 'table';
+  cta: string;
+  icon?: ComponentType<{ className?: string }>;
+} & (
+  | TanstackTableActionsSimple
+  | TanstackTableActionsCustomDialog
+  | TanstackTableActionsAutoformDialog
+);
+export type TanstackTableSelectedRowActionType = {
+  actionLocation: 'table';
+  cta: string;
+  icon?: ComponentType<{ className?: string }>;
+  onClick: (selectedIds: string[]) => void;
+};
