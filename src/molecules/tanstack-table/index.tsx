@@ -12,7 +12,7 @@ import {
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import {
   Table,
@@ -28,7 +28,11 @@ import { TanstackTableAutoformDialog } from './tanstack-table-row-actions-autofo
 import { TanstackTableConfirmationDialog } from './tanstack-table-row-actions-confirmation';
 import { TanstackTableCustomDialog } from './tanstack-table-row-actions-custom-dialog';
 import { TanstackTableToolbar } from './tanstack-table-toolbar';
-import { TanstackTableProps, TanstackTableRowActionsType } from './types';
+import {
+  TanstackTableProps,
+  TanstackTableRowActionsType,
+  TanstackTableTableActionsType,
+} from './types';
 import { getCommonPinningStyles } from './utils';
 
 const CellWithActions = <TData,>(
@@ -50,7 +54,9 @@ export default function TanstackTable<TData, TValue>({
   data,
   filters,
   excludeColumns,
-  actions,
+  rowActions,
+  tableActions,
+  selectedRowAction,
 }: TanstackTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] =
@@ -65,17 +71,27 @@ export default function TanstackTable<TData, TValue>({
   const [rowAction, setRowAction] = React.useState<
     (TanstackTableRowActionsType<TData> & { row: TData }) | null
   >(null);
+  const [, setTableAction] =
+    React.useState<TanstackTableTableActionsType | null>(null);
 
   const tableColumns = useMemo(() => {
     const _columns = [...columns];
-    if (actions) {
+
+    if (rowActions) {
       _columns.push({
         id: 'actions',
-        cell: ({ row }) => CellWithActions(row, actions, setRowAction),
+        cell: ({ row }) => CellWithActions(row, rowActions, setRowAction),
       });
     }
     return _columns;
-  }, [columns, actions]);
+  }, [columns, rowActions]);
+
+  useEffect(() => {
+    if (rowAction?.type === 'simple') {
+      rowAction.onClick(rowAction.row);
+      setRowAction(null);
+    }
+  }, [rowAction]);
 
   const table = useReactTable({
     data,
@@ -87,7 +103,7 @@ export default function TanstackTable<TData, TValue>({
     },
     initialState: {
       columnPinning: {
-        left: ['name'],
+        left: ['select', 'userName'],
         right: ['actions'],
       },
     },
@@ -104,16 +120,21 @@ export default function TanstackTable<TData, TValue>({
 
   return (
     <div className="space-y-4 flex flex-col h-full">
-      <TanstackTableToolbar table={table} filters={filters} />
+      <TanstackTableToolbar<TData>
+        table={table}
+        filters={filters}
+        selectedRowAction={selectedRowAction}
+        tableActions={tableActions}
+        setTableAction={setTableAction}
+      />
       <div className="rounded-md border overflow-auto">
         <Table>
-          <TableHeader className="bg-slate-100">
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="bg-slate-100"
                     style={getCommonPinningStyles({
                       column: header.column,
                       withBorder: true,

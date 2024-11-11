@@ -14,9 +14,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import { TanstackTableTableActionsType } from './types';
+import {
+  TanstackTableSelectedRowActionType,
+  TanstackTableTableActionsType,
+} from './types';
 
 interface TanstackTableViewOptionsProps<TData> {
+  selectedRowAction?: TanstackTableSelectedRowActionType;
   setTableAction: (actions: TanstackTableTableActionsType) => void;
   table: Table<TData>;
   tableActions?: TanstackTableTableActionsType[];
@@ -51,15 +55,43 @@ function handleActionOnClick(
   }
   setRowAction(action);
 }
+
 export function TanstackTableViewOptions<TData>(
   props: TanstackTableViewOptionsProps<TData>
 ) {
-  const { table, tableActions, setTableAction: setRowAction } = props;
+  const {
+    table,
+    tableActions,
+    selectedRowAction,
+    setTableAction: setRowAction,
+  } = props;
   const primaryAction = tableActions?.[0];
   const otherActions = tableActions?.slice(1);
+  const selectedRowCount = table.getSelectedRowModel().rows.length;
 
   return (
     <>
+      {selectedRowAction && selectedRowCount > 0 && (
+        <div className="mr-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-2"
+            onClick={() => {
+              const selectedRowIds = table
+                .getSelectedRowModel()
+                .rows.map((row) => row.getValue('id') as string);
+              selectedRowAction.onClick(selectedRowIds);
+            }}
+          >
+            {selectedRowAction?.icon && (
+              <selectedRowAction.icon className="mr-2 h-4 w-4" />
+            )}
+            {selectedRowAction.cta?.toString()}
+          </Button>
+        </div>
+      )}
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm" className="ml-auto ">
