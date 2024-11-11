@@ -108,7 +108,7 @@ export function SchemaForm({ ...props }: SchemaFormProps) {
   if (props.uiSchema) {
     uiSchema = mergeUISchemaObjects(uiSchema, props.uiSchema);
   }
-  const [formData] = useState<any>(statedForm);
+  const [formData, setFormData] = useState<any>(statedForm);
   return (
     <Wrapper className="h-full">
       <Form
@@ -139,6 +139,7 @@ export function SchemaForm({ ...props }: SchemaFormProps) {
             ]);
           }
           if (props.onChange) props.onChange(e); // Call the onChange prop if provided
+          setFormData(e.formData);
         }}
         onSubmit={(_data, event) => {
           const data = _data;
