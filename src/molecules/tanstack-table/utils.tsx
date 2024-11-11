@@ -6,6 +6,7 @@ import {
   TanstackTableColumnLink,
   TanstackTableFacetedFilterType,
 } from './types';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export function getCommonPinningStyles<TData>({
   column,
@@ -23,7 +24,6 @@ export function getCommonPinningStyles<TData>({
     isPinned === 'left' && column.getIsLastColumn('left');
   const isFirstRightPinnedColumn =
     isPinned === 'right' && column.getIsFirstColumn('right');
-
   return {
     boxShadow: withBorder
       ? isLastLeftPinnedColumn
@@ -35,6 +35,7 @@ export function getCommonPinningStyles<TData>({
     left: isPinned === 'left' ? `${column.getStart('left')}px` : undefined,
     right: isPinned === 'right' ? `${column.getAfter('right')}px` : undefined,
     opacity: isPinned ? 0.97 : 1,
+    width: column.getSize(),
     position: isPinned ? 'sticky' : 'relative',
     background: isPinned ? 'hsl(var(--background))' : 'hsl(var(--background))',
     zIndex: isPinned ? 1 : 0,
@@ -46,6 +47,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
   languageData?: Record<string, string>;
   links?: Record<string, TanstackTableColumnLink>;
   row: Record<string, string | number | boolean | Date | null>;
+  selectableRows?: boolean;
 }) {
   function createCell(
     accessorKey: string,
@@ -94,7 +96,37 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
 
   const { row, languageData, links, faceted } = params;
   const columns: ColumnDef<T>[] = [];
-
+  if (params.selectableRows) {
+    columns.push({
+      size: 64,
+      id: 'select',
+      header: ({ table }) => (
+        <div className="w-14">
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && 'indeterminate')
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label="Select all"
+            className="translate-y-0.5"
+          />
+        </div>
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+          className="translate-y-0.5"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    });
+  }
   Object.keys(row).forEach((accessorKey) => {
     const title = languageData?.[accessorKey] || accessorKey;
     const link = links?.[accessorKey];
