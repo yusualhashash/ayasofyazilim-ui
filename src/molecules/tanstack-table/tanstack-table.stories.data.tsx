@@ -1,18 +1,18 @@
 import { PersonIcon, TrashIcon } from '@radix-ui/react-icons';
 import { Building2, Edit, EyeIcon, KeyIcon, PlusIcon } from 'lucide-react';
-import { createZodObject } from 'src/lib/create-zod-object';
 import { useEffect, useState } from 'react';
-import { tanstackTableCreateColumnsByRowData } from './utils';
+import { createZodObject } from 'src/lib/create-zod-object';
 import {
-  TanstackTableTableActionsType,
   TanstackTableRowActionsType,
+  TanstackTableTableActionsType,
 } from './types';
+import { tanstackTableCreateColumnsByRowData } from './utils';
 
-function Permission({ row }: { row: User }) {
+function Permission({ row }: { row: Merchant }) {
   const [permissions, setPermissions] = useState<string[] | null>(null);
   useEffect(() => {
     setTimeout(() => {
-      if (row.role === 'client') {
+      if (row.typeCode === 'HEADQUARTER') {
         setPermissions(['View User', 'Edit User', 'Delete User']);
         return;
       }
@@ -24,7 +24,7 @@ function Permission({ row }: { row: User }) {
     return <div>Loading...</div>;
   }
   if (permissions.length === 0) {
-    return <div>{row.userName} does not have any permissions. </div>;
+    return <div>{row.name} does not have any permissions. </div>;
   }
   return (
     <ul>
@@ -35,199 +35,283 @@ function Permission({ row }: { row: User }) {
   );
 }
 const Custom = () => <div>Some custom dialog</div>;
-export type User = {
-  createdAt?: Date;
-  email: string;
+export const $merchantSchema = {
+  properties: {
+    id: {
+      type: 'string',
+      format: 'uuid',
+    },
+    typeCode: {
+      enum: ['HEADQUARTER', 'STORE'],
+      type: 'string',
+    },
+    name: {
+      minLength: 1,
+      type: 'string',
+    },
+    parentId: {
+      type: 'string',
+      format: 'uuid',
+      nullable: true,
+    },
+    entityInformationTypeCode: {
+      enum: ['INDIVIDUAL', 'ORGANIZATION'],
+      type: 'string',
+    },
+    organizationId: {
+      type: 'string',
+      format: 'uuid',
+      nullable: true,
+    },
+    individualId: {
+      type: 'string',
+      format: 'uuid',
+      nullable: true,
+    },
+  },
+} as const;
+
+export const $editMerchantDto = {
+  required: ['taxOfficeId', 'typeCode'],
+  type: 'object',
+  properties: {
+    name: {
+      minLength: 1,
+      type: 'string',
+    },
+    typeCode: {
+      enum: ['HEADQUARTER', 'STORE'],
+      type: 'string',
+    },
+    taxOfficeId: {
+      type: 'string',
+      format: 'uuid',
+    },
+    parentId: {
+      type: 'string',
+      format: 'uuid',
+      nullable: true,
+    },
+  },
+  additionalProperties: false,
+} as const;
+
+export type Merchant = {
+  entityInformationTypeCode: 'INDIVIDUAL' | 'ORGANIZATION';
   id: string;
-  image: string;
-  location: string;
-  otherInformation?: string;
-  phone: string;
-  role: 'client' | 'provider';
-  rtn?: string;
-  status: 'active' | 'inactive';
-
-  updatedAt?: Date;
-  userName: string;
+  individualId?: string | null;
+  name: string;
+  organizationId?: string | null;
+  parentId?: string | null;
+  typeCode?: 'HEADQUARTER' | 'STORE';
 };
-
-export const users: User[] = [
+export const merchants: Merchant[] = [
   {
-    id: '9953ed85-31a0-4db9-acc8-e25b76176443',
-    userName: 'John Miller',
-    phone: '+1-555-0101',
-    email: 'john.miller@example.com',
-    role: 'client',
-    status: 'inactive',
-    location: '4306 Highland Drive, Seattle, WA 98109',
-    image: 'john.miller.jpg',
-    rtn: 'US2347908701',
-    otherInformation: 'John Miller works in a tech startup in Seattle.',
-    createdAt: new Date('2024-02-07T23:35:52.087Z'),
-    updatedAt: new Date('2024-02-07T23:38:03.259Z'),
+    id: 'a42aadda-aec1-ed40-0947-3a14ca0cc2fd',
+    typeCode: 'HEADQUARTER',
+    name: 'Advanced Global Technologies and Innovations Ltd.',
+    parentId: null,
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: 'a818149b-12e7-c48f-0f7b-3a14ca0cc2fd',
+    individualId: null,
   },
   {
-    id: '328c2bef-d84b-44a2-b5ae-03bd6550c4c4',
-    userName: 'Elizabeth Smith',
-    phone: '+44-020-8102',
-    email: 'elizabeth.smith@example.co.uk',
-    role: 'client',
-    status: 'active',
-    location: '22 Camden Road, London, NW1 9DP',
-    image: 'elizabeth.smith.jpg',
-    rtn: 'UK6574829302',
-    otherInformation:
-      'Elizabeth Smith works in a financial consultancy in London.',
-    createdAt: new Date('2024-02-07T23:35:52.087Z'),
-    updatedAt: new Date('2024-02-07T23:38:03.259Z'),
+    id: '47dbd936-cb87-7b53-f13b-3a14ca0d0bbd',
+    typeCode: 'STORE',
+    name: 'United Industrial Services and Manufacturing Co.',
+    parentId: 'c8909caa-775d-f757-aadb-3a1559e60015',
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: 'e36ec652-f3da-cba2-1509-3a14ca0d0bbd',
+    individualId: null,
   },
   {
-    id: '9543e3a4-99f2-4fcb-ba5d-f2aaebff6716',
-    userName: 'Noah Wilson',
-    phone: '+61-8-9200-1234',
-    email: 'noah.wilson@example.com.au',
-    role: 'provider',
-    status: 'inactive',
-    location: '305 Murray Street, Perth, WA 6000',
-    image: 'noah.wilson.jpg',
-    rtn: 'AU9085471203',
-    otherInformation:
-      'Noah Wilson is involved in the mining industry in Perth.',
-    createdAt: new Date('2024-02-07T23:35:52.087Z'),
-    updatedAt: new Date('2024-02-07T23:38:03.259Z'),
+    id: '6817dc23-7c82-f1e1-dd87-3a14ca0d4435',
+    typeCode: 'HEADQUARTER',
+    name: 'Global Health and Wellness Solutions Incorporated',
+    parentId: null,
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: '69ecde4d-54d0-b1d1-ac8e-3a14ca0d4435',
+    individualId: null,
   },
   {
-    id: 'bdcba306-57fa-4722-82e3-c4933b09e69b',
-    userName: 'Marie Dubois',
-    phone: '+33-1-4533-0012',
-    email: 'marie.dubois@example.fr',
-    role: 'client',
-    status: 'active',
-    location: '14 Rue de Rivoli, 75004 Paris',
-    image: 'marie.dubois.jpg',
-    rtn: 'FR21340987201',
-    otherInformation: 'Marie Dubois works in a fashion house in Paris.',
-    createdAt: new Date('2024-02-07T23:35:52.087Z'),
-    updatedAt: new Date('2024-02-07T23:38:03.259Z'),
+    id: '16eae37f-d07c-308d-b223-3a1559e2c194',
+    typeCode: 'HEADQUARTER',
+    name: 'ayasofyazilim',
+    parentId: null,
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: 'b49f9f70-07c9-d699-72f5-3a1559e2c195',
+    individualId: null,
   },
   {
-    id: 'e643dbea-0ab2-4d3d-8bb8-63aedf027a66',
-    userName: 'Wang Wei',
-    phone: '+86-20-8221-1234',
-    email: 'wang.wei@example.com.cn',
-    role: 'client',
-    status: 'inactive',
-    location: '206 Huanshi E Rd, Yuexiu District, Guangzhou, Guangdong',
-    image: 'wang.wei.jpg',
-    rtn: 'CN9988321221',
-    otherInformation:
-      'Wang Wei works for an electronics manufacturing company in Guangzhou.',
-    createdAt: new Date('2024-02-07T23:35:52.087Z'),
-    updatedAt: new Date('2024-02-07T23:38:03.259Z'),
+    id: 'c8909caa-775d-f757-aadb-3a1559e60015',
+    typeCode: 'HEADQUARTER',
+    name: 'Burak Test A.Ş.',
+    parentId: null,
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: 'e78d770e-35ae-6319-32fa-3a1559e60015',
+    individualId: null,
   },
   {
-    id: '94093200-c89f-410f-ba96-046f33fabb3e',
-    userName: 'Conor Murphy',
-    phone: '+353-1-242-1000',
-    email: 'conor.murphy@example.ie',
-    role: 'provider',
-    status: 'active',
-    location: "17 O'Connell Street, Dublin, D01 T9C2",
-    image: 'conor.murphy.jpg',
-    rtn: 'IE65432108701',
-    otherInformation:
-      'Conor Murphy works in a pharmaceutical company in Dublin.',
-    createdAt: new Date('2024-02-07T23:35:52.087Z'),
-    updatedAt: new Date('2024-02-07T23:38:03.259Z'),
+    id: '349b9d4f-73c8-1cee-d6b6-3a15684277b3',
+    typeCode: 'STORE',
+    name: 'test',
+    parentId: null,
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: 'cf3ab09f-0549-9d5a-778b-3a15684277b4',
+    individualId: null,
   },
   {
-    id: '4174f655-5cb2-4bd9-a785-ce11f16cebb0',
-    userName: 'Emma Tremblay',
-    phone: '+1 604-555-0122',
-    email: 'emma.tremblay@example.com',
-    role: 'client',
-    status: 'inactive',
-    location: '1020 Mainland Street, Vancouver, BC V6B 2T4',
-    image: 'emma.tremblay.jpg',
-    rtn: '07081999021280',
-    otherInformation:
-      'Emma Tremblay is engaged in the environmental sector in Canada.',
-    createdAt: new Date('2024-02-13T15:35:02.010Z'),
-    updatedAt: new Date('2024-02-13T15:37:03.020Z'),
+    id: 'bb0d28d5-6ac6-607e-5e8b-3a15795ecbfb',
+    typeCode: 'HEADQUARTER',
+    name: 'a0099989',
+    parentId: null,
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: 'b3654b88-77dc-b767-1a29-3a15795ecbfb',
+    individualId: null,
   },
   {
-    id: '38d5126b-4473-40d2-8142-2e7049c07346',
-    userName: 'Maximilian Bauer',
-    phone: '+49 30 567890',
-    email: 'maximilian.bauer@example.com',
-    role: 'client',
-    status: 'active',
-    location: 'Hauptstraße 5, 10178 Berlin',
-    image: 'maximilian.bauer.jpg',
-    rtn: '08081999021280',
-    otherInformation:
-      'Maximilian Bauer works for an automobile company in Germany.',
-    createdAt: new Date('2024-02-14T16:39:04.030Z'),
-    updatedAt: new Date('2024-02-14T16:40:05.040Z'),
+    id: 'c44bde19-c2e0-a919-7f9f-3a158268c61d',
+    typeCode: 'STORE',
+    name: 'test2',
+    parentId: null,
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: 'e31815d4-0fe8-1b0a-8f07-3a158268c61d',
+    individualId: null,
   },
   {
-    id: 'cb3ae8be-e376-4d26-9cfc-5884348c22ec',
-    userName: 'Sofia Ricci',
-    phone: '+39 06 12345678',
-    email: 'sofia.ricci@example.com',
-    role: 'provider',
-    status: 'inactive',
-    location: 'Via Roma 15, 00184 Rome',
-    image: 'sofia.ricci.jpg',
-    rtn: '09081999021280',
-    otherInformation: 'Sofia Ricci is part of the culinary field in Italy.',
-    createdAt: new Date('2024-02-15T17:41:06.050Z'),
-    updatedAt: new Date('2024-02-15T17:42:07.060Z'),
+    id: '6d03d81c-082b-9414-0f43-3a15826b80c9',
+    typeCode: 'STORE',
+    name: 'test236',
+    parentId: 'c8909caa-775d-f757-aadb-3a1559e60015',
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: '99a4a912-373d-604e-8b5c-3a15826b80c9',
+    individualId: null,
   },
   {
-    id: 'fa47c0f4-620c-40b3-a16a-b9afa9a88215',
-    userName: 'Arjun Patel',
-    phone: '+91 22 2771 1234',
-    email: 'arjun.patel@example.com',
-    role: 'client',
-    status: 'active',
-    location: '142 M.G. Road, Mumbai, Maharashtra 400001',
-    image: 'arjun.patel.jpg',
-    rtn: '10081999021280',
-    otherInformation:
-      'Arjun Patel is active in the software industry in India.',
-    createdAt: new Date('2024-02-16T18:43:08.070Z'),
-    updatedAt: new Date('2024-02-16T18:44:09.080Z'),
+    id: '241ccefe-8186-638b-2f06-3a1582ab48b5',
+    typeCode: 'STORE',
+    name: 'subbb',
+    parentId: '16eae37f-d07c-308d-b223-3a1559e2c194',
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: '0b47fc72-78b9-9fb4-0e19-3a1582ab48b5',
+    individualId: null,
   },
   {
-    id: '8ce5b4d9-5182-4cbf-9d48-f187b377e931',
-    userName: 'Sato Yuki',
-    phone: '+81 3 3541 1234',
-    email: 'sato.yuki@example.com',
-    role: 'client',
-    status: 'inactive',
-    location: '2-11-3 Meguro, Tokyo 153-0063',
-    image: 'sato.yuki.jpg',
-    rtn: '11081999021280',
-    otherInformation:
-      'Sato Yuki is engaged in the electronics sector in Japan.',
-    createdAt: new Date('2024-02-17T19:45:10.090Z'),
-    updatedAt: new Date('2024-02-17T19:46:11.100Z'),
+    id: '061690ad-8cb6-ed6c-9702-3a158376d61a',
+    typeCode: 'STORE',
+    name: ' 2ppp',
+    parentId: 'c8909caa-775d-f757-aadb-3a1559e60015',
+    entityInformationTypeCode: 'INDIVIDUAL',
+    organizationId: null,
+    individualId: '6682772d-2214-b96a-740e-3a158376d61a',
   },
   {
-    id: 'cb2c15c3-7fc9-4d51-8b7b-3e636ac6195b',
-    userName: 'Lucas Silva',
-    phone: '+55 11 9988-7766',
-    email: 'lucas.silva@example.com',
-    role: 'provider',
-    status: 'active',
-    location: 'Rua Oscar Freire, 379, São Paulo, SP 01426-001',
-    image: 'lucas.silva.jpg',
-    rtn: '12081999021280',
-    otherInformation:
-      'Lucas Silva works in the agricultural business in Brazil.',
-    createdAt: new Date('2024-02-18T20:47:12.110Z'),
-    updatedAt: new Date('2024-02-18T20:48:13.120Z'),
+    id: '035b48dd-cfb4-1302-a548-3a1588d8d2a0',
+    typeCode: 'STORE',
+    name: 'MerchantOrg',
+    parentId: null,
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: '3bb0031f-4682-8031-fc30-3a1588d8d2a0',
+    individualId: null,
+  },
+  {
+    id: 'dcfe3c09-14d1-1881-5e22-3a158c4abb22',
+    typeCode: 'HEADQUARTER',
+    name: ' Eren',
+    parentId: null,
+    entityInformationTypeCode: 'INDIVIDUAL',
+    organizationId: null,
+    individualId: '5c09c77d-cc16-da3e-ce47-3a158c4abb22',
+  },
+  {
+    id: 'b434a4b8-5ffe-cc10-2553-3a158c897711',
+    typeCode: 'STORE',
+    name: 'Sub Merchant',
+    parentId: '035b48dd-cfb4-1302-a548-3a1588d8d2a0',
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: '88401fc5-c69d-4bc4-7aac-3a158c897712',
+    individualId: null,
+  },
+  {
+    id: 'b258daa6-897b-23af-d37a-3a158c8adc7b',
+    typeCode: 'STORE',
+    name: ' Sub Individual',
+    parentId: '035b48dd-cfb4-1302-a548-3a1588d8d2a0',
+    entityInformationTypeCode: 'INDIVIDUAL',
+    organizationId: null,
+    individualId: 'e8e51a50-bd41-5575-9a37-3a158c8adc7b',
+  },
+  {
+    id: 'ee414be2-98e3-585d-545a-3a158d92a031',
+    typeCode: 'STORE',
+    name: 'test',
+    parentId: 'bb0d28d5-6ac6-607e-5e8b-3a15795ecbfb',
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: '9fc6705b-aa59-309c-0108-3a158d92a032',
+    individualId: null,
+  },
+  {
+    id: '0393e2b8-be36-f90a-b0a9-3a15a2993d46',
+    typeCode: 'STORE',
+    name: ' test',
+    parentId: 'a42aadda-aec1-ed40-0947-3a14ca0cc2fd',
+    entityInformationTypeCode: 'INDIVIDUAL',
+    organizationId: null,
+    individualId: 'dd440133-64ad-7d8e-cb7b-3a15a2993d46',
+  },
+  {
+    id: 'a82205c0-8c69-eb5e-7b5a-3a15ab81a3c1',
+    typeCode: 'HEADQUARTER',
+    name: 'test',
+    parentId: null,
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: '0fbe3bad-da41-0232-488f-3a15ab81a3c1',
+    individualId: null,
+  },
+  {
+    id: '2c855fd3-f926-6a29-9aed-3a15ab82c06a',
+    typeCode: 'STORE',
+    name: 'test1',
+    parentId: 'a82205c0-8c69-eb5e-7b5a-3a15ab81a3c1',
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: '16d8f75a-169b-f813-f91c-3a15ab82c06a',
+    individualId: null,
+  },
+  {
+    id: '02d2706f-85ee-6bd9-9e6d-3a15d5927268',
+    typeCode: 'STORE',
+    name: 'deneme orgü',
+    parentId: null,
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: '8715f892-9e20-436d-4057-3a15d5927269',
+    individualId: null,
+  },
+  {
+    id: '5a3745f0-cff3-4226-5567-3a15d59340af',
+    typeCode: 'HEADQUARTER',
+    name: 'deneme ind deneme ind',
+    parentId: null,
+    entityInformationTypeCode: 'INDIVIDUAL',
+    organizationId: null,
+    individualId: '02a48e8b-d976-2647-e6eb-3a15d59340af',
+  },
+  {
+    id: '240e5306-6b58-29d0-2237-3a15ee1bc894',
+    typeCode: 'HEADQUARTER',
+    name: 'İdris deneme',
+    parentId: null,
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: '1e888d7c-899c-8a9a-7f42-3a15ee1bc895',
+    individualId: null,
+  },
+  {
+    id: '21a135bb-76a2-9c4e-2c9e-3a15ee206da5',
+    typeCode: 'STORE',
+    name: '111111',
+    parentId: '240e5306-6b58-29d0-2237-3a15ee1bc894',
+    entityInformationTypeCode: 'ORGANIZATION',
+    organizationId: '82962d74-127e-fd3c-3b2b-3a15ee206da5',
+    individualId: null,
   },
 ];
 export const faceted = {
@@ -236,8 +320,8 @@ export const faceted = {
     { value: 'active', label: 'Active', icon: PersonIcon },
   ],
 };
-export const col = tanstackTableCreateColumnsByRowData<User>({
-  row: users[0],
+export const col = tanstackTableCreateColumnsByRowData<Merchant>({
+  row: $merchantSchema.properties,
   languageData: { userName: 'Kullanıcı Adı' },
   links: {
     userName: {
@@ -313,7 +397,7 @@ export const tableAction: TanstackTableTableActionsType[] = [
   },
 ];
 
-export const rowActions: TanstackTableRowActionsType<User>[] = [
+export const rowActions: TanstackTableRowActionsType<Merchant>[] = [
   {
     actionLocation: 'row',
     cta: 'View User',
@@ -330,8 +414,8 @@ export const rowActions: TanstackTableRowActionsType<User>[] = [
     cta: 'Edit',
     icon: Edit,
     submitText: 'Save',
-    title: (row) => `Edit ${row.userName}`,
-    values: (row) => ({ displayName: row.userName }),
+    title: (row) => `Edit ${row.name}`,
+    values: (row) => ({ displayName: row.name }),
     onSubmit(row, values) {
       alert(`${JSON.stringify(row)} ${JSON.stringify(values)}`);
     },
@@ -344,9 +428,9 @@ export const rowActions: TanstackTableRowActionsType<User>[] = [
     content: (row) => <Permission row={row} />,
     cancelText: 'Close',
     icon: KeyIcon,
-    title: (row) => row.userName,
+    title: (row) => row.name,
     onCancel: (row) => {
-      console.log(row.userName);
+      console.log(row.name);
     },
   },
   {
@@ -357,12 +441,12 @@ export const rowActions: TanstackTableRowActionsType<User>[] = [
     icon: TrashIcon,
     type: 'confirmation-dialog',
     description: 'Are you sure you want to delete this user?',
-    title: (row) => row.userName,
+    title: (row) => row.name,
     onConfirm: (row) => {
-      console.log(row.phone);
+      console.log(row.name);
     },
     onCancel: (row) => {
-      console.log(row.userName);
+      console.log(row.name);
     },
   },
 ];

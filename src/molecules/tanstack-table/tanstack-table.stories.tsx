@@ -1,13 +1,16 @@
 import { Meta, StoryFn } from '@storybook/react';
-import { CheckCircle2, Trash2, XCircleIcon } from 'lucide-react';
+import { Building2, Edit, Trash2, User2 } from 'lucide-react';
+import { createZodObject } from 'src/lib/create-zod-object';
 import TanstackTable from '.';
 import {
-  rowActions,
+  $editMerchantDto,
+  $merchantSchema,
   col,
-  tableAction,
-  users,
   faceted,
-  User,
+  Merchant,
+  merchants,
+  rowActions,
+  tableAction,
 } from './tanstack-table.stories.data';
 import { tanstackTableCreateColumnsByRowData } from './utils';
 
@@ -23,11 +26,11 @@ const template: StoryFn<typeof TanstackTable> = (args) => (
   <div className="max-w-[1400px]">
     <TanstackTable
       {...args}
-      data={users}
+      data={merchants}
       columns={col}
       rowActions={rowActions}
       tableActions={tableAction}
-      excludeColumns={['id', 'rtn']}
+      excludeColumns={['id']}
     />
   </div>
 );
@@ -35,7 +38,7 @@ const template: StoryFn<typeof TanstackTable> = (args) => (
 export const Default = template.bind({});
 Default.args = {
   filters: {
-    textFilters: ['userName'],
+    textFilters: ['name'],
     facetedFilters: faceted,
   },
   selectedRowAction: {
@@ -52,30 +55,24 @@ const linkStory: StoryFn<typeof TanstackTable> = (args) => (
   <div className="max-w-[1400px]">
     <TanstackTable
       {...args}
-      data={users}
+      data={merchants}
       columns={linkCol}
-      excludeColumns={[
-        'id',
-        'rtn',
-        'phone',
-        'location',
-        'image',
-        'otherInformation',
-        'createdAt',
-        'updatedAt',
-      ]}
+      columnVisibility={{
+        type: 'show',
+        columns: ['name', 'entityInformationTypeCode'],
+      }}
     />
   </div>
 );
-const linkCol = tanstackTableCreateColumnsByRowData<User>({
-  row: users[0],
+const linkCol = tanstackTableCreateColumnsByRowData<Merchant>({
+  row: $merchantSchema.properties,
   links: {
-    userName: {
+    name: {
       targetAccessorKey: 'id',
       prefix: 'http://192.168.1.105:1453/tr/app/admin',
       suffix: '/edit',
     },
-    email: {
+    entityInformationTypeCode: {
       prefix: 'http://192.168.1.105:1453/tr/app/',
     },
   },
@@ -86,45 +83,30 @@ const badgeStory: StoryFn<typeof TanstackTable> = (args) => (
   <div className="max-w-[1400px]">
     <TanstackTable
       {...args}
-      data={users}
+      data={merchants}
       columns={badgeCol}
-      excludeColumns={[
-        'id',
-        'rtn',
-        'phone',
-        'location',
-        'image',
-        'otherInformation',
-        'createdAt',
-        'updatedAt',
-        'status',
-      ]}
+      columnVisibility={{
+        type: 'show',
+        columns: ['name', 'entityInformationTypeCode'],
+      }}
     />
   </div>
 );
-const badgeCol = tanstackTableCreateColumnsByRowData<User>({
-  row: users[0],
+const badgeCol = tanstackTableCreateColumnsByRowData<Merchant>({
+  row: $merchantSchema.properties,
   badges: {
-    userName: {
-      targetAccessorKey: 'status',
+    entityInformationTypeCode: {
+      targetAccessorKey: 'typeCode',
       values: [
         {
-          label: 'Active',
-          value: 'active',
+          label: 'Organizasyon',
+          value: 'HEADQUARTER',
         },
         {
-          label: 'Inactive',
-          value: 'inactive',
+          label: 'Bireysel',
+          value: 'STORE',
         },
       ],
-    },
-    role: {
-      targetAccessorKey: 'role',
-      values: [
-        { label: 'Provider', value: 'provider' },
-        { label: 'Client', value: 'client' },
-      ],
-      hideColumnValue: true,
     },
   },
 });
@@ -134,39 +116,28 @@ const facetedStory: StoryFn<typeof TanstackTable> = (args) => (
   <div className="max-w-[1400px]">
     <TanstackTable
       {...args}
-      data={users}
+      data={merchants}
       columns={facetedCol}
-      excludeColumns={[
-        'id',
-        'rtn',
-        'phone',
-        'location',
-        'image',
-        'otherInformation',
-        'createdAt',
-        'updatedAt',
-        'role',
-      ]}
+      columnVisibility={{
+        type: 'show',
+        columns: ['name', 'entityInformationTypeCode'],
+      }}
     />
   </div>
 );
-const facetedCol = tanstackTableCreateColumnsByRowData<User>({
-  row: users[0],
+const facetedCol = tanstackTableCreateColumnsByRowData<Merchant>({
+  row: $merchantSchema.properties,
   faceted: {
-    status: [
+    entityInformationTypeCode: [
       {
-        value: 'active',
-        label: 'Active',
-        icon: CheckCircle2,
-        iconClassName: 'text-green-700',
-        className: 'text-green-700',
+        value: 'INDIVIDUAL',
+        label: 'Bireysel',
+        icon: User2,
       },
       {
-        value: 'inactive',
-        label: 'Inactive',
-        icon: XCircleIcon,
-        iconClassName: 'text-red-700',
-        className: 'text-red-700',
+        value: 'ORGANIZATION',
+        label: 'Organizasyon',
+        icon: Building2,
       },
     ],
   },
@@ -176,28 +147,58 @@ const translatedStory: StoryFn<typeof TanstackTable> = (args) => (
   <div className="max-w-[1400px]">
     <TanstackTable
       {...args}
-      data={users}
+      data={merchants}
       columns={translatedCol}
-      excludeColumns={[
-        'id',
-        'rtn',
-        'location',
-        'image',
-        'otherInformation',
-        'updatedAt',
-        'role',
-        'status',
+      columnVisibility={{
+        type: 'show',
+        columns: ['name', 'entityInformationTypeCode'],
+      }}
+    />
+  </div>
+);
+const translatedCol = tanstackTableCreateColumnsByRowData<Merchant>({
+  row: $merchantSchema.properties,
+  languageData: {
+    name: 'Ad',
+    entityInformationTypeCode: 'Tip',
+  },
+});
+export const TranslatedColumns = translatedStory.bind({});
+
+const editRowStory: StoryFn<typeof TanstackTable> = (args) => (
+  <div className="max-w-[1400px]">
+    <TanstackTable
+      {...args}
+      data={merchants}
+      columns={editRowCol}
+      columnVisibility={{
+        type: 'show',
+        columns: ['name', 'entityInformationTypeCode'],
+      }}
+      rowActions={[
+        {
+          type: 'autoform-dialog',
+          actionLocation: 'row',
+          icon: Edit,
+          schema: createZodObject($editMerchantDto),
+          cta: 'Düzenle',
+          title: (row) => `${row.name}'i güncelle`,
+          onSubmit(row, values) {
+            alert(JSON.stringify(row));
+            alert(JSON.stringify(values));
+          },
+          values: (row) => row,
+          submitText: 'Güncelle',
+        },
       ]}
     />
   </div>
 );
-const translatedCol = tanstackTableCreateColumnsByRowData<User>({
-  row: users[0],
+const editRowCol = tanstackTableCreateColumnsByRowData<Merchant>({
+  row: $merchantSchema.properties,
   languageData: {
-    userName: 'Kullanicı Adı',
-    email: 'E-posta',
-    phone: 'Telefon',
-    createdAt: 'Oluşturulma Tarihi',
+    name: 'Ad',
+    entityInformationTypeCode: 'Tip',
   },
 });
-export const TranslatedColumns = translatedStory.bind({});
+export const EditRow = editRowStory.bind({});
