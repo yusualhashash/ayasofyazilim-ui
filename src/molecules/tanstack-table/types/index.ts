@@ -5,6 +5,10 @@ import { z } from 'zod';
 
 export type TanstackTableProps<TData, TValue> = {
   columnOrder?: (keyof TData)[];
+  columnVisibility?: {
+    columns: (keyof TData)[];
+    type: 'show' | 'hide';
+  };
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   excludeColumns?: (keyof TData)[];
