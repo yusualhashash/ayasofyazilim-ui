@@ -30,6 +30,12 @@ export type TanstackTableColumnLink = {
   suffix?: string;
   targetAccessorKey?: string;
 };
+export type TanstackTableColumnBadge = {
+  className?: string;
+  hideColumnValue?: boolean;
+  targetAccessorKey: string;
+  values: { badgeClassName?: string; label: string; value: string }[];
+};
 
 export type TanstackTableRowActionsSimple<TData> = {
   onClick: (row: TData) => void;

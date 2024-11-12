@@ -3,11 +3,13 @@ import { CSSProperties } from 'react';
 import Link from 'next/link';
 import { TanstackTableColumnHeader } from './tanstack-table-column-header';
 import {
+  TanstackTableColumnBadge,
   TanstackTableColumnLink,
   TanstackTableFacetedFilterType,
 } from './types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 export function getCommonPinningStyles<TData>({
   column,
@@ -44,11 +46,13 @@ export function getCommonPinningStyles<TData>({
 }
 
 export function tanstackTableCreateColumnsByRowData<T>(params: {
+  badges?: Record<string, TanstackTableColumnBadge>;
   classNames?: Record<string, string>;
   faceted?: Record<string, TanstackTableFacetedFilterType[]>;
   languageData?: Record<string, string>;
   links?: Record<string, TanstackTableColumnLink>;
   row: Record<string, string | number | boolean | Date | null>;
+
   selectableRows?: boolean;
 }) {
   function createCell(
@@ -56,10 +60,32 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
     row: Row<T>,
     link?: TanstackTableColumnLink,
     faceted?: TanstackTableFacetedFilterType[],
+    badge?: TanstackTableColumnBadge,
     className?: string
   ) {
     let content: JSX.Element | string =
       row.getValue(accessorKey)?.toString() || '';
+
+    if (badge) {
+      const badgeItem = badge.values.find(
+        (item) => item.value === row.getValue(badge.targetAccessorKey)
+      );
+      console.log(
+        badgeItem,
+        accessorKey,
+        row.getValue(badge.targetAccessorKey)
+      );
+      if (badgeItem) {
+        content = (
+          <>
+            <Badge variant="outline" className={badgeItem.badgeClassName}>
+              {badgeItem.label}
+            </Badge>{' '}
+            {!badge.hideColumnValue && content}
+          </>
+        );
+      }
+    }
     if (faceted) {
       const facetedItem = faceted.find(
         (item) => item.value === row.getValue(accessorKey)
@@ -102,7 +128,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
     );
   }
 
-  const { row, languageData, links, faceted, classNames } = params;
+  const { row, languageData, links, faceted, badges, classNames } = params;
   const columns: ColumnDef<T>[] = [];
   if (params.selectableRows) {
     columns.push({
@@ -151,6 +177,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
           row,
           link,
           faceted?.[accessorKey],
+          badges?.[accessorKey],
           classNames?.[accessorKey]
         ),
     };
