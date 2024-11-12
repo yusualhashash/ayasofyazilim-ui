@@ -4,6 +4,7 @@ import { ZodObjectOrWrapped } from 'src/organisms/auto-form';
 import { z } from 'zod';
 
 export type TanstackTableProps<TData, TValue> = {
+  columnOrder?: (keyof TData)[];
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   excludeColumns?: string[];
@@ -30,6 +31,12 @@ export type TanstackTableColumnLink = {
   suffix?: string;
   targetAccessorKey?: string;
 };
+export type TanstackTableColumnBadge = {
+  className?: string;
+  hideColumnValue?: boolean;
+  targetAccessorKey: string;
+  values: { badgeClassName?: string; label: string; value: string }[];
+};
 
 export type TanstackTableRowActionsSimple<TData> = {
   onClick: (row: TData) => void;
@@ -37,20 +44,26 @@ export type TanstackTableRowActionsSimple<TData> = {
 };
 
 export type TanstackTableRowDialog<TData> = {
-  cancelText: string;
-  confirmationText: string;
-  onCancel: (row: TData) => void;
-  onConfirm: (row: TData) => void;
+  cancelText?: string;
+  confirmationText?: string;
+  onCancel?: (row: TData) => void;
+  onConfirm?: (row: TData) => void;
   title: string | ((row: TData) => string);
 };
 export type TanstackTableRowActionsCustomDialog<TData> =
   TanstackTableRowDialog<TData> & {
+    cancelText?: string;
+    confirmationText?: string;
     content: JSX.Element | ((row: TData) => JSX.Element);
     type: 'custom-dialog';
   };
 export type TanstackTableRowActionsConfirmationDialog<TData> =
   TanstackTableRowDialog<TData> & {
+    cancelText: string;
+    confirmationText: string;
     description: string;
+    onCancel?: (row: TData) => void;
+    onConfirm: (row: TData) => void;
     type: 'confirmation-dialog';
   };
 export type TanstackTableRowActionsAutoformDialog<TData> = Omit<
@@ -81,10 +94,10 @@ export type TanstackTableActionsSimple = {
   type: 'simple';
 };
 export type TanstackTableActionsDialog = {
-  cancelText: string;
-  confirmationText: string;
-  onCancel: () => void;
-  onConfirm: () => void;
+  cancelText?: string;
+  confirmationText?: string;
+  onCancel?: () => void;
+  onConfirm?: () => void;
   title: string;
 };
 export type TanstackTableActionsAutoformDialog = Omit<

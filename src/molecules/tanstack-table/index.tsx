@@ -27,6 +27,7 @@ import { TanstackTableRowActions } from './tanstack-table-row-actions';
 import { TanstackTableAutoformDialog } from './tanstack-table-row-actions-autoform-dialog';
 import { TanstackTableConfirmationDialog } from './tanstack-table-row-actions-confirmation';
 import { TanstackTableCustomDialog } from './tanstack-table-row-actions-custom-dialog';
+import { TanstackTableTableAutoformDialog } from './tanstack-table-table-actions-autoform-dialog';
 import { TanstackTableToolbar } from './tanstack-table-toolbar';
 import {
   TanstackTableProps,
@@ -34,7 +35,6 @@ import {
   TanstackTableTableActionsType,
 } from './types';
 import { getCommonPinningStyles } from './utils';
-import { TanstackTableTableAutoformDialog } from './tanstack-table-table-actions-autoform-dialog';
 
 const CellWithActions = <TData,>(
   row: Row<TData>,
@@ -52,6 +52,7 @@ const CellWithActions = <TData,>(
 
 export default function TanstackTable<TData, TValue>({
   columns,
+  columnOrder,
   data,
   filters,
   excludeColumns,
@@ -103,6 +104,7 @@ export default function TanstackTable<TData, TValue>({
       columnFilters,
     },
     initialState: {
+      columnOrder: columnOrder as string[],
       columnPinning: {
         left: ['select', 'userName'],
         right: ['actions'],
