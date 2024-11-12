@@ -7,6 +7,7 @@ import {
   TanstackTableFacetedFilterType,
 } from './types';
 import { Checkbox } from '@/components/ui/checkbox';
+import { cn } from '@/lib/utils';
 
 export function getCommonPinningStyles<TData>({
   column,
@@ -43,6 +44,7 @@ export function getCommonPinningStyles<TData>({
 }
 
 export function tanstackTableCreateColumnsByRowData<T>(params: {
+  classNames?: Record<string, string>;
   faceted?: Record<string, TanstackTableFacetedFilterType[]>;
   languageData?: Record<string, string>;
   links?: Record<string, TanstackTableColumnLink>;
@@ -53,7 +55,8 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
     accessorKey: string,
     row: Row<T>,
     link?: TanstackTableColumnLink,
-    faceted?: TanstackTableFacetedFilterType[]
+    faceted?: TanstackTableFacetedFilterType[],
+    className?: string
   ) {
     let content: JSX.Element | string =
       row.getValue(accessorKey)?.toString() || '';
@@ -64,9 +67,14 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
 
       if (facetedItem) {
         content = (
-          <div className="flex items-center">
+          <div className={cn('flex items-center', facetedItem.className)}>
             {facetedItem.icon && (
-              <facetedItem.icon className="text-muted-foreground mr-2 h-4 w-4" />
+              <facetedItem.icon
+                className={cn(
+                  'text-muted-foreground mr-2 h-4 w-4',
+                  facetedItem.iconClassName
+                )}
+              />
             )}
             <span>{facetedItem.label}</span>
           </div>
@@ -74,7 +82,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       }
     }
     if (!link) {
-      return <div className="w-40">{content}</div>;
+      return <div className={cn('w-40', className)}>{content}</div>;
     }
     let url = link.prefix;
     if (link.targetAccessorKey) {
@@ -88,13 +96,13 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       url += `/${link.suffix}`;
     }
     return (
-      <Link href={url} className="font-medium underline">
+      <Link href={url} className={cn('font-medium underline', className)}>
         {content}
       </Link>
     );
   }
 
-  const { row, languageData, links, faceted } = params;
+  const { row, languageData, links, faceted, classNames } = params;
   const columns: ColumnDef<T>[] = [];
   if (params.selectableRows) {
     columns.push({
@@ -138,7 +146,13 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
         <TanstackTableColumnHeader column={column} title={title} />
       ),
       cell: ({ row }) =>
-        createCell(accessorKey, row, link, faceted?.[accessorKey]),
+        createCell(
+          accessorKey,
+          row,
+          link,
+          faceted?.[accessorKey],
+          classNames?.[accessorKey]
+        ),
     };
     if (faceted?.[accessorKey]) {
       column.filterFn = (row, id, value) => value.includes(row.getValue(id));
