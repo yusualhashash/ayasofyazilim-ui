@@ -126,7 +126,6 @@ export const AutoColumns: StoryObj<typeof Table> = {
 export const autoColumnData: AutoColumnGenerator<typeof jsonSchema.properties> =
   {
     tableType: jsonSchema,
-    excludeList: ['id'],
     selectable: false,
     customCells: {
       amount: {
