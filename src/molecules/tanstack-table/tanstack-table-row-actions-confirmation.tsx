@@ -41,9 +41,7 @@ export function TanstackTableConfirmationDialog<TData>({
   };
   const handleOnCancelClick = () => {
     startDeleteTransition(() => {
-      if (onCancel) {
-        onCancel?.(row);
-      }
+      onCancel?.(row);
       setDialogOpen();
     });
   };
