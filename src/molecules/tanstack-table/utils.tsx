@@ -104,7 +104,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       }
     }
     if (!link) {
-      return <div className={cn('w-40', className)}>{content}</div>;
+      return <div className={cn(className)}>{content}</div>;
     }
     let url = link.prefix;
     if (link.targetAccessorKey) {
