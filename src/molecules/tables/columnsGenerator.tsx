@@ -129,17 +129,6 @@ function generateColumns<Tdata>({
       value &&
       typeof value === 'object' &&
       'type' in value &&
-      value.type === 'string'
-    ) {
-      generatedTableColumns.push({
-        accessorKey,
-        header: ({ column }) => createSortableHeader(column, header),
-      });
-    }
-    if (
-      value &&
-      typeof value === 'object' &&
-      'type' in value &&
       (value.type === 'integer' || value.type === 'number')
     ) {
       generatedTableColumns.push({
@@ -147,8 +136,12 @@ function generateColumns<Tdata>({
         header,
       });
     }
-    if (value &&
-      typeof value === 'object' &&  'type' in value && value.type === 'string') {
+    if (
+      value &&
+      typeof value === 'object' &&
+      'type' in value &&
+      value.type === 'string'
+    ) {
       if ('format' in value && value.format === 'date-time') {
         generatedTableColumns.push({
           accessorKey,
