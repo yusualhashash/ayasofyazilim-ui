@@ -22,20 +22,23 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { TanstackTablePagination } from './tanstack-table-pagination';
-import { TanstackTableRowActions } from './tanstack-table-row-actions';
-import { TanstackTableAutoformDialog } from './tanstack-table-row-actions-autoform-dialog';
-import { TanstackTableConfirmationDialog } from './tanstack-table-row-actions-confirmation';
-import { TanstackTableCustomDialog } from './tanstack-table-row-actions-custom-dialog';
-import { TanstackTableTableAutoformDialog } from './tanstack-table-table-actions-autoform-dialog';
-import { TanstackTableToolbar } from './tanstack-table-toolbar';
+
+import { getCommonPinningStyles } from './utils';
 import {
-  TanstackTableProps,
+  TanstackTableRowActions,
+  TanstackTableToolbar,
+  TanstackTablePagination,
+  TanstackTableConfirmationDialog,
+  TanstackTableCustomDialog,
+  TanstackTableAutoformDialog,
+  TanstackTableTableAutoformDialog,
+  TanstackTableTableCustomDialog,
+} from './fields';
+import {
   TanstackTableRowActionsType,
+  TanstackTableProps,
   TanstackTableTableActionsType,
 } from './types';
-import { getCommonPinningStyles } from './utils';
-import { TanstackTableTableCustomDialog } from './tanstack-table-table-actions-custom-dialog';
 
 const CellWithActions = <TData,>(
   row: Row<TData>,
@@ -57,6 +60,7 @@ export default function TanstackTable<TData, TValue>({
   data,
   filters,
   excludeColumns,
+  pinColumns,
   rowActions,
   tableActions,
   selectedRowAction,
@@ -107,7 +111,7 @@ export default function TanstackTable<TData, TValue>({
     initialState: {
       columnOrder: columnOrder as string[],
       columnPinning: {
-        left: ['select', 'userName'],
+        left: ['select', 'name', ...((pinColumns as string[]) ?? [])],
         right: ['actions'],
       },
     },

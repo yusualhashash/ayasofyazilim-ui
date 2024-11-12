@@ -11,8 +11,8 @@ import { cn } from '@/lib/utils';
 import AutoForm, {
   AutoFormSubmit,
   ZodObjectOrWrapped,
-} from '../../organisms/auto-form';
-import { TanstackTableRowActionsAutoformDialog } from './types';
+} from '../../../organisms/auto-form';
+import { TanstackTableRowActionsAutoformDialog } from '../types';
 
 type TanstackTableAutoformDialogProps<TData> = {
   row: TData;

@@ -2,11 +2,11 @@ import { PersonIcon, TrashIcon } from '@radix-ui/react-icons';
 import { Building2, Edit, EyeIcon, KeyIcon, PlusIcon } from 'lucide-react';
 import { createZodObject } from 'src/lib/create-zod-object';
 import { useEffect, useState } from 'react';
-import {
-  TanstackTableRowActionsType,
-  TanstackTableTableActionsType,
-} from './types';
 import { tanstackTableCreateColumnsByRowData } from './utils';
+import {
+  TanstackTableTableActionsType,
+  TanstackTableRowActionsType,
+} from './types';
 
 function Permission({ row }: { row: User }) {
   const [permissions, setPermissions] = useState<string[] | null>(null);

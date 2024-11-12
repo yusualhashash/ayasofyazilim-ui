@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { TanstackTableActionsCustomDialog } from './types';
+import { TanstackTableActionsCustomDialog } from '../types';
 
 type TanstackTableCustomDialogProps = {
   setDialogOpen: () => void;

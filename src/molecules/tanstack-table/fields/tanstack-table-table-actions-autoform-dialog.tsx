@@ -11,8 +11,8 @@ import { cn } from '@/lib/utils';
 import AutoForm, {
   AutoFormSubmit,
   ZodObjectOrWrapped,
-} from '../../organisms/auto-form';
-import { TanstackTableActionsAutoformDialog } from './types';
+} from '../../../organisms/auto-form';
+import { TanstackTableActionsAutoformDialog } from '../types';
 
 type TanstackTableAutoformDialogProps = {
   setDialogOpen: () => void;
