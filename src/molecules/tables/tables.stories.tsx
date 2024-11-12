@@ -4,7 +4,6 @@ import { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import { AutoFormProps } from 'src/organisms/auto-form';
 import { z } from 'zod';
-import Link from 'next/link';
 import { ColumnDef } from '@tanstack/react-table';
 import jsonToCsv from '../../lib/json-to-csv';
 import Table from '.';
@@ -81,7 +80,7 @@ export const Default: StoryObj<typeof Table> = {
 };
 
 // Status	Email	Amount
-const jsonSchema: any = {
+const jsonSchema = {
   type: 'object',
   required: ['status', 'email', 'amount'],
   properties: {
@@ -96,6 +95,7 @@ const jsonSchema: any = {
     },
     date: {
       type: 'string',
+      format: 'date-time',
     },
     isActive: {
       type: 'boolean',
@@ -123,18 +123,22 @@ export const AutoColumns: StoryObj<typeof Table> = {
     layout: 'centered',
   },
 };
-export const autoColumnData: AutoColumnGenerator = {
-  tableType: jsonSchema,
-  excludeList: ['id'],
-  selectable: false,
-  customCells: {
-    status: ({ cell }: { cell: any }) => (
-      <Link href="https://google.com" className="text-blue-600">
-        {cell.getValue('status')}
-      </Link>
-    ),
-  },
-};
+export const autoColumnData: AutoColumnGenerator<typeof jsonSchema.properties> =
+  {
+    tableType: jsonSchema,
+    excludeList: ['id'],
+    selectable: false,
+    customCells: {
+      amount: {
+        Type: 'badge',
+      },
+      email: {
+        Type: 'link',
+        href: (row) => `mailto:${row.email}`,
+        cellValue: (row) => `Send ${row.email}`,
+      },
+    },
+  };
 
 export const NewPage: StoryObj<typeof Table> = {
   args: {
