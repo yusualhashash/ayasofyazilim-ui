@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { TanstackTableRowActionsCustomDialog } from '..';
+import { TanstackTableRowActionsCustomDialog } from '../types';
 
 type TanstackTableCustomDialogProps<TData> = {
   row: TData;

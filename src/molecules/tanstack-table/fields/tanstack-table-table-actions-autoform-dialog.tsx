@@ -12,7 +12,7 @@ import AutoForm, {
   AutoFormSubmit,
   ZodObjectOrWrapped,
 } from '../../../organisms/auto-form';
-import { TanstackTableActionsAutoformDialog } from '..';
+import { TanstackTableActionsAutoformDialog } from '../types';
 
 type TanstackTableAutoformDialogProps = {
   setDialogOpen: () => void;

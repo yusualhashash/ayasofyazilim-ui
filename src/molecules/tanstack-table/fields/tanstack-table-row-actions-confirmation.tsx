@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { TanstackTableRowActionsConfirmationDialog } from '..';
+import { TanstackTableRowActionsConfirmationDialog } from '../types';
 
 type TanstackTableConfirmationDialogProps<TData> = {
   row: TData;
