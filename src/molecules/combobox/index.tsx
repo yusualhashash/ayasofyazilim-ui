@@ -23,6 +23,7 @@ import { Label } from '@/components/ui/label';
 type CustomComboboxProps<T> = {
   disabled?: boolean;
   emptyValue?: string;
+  errorMessage?: string;
   label?: string;
   list: Array<T> | null | undefined;
   onValueChange: Dispatch<SetStateAction<T | null | undefined>>;
@@ -35,7 +36,15 @@ type CustomComboboxProps<T> = {
 };
 
 export function Combobox<T>(props: CustomComboboxProps<T>) {
-  const { label, list, value, disabled, selectIdentifier, required } = props;
+  const {
+    label,
+    list,
+    value,
+    disabled,
+    selectIdentifier,
+    required,
+    errorMessage,
+  } = props;
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [open, setOpen] = useState(false);
   const fieldValue =
@@ -102,6 +111,11 @@ export function Combobox<T>(props: CustomComboboxProps<T>) {
         </Label>
       )}
       {Content}
+      {errorMessage && (
+        <span className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-destructive">
+          {errorMessage}
+        </span>
+      )}
     </div>
   );
 }
