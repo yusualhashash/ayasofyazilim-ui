@@ -30,8 +30,10 @@
   "exports": {
     "./hooks/*": "./src/hooks/*.tsx",
     "./atoms/*": "./@/components/ui/*.tsx",
-    "./molecules/*": "./src/molecules/*/index.tsx",
     "./molecules/*/types": "./src/molecules/*/types.ts",
+    "./molecules/*": "./src/molecules/*/index.tsx",
+    "./molecules/**/*": "./src/molecules/**/*/index.tsx",
+    "./molecules/*/utils": "./src/molecules/*/utils/index.tsx",
     "./organisms/*": "./src/organisms/*/index.tsx",
     "./organisms/**/*": "./src/organisms/**/*/index.tsx",
     "./organisms/*/types": "./src/organisms/*/types/index.ts",

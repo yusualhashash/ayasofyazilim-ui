@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { TanstackTableRowActionsType } from './types';
+import { TanstackTableRowActionsType } from '../types';
 
 interface TanstackTableRowActionsProps<TData> {
   actions: TanstackTableRowActionsType<TData>[];
