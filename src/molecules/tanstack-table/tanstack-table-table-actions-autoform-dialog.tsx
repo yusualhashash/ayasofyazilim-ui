@@ -37,6 +37,7 @@ export const TanstackTableTableAutoformDialog = ({
         values={values}
         onSubmit={(formData) => {
           onSubmit(formData as Partial<TypeOf<ZodObjectOrWrapped>>);
+          setDialogOpen();
         }}
       >
         <AutoFormSubmit className={cn('float-right', className?.submit)}>

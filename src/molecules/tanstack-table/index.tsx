@@ -35,6 +35,7 @@ import {
   TanstackTableTableActionsType,
 } from './types';
 import { getCommonPinningStyles } from './utils';
+import { TanstackTableTableCustomDialog } from './tanstack-table-table-actions-custom-dialog';
 
 const CellWithActions = <TData,>(
   row: Row<TData>,
@@ -238,6 +239,18 @@ export default function TanstackTable<TData, TValue>({
           onSubmit={tableAction.onSubmit}
           values={tableAction.values}
           type="autoform-dialog"
+        />
+      )}
+      {tableAction?.type === 'custom-dialog' && (
+        <TanstackTableTableCustomDialog
+          setDialogOpen={() => setTableAction(null)}
+          title={tableAction.title}
+          type="custom-dialog"
+          content={tableAction.content}
+          confirmationText={tableAction.confirmationText}
+          cancelText={tableAction.cancelText}
+          onConfirm={tableAction.onConfirm}
+          onCancel={tableAction.onCancel}
         />
       )}
     </div>

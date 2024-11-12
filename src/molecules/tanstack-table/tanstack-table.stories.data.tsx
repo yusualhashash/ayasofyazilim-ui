@@ -1,12 +1,40 @@
 import { PersonIcon, TrashIcon } from '@radix-ui/react-icons';
 import { Building2, Edit, EyeIcon, KeyIcon, PlusIcon } from 'lucide-react';
 import { createZodObject } from 'src/lib/create-zod-object';
+import { useEffect, useState } from 'react';
 import {
   TanstackTableRowActionsType,
   TanstackTableTableActionsType,
 } from './types';
 import { tanstackTableCreateColumnsByRowData } from './utils';
 
+function Permission({ row }: { row: User }) {
+  const [permissions, setPermissions] = useState<string[] | null>(null);
+  useEffect(() => {
+    setTimeout(() => {
+      if (row.role === 'client') {
+        setPermissions(['View User', 'Edit User', 'Delete User']);
+        return;
+      }
+      setPermissions([]);
+    }, 2000);
+  }, [row.id]);
+
+  if (permissions === null) {
+    return <div>Loading...</div>;
+  }
+  if (permissions.length === 0) {
+    return <div>{row.userName} does not have any permissions. </div>;
+  }
+  return (
+    <ul>
+      {permissions.map((permission) => (
+        <li key={permission}>- {permission}</li>
+      ))}
+    </ul>
+  );
+}
+const Custom = () => <div>Some custom dialog</div>;
 export type User = {
   createdAt?: Date;
   email: string;
@@ -202,7 +230,12 @@ export const users: User[] = [
     updatedAt: new Date('2024-02-18T20:48:13.120Z'),
   },
 ];
-
+export const faceted = {
+  status: [
+    { value: 'inactive', label: 'Inactive', icon: Building2 },
+    { value: 'active', label: 'Active', icon: PersonIcon },
+  ],
+};
 export const col = tanstackTableCreateColumnsByRowData<User>({
   row: users[0],
   languageData: { userName: 'Kullanıcı Adı' },
@@ -216,12 +249,8 @@ export const col = tanstackTableCreateColumnsByRowData<User>({
       prefix: 'http://192.168.1.105:1453/tr/app/',
     },
   },
-  faceted: {
-    status: [
-      { value: 'inactive', label: 'Inactive', icon: Building2 },
-      { value: 'active', label: 'Active', icon: PersonIcon },
-    ],
-  },
+  faceted,
+  selectableRows: true,
 });
 const $schema = {
   required: ['displayName'],
@@ -245,7 +274,7 @@ const $schema = {
   },
   additionalProperties: false,
 } as const;
-export const tableAct: TanstackTableTableActionsType[] = [
+export const tableAction: TanstackTableTableActionsType[] = [
   {
     type: 'autoform-dialog',
     actionLocation: 'table',
@@ -253,72 +282,87 @@ export const tableAct: TanstackTableTableActionsType[] = [
     icon: PlusIcon,
     submitText: 'Save',
     title: 'Create',
-    values: { displayName: 'test' },
+    values: { concurrencyStamp: new Date().toISOString() },
     onSubmit(row) {
       alert(JSON.stringify(row));
     },
 
-    schema: createZodObject($schema, ['displayName']),
+    schema: createZodObject($schema, ['displayName', 'concurrencyStamp']),
+  },
+  {
+    actionLocation: 'table',
+    cta: 'Other Page',
+    icon: EyeIcon,
+    type: 'simple',
+    onClick: () => {
+      alert('Redirecting...');
+      window.location.href = `/app/admin/users/`;
+    },
+  },
+  {
+    actionLocation: 'table',
+    type: 'custom-dialog',
+    cta: 'Permissions',
+    content: <Custom />,
+    cancelText: 'Close',
+    icon: KeyIcon,
+    title: 'Permission',
+    onCancel: () => {
+      console.log('Perrr');
+    },
   },
 ];
 
-export const actions: TanstackTableRowActionsType<User>[] = [];
-
-actions.push({
-  actionLocation: 'row',
-  cta: 'View User',
-  icon: EyeIcon,
-  type: 'simple',
-  onClick: (row) => {
-    alert('Redirecting...');
-    window.location.href = `/app/admin/users/${row.id}`;
+export const rowActions: TanstackTableRowActionsType<User>[] = [
+  {
+    actionLocation: 'row',
+    cta: 'View User',
+    icon: EyeIcon,
+    type: 'simple',
+    onClick: (row) => {
+      alert('Redirecting...');
+      window.location.href = `/app/admin/users/${row.id}`;
+    },
   },
-});
-actions.push({
-  actionLocation: 'row',
-  type: 'autoform-dialog',
-  cta: 'Edit',
-  icon: Edit,
-  submitText: 'Save',
-  title: (row) => `Edit ${row.userName}`,
-  values: (row) => ({ displayName: row.userName }),
-
-  onSubmit(row, values) {
-    alert(`${JSON.stringify(row)} ${JSON.stringify(values)}`);
+  {
+    actionLocation: 'row',
+    type: 'autoform-dialog',
+    cta: 'Edit',
+    icon: Edit,
+    submitText: 'Save',
+    title: (row) => `Edit ${row.userName}`,
+    values: (row) => ({ displayName: row.userName }),
+    onSubmit(row, values) {
+      alert(`${JSON.stringify(row)} ${JSON.stringify(values)}`);
+    },
+    schema: createZodObject($schema, ['displayName']),
   },
-
-  schema: createZodObject($schema, ['displayName']),
-});
-actions.push({
-  actionLocation: 'row',
-  type: 'custom-dialog',
-  cta: 'Permissions',
-  content: (row) => <div>{row.userName} does not have any permissions. </div>,
-  cancelText: 'Cancel',
-  confirmationText: 'Close',
-  icon: KeyIcon,
-  title: (row) => row.userName,
-  onConfirm: (row) => {
-    console.log(row.phone);
+  {
+    actionLocation: 'row',
+    type: 'custom-dialog',
+    cta: 'Permissions',
+    content: (row) => <Permission row={row} />,
+    cancelText: 'Close',
+    icon: KeyIcon,
+    title: (row) => row.userName,
+    onCancel: (row) => {
+      console.log(row.userName);
+    },
   },
-  onCancel: (row) => {
-    console.log(row.userName);
+  {
+    actionLocation: 'row',
+    cancelText: 'Cancel',
+    confirmationText: 'Yes, Delete',
+    cta: 'Delete User',
+    icon: TrashIcon,
+    type: 'confirmation-dialog',
+    description: 'Are you sure you want to delete this user?',
+    title: (row) => row.userName,
+    onConfirm: (row) => {
+      console.log(row.phone);
+    },
+    onCancel: (row) => {
+      console.log(row.userName);
+    },
   },
-});
-
-actions.push({
-  actionLocation: 'row',
-  cancelText: 'Cancel',
-  confirmationText: 'Yes, Delete',
-  cta: 'Delete User',
-  icon: TrashIcon,
-  type: 'confirmation-dialog',
-  description: 'Are you sure you want to delete this user?',
-  title: (row) => row.userName,
-  onConfirm: (row) => {
-    console.log(row.phone);
-  },
-  onCancel: (row) => {
-    console.log(row.userName);
-  },
-});
+];
