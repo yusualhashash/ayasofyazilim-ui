@@ -1,15 +1,16 @@
 import { Column, ColumnDef, Row } from '@tanstack/react-table';
 import { CSSProperties } from 'react';
 import Link from 'next/link';
-import { TanstackTableColumnHeader } from './tanstack-table-column-header';
+
+import { Checkbox } from '@/components/ui/checkbox';
+import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 import {
   TanstackTableColumnBadge,
   TanstackTableColumnLink,
   TanstackTableFacetedFilterType,
-} from './types';
-import { Checkbox } from '@/components/ui/checkbox';
-import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
+} from '../types';
+import { TanstackTableColumnHeader } from '../fields';
 
 export function getCommonPinningStyles<TData>({
   column,
@@ -51,7 +52,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
   faceted?: Record<string, TanstackTableFacetedFilterType[]>;
   languageData?: Record<string, string>;
   links?: Record<string, TanstackTableColumnLink>;
-  row: Record<string, string | number | boolean | Date | null>;
+  row: Record<string, string | number | boolean | Date | null | object>;
 
   selectableRows?: boolean;
 }) {

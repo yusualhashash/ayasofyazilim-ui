@@ -8,7 +8,7 @@ import {
   TanstackTableFiltersType,
   TanstackTableSelectedRowActionType,
   TanstackTableTableActionsType,
-} from './types';
+} from '..';
 
 interface TanstackTableToolbarProps<TData> {
   filters?: TanstackTableFiltersType;

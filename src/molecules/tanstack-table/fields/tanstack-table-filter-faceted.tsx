@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { TanstackTableFacetedFilterType } from './types';
+import { TanstackTableFacetedFilterType } from '..';
 
 interface DataTableFacetedFilterProps<TData, TValue> {
   accessorKey: string;

@@ -12,12 +12,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { TanstackTableActionsCustomDialog } from './types';
+import { TanstackTableRowActionsCustomDialog } from '..';
 
-type TanstackTableCustomDialogProps = {
+type TanstackTableCustomDialogProps<TData> = {
+  row: TData;
   setDialogOpen: () => void;
-} & TanstackTableActionsCustomDialog;
-export function TanstackTableTableCustomDialog({
+} & TanstackTableRowActionsCustomDialog<TData>;
+export function TanstackTableCustomDialog<TData>({
+  row,
   title,
   confirmationText,
   onCancel,
@@ -25,18 +27,21 @@ export function TanstackTableTableCustomDialog({
   cancelText,
   content,
   setDialogOpen,
-}: TanstackTableCustomDialogProps) {
+}: TanstackTableCustomDialogProps<TData>) {
+  const dialogTitle = typeof title === 'function' ? title(row) : title;
+  const jsxContent = typeof content === 'function' ? content(row) : content;
+
   const [isDeletePending, startDeleteTransition] = React.useTransition();
 
   const handleOnConfirmClick = () => {
     startDeleteTransition(() => {
-      onConfirm?.();
+      onConfirm?.(row);
       setDialogOpen();
     });
   };
   const handleOnCancelClick = () => {
     startDeleteTransition(() => {
-      onCancel?.();
+      onCancel?.(row);
       setDialogOpen();
     });
   };
@@ -45,9 +50,9 @@ export function TanstackTableTableCustomDialog({
     <Dialog open onOpenChange={setDialogOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle>{dialogTitle}</DialogTitle>
         </DialogHeader>
-        {content}
+        {jsxContent}
         <DialogFooter className="gap-2 sm:space-x-0">
           {cancelText && (
             <DialogClose asChild>

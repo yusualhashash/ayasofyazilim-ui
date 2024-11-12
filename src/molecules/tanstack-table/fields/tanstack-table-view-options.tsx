@@ -17,7 +17,7 @@ import {
 import {
   TanstackTableSelectedRowActionType,
   TanstackTableTableActionsType,
-} from './types';
+} from '..';
 
 interface TanstackTableViewOptionsProps<TData> {
   selectedRowAction?: TanstackTableSelectedRowActionType;
