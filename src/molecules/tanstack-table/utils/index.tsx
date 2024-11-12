@@ -1,16 +1,15 @@
 import { Column, ColumnDef, Row } from '@tanstack/react-table';
 import { CSSProperties } from 'react';
 import Link from 'next/link';
-
-import { Checkbox } from '@/components/ui/checkbox';
-import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
+import { TanstackTableColumnHeader } from '../fields/tanstack-table-column-header';
 import {
   TanstackTableColumnBadge,
   TanstackTableColumnLink,
   TanstackTableFacetedFilterType,
 } from '../types';
-import { TanstackTableColumnHeader } from '../fields';
+import { Checkbox } from '@/components/ui/checkbox';
+import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 export function getCommonPinningStyles<TData>({
   column,
@@ -49,6 +48,7 @@ export function getCommonPinningStyles<TData>({
 export function tanstackTableCreateColumnsByRowData<T>(params: {
   badges?: Record<string, TanstackTableColumnBadge>;
   classNames?: Record<string, string>;
+  excludeColumns?: Partial<keyof T>[];
   faceted?: Record<string, TanstackTableFacetedFilterType[]>;
   languageData?: Record<string, string>;
   links?: Record<string, TanstackTableColumnLink>;
@@ -125,7 +125,15 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
     );
   }
 
-  const { row, languageData, links, faceted, badges, classNames } = params;
+  const {
+    excludeColumns,
+    row,
+    languageData,
+    links,
+    faceted,
+    badges,
+    classNames,
+  } = params;
   const columns: ColumnDef<T>[] = [];
   if (params.selectableRows) {
     columns.push({
@@ -158,31 +166,34 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       enableHiding: false,
     });
   }
-  Object.keys(row).forEach((accessorKey) => {
-    const title = languageData?.[accessorKey] || accessorKey;
-    const link = links?.[accessorKey];
+  Object.keys(row)
+    .filter((key) => !excludeColumns?.includes(key as keyof T))
+    .forEach((accessorKey) => {
+      const title = languageData?.[accessorKey] || accessorKey;
+      const link = links?.[accessorKey];
 
-    const column: ColumnDef<T> = {
-      accessorKey,
-      meta: title,
-      header: ({ column }) => (
-        <TanstackTableColumnHeader column={column} title={title} />
-      ),
-      cell: ({ row }) =>
-        createCell(
-          accessorKey,
-          row,
-          link,
-          faceted?.[accessorKey],
-          badges?.[accessorKey],
-          classNames?.[accessorKey]
+      const column: ColumnDef<T> = {
+        id: accessorKey,
+        accessorKey,
+        meta: title,
+        header: ({ column }) => (
+          <TanstackTableColumnHeader column={column} title={title} />
         ),
-    };
-    if (faceted?.[accessorKey]) {
-      column.filterFn = (row, id, value) => value.includes(row.getValue(id));
-    }
-    columns.push(column);
-  });
+        cell: ({ row }) =>
+          createCell(
+            accessorKey,
+            row,
+            link,
+            faceted?.[accessorKey],
+            badges?.[accessorKey],
+            classNames?.[accessorKey]
+          ),
+      };
+      if (faceted?.[accessorKey]) {
+        column.filterFn = (row, id, value) => value.includes(row.getValue(id));
+      }
+      columns.push(column);
+    });
 
   return columns;
 }
