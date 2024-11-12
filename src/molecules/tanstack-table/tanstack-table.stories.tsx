@@ -27,6 +27,7 @@ const template: StoryFn<typeof TanstackTable> = (args) => (
       columns={col}
       rowActions={rowActions}
       tableActions={tableAction}
+      excludeColumns={['id', 'rtn']}
     />
   </div>
 );
@@ -37,7 +38,6 @@ Default.args = {
     textFilters: ['userName'],
     facetedFilters: faceted,
   },
-  excludeColumns: ['id', 'rtn'],
   selectedRowAction: {
     icon: Trash2,
     actionLocation: 'table',
@@ -50,7 +50,21 @@ Default.args = {
 
 const linkStory: StoryFn<typeof TanstackTable> = (args) => (
   <div className="max-w-[1400px]">
-    <TanstackTable {...args} data={users} columns={linkCol} />
+    <TanstackTable
+      {...args}
+      data={users}
+      columns={linkCol}
+      excludeColumns={[
+        'id',
+        'rtn',
+        'phone',
+        'location',
+        'image',
+        'otherInformation',
+        'createdAt',
+        'updatedAt',
+      ]}
+    />
   </div>
 );
 const linkCol = tanstackTableCreateColumnsByRowData<User>({
@@ -67,22 +81,25 @@ const linkCol = tanstackTableCreateColumnsByRowData<User>({
   },
 });
 export const LinkColumns = linkStory.bind({});
-LinkColumns.args = {
-  excludeColumns: [
-    'id',
-    'rtn',
-    'phone',
-    'location',
-    'image',
-    'otherInformation',
-    'createdAt',
-    'updatedAt',
-  ],
-};
 
 const badgeStory: StoryFn<typeof TanstackTable> = (args) => (
   <div className="max-w-[1400px]">
-    <TanstackTable {...args} data={users} columns={badgeCol} />
+    <TanstackTable
+      {...args}
+      data={users}
+      columns={badgeCol}
+      excludeColumns={[
+        'id',
+        'rtn',
+        'phone',
+        'location',
+        'image',
+        'otherInformation',
+        'createdAt',
+        'updatedAt',
+        'status',
+      ]}
+    />
   </div>
 );
 const badgeCol = tanstackTableCreateColumnsByRowData<User>({
@@ -112,23 +129,25 @@ const badgeCol = tanstackTableCreateColumnsByRowData<User>({
   },
 });
 export const BadgeColumns = badgeStory.bind({});
-BadgeColumns.args = {
-  excludeColumns: [
-    'id',
-    'rtn',
-    'phone',
-    'location',
-    'image',
-    'otherInformation',
-    'createdAt',
-    'updatedAt',
-    'status',
-  ],
-};
 
 const facetedStory: StoryFn<typeof TanstackTable> = (args) => (
   <div className="max-w-[1400px]">
-    <TanstackTable {...args} data={users} columns={facetedCol} />
+    <TanstackTable
+      {...args}
+      data={users}
+      columns={facetedCol}
+      excludeColumns={[
+        'id',
+        'rtn',
+        'phone',
+        'location',
+        'image',
+        'otherInformation',
+        'createdAt',
+        'updatedAt',
+        'role',
+      ]}
+    />
   </div>
 );
 const facetedCol = tanstackTableCreateColumnsByRowData<User>({
@@ -153,23 +172,23 @@ const facetedCol = tanstackTableCreateColumnsByRowData<User>({
   },
 });
 export const FacetedColumns = facetedStory.bind({});
-FacetedColumns.args = {
-  excludeColumns: [
-    'id',
-    'rtn',
-    'phone',
-    'location',
-    'image',
-    'otherInformation',
-    'createdAt',
-    'updatedAt',
-    'role',
-  ],
-};
-
 const translatedStory: StoryFn<typeof TanstackTable> = (args) => (
   <div className="max-w-[1400px]">
-    <TanstackTable {...args} data={users} columns={translatedCol} />
+    <TanstackTable
+      {...args}
+      data={users}
+      columns={translatedCol}
+      excludeColumns={[
+        'id',
+        'rtn',
+        'location',
+        'image',
+        'otherInformation',
+        'updatedAt',
+        'role',
+        'status',
+      ]}
+    />
   </div>
 );
 const translatedCol = tanstackTableCreateColumnsByRowData<User>({
@@ -182,15 +201,3 @@ const translatedCol = tanstackTableCreateColumnsByRowData<User>({
   },
 });
 export const TranslatedColumns = translatedStory.bind({});
-TranslatedColumns.args = {
-  excludeColumns: [
-    'id',
-    'rtn',
-    'location',
-    'image',
-    'otherInformation',
-    'updatedAt',
-    'role',
-    'status',
-  ],
-};
