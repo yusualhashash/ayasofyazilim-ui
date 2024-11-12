@@ -62,7 +62,7 @@ export type TanstackTableRowActionsConfirmationDialog<TData> =
     cancelText: string;
     confirmationText: string;
     description: string;
-    onCancel: (row: TData) => void;
+    onCancel?: (row: TData) => void;
     onConfirm: (row: TData) => void;
     type: 'confirmation-dialog';
   };
