@@ -59,7 +59,11 @@ export type TanstackTableRowActionsCustomDialog<TData> =
   };
 export type TanstackTableRowActionsConfirmationDialog<TData> =
   TanstackTableRowDialog<TData> & {
+    cancelText: string;
+    confirmationText: string;
     description: string;
+    onCancel: (row: TData) => void;
+    onConfirm: (row: TData) => void;
     type: 'confirmation-dialog';
   };
 export type TanstackTableRowActionsAutoformDialog<TData> = Omit<
