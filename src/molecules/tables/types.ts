@@ -70,9 +70,9 @@ export type TableActionAction = {
 export type AutoColumnGenerator<TData = unknown> = {
   actionList?: TableAction[];
   customCells?: Partial<Record<keyof TData, ColumnDef<TData>['cell']>>;
-  excludeList?: Array<keyof TData>;
+  excludeList?: TData extends unknown ? Array<string> : Array<keyof TData>;
   hideAction?: boolean;
-  positions?: Array<keyof TData>;
+  positions?: TData extends unknown ? Array<string> : Array<keyof TData>;
   tableType: any;
 } & (noSelectAbleColumns | selectableColumns);
 
