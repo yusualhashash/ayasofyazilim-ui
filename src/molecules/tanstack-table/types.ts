@@ -44,14 +44,16 @@ export type TanstackTableRowActionsSimple<TData> = {
 };
 
 export type TanstackTableRowDialog<TData> = {
-  cancelText: string;
-  confirmationText: string;
-  onCancel: (row: TData) => void;
-  onConfirm: (row: TData) => void;
+  cancelText?: string;
+  confirmationText?: string;
+  onCancel?: (row: TData) => void;
+  onConfirm?: (row: TData) => void;
   title: string | ((row: TData) => string);
 };
 export type TanstackTableRowActionsCustomDialog<TData> =
   TanstackTableRowDialog<TData> & {
+    cancelText?: string;
+    confirmationText?: string;
     content: JSX.Element | ((row: TData) => JSX.Element);
     type: 'custom-dialog';
   };
@@ -88,10 +90,10 @@ export type TanstackTableActionsSimple = {
   type: 'simple';
 };
 export type TanstackTableActionsDialog = {
-  cancelText: string;
-  confirmationText: string;
-  onCancel: () => void;
-  onConfirm: () => void;
+  cancelText?: string;
+  confirmationText?: string;
+  onCancel?: () => void;
+  onConfirm?: () => void;
   title: string;
 };
 export type TanstackTableActionsAutoformDialog = Omit<
