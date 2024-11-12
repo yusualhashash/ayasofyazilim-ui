@@ -57,6 +57,7 @@ export default function TanstackTable<TData, TValue>({
   data,
   filters,
   excludeColumns,
+  pinColumns,
   rowActions,
   tableActions,
   selectedRowAction,
@@ -107,7 +108,7 @@ export default function TanstackTable<TData, TValue>({
     initialState: {
       columnOrder: columnOrder as string[],
       columnPinning: {
-        left: ['select', 'userName'],
+        left: ['select', 'name', ...((pinColumns as string[]) ?? [])],
         right: ['actions'],
       },
     },

@@ -7,8 +7,9 @@ export type TanstackTableProps<TData, TValue> = {
   columnOrder?: (keyof TData)[];
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  excludeColumns?: string[];
+  excludeColumns?: (keyof TData)[];
   filters?: TanstackTableFiltersType;
+  pinColumns?: (keyof TData)[];
   rowActions?: TanstackTableRowActionsType<TData>[];
   selectedRowAction?: TanstackTableSelectedRowActionType;
   tableActions?: TanstackTableTableActionsType[];
