@@ -60,7 +60,7 @@ function generateColumns<Tdata>({
   tableType,
   positions,
   customCells,
-  excludeList = [],
+  excludeList,
 }: AutoColumnGenerator<Tdata>): ColumnDef<Tdata>[] {
   const generatedTableColumns: ColumnDef<Tdata>[] = [];
   let tempProperties: Record<keyof Tdata, unknown> = tableType.properties;
@@ -68,10 +68,10 @@ function generateColumns<Tdata>({
     tempProperties = sortColumns<Tdata>(positions, tableType.properties);
   }
   Object.keys(tempProperties).forEach((key) => {
-    const accessorKey = key as keyof Tdata;
+    const accessorKey = key as string & keyof Tdata;
     const header = normalizeName(key);
     const value = tempProperties[accessorKey];
-    if (excludeList.includes(accessorKey)) {
+    if (excludeList && excludeList.includes(accessorKey)) {
       return;
     }
     const _key = key as keyof Tdata;
@@ -162,8 +162,8 @@ export function columnsGenerator<Tdata>({
 
   const autoColumnData: AutoColumnGenerator<Tdata> = {
     tableType,
-    excludeList: excludeList || [],
-    positions: positions || [],
+    excludeList,
+    positions,
     customCells,
   };
 
