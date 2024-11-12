@@ -14,7 +14,9 @@ export type TanstackTableProps<TData, TValue> = {
 };
 
 export type TanstackTableFacetedFilterType = {
+  className?: string;
   icon?: ComponentType<{ className?: string }>;
+  iconClassName?: string;
   label: string;
   value: string;
 };
