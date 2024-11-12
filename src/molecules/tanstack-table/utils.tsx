@@ -70,11 +70,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       const badgeItem = badge.values.find(
         (item) => item.value === row.getValue(badge.targetAccessorKey)
       );
-      console.log(
-        badgeItem,
-        accessorKey,
-        row.getValue(badge.targetAccessorKey)
-      );
+
       if (badgeItem) {
         content = (
           <>
