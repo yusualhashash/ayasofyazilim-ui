@@ -67,12 +67,22 @@ export type TableActionAction = {
   type: 'Action';
 };
 
+type IsUnknown<T> = unknown extends T
+  ? T extends unknown
+    ? true
+    : false
+  : false;
+
 export type AutoColumnGenerator<TData = unknown> = {
   actionList?: TableAction[];
   customCells?: Partial<Record<keyof TData, ColumnDef<TData>['cell']>>;
-  excludeList?: string[];
+  excludeList?: IsUnknown<TData> extends true
+    ? Array<string>
+    : Array<keyof TData>;
   hideAction?: boolean;
-  positions?: string[];
+  positions?: IsUnknown<TData> extends true
+    ? Array<string>
+    : Array<keyof TData>;
   tableType: any;
 } & (noSelectAbleColumns | selectableColumns);
 
@@ -101,7 +111,7 @@ type ColumnsCustomType<TData> = {
   type: 'Custom';
 };
 
-type ColumnAutoType<TData> = {
+export type ColumnAutoType<TData> = {
   data: AutoColumnGenerator<TData>;
   type: 'Auto';
 };
