@@ -114,7 +114,7 @@ export default function DataTable<TData, TValue>(
 
   let columns: ColumnDef<any, any>[] = [];
   if (columnsData.type === 'Auto') {
-    columns = columnsGenerator({
+    columns = columnsGenerator<TData>({
       columnsData,
       data: columnsData.data,
       setActiveAction,
