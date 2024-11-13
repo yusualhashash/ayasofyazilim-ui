@@ -220,6 +220,7 @@ export default function TanstackTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
+                      className="text-nowrap"
                       key={cell.id}
                       style={getCommonPinningStyles({
                         column: cell.column,

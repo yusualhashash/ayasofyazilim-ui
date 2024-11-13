@@ -139,3 +139,8 @@ export type TanstackTableSelectedRowActionType = {
   icon?: ComponentType<{ className?: string }>;
   onClick: (selectedIds: string[]) => void;
 };
+export type TanstackTableLanguageDataType = Record<string, string>;
+export type TanstackTableLanguageDataTypeWithConstantKey = {
+  constantKey: string;
+  languageData: Record<string, string>;
+};
