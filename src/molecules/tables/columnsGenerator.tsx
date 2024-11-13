@@ -43,36 +43,27 @@ const readOnlyCheckbox = <Tdata,>(row: Row<Tdata>, value: string) => (
   <Checkbox checked={row.getValue(value)} disabled />
 );
 
-const sortColumns = <TData,>(
-  positions: AutoColumnGenerator<TData>['positions'],
-  obj: Object
-) => {
-  if (!positions) {
-    return obj;
-  }
-  return Object.assign(
-    {},
-    ...positions.map((position) => ({
-      [position]: obj[position as keyof typeof obj],
-    }))
-  );
-};
-
 function generateColumns<Tdata>({
   tableType,
   positions,
   customCells,
   excludeList,
+  language = 'en-US',
+  dateOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  },
 }: AutoColumnGenerator<Tdata>): ColumnDef<Tdata>[] {
   const generatedTableColumns: ColumnDef<Tdata>[] = [];
-  let tempProperties: Record<keyof Tdata, unknown> = tableType.properties;
-  if (positions) {
-    tempProperties = sortColumns<Tdata>(positions, tableType.properties);
-  }
+  const tempProperties: Record<keyof Tdata, unknown> = tableType.properties;
   Object.keys(tempProperties).forEach((key) => {
     const accessorKey = key as string & keyof Tdata;
     const header = normalizeName(key);
     const value = tempProperties[accessorKey];
+    if (positions && !positions.includes(accessorKey)) {
+      return;
+    }
     if (excludeList && excludeList.includes(accessorKey)) {
       return;
     }
@@ -149,11 +140,7 @@ function generateColumns<Tdata>({
           cell: ({ cell }) => {
             const _value = cell.getValue() as string;
             const date = new Date(_value);
-            return date.toLocaleDateString('tr', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-            });
+            return date.toLocaleDateString(language, dateOptions);
           },
         });
       } else {
@@ -181,27 +168,12 @@ export function columnsGenerator<Tdata>({
   setTriggerData?: Dispatch<SetStateAction<any>>;
 }) {
   let onSelect: selectableColumns['onSelect'] | undefined;
-  const {
-    selectable,
-    tableType,
-    excludeList,
-    positions,
-    hideAction,
-    customCells,
-  } = data;
+  const { selectable, hideAction } = data;
   if (selectable) {
     onSelect = data.onSelect;
   }
 
-  const autoColumnData: AutoColumnGenerator<Tdata> = {
-    tableType,
-    excludeList,
-    positions,
-    customCells,
-  };
-
-  const AutoColumns: ColumnDef<Tdata>[] =
-    generateColumns<Tdata>(autoColumnData);
+  const AutoColumns: ColumnDef<Tdata>[] = generateColumns<Tdata>(data);
 
   const columns: ColumnDef<Tdata>[] = [
     {
