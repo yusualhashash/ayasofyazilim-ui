@@ -42,6 +42,10 @@ export type TanstackTableColumnBadge = {
   targetAccessorKey: string;
   values: { badgeClassName?: string; label: string; value: string }[];
 };
+export type TanstackTableColumnDate = {
+  locale?: Intl.LocalesArgument;
+  options?: Intl.DateTimeFormatOptions;
+};
 
 export type TanstackTableRowActionsSimple<TData> = {
   onClick: (row: TData) => void;

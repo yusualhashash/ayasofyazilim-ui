@@ -75,7 +75,9 @@ type IsUnknown<T> = unknown extends T
 
 export type AutoColumnGenerator<TData = unknown> = {
   actionList?: TableAction[];
-  customCells?: Partial<Record<keyof TData, ColumnDef<TData>['cell']>>;
+  customCells?: Partial<
+    Record<keyof TData, customCells<TData> | ColumnDef<TData>['cell']>
+  >;
   excludeList?: IsUnknown<TData> extends true
     ? Array<string>
     : Array<keyof TData>;
@@ -85,6 +87,19 @@ export type AutoColumnGenerator<TData = unknown> = {
     : Array<keyof TData>;
   tableType: any;
 } & (noSelectAbleColumns | selectableColumns);
+
+type customCells<TData> = customBadgeCells | customLinkCells<TData>;
+
+type customBadgeCells = {
+  Type: 'badge';
+  className?: string;
+};
+
+type customLinkCells<TData> = {
+  Type: 'link';
+  cellValue?: string | ((row: TData) => string);
+  href: string | ((row: TData) => string);
+};
 
 export type selectableColumns = {
   onSelect: ({

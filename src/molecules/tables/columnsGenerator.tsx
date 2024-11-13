@@ -23,6 +23,8 @@ import {
   TableAction,
 } from './types';
 import { normalizeName } from './utils';
+import { CellWithLink } from './cells';
+import { Badge } from '@/components/ui/badge';
 
 const createSortableHeader = <TData,>(
   column: Column<TData, unknown>,
@@ -83,15 +85,30 @@ function generateColumns<Tdata>({
       generatedTableColumns.push({
         accessorKey,
         header,
-        cell: (row) => {
+        cell: (cell) => {
           const customCell = customCells[_key];
-          if (typeof customCell === 'string') {
-            return customCell;
+          const _cell = cell as unknown as CellContext<Tdata, unknown>;
+          switch (typeof customCell) {
+            case 'function':
+              return customCell(_cell);
+            case 'object':
+              switch (customCell.Type) {
+                case 'badge':
+                  return <Badge>{cell.getValue() as string}</Badge>;
+                case 'link':
+                  return (
+                    <CellWithLink<Tdata>
+                      href={customCell.href}
+                      cell={_cell}
+                      cellValue={customCell.cellValue}
+                    />
+                  );
+                default:
+                  return `error in ${typeof customCell}`;
+              }
+            default:
+              return typeof customCell;
           }
-          if (typeof customCell === 'function') {
-            return customCell(row as unknown as CellContext<Tdata, unknown>);
-          }
-          return null; // Handle the case where customCell is neither a string nor a function
         },
       });
       return;
@@ -112,23 +129,39 @@ function generateColumns<Tdata>({
       value &&
       typeof value === 'object' &&
       'type' in value &&
-      value.type === 'string'
-    ) {
-      generatedTableColumns.push({
-        accessorKey,
-        header: ({ column }) => createSortableHeader(column, header),
-      });
-    }
-    if (
-      value &&
-      typeof value === 'object' &&
-      'type' in value &&
       (value.type === 'integer' || value.type === 'number')
     ) {
       generatedTableColumns.push({
         accessorKey,
         header,
       });
+    }
+    if (
+      value &&
+      typeof value === 'object' &&
+      'type' in value &&
+      value.type === 'string'
+    ) {
+      if ('format' in value && value.format === 'date-time') {
+        generatedTableColumns.push({
+          accessorKey,
+          header,
+          cell: ({ cell }) => {
+            const _value = cell.getValue() as string;
+            const date = new Date(_value);
+            return date.toLocaleDateString('tr', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+            });
+          },
+        });
+      } else {
+        generatedTableColumns.push({
+          accessorKey,
+          header: ({ column }) => createSortableHeader(column, header),
+        });
+      }
     }
   });
   return generatedTableColumns;
