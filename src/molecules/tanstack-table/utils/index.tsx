@@ -141,7 +141,11 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       }
     }
     if (!link) {
-      return <div className={cn(className)}>{content}</div>;
+      return (
+        <div className={cn(' flex items-center gap-2', className)}>
+          {content}
+        </div>
+      );
     }
     let url = link.prefix;
     if (link.targetAccessorKey) {
