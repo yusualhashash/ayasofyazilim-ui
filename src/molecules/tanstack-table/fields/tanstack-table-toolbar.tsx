@@ -2,6 +2,7 @@
 
 import { Table } from '@tanstack/react-table';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import { TanstackTableFacetedFilter } from './tanstack-table-filter-faceted';
 import { TanstackTableTextFilter } from './tanstack-table-filter-text';
 import { TanstackTableViewOptions } from './tanstack-table-view-options';
@@ -40,6 +41,16 @@ export const TanstackTableToolbar = <TData,>({
       replace(`${pathname}?${params.toString()}`);
     }
   }
+  useEffect(() => {
+    if (!filters?.facetedFilters) return;
+
+    Object.keys(filters.facetedFilters)?.forEach((column) => {
+      const selectedValues = filters.facetedFilters?.[column].defaultValue;
+      if (selectedValues) {
+        table.getColumn(column)?.setFilterValue(selectedValues);
+      }
+    });
+  }, []);
 
   return (
     <div className="flex w-full items-center justify-between">
@@ -59,10 +70,10 @@ export const TanstackTableToolbar = <TData,>({
               key={column}
               column={table.getColumn(column)}
               accessorKey={column}
-              onFilter={(accessorKey, selectedValues) =>
-                onFilter(accessorKey, selectedValues)
-              }
-              options={filters?.facetedFilters?.[column] ?? []}
+              onFilter={(accessorKey, selectedValues) => {
+                onFilter(accessorKey, selectedValues);
+              }}
+              options={filters?.facetedFilters?.[column]?.options ?? []}
             />
           ))}
       </div>
