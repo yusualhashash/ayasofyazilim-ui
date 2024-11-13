@@ -12,7 +12,7 @@ import {
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import {
   Table,
@@ -59,19 +59,27 @@ export default function TanstackTable<TData, TValue>({
   columnOrder,
   data,
   filters,
-  excludeColumns,
+  columnVisibility,
   pinColumns,
   rowActions,
   tableActions,
   selectedRowAction,
 }: TanstackTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>(
-      excludeColumns
-        ? Object.fromEntries(excludeColumns?.map((item) => [item, false]))
-        : {}
-    );
+
+  const [colVisibility, setColumnVisibility] = useState<VisibilityState>(
+    columnVisibility
+      ? Object.fromEntries(
+          columns.map((col) => [
+            col.id || '',
+            columnVisibility?.columns.includes(
+              (col.id || '') as keyof TData
+            ) ===
+              (columnVisibility.type === 'show'),
+          ])
+        )
+      : {}
+  );
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -105,7 +113,7 @@ export default function TanstackTable<TData, TValue>({
     columns: tableColumns,
     state: {
       sorting,
-      columnVisibility,
+      columnVisibility: colVisibility,
       columnFilters,
     },
     initialState: {
