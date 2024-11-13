@@ -150,6 +150,10 @@ export default function DataTable<TData, TValue>(
       sorting,
       columnVisibility,
       rowSelection,
+      columnOrder:
+        columnsData.type === 'Auto'
+          ? (columnsData.data.positions as string[])
+          : [],
     },
     meta: {
       removeRow: (rowIndex) => {

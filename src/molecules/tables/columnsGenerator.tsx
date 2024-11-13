@@ -43,21 +43,6 @@ const readOnlyCheckbox = <Tdata,>(row: Row<Tdata>, value: string) => (
   <Checkbox checked={row.getValue(value)} disabled />
 );
 
-const sortColumns = <TData,>(
-  positions: AutoColumnGenerator<TData>['positions'],
-  obj: Object
-) => {
-  if (!positions) {
-    return obj;
-  }
-  return Object.assign(
-    {},
-    ...positions.map((position) => ({
-      [position]: obj[position as keyof typeof obj],
-    }))
-  );
-};
-
 function generateColumns<Tdata>({
   tableType,
   positions,
@@ -71,14 +56,14 @@ function generateColumns<Tdata>({
   },
 }: AutoColumnGenerator<Tdata>): ColumnDef<Tdata>[] {
   const generatedTableColumns: ColumnDef<Tdata>[] = [];
-  let tempProperties: Record<keyof Tdata, unknown> = tableType.properties;
-  if (positions) {
-    tempProperties = sortColumns<Tdata>(positions, tableType.properties);
-  }
+  const tempProperties: Record<keyof Tdata, unknown> = tableType.properties;
   Object.keys(tempProperties).forEach((key) => {
     const accessorKey = key as string & keyof Tdata;
     const header = normalizeName(key);
     const value = tempProperties[accessorKey];
+    if (positions && !positions.includes(accessorKey)) {
+      return;
+    }
     if (excludeList && excludeList.includes(accessorKey)) {
       return;
     }
