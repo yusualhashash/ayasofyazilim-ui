@@ -63,6 +63,12 @@ function generateColumns<Tdata>({
   positions,
   customCells,
   excludeList,
+  language = 'en-US',
+  dateOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  },
 }: AutoColumnGenerator<Tdata>): ColumnDef<Tdata>[] {
   const generatedTableColumns: ColumnDef<Tdata>[] = [];
   let tempProperties: Record<keyof Tdata, unknown> = tableType.properties;
@@ -149,11 +155,7 @@ function generateColumns<Tdata>({
           cell: ({ cell }) => {
             const _value = cell.getValue() as string;
             const date = new Date(_value);
-            return date.toLocaleDateString('tr', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-            });
+            return date.toLocaleDateString(language, dateOptions);
           },
         });
       } else {
@@ -181,27 +183,12 @@ export function columnsGenerator<Tdata>({
   setTriggerData?: Dispatch<SetStateAction<any>>;
 }) {
   let onSelect: selectableColumns['onSelect'] | undefined;
-  const {
-    selectable,
-    tableType,
-    excludeList,
-    positions,
-    hideAction,
-    customCells,
-  } = data;
+  const { selectable, hideAction } = data;
   if (selectable) {
     onSelect = data.onSelect;
   }
 
-  const autoColumnData: AutoColumnGenerator<Tdata> = {
-    tableType,
-    excludeList,
-    positions,
-    customCells,
-  };
-
-  const AutoColumns: ColumnDef<Tdata>[] =
-    generateColumns<Tdata>(autoColumnData);
+  const AutoColumns: ColumnDef<Tdata>[] = generateColumns<Tdata>(data);
 
   const columns: ColumnDef<Tdata>[] = [
     {
