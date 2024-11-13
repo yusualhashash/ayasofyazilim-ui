@@ -40,7 +40,11 @@ export type TanstackTableColumnBadge = {
   className?: string;
   hideColumnValue?: boolean;
   targetAccessorKey: string;
-  values: { badgeClassName?: string; label: string; value: string }[];
+  values: {
+    badgeClassName?: string;
+    label: string;
+    value: string | boolean | number | Date;
+  }[];
 };
 export type TanstackTableColumnDate = {
   locale?: Intl.LocalesArgument;
