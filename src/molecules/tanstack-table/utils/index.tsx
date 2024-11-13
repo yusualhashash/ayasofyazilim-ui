@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { TanstackTableColumnHeader } from '../fields/tanstack-table-column-header';
 import {
   TanstackTableColumnBadge,
+  TanstackTableColumnDate,
   TanstackTableColumnLink,
   TanstackTableFacetedFilterType,
 } from '../types';
@@ -48,6 +49,7 @@ export function getCommonPinningStyles<TData>({
 export function tanstackTableCreateColumnsByRowData<T>(params: {
   badges?: Record<string, TanstackTableColumnBadge>;
   classNames?: Record<string, string>;
+  dates?: Record<string, TanstackTableColumnDate>;
   excludeColumns?: Partial<keyof T>[];
   faceted?: Record<string, TanstackTableFacetedFilterType[]>;
   languageData?: Record<string, string>;
@@ -62,11 +64,22 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
     link?: TanstackTableColumnLink,
     faceted?: TanstackTableFacetedFilterType[],
     badge?: TanstackTableColumnBadge,
+    date?: TanstackTableColumnDate,
     className?: string
   ) {
     let content: JSX.Element | string =
       row.getValue(accessorKey)?.toString() || '';
 
+    if (date) {
+      content = new Date(content).toLocaleDateString(
+        date.locale,
+        date.options || {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        }
+      );
+    }
     if (badge) {
       const badgeItem = badge.values.find(
         (item) => item.value === row.getValue(badge.targetAccessorKey)
@@ -133,6 +146,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
     faceted,
     badges,
     classNames,
+    dates,
   } = params;
   const columns: ColumnDef<T>[] = [];
   if (params.selectableRows) {
@@ -186,6 +200,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
             link,
             faceted?.[accessorKey],
             badges?.[accessorKey],
+            dates?.[accessorKey],
             classNames?.[accessorKey]
           ),
       };
