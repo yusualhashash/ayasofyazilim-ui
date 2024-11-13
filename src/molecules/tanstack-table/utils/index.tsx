@@ -3,6 +3,8 @@ import { CSSProperties } from 'react';
 import Link from 'next/link';
 import { TanstackTableColumnHeader } from '../fields/tanstack-table-column-header';
 import {
+  TanstackTableLanguageDataType,
+  TanstackTableLanguageDataTypeWithConstantKey,
   TanstackTableColumnBadge,
   TanstackTableColumnDate,
   TanstackTableColumnLink,
@@ -11,7 +13,9 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { tanstackTableCreateTitleWithLanguageData } from './columnNames';
 
+export * from './columnNames';
 export function getCommonPinningStyles<TData>({
   column,
   withBorder = false,
@@ -52,7 +56,9 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
   dates?: Record<string, TanstackTableColumnDate>;
   excludeColumns?: Partial<keyof T>[];
   faceted?: Record<string, TanstackTableFacetedFilterType[]>;
-  languageData?: Record<string, string>;
+  languageData?:
+    | TanstackTableLanguageDataType
+    | TanstackTableLanguageDataTypeWithConstantKey;
   links?: Record<string, TanstackTableColumnLink>;
   row: Record<string, string | number | boolean | Date | null | object>;
 
@@ -132,7 +138,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       url += `/${link.suffix}`;
     }
     return (
-      <Link href={url} className={cn('font-medium underline', className)}>
+      <Link href={url} className={cn('font-medium text-blue-700', className)}>
         {content}
       </Link>
     );
@@ -183,7 +189,10 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
   Object.keys(row)
     .filter((key) => !excludeColumns?.includes(key as keyof T))
     .forEach((accessorKey) => {
-      const title = languageData?.[accessorKey] || accessorKey;
+      const title = tanstackTableCreateTitleWithLanguageData({
+        languageData,
+        accessorKey,
+      });
       const link = links?.[accessorKey];
 
       const column: ColumnDef<T> = {
