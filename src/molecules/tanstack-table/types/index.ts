@@ -50,6 +50,11 @@ export type TanstackTableColumnDate = {
   locale?: Intl.LocalesArgument;
   options?: Intl.DateTimeFormatOptions;
 };
+export type TanstackTableColumnIcon = {
+  icon?: ComponentType<{ className?: string }>;
+  iconClassName?: string;
+  position?: 'before' | 'after';
+};
 
 export type TanstackTableRowActionsSimple<TData> = {
   onClick: (row: TData) => void;
