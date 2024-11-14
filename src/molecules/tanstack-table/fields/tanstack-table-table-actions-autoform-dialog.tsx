@@ -11,8 +11,8 @@ import { cn } from '@/lib/utils';
 import AutoForm, {
   AutoFormSubmit,
   ZodObjectOrWrapped,
-} from '../../organisms/auto-form';
-import { TanstackTableActionsAutoformDialog } from './types';
+} from '../../../organisms/auto-form';
+import { TanstackTableActionsAutoformDialog } from '../types';
 
 type TanstackTableAutoformDialogProps = {
   setDialogOpen: () => void;
@@ -37,6 +37,7 @@ export const TanstackTableTableAutoformDialog = ({
         values={values}
         onSubmit={(formData) => {
           onSubmit(formData as Partial<TypeOf<ZodObjectOrWrapped>>);
+          setDialogOpen();
         }}
       >
         <AutoFormSubmit className={cn('float-right', className?.submit)}>

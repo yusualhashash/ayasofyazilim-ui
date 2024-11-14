@@ -18,11 +18,13 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   AutoColumnGenerator,
-  ColumnsType,
+  ColumnAutoType,
   selectableColumns,
   TableAction,
 } from './types';
 import { normalizeName } from './utils';
+import { CellWithLink } from './cells';
+import { Badge } from '@/components/ui/badge';
 
 const createSortableHeader = <TData,>(
   column: Column<TData, unknown>,
@@ -37,34 +39,32 @@ const createSortableHeader = <TData,>(
     <CaretSortIcon className="ml-2 h-4 w-4" />
   </Button>
 );
-const readOnlyCheckbox = (row: Row<AutoColumnGenerator>, value: string) => (
+const readOnlyCheckbox = <Tdata,>(row: Row<Tdata>, value: string) => (
   <Checkbox checked={row.getValue(value)} disabled />
 );
-
-const sortColumns = (positions: string[], obj: Object) =>
-  Object.assign(
-    {},
-    ...positions.map((position) => ({
-      [position]: obj[position as keyof typeof obj],
-    }))
-  ) || obj;
 
 function generateColumns<Tdata>({
   tableType,
   positions,
   customCells,
-  excludeList = [],
-}: Partial<AutoColumnGenerator<Tdata>>) {
-  const generatedTableColumns: ColumnDef<AutoColumnGenerator<Tdata>>[] = [];
-  let tempProperties = tableType.properties;
-  if (positions) {
-    tempProperties = sortColumns(positions, tableType.properties);
-  }
+  excludeList,
+  language = 'en-US',
+  dateOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  },
+}: AutoColumnGenerator<Tdata>): ColumnDef<Tdata>[] {
+  const generatedTableColumns: ColumnDef<Tdata>[] = [];
+  const tempProperties: Record<keyof Tdata, unknown> = tableType.properties;
   Object.keys(tempProperties).forEach((key) => {
-    const accessorKey = key;
+    const accessorKey = key as string & keyof Tdata;
     const header = normalizeName(key);
-    const value = tempProperties[key];
-    if (excludeList.includes(key)) {
+    const value = tempProperties[accessorKey];
+    if (positions && !positions.includes(accessorKey)) {
+      return;
+    }
+    if (excludeList && excludeList.includes(accessorKey)) {
       return;
     }
     const _key = key as keyof Tdata;
@@ -76,37 +76,79 @@ function generateColumns<Tdata>({
       generatedTableColumns.push({
         accessorKey,
         header,
-        cell: (row) => {
+        cell: (cell) => {
           const customCell = customCells[_key];
-          if (typeof customCell === 'string') {
-            return customCell;
+          const _cell = cell as unknown as CellContext<Tdata, unknown>;
+          switch (typeof customCell) {
+            case 'function':
+              return customCell(_cell);
+            case 'object':
+              switch (customCell.Type) {
+                case 'badge':
+                  return <Badge>{cell.getValue() as string}</Badge>;
+                case 'link':
+                  return (
+                    <CellWithLink<Tdata>
+                      href={customCell.href}
+                      cell={_cell}
+                      cellValue={customCell.cellValue}
+                    />
+                  );
+                default:
+                  return `error in ${typeof customCell}`;
+              }
+            default:
+              return typeof customCell;
           }
-          if (typeof customCell === 'function') {
-            return customCell(row as unknown as CellContext<Tdata, unknown>);
-          }
-          return null; // Handle the case where customCell is neither a string nor a function
         },
       });
       return;
     }
-    if (value.type === 'boolean') {
+    if (
+      value &&
+      typeof value === 'object' &&
+      'type' in value &&
+      value.type === 'boolean'
+    ) {
       generatedTableColumns.push({
         accessorKey,
         header,
         cell: ({ row }) => readOnlyCheckbox(row, key),
       });
     }
-    if (value.type === 'string') {
-      generatedTableColumns.push({
-        accessorKey,
-        header: ({ column }) => createSortableHeader(column, header),
-      });
-    }
-    if (value.type === 'integer' || value.type === 'number') {
+    if (
+      value &&
+      typeof value === 'object' &&
+      'type' in value &&
+      (value.type === 'integer' || value.type === 'number')
+    ) {
       generatedTableColumns.push({
         accessorKey,
         header,
       });
+    }
+    if (
+      value &&
+      typeof value === 'object' &&
+      'type' in value &&
+      value.type === 'string'
+    ) {
+      if ('format' in value && value.format === 'date-time') {
+        generatedTableColumns.push({
+          accessorKey,
+          header,
+          cell: ({ cell }) => {
+            const _value = cell.getValue() as string;
+            const date = new Date(_value);
+            return date.toLocaleDateString(language, dateOptions);
+          },
+        });
+      } else {
+        generatedTableColumns.push({
+          accessorKey,
+          header: ({ column }) => createSortableHeader(column, header),
+        });
+      }
     }
   });
   return generatedTableColumns;
@@ -119,19 +161,21 @@ export function columnsGenerator<Tdata>({
   setTriggerData,
   setIsOpen,
 }: {
-  columnsData?: ColumnsType;
+  columnsData?: ColumnAutoType<Tdata>;
   data: AutoColumnGenerator<Tdata>;
   setActiveAction?: Dispatch<SetStateAction<TableAction | undefined>>;
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
   setTriggerData?: Dispatch<SetStateAction<any>>;
 }) {
   let onSelect: selectableColumns['onSelect'] | undefined;
-  const { selectable, tableType, excludeList, positions, hideAction, customCells } = data;
+  const { selectable, hideAction } = data;
   if (selectable) {
     onSelect = data.onSelect;
   }
 
-  const columns: ColumnDef<typeof data>[] = [
+  const AutoColumns: ColumnDef<Tdata>[] = generateColumns<Tdata>(data);
+
+  const columns: ColumnDef<Tdata>[] = [
     {
       id: 'select',
       header: ({ table }) => (
@@ -172,7 +216,7 @@ export function columnsGenerator<Tdata>({
       enableSorting: false,
       enableHiding: false,
     },
-    ...generateColumns({ tableType, excludeList, positions, customCells }),
+    ...AutoColumns,
     {
       id: 'table-actions',
       cell: ({ row }) => (
@@ -190,6 +234,10 @@ export function columnsGenerator<Tdata>({
             <DropdownMenuItem
               onClick={() => {
                 if (
+                  row &&
+                  typeof row === 'object' &&
+                  typeof row.original === 'object' &&
+                  row.original &&
                   'id' in row.original &&
                   typeof row.original.id === 'string'
                 ) {

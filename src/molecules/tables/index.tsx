@@ -115,7 +115,7 @@ export default function DataTable<TData, TValue>(
 
   let columns: ColumnDef<any, any>[] = [];
   if (columnsData.type === 'Auto') {
-    columns = columnsGenerator({
+    columns = columnsGenerator<TData>({
       columnsData,
       data: columnsData.data,
       setActiveAction,
@@ -153,6 +153,10 @@ export default function DataTable<TData, TValue>(
       sorting,
       columnVisibility,
       rowSelection,
+      columnOrder:
+        columnsData.type === 'Auto'
+          ? (columnsData.data.positions as string[])
+          : [],
     },
     meta: {
       removeRow: (rowIndex) => {

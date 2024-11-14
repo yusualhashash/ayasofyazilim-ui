@@ -45,7 +45,11 @@ export type TableActionAutoform = {
       cta?: string;
     };
   } & AutoFormProps;
-  callback: (values: any, triggerData?: unknown) => void;
+  callback: (
+    values: any,
+    triggerData?: unknown,
+    onOpenChange?: (e: boolean) => void
+  ) => void;
   componentType: 'Autoform';
 };
 export type TableActionCustom = {
@@ -67,14 +71,41 @@ export type TableActionAction = {
   type: 'Action';
 };
 
+type IsUnknown<T> = unknown extends T
+  ? T extends unknown
+    ? true
+    : false
+  : false;
+
 export type AutoColumnGenerator<TData = unknown> = {
   actionList?: TableAction[];
-  customCells?: Partial<Record<keyof TData, ColumnDef<TData>['cell']>>;
-  excludeList?: string[];
+  customCells?: Partial<
+    Record<keyof TData, customCells<TData> | ColumnDef<TData>['cell']>
+  >;
+  dateOptions?: Intl.DateTimeFormatOptions;
+  excludeList?: IsUnknown<TData> extends true
+    ? Array<string>
+    : Array<keyof TData>;
   hideAction?: boolean;
-  positions?: string[];
+  language?: Intl.LocalesArgument;
+  positions?: IsUnknown<TData> extends true
+    ? Array<string>
+    : Array<keyof TData>;
   tableType: any;
 } & (noSelectAbleColumns | selectableColumns);
+
+type customCells<TData> = customBadgeCells | customLinkCells<TData>;
+
+type customBadgeCells = {
+  Type: 'badge';
+  className?: string;
+};
+
+type customLinkCells<TData> = {
+  Type: 'link';
+  cellValue?: string | ((row: TData) => string);
+  href: string | ((row: TData) => string);
+};
 
 export type selectableColumns = {
   onSelect: ({
@@ -101,7 +132,7 @@ type ColumnsCustomType<TData> = {
   type: 'Custom';
 };
 
-type ColumnAutoType<TData> = {
+export type ColumnAutoType<TData> = {
   data: AutoColumnGenerator<TData>;
   type: 'Auto';
 };

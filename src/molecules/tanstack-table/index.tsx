@@ -4,7 +4,6 @@ import {
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   Row,
@@ -12,8 +11,9 @@ import {
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import {
   Table,
   TableBody,
@@ -22,19 +22,22 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { TanstackTablePagination } from './tanstack-table-pagination';
-import { TanstackTableRowActions } from './tanstack-table-row-actions';
-import { TanstackTableAutoformDialog } from './tanstack-table-row-actions-autoform-dialog';
-import { TanstackTableConfirmationDialog } from './tanstack-table-row-actions-confirmation';
-import { TanstackTableCustomDialog } from './tanstack-table-row-actions-custom-dialog';
-import { TanstackTableToolbar } from './tanstack-table-toolbar';
+import { getCommonPinningStyles } from './utils';
 import {
-  TanstackTableProps,
+  TanstackTableRowActions,
+  TanstackTableToolbar,
+  TanstackTablePagination,
+  TanstackTableConfirmationDialog,
+  TanstackTableCustomDialog,
+  TanstackTableAutoformDialog,
+  TanstackTableTableAutoformDialog,
+  TanstackTableTableCustomDialog,
+} from './fields';
+import {
   TanstackTableRowActionsType,
+  TanstackTableProps,
   TanstackTableTableActionsType,
 } from './types';
-import { getCommonPinningStyles } from './utils';
-import { TanstackTableTableAutoformDialog } from './tanstack-table-table-actions-autoform-dialog';
 
 const CellWithActions = <TData,>(
   row: Row<TData>,
@@ -52,20 +55,34 @@ const CellWithActions = <TData,>(
 
 export default function TanstackTable<TData, TValue>({
   columns,
+  columnOrder,
   data,
   filters,
-  excludeColumns,
+  columnVisibility,
+  pinColumns,
   rowActions,
   tableActions,
   selectedRowAction,
 }: TanstackTableProps<TData, TValue>) {
+  const { replace } = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>(
-      excludeColumns
-        ? Object.fromEntries(excludeColumns?.map((item) => [item, false]))
-        : {}
-    );
+
+  const [colVisibility, setColumnVisibility] = useState<VisibilityState>(
+    columnVisibility
+      ? Object.fromEntries(
+          columns.map((col) => [
+            col.id || '',
+            columnVisibility?.columns.includes(
+              (col.id || '') as keyof TData
+            ) ===
+              (columnVisibility.type === 'show'),
+          ])
+        )
+      : {}
+  );
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -87,6 +104,20 @@ export default function TanstackTable<TData, TValue>({
     return _columns;
   }, [columns, rowActions]);
 
+  const [pagination, setPagination] = useState(() => {
+    const currentPagination = { pageIndex: 0, pageSize: 10 };
+    if (searchParams?.get('maxResultCount')) {
+      currentPagination.pageSize =
+        Number(searchParams?.get('maxResultCount')) || 10;
+    }
+    if (searchParams?.get('skipCount')) {
+      currentPagination.pageIndex =
+        Number(searchParams?.get('skipCount')) / currentPagination.pageSize ||
+        0;
+    }
+    return currentPagination;
+  });
+
   useEffect(() => {
     if (rowAction?.type === 'simple') {
       rowAction.onClick(rowAction.row);
@@ -99,26 +130,54 @@ export default function TanstackTable<TData, TValue>({
     columns: tableColumns,
     state: {
       sorting,
-      columnVisibility,
+      columnVisibility: colVisibility,
       columnFilters,
+      pagination,
     },
     initialState: {
+      columnOrder: columnOrder as string[],
       columnPinning: {
-        left: ['select', 'userName'],
+        left: ['select', 'name', ...((pinColumns as string[]) ?? [])],
         right: ['actions'],
       },
     },
     enableRowSelection: true,
     enableColumnPinning: true,
+    manualPagination: true,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
-    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
     onColumnFiltersChange: setColumnFilters,
+    rowCount: 30,
   });
 
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (Number(searchParams?.get('maxResultCount')) !== pagination.pageSize) {
+      params.set('maxResultCount', pagination.pageSize.toString());
+    }
+    if (
+      Number(searchParams?.get('skipCount')) !==
+      pagination.pageIndex * pagination.pageSize
+    ) {
+      params.set(
+        'skipCount',
+        (pagination.pageIndex * pagination.pageSize).toString()
+      );
+    }
+    if (Number(params?.get('maxResultCount')) === 10) {
+      params.delete('maxResultCount');
+    }
+    if (Number(params?.get('skipCount')) === 0) {
+      params.delete('skipCount');
+    }
+
+    replace(`${pathname}?${params.toString()}`);
+  }, [pagination]);
   return (
     <div className="space-y-4 flex flex-col h-full">
       <TanstackTableToolbar<TData>
@@ -161,6 +220,7 @@ export default function TanstackTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
+                      className="text-nowrap"
                       key={cell.id}
                       style={getCommonPinningStyles({
                         column: cell.column,
@@ -236,6 +296,18 @@ export default function TanstackTable<TData, TValue>({
           onSubmit={tableAction.onSubmit}
           values={tableAction.values}
           type="autoform-dialog"
+        />
+      )}
+      {tableAction?.type === 'custom-dialog' && (
+        <TanstackTableTableCustomDialog
+          setDialogOpen={() => setTableAction(null)}
+          title={tableAction.title}
+          type="custom-dialog"
+          content={tableAction.content}
+          confirmationText={tableAction.confirmationText}
+          cancelText={tableAction.cancelText}
+          onConfirm={tableAction.onConfirm}
+          onCancel={tableAction.onCancel}
         />
       )}
     </div>

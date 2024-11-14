@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { TanstackTableRowActionsCustomDialog } from './types';
+import { TanstackTableRowActionsCustomDialog } from '../types';
 
 type TanstackTableCustomDialogProps<TData> = {
   row: TData;
@@ -35,13 +35,13 @@ export function TanstackTableCustomDialog<TData>({
 
   const handleOnConfirmClick = () => {
     startDeleteTransition(() => {
-      onConfirm(row);
+      onConfirm?.(row);
       setDialogOpen();
     });
   };
   const handleOnCancelClick = () => {
     startDeleteTransition(() => {
-      onCancel(row);
+      onCancel?.(row);
       setDialogOpen();
     });
   };
@@ -54,22 +54,29 @@ export function TanstackTableCustomDialog<TData>({
         </DialogHeader>
         {jsxContent}
         <DialogFooter className="gap-2 sm:space-x-0">
-          <DialogClose asChild>
-            <Button variant="outline" onClick={handleOnCancelClick}>
-              {cancelText}
+          {cancelText && (
+            <DialogClose asChild>
+              <Button variant="outline" onClick={handleOnCancelClick}>
+                {cancelText}
+              </Button>
+            </DialogClose>
+          )}
+          {confirmationText && (
+            <Button
+              aria-label={confirmationText}
+              variant="destructive"
+              onClick={handleOnConfirmClick}
+              disabled={isDeletePending}
+            >
+              {isDeletePending && (
+                <Loader
+                  className="mr-2 size-4 animate-spin"
+                  aria-hidden="true"
+                />
+              )}
+              {confirmationText}
             </Button>
-          </DialogClose>
-          <Button
-            aria-label={confirmationText}
-            variant="destructive"
-            onClick={handleOnConfirmClick}
-            disabled={isDeletePending}
-          >
-            {isDeletePending && (
-              <Loader className="mr-2 size-4 animate-spin" aria-hidden="true" />
-            )}
-            {confirmationText}
-          </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

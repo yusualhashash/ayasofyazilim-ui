@@ -1,7 +1,5 @@
 'use client';
 
-import { DotsHorizontalIcon } from '@radix-ui/react-icons';
-
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -9,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { TanstackTableRowActionsType } from './types';
+import { TanstackTableRowActionsType } from '../types';
 
 interface TanstackTableRowActionsProps<TData> {
   actions: TanstackTableRowActionsType<TData>[];
@@ -34,11 +32,8 @@ export const TanstackTableRowActions = <TData,>({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-        >
-          <DotsHorizontalIcon className="h-4 w-4" />
+        <Button variant="ghost" className="flex data-[state=open]:bg-muted">
+          Actions
           <span className="sr-only">Open Menu</span>
         </Button>
       </DropdownMenuTrigger>

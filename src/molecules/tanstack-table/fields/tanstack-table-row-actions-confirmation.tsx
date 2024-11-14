@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { TanstackTableRowActionsConfirmationDialog } from './types';
+import { TanstackTableRowActionsConfirmationDialog } from '../types';
 
 type TanstackTableConfirmationDialogProps<TData> = {
   row: TData;
@@ -41,7 +41,7 @@ export function TanstackTableConfirmationDialog<TData>({
   };
   const handleOnCancelClick = () => {
     startDeleteTransition(() => {
-      onCancel(row);
+      onCancel?.(row);
       setDialogOpen();
     });
   };
