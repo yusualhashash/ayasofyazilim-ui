@@ -7,6 +7,7 @@ import {
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
@@ -130,15 +131,17 @@ export default function DataTable<TData, TValue>(
       cell: SkeletonCell,
     }));
   }
+
   const table = useReactTable({
     data: tableData,
     columns,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
-    manualPagination: true,
+    getPaginationRowModel: getPaginationRowModel(),
+    manualPagination: false,
     rowCount: rowCount || tableData.length,
     getSortedRowModel: getSortedRowModel(),
-    manualFiltering: true,
+    manualFiltering: typeof fetchRequest === 'function',
     getRowCanExpand: () => !!renderSubComponent,
     getExpandedRowModel: getExpandedRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -244,45 +247,37 @@ export default function DataTable<TData, TValue>(
           </TableHeader>
           <TableBody className={cn(classNames?.table?.body)}>
             {table.getRowModel().rows?.length ? (
-              table
-                .getRowModel()
-                .rows.slice(
-                  table.getState().pagination.pageIndex *
-                    table.getState().pagination.pageSize,
-                  (table.getState().pagination.pageIndex + 1) *
-                    table.getState().pagination.pageSize
-                )
-                .map((row) => (
-                  <Fragment key={row.id}>
-                    <TableRow
-                      data-state={row.getIsSelected() ? 'selected' : undefined}
-                      className="whitespace-nowrap"
-                    >
-                      {row.getVisibleCells().map((cell) => {
-                        const className = cell.id.includes('actions')
-                          ? 'p-0'
-                          : 'p-2';
-                        return (
-                          <TableCell key={cell.id} className={className}>
-                            {
-                              flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                              ) as JSX.Element
-                            }
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                    {row.getIsExpanded() && renderSubComponent && (
-                      <TableRow>
-                        <TableCell colSpan={row.getVisibleCells().length}>
-                          {renderSubComponent({ row })}
+              table.getRowModel().rows.map((row) => (
+                <Fragment key={row.id}>
+                  <TableRow
+                    data-state={row.getIsSelected() ? 'selected' : undefined}
+                    className="whitespace-nowrap"
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      const className = cell.id.includes('actions')
+                        ? 'p-0'
+                        : 'p-2';
+                      return (
+                        <TableCell key={cell.id} className={className}>
+                          {
+                            flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            ) as JSX.Element
+                          }
                         </TableCell>
-                      </TableRow>
-                    )}
-                  </Fragment>
-                ))
+                      );
+                    })}
+                  </TableRow>
+                  {row.getIsExpanded() && renderSubComponent && (
+                    <TableRow>
+                      <TableCell colSpan={row.getVisibleCells().length}>
+                        {renderSubComponent({ row })}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </Fragment>
+              ))
             ) : (
               <TableRow>
                 <TableCell
