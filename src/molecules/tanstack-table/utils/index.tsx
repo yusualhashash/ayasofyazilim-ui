@@ -9,6 +9,7 @@ import {
   TanstackTableColumnDate,
   TanstackTableColumnLink,
   TanstackTableFacetedFilterType,
+  TanstackTableColumnIcon,
 } from '../types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
@@ -56,12 +57,12 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
   dates?: Record<string, TanstackTableColumnDate>;
   excludeColumns?: Partial<keyof T>[];
   faceted?: Record<string, { options: TanstackTableFacetedFilterType[] }>;
+  icons?: Record<string, TanstackTableColumnIcon>;
   languageData?:
     | TanstackTableLanguageDataType
     | TanstackTableLanguageDataTypeWithConstantKey;
   links?: Record<string, TanstackTableColumnLink>;
   row: Record<string, string | number | boolean | Date | null | object>;
-
   selectableRows?: boolean;
 }) {
   function createCell(
@@ -71,6 +72,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
     faceted?: TanstackTableFacetedFilterType[],
     badge?: TanstackTableColumnBadge,
     date?: TanstackTableColumnDate,
+    icon?: TanstackTableColumnIcon,
     className?: string
   ) {
     let content: JSX.Element | string =
@@ -84,6 +86,20 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
           month: 'short',
           year: 'numeric',
         }
+      );
+    }
+    if (icon) {
+      const position = icon.position || 'before';
+      content = (
+        <>
+          {icon.icon && position === 'before' && (
+            <icon.icon className={cn('w-4 h-4', icon.iconClassName)} />
+          )}
+          {row.getValue(accessorKey)}
+          {icon.icon && position === 'after' && (
+            <icon.icon className={cn('w-4 h-4', icon.iconClassName)} />
+          )}
+        </>
       );
     }
     if (badge) {
@@ -124,7 +140,11 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       }
     }
     if (!link) {
-      return <div className={cn(className)}>{content}</div>;
+      return (
+        <div className={cn(' flex items-center gap-2', className)}>
+          {content}
+        </div>
+      );
     }
     let url = link.prefix;
     if (link.targetAccessorKey) {
@@ -138,7 +158,13 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       url += `/${link.suffix}`;
     }
     return (
-      <Link href={url} className={cn('font-medium text-blue-700', className)}>
+      <Link
+        href={url}
+        className={cn(
+          'font-medium text-blue-700 flex items-center gap-2',
+          className
+        )}
+      >
         {content}
       </Link>
     );
@@ -153,6 +179,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
     badges,
     classNames,
     dates,
+    icons,
   } = params;
   const columns: ColumnDef<T>[] = [];
   if (params.selectableRows) {
@@ -210,6 +237,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
             faceted?.[accessorKey].options,
             badges?.[accessorKey],
             dates?.[accessorKey],
+            icons?.[accessorKey],
             classNames?.[accessorKey]
           ),
       };

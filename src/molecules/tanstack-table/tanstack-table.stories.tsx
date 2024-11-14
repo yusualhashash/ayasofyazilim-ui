@@ -1,5 +1,5 @@
 import { Meta, StoryFn } from '@storybook/react';
-import { Building2, Edit, Trash2, User2 } from 'lucide-react';
+import { Building2, Edit, LinkIcon, Trash2, User2 } from 'lucide-react';
 import { createZodObject } from 'src/lib/create-zod-object';
 import TanstackTable from '.';
 import {
@@ -111,6 +111,30 @@ const badgeCol = tanstackTableCreateColumnsByRowData<Merchant>({
   },
 });
 export const BadgeColumns = badgeStory.bind({});
+
+const iconStory: StoryFn<typeof TanstackTable> = (args) => (
+  <div className="max-w-[1400px]">
+    <TanstackTable
+      {...args}
+      data={merchants}
+      columns={iconCol}
+      columnVisibility={{
+        type: 'show',
+        columns: ['name', 'entityInformationTypeCode'],
+      }}
+    />
+  </div>
+);
+const iconCol = tanstackTableCreateColumnsByRowData<Merchant>({
+  row: $merchantSchema.properties,
+  icons: {
+    name: {
+      icon: LinkIcon,
+      iconClassName: 'text-blue-500',
+    },
+  },
+});
+export const IconColumns = iconStory.bind({});
 
 const facetedStory: StoryFn<typeof TanstackTable> = (args) => (
   <div className="max-w-[1400px]">
