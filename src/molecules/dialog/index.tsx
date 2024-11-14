@@ -36,6 +36,7 @@ export type CustomTableActionDialogProps = {
 const AutoFormData = (
   action: TableActionAutoform,
   values: Partial<z.infer<ZodObjectOrWrapped>>,
+  onOpenChange: (e: boolean) => void,
   triggerData?: any
 ) => (
   <AutoForm
@@ -43,6 +44,7 @@ const AutoFormData = (
     values={values}
     onSubmit={(formData) => {
       action?.callback(formData, triggerData);
+      onOpenChange(false);
     }}
   >
     <>
@@ -66,7 +68,7 @@ export default function CustomTableActionDialog({
   const [values, setValues] = useState<any>(undefined);
   const autoFormData =
     action.componentType === 'Autoform'
-      ? AutoFormData(action, values, values)
+      ? AutoFormData(action, values, onOpenChange, values)
       : undefined;
   useEffect(() => {
     if (action.componentType === 'Autoform') {
