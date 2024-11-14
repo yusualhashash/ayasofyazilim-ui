@@ -45,6 +45,7 @@ import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 
 type CustomComboboxProps<T> = {
   childrenProps: AutoFormInputComponentProps;
+  disabled?: boolean;
   emptyValue?: string;
   list: Array<T> | null | undefined;
   onValueChange?: Dispatch<SetStateAction<T | null | undefined>>;
@@ -55,8 +56,14 @@ type CustomComboboxProps<T> = {
 };
 
 export function CustomCombobox<T>({ ...props }: CustomComboboxProps<T>) {
-  const { childrenProps, list, selectLabel, selectIdentifier, emptyValue } =
-    props;
+  const {
+    childrenProps,
+    list,
+    selectLabel,
+    selectIdentifier,
+    emptyValue,
+    disabled,
+  } = props;
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const { showLabel: _showLabel } = childrenProps.fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
@@ -83,6 +90,7 @@ export function CustomCombobox<T>({ ...props }: CustomComboboxProps<T>) {
             type="button"
             variant="outline"
             role="combobox"
+            disabled={disabled}
             className={cn(
               'text-muted-foreground w-full justify-between font-normal',
               fieldValue && 'text-black',
@@ -106,6 +114,7 @@ export function CustomCombobox<T>({ ...props }: CustomComboboxProps<T>) {
         <Button
           type="button"
           variant="outline"
+          disabled={disabled}
           className={cn(
             'text-muted-foreground w-full justify-between font-normal',
             fieldValue && 'text-black',
