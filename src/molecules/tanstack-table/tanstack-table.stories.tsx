@@ -19,6 +19,9 @@ export default {
   argTypes: {},
   parameters: {
     layout: 'centered',
+    nextjs: {
+      appDirectory: true,
+    },
   },
 } as Meta<typeof TanstackTable>;
 
@@ -228,3 +231,65 @@ const editRowCol = tanstackTableCreateColumnsByRowData<Merchant>({
   },
 });
 export const EditRow = editRowStory.bind({});
+
+const conditionalStory: StoryFn<typeof TanstackTable> = (args) => (
+  <div className="max-w-[1400px]">
+    <TanstackTable
+      {...args}
+      data={merchants}
+      columns={conditionalCol}
+      columnVisibility={{
+        type: 'show',
+        columns: ['name', 'entityInformationTypeCode'],
+      }}
+    />
+  </div>
+);
+const conditionalCol = tanstackTableCreateColumnsByRowData<Merchant>({
+  row: $merchantSchema.properties,
+  links: {
+    name: {
+      targetAccessorKey: 'id',
+      prefix: '/app/admin/parties/merchants',
+      conditions: [
+        {
+          conditionAccessorKey: 'entityInformationTypeCode',
+          when: (value) => value === 'ORGANIZATION',
+        },
+      ],
+    },
+  },
+  classNames: {
+    name: [
+      {
+        className: 'bg-red-500',
+        conditions: [
+          {
+            conditionAccessorKey: 'entityInformationTypeCode',
+            when: (value) => {
+              console.log(value);
+              return value !== 'ORGANIZATION';
+            },
+          },
+        ],
+      },
+    ],
+  },
+  faceted: {
+    entityInformationTypeCode: {
+      options: [
+        {
+          value: 'INDIVIDUAL',
+          label: 'Bireysel',
+          icon: User2,
+        },
+        {
+          value: 'ORGANIZATION',
+          label: 'Organizasyon',
+          icon: Building2,
+        },
+      ],
+    },
+  },
+});
+export const conditionalColumns = conditionalStory.bind({});
