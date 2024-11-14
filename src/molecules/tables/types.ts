@@ -45,7 +45,11 @@ export type TableActionAutoform = {
       cta?: string;
     };
   } & AutoFormProps;
-  callback: (values: any, triggerData?: unknown) => void;
+  callback: (
+    values: any,
+    triggerData?: unknown,
+    onOpenChange?: (e: boolean) => void
+  ) => void;
   componentType: 'Autoform';
 };
 export type TableActionCustom = {

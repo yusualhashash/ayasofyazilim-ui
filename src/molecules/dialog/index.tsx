@@ -43,8 +43,7 @@ const AutoFormData = (
     {...action?.autoFormArgs}
     values={values}
     onSubmit={(formData) => {
-      action?.callback(formData, triggerData);
-      onOpenChange(false);
+      action?.callback(formData, triggerData, onOpenChange);
     }}
   >
     <>
