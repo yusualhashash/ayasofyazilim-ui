@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { ComponentType } from 'react';
-import { ZodObjectOrWrapped } from 'src/organisms/auto-form';
 import { z } from 'zod';
+import { ZodObjectOrWrapped } from '../../../organisms/auto-form/utils';
 
 export type TanstackTableProps<TData, TValue> = {
   columnOrder?: (keyof TData)[];
