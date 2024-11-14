@@ -53,12 +53,10 @@ export type TanstackTableColumnLink = {
 export type TanstackTableColumnBadge = {
   className?: string;
   hideColumnValue?: boolean;
-  targetAccessorKey: string;
   values: {
     badgeClassName?: string;
     conditions?: TanstackTableCellCondition[];
     label: string;
-    value: string | boolean | number | Date;
   }[];
 };
 export type TanstackTableColumnDate = {

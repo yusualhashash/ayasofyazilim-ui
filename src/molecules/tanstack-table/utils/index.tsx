@@ -120,20 +120,24 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       );
     }
     if (badge) {
-      const badgeItem = badge.values
-        .filter((item) => testConditions(item.conditions, row))
-        .find((item) => item.value === row.getValue(badge.targetAccessorKey));
-
-      if (badgeItem) {
-        content = (
-          <>
-            <Badge variant="outline" className={badgeItem.badgeClassName}>
-              {badgeItem.label}
-            </Badge>{' '}
-            {!badge.hideColumnValue && content}
-          </>
-        );
-      }
+      const badges = badge.values.map((item) =>
+        item.conditions?.map((condition) => {
+          if (condition.when(row.getValue(condition.conditionAccessorKey))) {
+            return (
+              <Badge variant="outline" className={item.badgeClassName}>
+                {item.label}
+              </Badge>
+            );
+          }
+          return content;
+        })
+      );
+      content = (
+        <>
+          {badges}
+          {!badge.hideColumnValue && content}
+        </>
+      );
     }
     if (faceted) {
       const facetedItem = faceted.find(
