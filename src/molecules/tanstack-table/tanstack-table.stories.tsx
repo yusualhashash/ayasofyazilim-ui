@@ -99,15 +99,24 @@ const badgeCol = tanstackTableCreateColumnsByRowData<Merchant>({
   row: $merchantSchema.properties,
   badges: {
     entityInformationTypeCode: {
-      targetAccessorKey: 'typeCode',
       values: [
         {
           label: 'Organizasyon',
-          value: 'HEADQUARTER',
+          conditions: [
+            {
+              conditionAccessorKey: 'typeCode',
+              when: (value) => value === 'HEADQUARTER',
+            },
+          ],
         },
         {
           label: 'Bireysel',
-          value: 'STORE',
+          conditions: [
+            {
+              conditionAccessorKey: 'typeCode',
+              when: (value) => value === 'STORE',
+            },
+          ],
         },
       ],
     },
