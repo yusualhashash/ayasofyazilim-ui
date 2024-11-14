@@ -128,18 +128,20 @@ const facetedStory: StoryFn<typeof TanstackTable> = (args) => (
 const facetedCol = tanstackTableCreateColumnsByRowData<Merchant>({
   row: $merchantSchema.properties,
   faceted: {
-    entityInformationTypeCode: [
-      {
-        value: 'INDIVIDUAL',
-        label: 'Bireysel',
-        icon: User2,
-      },
-      {
-        value: 'ORGANIZATION',
-        label: 'Organizasyon',
-        icon: Building2,
-      },
-    ],
+    entityInformationTypeCode: {
+      options: [
+        {
+          value: 'INDIVIDUAL',
+          label: 'Bireysel',
+          icon: User2,
+        },
+        {
+          value: 'ORGANIZATION',
+          label: 'Organizasyon',
+          icon: Building2,
+        },
+      ],
+    },
   },
 });
 export const FacetedColumns = facetedStory.bind({});

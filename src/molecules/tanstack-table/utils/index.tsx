@@ -55,7 +55,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
   classNames?: Record<string, string>;
   dates?: Record<string, TanstackTableColumnDate>;
   excludeColumns?: Partial<keyof T>[];
-  faceted?: Record<string, TanstackTableFacetedFilterType[]>;
+  faceted?: Record<string, { options: TanstackTableFacetedFilterType[] }>;
   languageData?:
     | TanstackTableLanguageDataType
     | TanstackTableLanguageDataTypeWithConstantKey;
@@ -207,7 +207,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
             accessorKey,
             row,
             link,
-            faceted?.[accessorKey],
+            faceted?.[accessorKey].options,
             badges?.[accessorKey],
             dates?.[accessorKey],
             classNames?.[accessorKey]
