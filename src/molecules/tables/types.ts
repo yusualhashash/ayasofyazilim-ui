@@ -82,10 +82,12 @@ export type AutoColumnGenerator<TData = unknown> = {
   customCells?: Partial<
     Record<keyof TData, customCells<TData> | ColumnDef<TData>['cell']>
   >;
+  dateOptions?: Intl.DateTimeFormatOptions;
   excludeList?: IsUnknown<TData> extends true
     ? Array<string>
     : Array<keyof TData>;
   hideAction?: boolean;
+  language?: Intl.LocalesArgument;
   positions?: IsUnknown<TData> extends true
     ? Array<string>
     : Array<keyof TData>;

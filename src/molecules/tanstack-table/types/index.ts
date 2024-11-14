@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { ComponentType } from 'react';
-import { ZodObjectOrWrapped } from 'src/organisms/auto-form';
 import { z } from 'zod';
+import { ZodObjectOrWrapped } from '../../../organisms/auto-form/utils';
 
 export type TanstackTableProps<TData, TValue> = {
   columnOrder?: (keyof TData)[];
@@ -18,7 +18,14 @@ export type TanstackTableProps<TData, TValue> = {
   selectedRowAction?: TanstackTableSelectedRowActionType;
   tableActions?: TanstackTableTableActionsType[];
 };
-
+export type TanstackTableCellCondition = {
+  conditionAccessorKey: string;
+  when: (value: string | boolean | number | Date) => boolean;
+};
+export type TanstackTableColumnClassNames = {
+  className?: string;
+  conditions: TanstackTableCellCondition[];
+};
 export type TanstackTableFacetedFilterType = {
   className?: string;
   icon?: ComponentType<{ className?: string }>;
@@ -27,11 +34,18 @@ export type TanstackTableFacetedFilterType = {
   value: string;
 };
 export type TanstackTableFiltersType = {
-  facetedFilters?: Record<string, TanstackTableFacetedFilterType[]>;
+  facetedFilters?: Record<
+    string,
+    {
+      defaultValue?: string[];
+      options: TanstackTableFacetedFilterType[];
+    }
+  >;
   textFilters?: string[];
 };
 
 export type TanstackTableColumnLink = {
+  conditions?: TanstackTableCellCondition[];
   prefix: string;
   suffix?: string;
   targetAccessorKey?: string;
@@ -39,8 +53,20 @@ export type TanstackTableColumnLink = {
 export type TanstackTableColumnBadge = {
   className?: string;
   hideColumnValue?: boolean;
-  targetAccessorKey: string;
-  values: { badgeClassName?: string; label: string; value: string }[];
+  values: {
+    badgeClassName?: string;
+    conditions?: TanstackTableCellCondition[];
+    label: string;
+  }[];
+};
+export type TanstackTableColumnDate = {
+  locale?: Intl.LocalesArgument;
+  options?: Intl.DateTimeFormatOptions;
+};
+export type TanstackTableColumnIcon = {
+  icon?: ComponentType<{ className?: string }>;
+  iconClassName?: string;
+  position?: 'before' | 'after';
 };
 
 export type TanstackTableRowActionsSimple<TData> = {
@@ -134,4 +160,9 @@ export type TanstackTableSelectedRowActionType = {
   cta: string;
   icon?: ComponentType<{ className?: string }>;
   onClick: (selectedIds: string[]) => void;
+};
+export type TanstackTableLanguageDataType = Record<string, string>;
+export type TanstackTableLanguageDataTypeWithConstantKey = {
+  constantKey: string;
+  languageData: Record<string, string>;
 };

@@ -1,5 +1,5 @@
 import { Meta, StoryFn } from '@storybook/react';
-import { Building2, Edit, Trash2, User2 } from 'lucide-react';
+import { Building2, Edit, LinkIcon, Trash2, User2 } from 'lucide-react';
 import { createZodObject } from 'src/lib/create-zod-object';
 import TanstackTable from '.';
 import {
@@ -19,6 +19,9 @@ export default {
   argTypes: {},
   parameters: {
     layout: 'centered',
+    nextjs: {
+      appDirectory: true,
+    },
   },
 } as Meta<typeof TanstackTable>;
 
@@ -96,21 +99,54 @@ const badgeCol = tanstackTableCreateColumnsByRowData<Merchant>({
   row: $merchantSchema.properties,
   badges: {
     entityInformationTypeCode: {
-      targetAccessorKey: 'typeCode',
       values: [
         {
           label: 'Organizasyon',
-          value: 'HEADQUARTER',
+          conditions: [
+            {
+              conditionAccessorKey: 'typeCode',
+              when: (value) => value === 'HEADQUARTER',
+            },
+          ],
         },
         {
           label: 'Bireysel',
-          value: 'STORE',
+          conditions: [
+            {
+              conditionAccessorKey: 'typeCode',
+              when: (value) => value === 'STORE',
+            },
+          ],
         },
       ],
     },
   },
 });
 export const BadgeColumns = badgeStory.bind({});
+
+const iconStory: StoryFn<typeof TanstackTable> = (args) => (
+  <div className="max-w-[1400px]">
+    <TanstackTable
+      {...args}
+      data={merchants}
+      columns={iconCol}
+      columnVisibility={{
+        type: 'show',
+        columns: ['name', 'entityInformationTypeCode'],
+      }}
+    />
+  </div>
+);
+const iconCol = tanstackTableCreateColumnsByRowData<Merchant>({
+  row: $merchantSchema.properties,
+  icons: {
+    name: {
+      icon: LinkIcon,
+      iconClassName: 'text-blue-500',
+    },
+  },
+});
+export const IconColumns = iconStory.bind({});
 
 const facetedStory: StoryFn<typeof TanstackTable> = (args) => (
   <div className="max-w-[1400px]">
@@ -128,18 +164,20 @@ const facetedStory: StoryFn<typeof TanstackTable> = (args) => (
 const facetedCol = tanstackTableCreateColumnsByRowData<Merchant>({
   row: $merchantSchema.properties,
   faceted: {
-    entityInformationTypeCode: [
-      {
-        value: 'INDIVIDUAL',
-        label: 'Bireysel',
-        icon: User2,
-      },
-      {
-        value: 'ORGANIZATION',
-        label: 'Organizasyon',
-        icon: Building2,
-      },
-    ],
+    entityInformationTypeCode: {
+      options: [
+        {
+          value: 'INDIVIDUAL',
+          label: 'Bireysel',
+          icon: User2,
+        },
+        {
+          value: 'ORGANIZATION',
+          label: 'Organizasyon',
+          icon: Building2,
+        },
+      ],
+    },
   },
 });
 export const FacetedColumns = facetedStory.bind({});
@@ -202,3 +240,65 @@ const editRowCol = tanstackTableCreateColumnsByRowData<Merchant>({
   },
 });
 export const EditRow = editRowStory.bind({});
+
+const conditionalStory: StoryFn<typeof TanstackTable> = (args) => (
+  <div className="max-w-[1400px]">
+    <TanstackTable
+      {...args}
+      data={merchants}
+      columns={conditionalCol}
+      columnVisibility={{
+        type: 'show',
+        columns: ['name', 'entityInformationTypeCode'],
+      }}
+    />
+  </div>
+);
+const conditionalCol = tanstackTableCreateColumnsByRowData<Merchant>({
+  row: $merchantSchema.properties,
+  links: {
+    name: {
+      targetAccessorKey: 'id',
+      prefix: '/app/admin/parties/merchants',
+      conditions: [
+        {
+          conditionAccessorKey: 'entityInformationTypeCode',
+          when: (value) => value === 'ORGANIZATION',
+        },
+      ],
+    },
+  },
+  classNames: {
+    name: [
+      {
+        className: 'bg-red-500',
+        conditions: [
+          {
+            conditionAccessorKey: 'entityInformationTypeCode',
+            when: (value) => {
+              console.log(value);
+              return value !== 'ORGANIZATION';
+            },
+          },
+        ],
+      },
+    ],
+  },
+  faceted: {
+    entityInformationTypeCode: {
+      options: [
+        {
+          value: 'INDIVIDUAL',
+          label: 'Bireysel',
+          icon: User2,
+        },
+        {
+          value: 'ORGANIZATION',
+          label: 'Organizasyon',
+          icon: Building2,
+        },
+      ],
+    },
+  },
+});
+export const conditionalColumns = conditionalStory.bind({});

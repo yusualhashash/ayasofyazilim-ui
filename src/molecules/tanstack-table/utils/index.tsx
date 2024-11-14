@@ -3,14 +3,22 @@ import { CSSProperties } from 'react';
 import Link from 'next/link';
 import { TanstackTableColumnHeader } from '../fields/tanstack-table-column-header';
 import {
+  TanstackTableLanguageDataType,
+  TanstackTableLanguageDataTypeWithConstantKey,
   TanstackTableColumnBadge,
+  TanstackTableColumnDate,
   TanstackTableColumnLink,
   TanstackTableFacetedFilterType,
+  TanstackTableColumnIcon,
+  TanstackTableCellCondition,
+  TanstackTableColumnClassNames,
 } from '../types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { tanstackTableCreateTitleWithLanguageData } from './columnNames';
 
+export * from './columnNames';
 export function getCommonPinningStyles<TData>({
   column,
   withBorder = false,
@@ -45,15 +53,33 @@ export function getCommonPinningStyles<TData>({
   };
 }
 
+function testConditions<T>(
+  conditions: TanstackTableCellCondition[] | undefined,
+  row: Row<T>
+) {
+  if (!conditions) return true;
+
+  return (
+    conditions
+      .map((condition) =>
+        condition.when(row.getValue(condition.conditionAccessorKey))
+      )
+      .filter((i) => !i).length === 0
+  );
+}
+
 export function tanstackTableCreateColumnsByRowData<T>(params: {
   badges?: Record<string, TanstackTableColumnBadge>;
-  classNames?: Record<string, string>;
+  classNames?: Record<string, TanstackTableColumnClassNames[]>;
+  dates?: Record<string, TanstackTableColumnDate>;
   excludeColumns?: Partial<keyof T>[];
-  faceted?: Record<string, TanstackTableFacetedFilterType[]>;
-  languageData?: Record<string, string>;
+  faceted?: Record<string, { options: TanstackTableFacetedFilterType[] }>;
+  icons?: Record<string, TanstackTableColumnIcon>;
+  languageData?:
+    | TanstackTableLanguageDataType
+    | TanstackTableLanguageDataTypeWithConstantKey;
   links?: Record<string, TanstackTableColumnLink>;
   row: Record<string, string | number | boolean | Date | null | object>;
-
   selectableRows?: boolean;
 }) {
   function createCell(
@@ -62,26 +88,56 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
     link?: TanstackTableColumnLink,
     faceted?: TanstackTableFacetedFilterType[],
     badge?: TanstackTableColumnBadge,
-    className?: string
+    date?: TanstackTableColumnDate,
+    icon?: TanstackTableColumnIcon,
+    className?: TanstackTableColumnClassNames[]
   ) {
     let content: JSX.Element | string =
       row.getValue(accessorKey)?.toString() || '';
 
-    if (badge) {
-      const badgeItem = badge.values.find(
-        (item) => item.value === row.getValue(badge.targetAccessorKey)
+    if (date) {
+      content = new Date(content).toLocaleDateString(
+        date.locale,
+        date.options || {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        }
       );
-
-      if (badgeItem) {
-        content = (
-          <>
-            <Badge variant="outline" className={badgeItem.badgeClassName}>
-              {badgeItem.label}
-            </Badge>{' '}
-            {!badge.hideColumnValue && content}
-          </>
-        );
-      }
+    }
+    if (icon) {
+      const position = icon.position || 'before';
+      content = (
+        <>
+          {icon.icon && position === 'before' && (
+            <icon.icon className={cn('w-4 h-4', icon.iconClassName)} />
+          )}
+          {row.getValue(accessorKey)}
+          {icon.icon && position === 'after' && (
+            <icon.icon className={cn('w-4 h-4', icon.iconClassName)} />
+          )}
+        </>
+      );
+    }
+    if (badge) {
+      const badges = badge.values.map((item) =>
+        item.conditions?.map((condition) => {
+          if (condition.when(row.getValue(condition.conditionAccessorKey))) {
+            return (
+              <Badge variant="outline" className={item.badgeClassName}>
+                {item.label}
+              </Badge>
+            );
+          }
+          return content;
+        })
+      );
+      content = (
+        <>
+          {badges}
+          {!badge.hideColumnValue && content}
+        </>
+      );
     }
     if (faceted) {
       const facetedItem = faceted.find(
@@ -104,8 +160,21 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
         );
       }
     }
-    if (!link) {
-      return <div className={cn(className)}>{content}</div>;
+    const containerClassName = className
+      ?.map((item) => {
+        if (testConditions(item.conditions, row)) {
+          return item.className;
+        }
+        return null;
+      })
+      .join(' ');
+
+    if (!link || !testConditions(link.conditions, row)) {
+      return (
+        <div className={cn(' flex items-center gap-2', containerClassName)}>
+          {content}
+        </div>
+      );
     }
     let url = link.prefix;
     if (link.targetAccessorKey) {
@@ -119,7 +188,13 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       url += `/${link.suffix}`;
     }
     return (
-      <Link href={url} className={cn('font-medium underline', className)}>
+      <Link
+        href={url}
+        className={cn(
+          'font-medium text-blue-700 flex items-center gap-2',
+          containerClassName
+        )}
+      >
         {content}
       </Link>
     );
@@ -133,6 +208,8 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
     faceted,
     badges,
     classNames,
+    dates,
+    icons,
   } = params;
   const columns: ColumnDef<T>[] = [];
   if (params.selectableRows) {
@@ -169,7 +246,10 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
   Object.keys(row)
     .filter((key) => !excludeColumns?.includes(key as keyof T))
     .forEach((accessorKey) => {
-      const title = languageData?.[accessorKey] || accessorKey;
+      const title = tanstackTableCreateTitleWithLanguageData({
+        languageData,
+        accessorKey,
+      });
       const link = links?.[accessorKey];
 
       const column: ColumnDef<T> = {
@@ -184,8 +264,10 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
             accessorKey,
             row,
             link,
-            faceted?.[accessorKey],
+            faceted?.[accessorKey]?.options,
             badges?.[accessorKey],
+            dates?.[accessorKey],
+            icons?.[accessorKey],
             classNames?.[accessorKey]
           ),
       };
