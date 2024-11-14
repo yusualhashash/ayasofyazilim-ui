@@ -56,14 +56,13 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
   classNames?: Record<string, string>;
   dates?: Record<string, TanstackTableColumnDate>;
   excludeColumns?: Partial<keyof T>[];
-  faceted?: Record<string, TanstackTableFacetedFilterType[]>;
+  faceted?: Record<string, { options: TanstackTableFacetedFilterType[] }>;
   icons?: Record<string, TanstackTableColumnIcon>;
   languageData?:
     | TanstackTableLanguageDataType
     | TanstackTableLanguageDataTypeWithConstantKey;
   links?: Record<string, TanstackTableColumnLink>;
   row: Record<string, string | number | boolean | Date | null | object>;
-
   selectableRows?: boolean;
 }) {
   function createCell(
@@ -235,7 +234,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
             accessorKey,
             row,
             link,
-            faceted?.[accessorKey],
+            faceted?.[accessorKey].options,
             badges?.[accessorKey],
             dates?.[accessorKey],
             icons?.[accessorKey],

@@ -27,7 +27,13 @@ export type TanstackTableFacetedFilterType = {
   value: string;
 };
 export type TanstackTableFiltersType = {
-  facetedFilters?: Record<string, TanstackTableFacetedFilterType[]>;
+  facetedFilters?: Record<
+    string,
+    {
+      defaultValue?: string[];
+      options: TanstackTableFacetedFilterType[];
+    }
+  >;
   textFilters?: string[];
 };
 

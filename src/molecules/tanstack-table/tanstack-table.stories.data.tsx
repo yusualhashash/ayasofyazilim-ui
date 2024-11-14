@@ -315,10 +315,12 @@ export const merchants: Merchant[] = [
   },
 ];
 export const faceted = {
-  status: [
-    { value: 'inactive', label: 'Inactive', icon: Building2 },
-    { value: 'active', label: 'Active', icon: PersonIcon },
-  ],
+  status: {
+    options: [
+      { value: 'inactive', label: 'Inactive', icon: Building2 },
+      { value: 'active', label: 'Active', icon: PersonIcon },
+    ],
+  },
 };
 export const col = tanstackTableCreateColumnsByRowData<Merchant>({
   row: $merchantSchema.properties,
