@@ -7,6 +7,7 @@ import AutoFormNumber from './fields/number';
 import AutoFormPhone from './fields/phone';
 import AutoFormRadioGroup from './fields/radio-group';
 import AutoFormSwitch from './fields/switch';
+import AutoFormPassword from './fields/password';
 import AutoFormTextarea from './fields/textarea';
 
 export const INPUT_COMPONENTS = {
@@ -20,6 +21,7 @@ export const INPUT_COMPONENTS = {
   file: AutoFormFile,
   fallback: AutoFormInput,
   phone: AutoFormPhone,
+  password: AutoFormPassword,
 };
 
 /**
