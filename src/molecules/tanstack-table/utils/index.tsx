@@ -129,7 +129,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
               </Badge>
             );
           }
-          return content;
+          return null;
         })
       );
       content = (
