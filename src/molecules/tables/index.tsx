@@ -138,7 +138,7 @@ export default function DataTable<TData, TValue>(
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    manualPagination: false,
+    manualPagination: typeof fetchRequest === 'function',
     rowCount: rowCount || tableData.length,
     getSortedRowModel: getSortedRowModel(),
     manualFiltering: typeof fetchRequest === 'function',
