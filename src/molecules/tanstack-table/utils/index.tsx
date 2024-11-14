@@ -10,6 +10,8 @@ import {
   TanstackTableColumnLink,
   TanstackTableFacetedFilterType,
   TanstackTableColumnIcon,
+  TanstackTableCellCondition,
+  TanstackTableColumnClassNames,
 } from '../types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
@@ -51,9 +53,24 @@ export function getCommonPinningStyles<TData>({
   };
 }
 
+function testConditions<T>(
+  conditions: TanstackTableCellCondition[] | undefined,
+  row: Row<T>
+) {
+  if (!conditions) return true;
+
+  return (
+    conditions
+      .map((condition) =>
+        condition.when(row.getValue(condition.conditionAccessorKey))
+      )
+      .filter((i) => !i).length === 0
+  );
+}
+
 export function tanstackTableCreateColumnsByRowData<T>(params: {
   badges?: Record<string, TanstackTableColumnBadge>;
-  classNames?: Record<string, string>;
+  classNames?: Record<string, TanstackTableColumnClassNames[]>;
   dates?: Record<string, TanstackTableColumnDate>;
   excludeColumns?: Partial<keyof T>[];
   faceted?: Record<string, { options: TanstackTableFacetedFilterType[] }>;
@@ -73,7 +90,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
     badge?: TanstackTableColumnBadge,
     date?: TanstackTableColumnDate,
     icon?: TanstackTableColumnIcon,
-    className?: string
+    className?: TanstackTableColumnClassNames[]
   ) {
     let content: JSX.Element | string =
       row.getValue(accessorKey)?.toString() || '';
@@ -103,9 +120,9 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       );
     }
     if (badge) {
-      const badgeItem = badge.values.find(
-        (item) => item.value === row.getValue(badge.targetAccessorKey)
-      );
+      const badgeItem = badge.values
+        .filter((item) => testConditions(item.conditions, row))
+        .find((item) => item.value === row.getValue(badge.targetAccessorKey));
 
       if (badgeItem) {
         content = (
@@ -139,9 +156,18 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
         );
       }
     }
-    if (!link) {
+    const containerClassName = className
+      ?.map((item) => {
+        if (testConditions(item.conditions, row)) {
+          return item.className;
+        }
+        return null;
+      })
+      .join(' ');
+
+    if (!link || !testConditions(link.conditions, row)) {
       return (
-        <div className={cn(' flex items-center gap-2', className)}>
+        <div className={cn(' flex items-center gap-2', containerClassName)}>
           {content}
         </div>
       );
@@ -162,7 +188,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
         href={url}
         className={cn(
           'font-medium text-blue-700 flex items-center gap-2',
-          className
+          containerClassName
         )}
       >
         {content}
@@ -234,7 +260,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
             accessorKey,
             row,
             link,
-            faceted?.[accessorKey].options,
+            faceted?.[accessorKey]?.options,
             badges?.[accessorKey],
             dates?.[accessorKey],
             icons?.[accessorKey],

@@ -18,7 +18,14 @@ export type TanstackTableProps<TData, TValue> = {
   selectedRowAction?: TanstackTableSelectedRowActionType;
   tableActions?: TanstackTableTableActionsType[];
 };
-
+export type TanstackTableCellCondition = {
+  conditionAccessorKey: string;
+  when: (value: string | boolean | number | Date) => boolean;
+};
+export type TanstackTableColumnClassNames = {
+  className?: string;
+  conditions: TanstackTableCellCondition[];
+};
 export type TanstackTableFacetedFilterType = {
   className?: string;
   icon?: ComponentType<{ className?: string }>;
@@ -38,6 +45,7 @@ export type TanstackTableFiltersType = {
 };
 
 export type TanstackTableColumnLink = {
+  conditions?: TanstackTableCellCondition[];
   prefix: string;
   suffix?: string;
   targetAccessorKey?: string;
@@ -48,6 +56,7 @@ export type TanstackTableColumnBadge = {
   targetAccessorKey: string;
   values: {
     badgeClassName?: string;
+    conditions?: TanstackTableCellCondition[];
     label: string;
     value: string | boolean | number | Date;
   }[];
