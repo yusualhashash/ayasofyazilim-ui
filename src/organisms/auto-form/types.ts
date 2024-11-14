@@ -25,6 +25,7 @@ export type BaseFieldConfigItem = {
     | 'number'
     | 'file'
     | 'fallback'
+    | 'password'
     | 'phone'
     | React.FC<AutoFormInputComponentProps>;
 };
