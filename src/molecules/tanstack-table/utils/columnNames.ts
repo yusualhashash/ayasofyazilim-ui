@@ -4,9 +4,9 @@ import {
 } from '../types';
 
 const isTypeLanguageDataTypeWithConstantKey = (
-  value: any
+  value: object
 ): value is TanstackTableLanguageDataTypeWithConstantKey =>
-  'constantKey' in value && typeof value === 'object';
+  value && typeof value !== 'undefined' && 'constantKey' in value;
 export function tanstackTableCreateTitleWithLanguageData({
   languageData,
   accessorKey,
@@ -16,7 +16,7 @@ export function tanstackTableCreateTitleWithLanguageData({
     | TanstackTableLanguageDataType
     | TanstackTableLanguageDataTypeWithConstantKey;
 }): string {
-  if (isTypeLanguageDataTypeWithConstantKey(languageData)) {
+  if (languageData && isTypeLanguageDataTypeWithConstantKey(languageData)) {
     const { constantKey, languageData: res } = languageData;
     return res[`${constantKey}.${accessorKey}`] || accessorKey;
   }
