@@ -7,6 +7,7 @@ import {
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
@@ -130,15 +131,17 @@ export default function DataTable<TData, TValue>(
       cell: SkeletonCell,
     }));
   }
+
   const table = useReactTable({
     data: tableData,
     columns,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
-    manualPagination: true,
+    getPaginationRowModel: getPaginationRowModel(),
+    manualPagination: false,
     rowCount: rowCount || tableData.length,
     getSortedRowModel: getSortedRowModel(),
-    manualFiltering: true,
+    manualFiltering: typeof fetchRequest === 'function',
     getRowCanExpand: () => !!renderSubComponent,
     getExpandedRowModel: getExpandedRowModel(),
     onColumnVisibilityChange: setColumnVisibility,

@@ -167,6 +167,7 @@ export type DataTableClassNames = {
     body?: string;
     container?: string;
     header?: string;
+    pagination?: string;
     wrapper?: string;
   };
   tableWrapper?: string;
