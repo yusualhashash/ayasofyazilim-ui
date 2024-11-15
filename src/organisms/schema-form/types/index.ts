@@ -1,8 +1,9 @@
 import { FormProps } from '@rjsf/core';
 import { GenericObjectType } from '@rjsf/utils';
 
-export interface SchemaFormProps extends Omit<FormProps, 'validator'> {
-  filter?: FilterType;
+export interface SchemaFormProps<T> extends Omit<FormProps, 'validator'> {
+  defaultSubmitClassName?: string;
+  filter?: FilterType<T>;
   schema: GenericObjectType;
   submitText?: string;
   useDefaultSubmit?: boolean;
@@ -10,15 +11,15 @@ export interface SchemaFormProps extends Omit<FormProps, 'validator'> {
   withScrollArea?: boolean;
 }
 
-export type FilterType = CommonFilterType &
+export type FilterType<T> = CommonFilterType<T> &
   (
     | SortableFilterType
     | {
         type: 'fullExclude';
       }
   );
-type CommonFilterType = {
-  keys: string[];
+export type CommonFilterType<T> = {
+  keys: Array<keyof T>;
 };
 type SortableFilterType = {
   sort?: boolean;

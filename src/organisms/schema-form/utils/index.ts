@@ -54,6 +54,57 @@ export const splitPhone = (phoneNumber: string) => {
 };
 
 /**
+ * Transforms a generic schema by removing specified fields.
+ *
+ * @param {GenericObjectType} inputSchema - The schema to be transformed.
+ * @param {string[]} fieldsToRemove - The fields to be removed from the schema.
+ * @param {string} newFieldName - The name of the new field to be added.
+ * @param {string[]} requiredFields - The fields that are required in the new object.
+ * @returns {GenericObjectType} - The transformed schema.
+ */
+export function removeFieldsfromGenericSchema(
+  inputSchema: GenericObjectType,
+  fieldsToRemove: string[]
+): GenericObjectType {
+  if (inputSchema.type === 'object' && inputSchema.properties) {
+    const schemaProperties = inputSchema.properties;
+
+    // Use `Object.keys()` instead of `for..in`
+    Object.keys(schemaProperties).forEach((propertyKey) => {
+      if (schemaProperties[propertyKey].type === 'object') {
+        schemaProperties[propertyKey] = removeFieldsfromGenericSchema(
+          schemaProperties[propertyKey],
+          fieldsToRemove
+        );
+      } else if (
+        schemaProperties[propertyKey].type === 'array' &&
+        schemaProperties[propertyKey].items
+      ) {
+        schemaProperties[propertyKey].items = removeFieldsfromGenericSchema(
+          schemaProperties[propertyKey].items,
+          fieldsToRemove
+        );
+      }
+    });
+
+    const shouldTransform = fieldsToRemove.every((field) =>
+      Object.prototype.hasOwnProperty.call(schemaProperties, field)
+    );
+    if (shouldTransform) {
+      const transformedSchema = {
+        ...inputSchema,
+      };
+      // Remove specified fields
+      fieldsToRemove.forEach((field) => {
+        delete transformedSchema.properties[field];
+      });
+      return transformedSchema;
+    }
+  }
+  return inputSchema;
+}
+
+/**
  * Transforms a generic schema by removing specified fields and adding a new field.
  *
  * @param {GenericObjectType} inputSchema - The schema to be transformed.
@@ -297,8 +348,8 @@ export function hasPhoneFields(form: any) {
   return true;
 }
 
-export type CreateSchemaWithFilters = {
-  filter: FilterType;
+export type CreateSchemaWithFilters<T> = {
+  filter: FilterType<T>;
   name?: string;
   schema: GenericObjectType;
 };
@@ -310,11 +361,11 @@ export type CreateSchemaWithFilters = {
  * @param {FilterType} params.filter - Filter details (include, exclude, etc.).
  * @returns {GenericObjectType} - The filtered schema.
  */
-export function createSchemaWithFilters({
+export function createSchemaWithFilters<T = string>({
   schema,
   filter,
 }: {
-  filter: FilterType;
+  filter: FilterType<T>;
   schema: GenericObjectType;
 }): GenericObjectType {
   const { keys, type } = filter;
@@ -336,11 +387,11 @@ export function createSchemaWithFilters({
     const currentObj = object;
     if (!currentObj.properties && !currentObj.items) return;
     const keptKeys = new Set<string>();
-    const hasKey = (key: string) => {
+    const hasKey = (key: T | string) => {
       if (keys.find((k) => k === key)) return true;
       return false;
     };
-    const isWildCard = (key: string) => {
+    const isWildCard = (key: T | string) => {
       if (keys.find((k) => k === `*${key}`)) return true;
       return false;
     };
@@ -386,10 +437,14 @@ export function createSchemaWithFilters({
         const sortedProperties = Object.entries(currentObj.properties).sort(
           ([keyA], [keyB]) => {
             const indexA = keys.indexOf(
-              parentKey ? `${parentKey}.${keyA}` : keyA
+              parentKey
+                ? (`${parentKey}.${keyA}` as keyof T)
+                : (keyA as keyof T)
             );
             const indexB = keys.indexOf(
-              parentKey ? `${parentKey}.${keyB}` : keyB
+              parentKey
+                ? (`${parentKey}.${keyB}` as keyof T)
+                : (keyB as keyof T)
             );
             return indexA - indexB;
           }
@@ -563,12 +618,12 @@ export function filterUndefinedAndEmpty<T>(obj: T): FilteredObject<T> {
   return filtered as FilteredObject<T>;
 }
 
-export function bulkCreateUiSchema({
+export function bulkCreateUiSchema<T>({
   elements,
   config,
 }: {
   config: UiSchema;
-  elements: string[];
+  elements: Array<keyof T>;
 }): UiSchema {
   const uiSchema = {};
   for (const element of elements) {

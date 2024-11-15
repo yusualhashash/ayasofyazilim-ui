@@ -20,6 +20,7 @@ import {
   generateUiSchema,
   hasPhoneFields,
   mergeUISchemaObjects,
+  removeFieldsfromGenericSchema,
   transformGenericSchema,
 } from './utils';
 import {
@@ -62,13 +63,14 @@ const Default: ThemeProps = {
  * @param {SchemaFormProps} props - The props for the SchemaForm component.
  * @returns {JSX.Element} - The rendered form component.
  */
-export function SchemaForm({ ...props }: SchemaFormProps) {
+export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
   const {
     usePhoneField,
     filter,
     children,
     withScrollArea = true,
     useDefaultSubmit = true,
+    defaultSubmitClassName,
   } = props; // Start with the provided schema
   const Wrapper = withScrollArea ? ScrollArea : Fragment;
   const phoneFieldsConfig = {
@@ -119,7 +121,11 @@ export function SchemaForm({ ...props }: SchemaFormProps) {
         {...props}
         className={cn('p-px', props.className)}
         formData={formData}
-        schema={schema as RJSFSchema} // Cast schema to RJSFSchema type
+        schema={
+          removeFieldsfromGenericSchema(schema, [
+            'extraProperties',
+          ]) as RJSFSchema
+        } // Cast schema to RJSFSchema type
         validator={customizeValidator({
           ajvOptionsOverrides: {
             removeAdditional: true,
@@ -158,6 +164,7 @@ export function SchemaForm({ ...props }: SchemaFormProps) {
         {useDefaultSubmit && (
           <SchemaFormSubmit
             submit={props.submitText || 'Submit'}
+            className={defaultSubmitClassName}
             disabled={props.disabled}
           />
         )}
@@ -168,12 +175,19 @@ export function SchemaForm({ ...props }: SchemaFormProps) {
 
 export const SchemaFormSubmit = ({
   submit,
+  className,
   disabled,
 }: {
+  className?: string;
   disabled?: boolean;
   submit: string;
 }) => (
-  <div className="py-4 sticky bottom-0 bg-white flex justify-end z-50">
+  <div
+    className={cn(
+      'py-4 sticky bottom-0 bg-white flex justify-end z-50',
+      className
+    )}
+  >
     <Button type="submit" disabled={disabled}>
       {submit}
     </Button>
