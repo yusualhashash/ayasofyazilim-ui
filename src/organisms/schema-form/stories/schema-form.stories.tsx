@@ -2,7 +2,6 @@ import { Meta, StoryFn } from '@storybook/react';
 import { ContactInformationTypeDto } from './data';
 import { Button } from '@/components/ui/button';
 import { SchemaForm } from '..';
-import { SchemaFormProps } from '../types';
 
 export default {
   component: SchemaForm,
@@ -18,7 +17,7 @@ export default {
   argTypes: {},
 } as Meta<typeof SchemaForm>;
 
-const Template: StoryFn<typeof SchemaForm> = (args: SchemaFormProps) => (
+const Template: StoryFn<typeof SchemaForm> = (args) => (
   <SchemaForm {...args}>{args.children}</SchemaForm>
 );
 
