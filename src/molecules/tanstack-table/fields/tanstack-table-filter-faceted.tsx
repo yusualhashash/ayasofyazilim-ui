@@ -1,7 +1,6 @@
 import { CheckIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 import { Column } from '@tanstack/react-table';
 
-import { useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,6 +26,7 @@ interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;
   onFilter: (accessorKey: string, selectedValues: string) => void;
   options: TanstackTableFacetedFilterType[];
+  params: URLSearchParams;
 }
 
 export function TanstackTableFacetedFilter<TData, TValue>({
@@ -34,14 +34,11 @@ export function TanstackTableFacetedFilter<TData, TValue>({
   accessorKey,
   options,
   onFilter,
+  params,
 }: DataTableFacetedFilterProps<TData, TValue>) {
   const title = column?.columnDef?.meta?.toString() || accessorKey;
   const facets = column?.getFacetedUniqueValues();
-  const selectedValues = new Set(column?.getFilterValue() as string[]);
-
-  useEffect(() => {
-    onFilter(accessorKey, Array.from(selectedValues).join(','));
-  }, [selectedValues]);
+  const selectedValues = new Set(params?.get(accessorKey)?.split(',') || []);
 
   return (
     <Popover>
@@ -96,15 +93,17 @@ export function TanstackTableFacetedFilter<TData, TValue>({
                   <CommandItem
                     key={option.value}
                     onSelect={() => {
+                      const current = Array.from(selectedValues);
                       if (isSelected) {
-                        selectedValues.delete(option.value);
+                        current.splice(
+                          current.findIndex((i) => i === option.value),
+                          1
+                        );
                       } else {
-                        selectedValues.add(option.value);
+                        current.push(option.value);
                       }
-                      const filterValues = Array.from(selectedValues);
-                      column?.setFilterValue(
-                        filterValues.length ? filterValues : undefined
-                      );
+
+                      onFilter(accessorKey, current.join(','));
                     }}
                   >
                     <div
@@ -135,10 +134,10 @@ export function TanstackTableFacetedFilter<TData, TValue>({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => column?.setFilterValue(undefined)}
+                    onSelect={() => onFilter(accessorKey, '')}
                     className="justify-center text-center"
                   >
-                    Clean Filters
+                    Clean Filter
                   </CommandItem>
                 </CommandGroup>
               </>
