@@ -69,7 +69,7 @@ export default function TableToolbar<TData>({
       {activeAction &&
         isOpen &&
         (activeAction.type === 'Dialog' || activeAction.type === 'Sheet') && (
-          <CustomTableActionDialog
+          <CustomTableActionDialog<TData>
             open={isOpen}
             onOpenChange={setIsOpen}
             action={activeAction}

@@ -1,5 +1,6 @@
 import { ColumnDef, RowData } from '@tanstack/react-table';
-import { AutoFormProps } from '../../organisms/auto-form';
+import { z } from 'zod';
+import { AutoFormProps, ZodObjectOrWrapped } from '../../organisms/auto-form';
 import { ColumnFilter } from './filter-column';
 
 export type { ColumnFilter };
@@ -20,26 +21,35 @@ declare module '@tanstack/react-table' {
 }
 
 export type TableAction<T = undefined> = TableActionCommon<
-  undefined extends T ? any : T
+  undefined extends T ? unknown : T
 > &
-  (TableActionNewPage | TableActionDialog | TableActionAction);
+  (
+    | TableActionNewPage
+    | TableActionDialog<undefined extends T ? unknown : T>
+    | TableActionAction
+  );
 
-export type TableActionCommon<T = undefined> = {
+export type TableActionCommon<T = unknown> = {
   cta: string | ((triggerData?: T) => string);
 };
 
-export type TableActionDialog = {
-  description: string | ((triggerData?: unknown) => string);
+export type TableActionDialog<TData = unknown> = {
+  description: string | ((triggerData?: TData) => string);
   type: 'Dialog' | 'Sheet';
-} & (TableActionAutoform | TableActionCustom | TableActionConfirmation);
+} & (TableActionAutoform<TData> | TableActionCustom | TableActionConfirmation);
 
 export type TableActionNewPage = {
   href: string;
   type: 'NewPage';
 };
 
-export type TableActionAutoform = {
+export type TableActionAutoform<TData> = {
   autoFormArgs: {
+    preFetch?: {
+      functionCall: (
+        triggerData: TData
+      ) => Promise<Partial<z.infer<ZodObjectOrWrapped>>>;
+    };
     submit?: {
       className?: string;
       cta?: string;
@@ -78,7 +88,7 @@ type IsUnknown<T> = unknown extends T
   : false;
 
 export type AutoColumnGenerator<TData = unknown> = {
-  actionList?: TableAction[];
+  actionList?: TableAction<TData>[];
   customCells?: Partial<
     Record<keyof TData, customCells<TData> | ColumnDef<TData>['cell']>
   >;
