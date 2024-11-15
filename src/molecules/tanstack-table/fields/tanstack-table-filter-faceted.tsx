@@ -134,10 +134,10 @@ export function TanstackTableFacetedFilter<TData, TValue>({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => column?.setFilterValue(undefined)}
+                    onSelect={() => onFilter(accessorKey, '')}
                     className="justify-center text-center"
                   >
-                    Clean Filters
+                    Clean Filter
                   </CommandItem>
                 </CommandGroup>
               </>

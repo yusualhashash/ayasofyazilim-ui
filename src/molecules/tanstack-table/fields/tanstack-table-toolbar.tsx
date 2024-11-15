@@ -52,6 +52,10 @@ export const TanstackTableToolbar = <TData,>({
               key={accessorKey}
               column={table.getColumn(accessorKey)}
               accessorKey={accessorKey}
+              params={params}
+              onFilter={(accessorKey, selectedValues) => {
+                onFilter(accessorKey, selectedValues);
+              }}
             />
           ))}
 
@@ -61,11 +65,11 @@ export const TanstackTableToolbar = <TData,>({
               key={column}
               column={table.getColumn(column)}
               accessorKey={column}
+              params={params}
               onFilter={(accessorKey, selectedValues) => {
                 onFilter(accessorKey, selectedValues);
               }}
               options={filters?.facetedFilters?.[column]?.options ?? []}
-              params={params}
             />
           ))}
       </div>
