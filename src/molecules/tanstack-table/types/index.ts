@@ -6,7 +6,7 @@ import { ZodObjectOrWrapped } from '../../../organisms/auto-form/utils';
 export type TanstackTableProps<TData, TValue> = {
   columnOrder?: (keyof TData)[];
   columnVisibility?: {
-    columns: (keyof TData)[];
+    columns: (keyof TData | 'select')[];
     type: 'show' | 'hide';
   };
   columns: ColumnDef<TData, TValue>[];
