@@ -118,6 +118,11 @@ export default function TanstackTable<TData, TValue>({
     return currentPagination;
   });
 
+  const getRowId = React.useCallback(
+    (row: TData) => (row as TData & { id: string }).id,
+    []
+  );
+
   useEffect(() => {
     if (rowAction?.type === 'simple') {
       rowAction.onClick(rowAction.row);
@@ -128,6 +133,7 @@ export default function TanstackTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns: tableColumns,
+    getRowId,
     state: {
       sorting,
       columnVisibility: colVisibility,

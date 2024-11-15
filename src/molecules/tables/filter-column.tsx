@@ -342,7 +342,6 @@ export default function FilterColumn({
                   fetchRequest={({ page, filter }) => {
                     if (column.fetchRequest) {
                       column.fetchRequest(page, filter).then((response) => {
-                        console.log('response page filter column', response);
                         setData({ ...response.data });
                       });
                     }
