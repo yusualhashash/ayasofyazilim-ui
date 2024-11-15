@@ -18,9 +18,8 @@ export function TablePagination<TData>({
   table,
   className,
 }: TablePaginationProps<TData>): JSX.Element {
-  const totalRows = table.getCoreRowModel().rows.length;
   const { pageSize, pageIndex } = table.getState().pagination;
-  const pageCount = Math.ceil(totalRows / pageSize);
+  const pageCount = table.getPageCount();
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
