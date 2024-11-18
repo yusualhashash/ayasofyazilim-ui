@@ -8,12 +8,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import jsonToCsv from '../../lib/json-to-csv';
 import Table from '.';
 import { AutoColumnGenerator, TableAction } from './types';
-import {
-  columns,
-  columnsEditable,
-  columnsSubContent,
-  renderSubComponent,
-} from './columns';
+import { columns, columnsEditable, columnsSubContent } from './columns';
 import { data, Payment } from './data';
 
 const formSchema = z.object({
@@ -245,20 +240,24 @@ export const Editable: StoryObj<typeof Table> = {
 };
 
 export const SubContent: StoryObj<typeof Table> = {
-  args: {
-    editable: false,
-    data,
-    columnsData: {
-      type: 'Custom',
-      data: { columns: columnsSubContent as ColumnDef<unknown>[] },
-    },
-    showView: false,
-    renderSubComponent,
-  },
+  render: (args) => (
+    <Table<Payment, unknown>
+      {...args}
+      editable={false}
+      showView={false}
+      renderSubComponent={(row) => <div>{row.original.amount}</div>}
+      columnsData={{
+        type: 'Custom',
+        data: { columns: columnsSubContent },
+      }}
+      data={data}
+    />
+  ),
   parameters: {
     layout: 'centered',
   },
 };
+
 export const DetailedFilter: StoryObj<typeof Table> = {
   render: (args) => {
     const [tableData, setTableData] = useState<unknown[]>(data);

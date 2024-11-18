@@ -9,9 +9,9 @@ import {
   TanstackTableCellCondition,
   TanstackTableColumnBadge,
   TanstackTableColumnClassNames,
-  TanstackTableColumnDate,
   TanstackTableColumnIcon,
   TanstackTableColumnLink,
+  TanstackTableConfig,
   TanstackTableFacetedFilterType,
   TanstackTableLanguageDataType,
   TanstackTableLanguageDataTypeWithConstantKey,
@@ -71,7 +71,7 @@ function testConditions<T>(
 export function tanstackTableCreateColumnsByRowData<T>(params: {
   badges?: Record<string, TanstackTableColumnBadge>;
   classNames?: Record<string, TanstackTableColumnClassNames[]>;
-  dates?: Record<string, TanstackTableColumnDate>;
+  config?: TanstackTableConfig;
   excludeColumns?: Partial<keyof T>[];
   expandRowTrigger?: keyof T;
   faceted?: Record<string, { options: TanstackTableFacetedFilterType[] }>;
@@ -80,33 +80,41 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
     | TanstackTableLanguageDataType
     | TanstackTableLanguageDataTypeWithConstantKey;
   links?: Record<string, TanstackTableColumnLink>;
-  row: Record<string, string | number | boolean | Date | null | object>;
+  rows: Record<
+    string,
+    {
+      format?: string;
+      type: string;
+    }
+  >;
   selectableRows?: boolean;
 }) {
+  const { rows, config } = params;
   function createCell(
     accessorKey: string,
     row: Row<T>,
     link?: TanstackTableColumnLink,
     faceted?: TanstackTableFacetedFilterType[],
     badge?: TanstackTableColumnBadge,
-    date?: TanstackTableColumnDate,
     icon?: TanstackTableColumnIcon,
     className?: TanstackTableColumnClassNames[],
-    expandRowTrigger?: boolean
+    expandRowTrigger?: boolean,
+    format?: string
   ) {
     let content: JSX.Element | string =
       row.getValue(accessorKey)?.toString() || '';
-
-    if (date) {
-      content = new Date(content).toLocaleDateString(
-        date.locale,
-        date.options || {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }
-      );
+    if (format) {
+      if (format === 'date' || format === 'date-time')
+        content = new Date(content).toLocaleDateString(
+          config?.locale,
+          config?.dateOptions || {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          }
+        );
     }
+
     if (icon) {
       const position = icon.position || 'before';
       content = (
@@ -218,13 +226,11 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
 
   const {
     excludeColumns,
-    row,
     languageData,
     links,
     faceted,
     badges,
     classNames,
-    dates,
     icons,
     expandRowTrigger,
   } = params;
@@ -260,7 +266,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       enableHiding: false,
     });
   }
-  Object.keys(row)
+  Object.keys(rows)
     .filter((key) => !excludeColumns?.includes(key as keyof T))
     .forEach((accessorKey) => {
       const title = tanstackTableCreateTitleWithLanguageData({
@@ -268,7 +274,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
         accessorKey,
       });
       const link = links?.[accessorKey];
-
+      const { format } = rows[accessorKey];
       const column: ColumnDef<T> = {
         id: accessorKey,
         accessorKey,
@@ -283,10 +289,10 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
             link,
             faceted?.[accessorKey]?.options,
             badges?.[accessorKey],
-            dates?.[accessorKey],
             icons?.[accessorKey],
             classNames?.[accessorKey],
-            expandRowTrigger === accessorKey
+            expandRowTrigger === accessorKey,
+            format
           ),
       };
       if (faceted?.[accessorKey]) {
