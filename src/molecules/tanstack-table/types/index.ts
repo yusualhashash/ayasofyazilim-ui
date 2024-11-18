@@ -12,6 +12,7 @@ export type TanstackTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   excludeColumns?: (keyof TData)[];
+  expandedRowComponent?: (row: TData) => JSX.Element;
   filters?: TanstackTableFiltersType;
   pinColumns?: (keyof TData)[];
   rowActions?: TanstackTableRowActionsType<TData>[];

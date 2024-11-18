@@ -4,6 +4,7 @@ import {
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   Row,
@@ -11,9 +12,9 @@ import {
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   Table,
   TableBody,
@@ -22,22 +23,22 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { getCommonPinningStyles } from './utils';
 import {
-  TanstackTableRowActions,
-  TanstackTableToolbar,
-  TanstackTablePagination,
+  TanstackTableAutoformDialog,
   TanstackTableConfirmationDialog,
   TanstackTableCustomDialog,
-  TanstackTableAutoformDialog,
+  TanstackTablePagination,
+  TanstackTableRowActions,
   TanstackTableTableAutoformDialog,
   TanstackTableTableCustomDialog,
+  TanstackTableToolbar,
 } from './fields';
 import {
-  TanstackTableRowActionsType,
   TanstackTableProps,
+  TanstackTableRowActionsType,
   TanstackTableTableActionsType,
 } from './types';
+import { getCommonPinningStyles } from './utils';
 
 const CellWithActions = <TData,>(
   row: Row<TData>,
@@ -63,6 +64,7 @@ export default function TanstackTable<TData, TValue>({
   rowActions,
   tableActions,
   selectedRowAction,
+  expandedRowComponent,
 }: TanstackTableProps<TData, TValue>) {
   const { replace } = useRouter();
   const pathname = usePathname();
@@ -143,18 +145,25 @@ export default function TanstackTable<TData, TValue>({
     initialState: {
       columnOrder: columnOrder as string[],
       columnPinning: {
-        left: ['select', 'name', ...((pinColumns as string[]) ?? [])],
+        left: [
+          'expanded-content',
+          'select',
+          'name',
+          ...((pinColumns as string[]) ?? []),
+        ],
         right: ['actions'],
       },
     },
     enableRowSelection: true,
     enableColumnPinning: true,
     manualPagination: true,
+    getRowCanExpand: () => !!expandedRowComponent,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     getPaginationRowModel: getPaginationRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
     onPaginationChange: setPagination,
     onColumnFiltersChange: setColumnFilters,
     rowCount: 30,
@@ -220,26 +229,32 @@ export default function TanstackTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      className="text-nowrap"
-                      key={cell.id}
-                      style={getCommonPinningStyles({
-                        column: cell.column,
-                        withBorder: true,
-                      })}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                <Fragment key={row.id}>
+                  <TableRow data-state={row.getIsSelected() && 'selected'}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        className="text-nowrap"
+                        key={cell.id}
+                        style={getCommonPinningStyles({
+                          column: cell.column,
+                          withBorder: true,
+                        })}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                  {row.getIsExpanded() && expandedRowComponent && (
+                    <TableRow>
+                      <TableCell colSpan={row.getAllCells().length}>
+                        {expandedRowComponent(row.original)}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </Fragment>
               ))
             ) : (
               <TableRow>
