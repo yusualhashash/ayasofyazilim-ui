@@ -1,21 +1,21 @@
 import { Column, ColumnDef, Row } from '@tanstack/react-table';
-import { CSSProperties } from 'react';
 import Link from 'next/link';
-import { TanstackTableColumnHeader } from '../fields/tanstack-table-column-header';
-import {
-  TanstackTableLanguageDataType,
-  TanstackTableLanguageDataTypeWithConstantKey,
-  TanstackTableColumnBadge,
-  TanstackTableColumnLink,
-  TanstackTableFacetedFilterType,
-  TanstackTableColumnIcon,
-  TanstackTableCellCondition,
-  TanstackTableColumnClassNames,
-  TanstackTableConfig,
-} from '../types';
+import { CSSProperties } from 'react';
+import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
+import { TanstackTableColumnHeader } from '../fields/tanstack-table-column-header';
+import {
+  TanstackTableCellCondition,
+  TanstackTableColumnBadge,
+  TanstackTableColumnClassNames,
+  TanstackTableColumnIcon,
+  TanstackTableColumnLink,
+  TanstackTableConfig,
+  TanstackTableFacetedFilterType,
+  TanstackTableLanguageDataType,
+  TanstackTableLanguageDataTypeWithConstantKey,
+} from '../types';
 import { tanstackTableCreateTitleWithLanguageData } from './columnNames';
 
 export * from './columnNames';
@@ -73,6 +73,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
   classNames?: Record<string, TanstackTableColumnClassNames[]>;
   config?: TanstackTableConfig;
   excludeColumns?: Partial<keyof T>[];
+  expandRowTrigger?: keyof T;
   faceted?: Record<string, { options: TanstackTableFacetedFilterType[] }>;
   icons?: Record<string, TanstackTableColumnIcon>;
   languageData?:
@@ -97,6 +98,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
     badge?: TanstackTableColumnBadge,
     icon?: TanstackTableColumnIcon,
     className?: TanstackTableColumnClassNames[],
+    expandRowTrigger?: boolean,
     format?: string
   ) {
     let content: JSX.Element | string =
@@ -178,6 +180,20 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       .join(' ');
 
     if (!link || !testConditions(link.conditions, row)) {
+      if (expandRowTrigger) {
+        return (
+          <button
+            type="button"
+            onClick={row.getToggleExpandedHandler()}
+            className={cn(
+              'font-medium text-blue-700 flex items-center gap-2 cursor-pointer',
+              containerClassName
+            )}
+          >
+            {content}
+          </button>
+        );
+      }
       return (
         <div className={cn(' flex items-center gap-2', containerClassName)}>
           {content}
@@ -216,6 +232,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
     badges,
     classNames,
     icons,
+    expandRowTrigger,
   } = params;
   const columns: ColumnDef<T>[] = [];
   if (params.selectableRows) {
@@ -274,6 +291,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
             badges?.[accessorKey],
             icons?.[accessorKey],
             classNames?.[accessorKey],
+            expandRowTrigger === accessorKey,
             format
           ),
       };
