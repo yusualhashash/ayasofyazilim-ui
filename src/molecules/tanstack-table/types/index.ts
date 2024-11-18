@@ -6,17 +6,25 @@ import { ZodObjectOrWrapped } from '../../../organisms/auto-form/utils';
 export type TanstackTableProps<TData, TValue> = {
   columnOrder?: (keyof TData)[];
   columnVisibility?: {
-    columns: (keyof TData)[];
+    columns: (keyof TData | 'select')[];
     type: 'show' | 'hide';
   };
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   excludeColumns?: (keyof TData)[];
+  expandedRowComponent?: (
+    row: TData,
+    toggleExpanded: () => void
+  ) => JSX.Element;
   filters?: TanstackTableFiltersType;
   pinColumns?: (keyof TData)[];
   rowActions?: TanstackTableRowActionsType<TData>[];
   selectedRowAction?: TanstackTableSelectedRowActionType;
   tableActions?: TanstackTableTableActionsType[];
+};
+export type TanstackTableConfig = {
+  dateOptions?: Intl.LocaleOptions;
+  locale?: Intl.LocalesArgument;
 };
 export type TanstackTableCellCondition = {
   conditionAccessorKey: string;
@@ -37,7 +45,6 @@ export type TanstackTableFiltersType = {
   facetedFilters?: Record<
     string,
     {
-      defaultValue?: string[];
       options: TanstackTableFacetedFilterType[];
     }
   >;
@@ -58,10 +65,6 @@ export type TanstackTableColumnBadge = {
     conditions?: TanstackTableCellCondition[];
     label: string;
   }[];
-};
-export type TanstackTableColumnDate = {
-  locale?: Intl.LocalesArgument;
-  options?: Intl.DateTimeFormatOptions;
 };
 export type TanstackTableColumnIcon = {
   icon?: ComponentType<{ className?: string }>;

@@ -11,7 +11,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -100,6 +100,11 @@ export default function DataTable<TData, TValue>(
     return [];
   });
 
+  const getRowId = useCallback(
+    (row: TData) => (row as TData & { id: string }).id,
+    []
+  );
+
   useEffect(() => {
     if (isLoading) {
       setTableData(Array(6).fill({}) as TData[]);
@@ -135,6 +140,7 @@ export default function DataTable<TData, TValue>(
   const table = useReactTable({
     data: tableData,
     columns,
+    getRowId: (row) => getRowId(row),
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -275,8 +281,11 @@ export default function DataTable<TData, TValue>(
                   </TableRow>
                   {row.getIsExpanded() && renderSubComponent && (
                     <TableRow>
-                      <TableCell colSpan={row.getVisibleCells().length}>
-                        {renderSubComponent({ row })}
+                      <TableCell
+                        colSpan={row.getVisibleCells().length}
+                        className="p-0"
+                      >
+                        {renderSubComponent(row)}
                       </TableCell>
                     </TableRow>
                   )}

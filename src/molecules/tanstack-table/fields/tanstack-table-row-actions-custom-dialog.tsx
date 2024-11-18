@@ -53,31 +53,33 @@ export function TanstackTableCustomDialog<TData>({
           <DialogTitle>{dialogTitle}</DialogTitle>
         </DialogHeader>
         {jsxContent}
-        <DialogFooter className="gap-2 sm:space-x-0">
-          {cancelText && (
-            <DialogClose asChild>
-              <Button variant="outline" onClick={handleOnCancelClick}>
-                {cancelText}
+        {(cancelText || confirmationText) && (
+          <DialogFooter className="gap-2 sm:space-x-0">
+            {cancelText && (
+              <DialogClose asChild>
+                <Button variant="outline" onClick={handleOnCancelClick}>
+                  {cancelText}
+                </Button>
+              </DialogClose>
+            )}
+            {confirmationText && (
+              <Button
+                aria-label={confirmationText}
+                variant="destructive"
+                onClick={handleOnConfirmClick}
+                disabled={isDeletePending}
+              >
+                {isDeletePending && (
+                  <Loader
+                    className="mr-2 size-4 animate-spin"
+                    aria-hidden="true"
+                  />
+                )}
+                {confirmationText}
               </Button>
-            </DialogClose>
-          )}
-          {confirmationText && (
-            <Button
-              aria-label={confirmationText}
-              variant="destructive"
-              onClick={handleOnConfirmClick}
-              disabled={isDeletePending}
-            >
-              {isDeletePending && (
-                <Loader
-                  className="mr-2 size-4 animate-spin"
-                  aria-hidden="true"
-                />
-              )}
-              {confirmationText}
-            </Button>
-          )}
-        </DialogFooter>
+            )}
+          </DialogFooter>
+        )}
       </DialogContent>
     </Dialog>
   );

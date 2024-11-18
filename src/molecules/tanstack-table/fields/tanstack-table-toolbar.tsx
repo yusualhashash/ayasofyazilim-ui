@@ -2,15 +2,14 @@
 
 import { Table } from '@tanstack/react-table';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
-import { TanstackTableFacetedFilter } from './tanstack-table-filter-faceted';
-import { TanstackTableTextFilter } from './tanstack-table-filter-text';
-import { TanstackTableViewOptions } from './tanstack-table-view-options';
 import {
   TanstackTableFiltersType,
   TanstackTableSelectedRowActionType,
   TanstackTableTableActionsType,
 } from '../types';
+import { TanstackTableFacetedFilter } from './tanstack-table-filter-faceted';
+import { TanstackTableTextFilter } from './tanstack-table-filter-text';
+import { TanstackTableViewOptions } from './tanstack-table-view-options';
 
 interface TanstackTableToolbarProps<TData> {
   filters?: TanstackTableFiltersType;
@@ -27,30 +26,22 @@ export const TanstackTableToolbar = <TData,>({
   tableActions,
   setTableAction,
 }: TanstackTableToolbarProps<TData>) => {
-  const { replace } = useRouter();
+  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams.toString());
+
   function onFilter(accessorKey: string, selectedValues: string) {
-    const params = new URLSearchParams(searchParams.toString());
+    const newParams = new URLSearchParams(searchParams.toString());
     if (selectedValues) {
-      params.set(accessorKey, selectedValues);
+      newParams.set(accessorKey, selectedValues);
     } else {
-      params.delete(accessorKey);
+      newParams.delete(accessorKey);
     }
-    if (params.get(accessorKey) !== searchParams.get(accessorKey)) {
-      replace(`${pathname}?${params.toString()}`);
+    if (newParams.get(accessorKey) !== searchParams.get(accessorKey)) {
+      router.replace(`${pathname}?${newParams.toString()}`);
     }
   }
-  useEffect(() => {
-    if (!filters?.facetedFilters) return;
-
-    Object.keys(filters.facetedFilters)?.forEach((column) => {
-      const selectedValues = filters.facetedFilters?.[column].defaultValue;
-      if (selectedValues) {
-        table.getColumn(column)?.setFilterValue(selectedValues);
-      }
-    });
-  }, []);
 
   return (
     <div className="flex w-full items-center justify-between">
@@ -61,6 +52,10 @@ export const TanstackTableToolbar = <TData,>({
               key={accessorKey}
               column={table.getColumn(accessorKey)}
               accessorKey={accessorKey}
+              params={params}
+              onFilter={(accessorKey, selectedValues) => {
+                onFilter(accessorKey, selectedValues);
+              }}
             />
           ))}
 
@@ -70,6 +65,7 @@ export const TanstackTableToolbar = <TData,>({
               key={column}
               column={table.getColumn(column)}
               accessorKey={column}
+              params={params}
               onFilter={(accessorKey, selectedValues) => {
                 onFilter(accessorKey, selectedValues);
               }}

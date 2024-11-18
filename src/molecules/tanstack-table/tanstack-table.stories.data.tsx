@@ -323,7 +323,7 @@ export const faceted = {
   },
 };
 export const col = tanstackTableCreateColumnsByRowData<Merchant>({
-  row: $merchantSchema.properties,
+  rows: $merchantSchema.properties,
   languageData: { userName: 'Kullanıcı Adı' },
   links: {
     userName: {
