@@ -18,6 +18,10 @@ export type TanstackTableProps<TData, TValue> = {
   selectedRowAction?: TanstackTableSelectedRowActionType;
   tableActions?: TanstackTableTableActionsType[];
 };
+export type TanstackTableConfig = {
+  dateOptions?: Intl.LocaleOptions;
+  locale?: Intl.LocalesArgument;
+};
 export type TanstackTableCellCondition = {
   conditionAccessorKey: string;
   when: (value: string | boolean | number | Date) => boolean;
@@ -57,10 +61,6 @@ export type TanstackTableColumnBadge = {
     conditions?: TanstackTableCellCondition[];
     label: string;
   }[];
-};
-export type TanstackTableColumnDate = {
-  locale?: Intl.LocalesArgument;
-  options?: Intl.DateTimeFormatOptions;
 };
 export type TanstackTableColumnIcon = {
   icon?: ComponentType<{ className?: string }>;
