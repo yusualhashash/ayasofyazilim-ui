@@ -24,8 +24,8 @@ import {
 import { getCTA } from '../tables/helper-components';
 import CustomButton from '../button';
 
-export type TableActionCustomDialog<Tdata> = TableActionCommon<Tdata> &
-  TableActionDialog<Tdata>;
+export type TableActionCustomDialog<Tdata = unknown> =
+  TableActionCommon<Tdata> & TableActionDialog<Tdata>;
 export type CustomTableActionDialogProps<Tdata = unknown> = {
   action: TableActionCustomDialog<Tdata>;
   onOpenChange: (e: boolean) => void;
