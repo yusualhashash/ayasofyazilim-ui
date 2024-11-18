@@ -68,7 +68,7 @@ const linkStory: StoryFn<typeof TanstackTable> = (args) => (
   </div>
 );
 const linkCol = tanstackTableCreateColumnsByRowData<Merchant>({
-  row: $merchantSchema.properties,
+  rows: $merchantSchema.properties,
   links: {
     name: {
       targetAccessorKey: 'id',
@@ -96,7 +96,7 @@ const badgeStory: StoryFn<typeof TanstackTable> = (args) => (
   </div>
 );
 const badgeCol = tanstackTableCreateColumnsByRowData<Merchant>({
-  row: $merchantSchema.properties,
+  rows: $merchantSchema.properties,
   badges: {
     entityInformationTypeCode: {
       values: [
@@ -138,7 +138,7 @@ const iconStory: StoryFn<typeof TanstackTable> = (args) => (
   </div>
 );
 const iconCol = tanstackTableCreateColumnsByRowData<Merchant>({
-  row: $merchantSchema.properties,
+  rows: $merchantSchema.properties,
   icons: {
     name: {
       icon: LinkIcon,
@@ -162,7 +162,7 @@ const facetedStory: StoryFn<typeof TanstackTable> = (args) => (
   </div>
 );
 const facetedCol = tanstackTableCreateColumnsByRowData<Merchant>({
-  row: $merchantSchema.properties,
+  rows: $merchantSchema.properties,
   faceted: {
     entityInformationTypeCode: {
       options: [
@@ -195,7 +195,7 @@ const translatedStory: StoryFn<typeof TanstackTable> = (args) => (
   </div>
 );
 const translatedCol = tanstackTableCreateColumnsByRowData<Merchant>({
-  row: $merchantSchema.properties,
+  rows: $merchantSchema.properties,
   languageData: {
     name: 'Ad',
     entityInformationTypeCode: 'Tip',
@@ -233,7 +233,7 @@ const editRowStory: StoryFn<typeof TanstackTable> = (args) => (
   </div>
 );
 const editRowCol = tanstackTableCreateColumnsByRowData<Merchant>({
-  row: $merchantSchema.properties,
+  rows: $merchantSchema.properties,
   languageData: {
     name: 'Ad',
     entityInformationTypeCode: 'Tip',
@@ -255,7 +255,7 @@ const conditionalStory: StoryFn<typeof TanstackTable> = (args) => (
   </div>
 );
 const conditionalCol = tanstackTableCreateColumnsByRowData<Merchant>({
-  row: $merchantSchema.properties,
+  rows: $merchantSchema.properties,
   links: {
     name: {
       targetAccessorKey: 'id',

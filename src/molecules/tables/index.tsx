@@ -281,8 +281,11 @@ export default function DataTable<TData, TValue>(
                   </TableRow>
                   {row.getIsExpanded() && renderSubComponent && (
                     <TableRow>
-                      <TableCell colSpan={row.getVisibleCells().length}>
-                        {renderSubComponent({ row })}
+                      <TableCell
+                        colSpan={row.getVisibleCells().length}
+                        className="p-0"
+                      >
+                        {renderSubComponent(row)}
                       </TableCell>
                     </TableRow>
                   )}

@@ -1,4 +1,4 @@
-import { ColumnDef, RowData } from '@tanstack/react-table';
+import { ColumnDef, Row, RowData } from '@tanstack/react-table';
 import { AutoFormProps } from '../../organisms/auto-form';
 import { ColumnFilter } from './filter-column';
 
@@ -183,7 +183,7 @@ export type DataTableProps<TData> = {
   fetchRequest?: (props: fetchRequestProps) => void;
   isLoading?: boolean;
   onDataUpdate?: (data: TData[]) => void;
-  renderSubComponent?: (row: any) => JSX.Element;
+  renderSubComponent?: (row: Row<TData>) => JSX.Element;
   rowCount?: number;
   showView?: boolean;
 };

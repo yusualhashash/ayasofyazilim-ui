@@ -1,7 +1,7 @@
 'use client';
 
 import { CaretSortIcon } from '@radix-ui/react-icons';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 
 import { ChevronDown, ChevronUp, Trash2Icon } from 'lucide-react';
 import React from 'react';
@@ -219,7 +219,7 @@ export const columnsSubContent: ColumnDef<Payment>[] = [
     },
   },
 ];
-export const renderSubComponent = ({ row }: { row: any }) => (
+export const renderSubComponent = (row: Row<Payment>) => (
   <pre style={{ fontSize: '10px' }}>
     <code>{JSON.stringify(row.original, null, 2)}</code>
   </pre>
