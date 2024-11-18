@@ -250,7 +250,10 @@ export default function TanstackTable<TData, TValue>({
                   {row.getIsExpanded() && expandedRowComponent && (
                     <TableRow>
                       <TableCell colSpan={row.getAllCells().length}>
-                        {expandedRowComponent(row.original)}
+                        {expandedRowComponent(
+                          row.original,
+                          row.getToggleExpandedHandler()
+                        )}
                       </TableCell>
                     </TableRow>
                   )}
