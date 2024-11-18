@@ -42,7 +42,7 @@ export default function TableToolbar<TData>({
   setActiveAction,
   setFilteredColumns,
 }: {
-  activeAction: TableAction | undefined;
+  activeAction: TableAction<TData> | undefined;
   defaultAction: TableAction | undefined;
   detailedFilter: DataTableProps<unknown>['detailedFilter'];
   filteredColumns: ColumnFilter[];
