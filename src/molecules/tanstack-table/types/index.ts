@@ -165,11 +165,14 @@ export type TanstackTableSelectedRowActionType<TData> = {
   icon?: ComponentType<{ className?: string }>;
   onClick: (selectedIds: string[], selectedRows: TData[]) => void;
 };
-export type TanstackTableLanguageDataType = Record<string, string>;
+
 export type TanstackTableLanguageDataTypeWithConstantKey = {
   constantKey: string;
   languageData: Record<string, string>;
 };
+export type TanstackTableLanguageDataType =
+  | Record<string, string>
+  | TanstackTableLanguageDataTypeWithConstantKey;
 
 export type TanstackTableCreateColumnsByRowId<T> = {
   badges?: Record<string, TanstackTableColumnBadge>;
@@ -179,9 +182,7 @@ export type TanstackTableCreateColumnsByRowId<T> = {
   expandRowTrigger?: keyof T;
   faceted?: Record<string, { options: TanstackTableFacetedFilterType[] }>;
   icons?: Record<string, TanstackTableColumnIcon>;
-  languageData?:
-    | TanstackTableLanguageDataType
-    | TanstackTableLanguageDataTypeWithConstantKey;
+  languageData?: TanstackTableLanguageDataType;
   links?: Record<string, TanstackTableColumnLink>;
   rows: Record<
     string,
