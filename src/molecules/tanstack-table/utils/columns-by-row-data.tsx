@@ -1,4 +1,3 @@
-import { Checkbox } from '@radix-ui/react-checkbox';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -14,6 +13,7 @@ import {
   TanstackTableFacetedFilterType,
 } from '../types';
 import { tanstackTableCreateTitleWithLanguageData } from './columnNames';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export function tanstackTableCreateColumnsByRowData<T>(
   params: TanstackTableCreateColumnsByRowId<T>
@@ -179,7 +179,7 @@ export function tanstackTableCreateColumnsByRowData<T>(
               table.toggleAllPageRowsSelected(!!value)
             }
             aria-label="Select all"
-            className="translate-y-0.5  align-top"
+            className="translate-y-0.5  align-middle"
           />
         </div>
       ),
