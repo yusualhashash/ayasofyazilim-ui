@@ -400,7 +400,7 @@ export function tanstackTableEditableColumnsByRowData<T>(params: {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {rows[accessorKey].enum.map((item) => (
+                    {rows[accessorKey]?.enum?.map((item) => (
                       <SelectItem key={item} value={item}>
                         {item}
                       </SelectItem>
