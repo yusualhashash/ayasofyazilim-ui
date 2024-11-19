@@ -42,9 +42,9 @@ import {
 import { getCommonPinningStyles } from './utils';
 
 declare module '@tanstack/react-table' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface TableMeta<TData extends RowData> {
     removeRow: (rowIndex: number, columnId: string, value: unknown) => void;
-    toSolveUnusedTDataError: (imSorry: TData) => void;
     updateData: (rowIndex: number, columnId: string, value: unknown) => void;
   }
 }
@@ -180,7 +180,6 @@ export default function TanstackTable<TData, TValue>({
     rowCount: 30,
     meta: {
       removeRow: () => {},
-      toSolveUnusedTDataError: () => {},
       updateData: (rowIndex, columnId, value) => {
         setEditedRows((old) => {
           const newEditedRows = [...old];
