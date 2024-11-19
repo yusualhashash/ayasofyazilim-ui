@@ -87,7 +87,7 @@ export default function DataTable<TData, TValue>(
     defaultAction = isMultipleActionProvided ? action[0] : action;
   }
   const [activeAction, setActiveAction] = React.useState<
-    TableAction | undefined
+    TableAction<TData> | undefined
   >(defaultAction);
   const [triggerData, setTriggerData] = useState<any>(null);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -210,7 +210,7 @@ export default function DataTable<TData, TValue>(
 
   return (
     <div className={cn('flex flex-col p-4', classNames?.container)}>
-      <TableToolbar
+      <TableToolbar<TData>
         inputProps={inputProps}
         activeAction={activeAction}
         isOpen={isOpen}

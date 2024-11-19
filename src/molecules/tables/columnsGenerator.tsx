@@ -163,7 +163,7 @@ export function columnsGenerator<Tdata>({
 }: {
   columnsData?: ColumnAutoType<Tdata>;
   data: AutoColumnGenerator<Tdata>;
-  setActiveAction?: Dispatch<SetStateAction<TableAction | undefined>>;
+  setActiveAction?: Dispatch<SetStateAction<TableAction<Tdata> | undefined>>;
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
   setTriggerData?: Dispatch<SetStateAction<any>>;
 }) {

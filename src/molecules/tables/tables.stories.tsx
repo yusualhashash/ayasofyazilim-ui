@@ -118,21 +118,20 @@ export const AutoColumns: StoryObj<typeof Table> = {
     layout: 'centered',
   },
 };
-export const autoColumnData: AutoColumnGenerator<typeof jsonSchema.properties> =
-  {
-    tableType: jsonSchema,
-    selectable: false,
-    customCells: {
-      amount: {
-        Type: 'badge',
-      },
-      email: {
-        Type: 'link',
-        href: (row) => `mailto:${row.email}`,
-        cellValue: (row) => `Send ${row.email}`,
-      },
+export const autoColumnData: AutoColumnGenerator<unknown> = {
+  tableType: jsonSchema,
+  selectable: false,
+  customCells: {
+    amount: {
+      Type: 'badge',
     },
-  };
+    email: {
+      Type: 'link',
+      href: (row: Payment) => `mailto:${row.email}`,
+      cellValue: (row: Payment) => row.email,
+    },
+  },
+};
 
 export const NewPage: StoryObj<typeof Table> = {
   args: {

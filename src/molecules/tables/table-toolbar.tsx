@@ -42,7 +42,7 @@ export default function TableToolbar<TData>({
   setActiveAction,
   setFilteredColumns,
 }: {
-  activeAction: TableAction | undefined;
+  activeAction: TableAction<TData> | undefined;
   defaultAction: TableAction | undefined;
   detailedFilter: DataTableProps<unknown>['detailedFilter'];
   filteredColumns: ColumnFilter[];
@@ -69,7 +69,7 @@ export default function TableToolbar<TData>({
       {activeAction &&
         isOpen &&
         (activeAction.type === 'Dialog' || activeAction.type === 'Sheet') && (
-          <CustomTableActionDialog
+          <CustomTableActionDialog<TData>
             open={isOpen}
             onOpenChange={setIsOpen}
             action={activeAction}

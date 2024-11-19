@@ -24,50 +24,64 @@ import {
 import { getCTA } from '../tables/helper-components';
 import CustomButton from '../button';
 
-export type TableActionCustomDialog = TableActionCommon & TableActionDialog;
-export type CustomTableActionDialogProps = {
-  action: TableActionCustomDialog;
+export type TableActionCustomDialog<Tdata = unknown> =
+  TableActionCommon<Tdata> & TableActionDialog<Tdata>;
+export type CustomTableActionDialogProps<Tdata = unknown> = {
+  action: TableActionCustomDialog<Tdata>;
   onOpenChange: (e: boolean) => void;
   open: boolean;
-  triggerData?: any;
+  triggerData?: Tdata;
   type?: 'Sheet' | 'Dialog';
 };
 
-const AutoFormData = (
-  action: TableActionAutoform,
+function AutoFormData<Tdata = unknown>(
+  action: TableActionAutoform<Tdata>,
   values: Partial<z.infer<ZodObjectOrWrapped>>,
   onOpenChange: (e: boolean) => void,
   triggerData?: any
-) => (
-  <AutoForm
-    {...action?.autoFormArgs}
-    values={values}
-    onSubmit={(formData) => {
-      action?.callback(formData, triggerData, onOpenChange);
-    }}
-  >
-    <>
-      {action?.autoFormArgs?.children}
-      <AutoFormSubmit
-        className={cn('float-right', action?.autoFormArgs?.submit?.className)}
-      >
-        {action.autoFormArgs.submit?.cta || 'Save Changes'}
-      </AutoFormSubmit>
-    </>
-  </AutoForm>
-);
+) {
+  const [_values, setValues] =
+    useState<Partial<z.infer<ZodObjectOrWrapped>>>(values);
+  useEffect(() => {
+    if (action?.autoFormArgs?.preFetch) {
+      const { functionCall } = action.autoFormArgs.preFetch;
+      functionCall(triggerData).then((data) => {
+        setValues(data);
+      });
+    }
+  }, []);
 
-export default function CustomTableActionDialog({
+  return (
+    <AutoForm
+      {...action?.autoFormArgs}
+      values={_values}
+      onSubmit={(formData) => {
+        action?.callback(formData, triggerData, onOpenChange);
+      }}
+    >
+      <>
+        {action?.autoFormArgs?.children}
+        <AutoFormSubmit
+          className={cn('float-right', action?.autoFormArgs?.submit?.className)}
+        >
+          {action.autoFormArgs.submit?.cta || 'Save Changes'}
+        </AutoFormSubmit>
+      </>
+    </AutoForm>
+  );
+}
+
+export default function CustomTableActionDialog<Tdata = unknown>({
   open,
   onOpenChange,
   action,
   triggerData,
   type = 'Dialog',
-}: CustomTableActionDialogProps) {
+}: CustomTableActionDialogProps<Tdata>) {
   const [values, setValues] = useState<any>(undefined);
   const autoFormData =
     action.componentType === 'Autoform'
-      ? AutoFormData(action, values, onOpenChange, values)
+      ? AutoFormData(action, values, onOpenChange, triggerData)
       : undefined;
   useEffect(() => {
     if (action.componentType === 'Autoform') {
@@ -78,8 +92,13 @@ export default function CustomTableActionDialog({
     'loadingContent' in action
       ? action?.content || action.loadingContent
       : undefined;
-  const cta = getCTA<undefined>(action?.cta, triggerData);
-  const description = getCTA<undefined>(action?.description, triggerData);
+  let cta = 'cta';
+  let description = 'description';
+  if (triggerData) {
+    cta = getCTA<Tdata>(action?.cta, triggerData);
+    description = getCTA<Tdata>(action?.description, triggerData);
+  }
+
   return type === 'Sheet' ? (
     <SheetSide
       open={open}
