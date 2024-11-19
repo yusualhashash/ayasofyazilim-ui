@@ -20,7 +20,8 @@ import {
 } from '../types';
 
 interface TanstackTableViewOptionsProps<TData> {
-  selectedRowAction?: TanstackTableSelectedRowActionType;
+  editedRows: TData[];
+  selectedRowAction?: TanstackTableSelectedRowActionType<TData>;
   setTableAction: (actions: TanstackTableTableActionsType) => void;
   table: Table<TData>;
   tableActions?: TanstackTableTableActionsType[];
@@ -64,6 +65,7 @@ export function TanstackTableViewOptions<TData>(
     tableActions,
     selectedRowAction,
     setTableAction: setRowAction,
+    editedRows,
   } = props;
   const primaryAction = tableActions?.[0];
   const otherActions = tableActions?.slice(1);
@@ -81,7 +83,8 @@ export function TanstackTableViewOptions<TData>(
               const selectedRowIds = table
                 .getSelectedRowModel()
                 .rows.map((row) => row.getValue('id') as string);
-              selectedRowAction.onClick(selectedRowIds);
+
+              selectedRowAction.onClick(selectedRowIds, editedRows);
             }}
           >
             {selectedRowAction?.icon && (

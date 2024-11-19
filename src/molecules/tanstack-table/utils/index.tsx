@@ -1,8 +1,9 @@
 import { Column, ColumnDef, Row } from '@tanstack/react-table';
 import Link from 'next/link';
-import { CSSProperties } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { TanstackTableColumnHeader } from '../fields/tanstack-table-column-header';
 import {
@@ -301,5 +302,80 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
       columns.push(column);
     });
 
+  return columns;
+}
+
+export function tanstackTableEditableColumnsByRowData<T>(params: {
+  excludeColumns?: Partial<keyof T>[];
+  languageData?:
+    | TanstackTableLanguageDataType
+    | TanstackTableLanguageDataTypeWithConstantKey;
+  rows: Record<
+    string,
+    {
+      format?: string;
+      type: string;
+    }
+  >;
+}) {
+  const { rows, excludeColumns, languageData } = params;
+  const columns: ColumnDef<T>[] = [];
+
+  Object.keys(rows)
+    .filter((key) => !excludeColumns?.includes(key as keyof T))
+    .forEach((accessorKey) => {
+      const title = tanstackTableCreateTitleWithLanguageData({
+        languageData,
+        accessorKey,
+      });
+
+      const column: ColumnDef<T> = {
+        id: accessorKey,
+        accessorKey,
+        meta: title,
+        header: ({ column }) => (
+          <TanstackTableColumnHeader column={column} title={title} />
+        ),
+        cell: ({ getValue, row: { index }, column: { id }, table }) => {
+          const initialValue = getValue();
+
+          const [value, setValue] = useState(initialValue);
+          const rowId = (table.options.data[index] as { id: string })?.id;
+          const isRowSelected = rowId
+            ? table.getRow(rowId)?.getIsSelected()
+            : false;
+
+          // When the input is blurred, we'll call our table meta's updateData function
+          const onBlur = () => {
+            table.options.meta?.updateData(index, id, value);
+          };
+
+          useEffect(() => {
+            setValue(initialValue);
+          }, [initialValue]);
+
+          return (
+            <Input
+              value={value as string}
+              className={cn(
+                'w-full border-none rounded-none focus-visible:border-none focus-within:border-none ring-0 focus-visible:ring-0 focus-within:ring-0 ring-transparent shadow-none',
+                isRowSelected ? 'font-bold' : ''
+              )}
+              onChange={(e) => {
+                setValue(e.target.value);
+                if (!isRowSelected) {
+                  table.setRowSelection((old) => ({
+                    ...old,
+                    [rowId]: true,
+                  }));
+                }
+              }}
+              onBlur={onBlur}
+            />
+          );
+        },
+      };
+      columns.push(column);
+    });
   return columns;
 }
