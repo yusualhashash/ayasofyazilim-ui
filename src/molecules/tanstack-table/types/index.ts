@@ -170,3 +170,40 @@ export type TanstackTableLanguageDataTypeWithConstantKey = {
   constantKey: string;
   languageData: Record<string, string>;
 };
+
+export type TanstackTableCreateColumnsByRowId<T> = {
+  badges?: Record<string, TanstackTableColumnBadge>;
+  classNames?: Record<string, TanstackTableColumnClassNames[]>;
+  config?: TanstackTableConfig;
+  excludeColumns?: Partial<keyof T>[];
+  expandRowTrigger?: keyof T;
+  faceted?: Record<string, { options: TanstackTableFacetedFilterType[] }>;
+  icons?: Record<string, TanstackTableColumnIcon>;
+  languageData?:
+    | TanstackTableLanguageDataType
+    | TanstackTableLanguageDataTypeWithConstantKey;
+  links?: Record<string, TanstackTableColumnLink>;
+  rows: Record<
+    string,
+    {
+      format?: string;
+      type: string;
+    }
+  >;
+  selectableRows?: boolean;
+};
+
+export type TanstacktableEditableColumnsByRowId<T> = {
+  excludeColumns?: Partial<keyof T>[];
+  languageData?:
+    | TanstackTableLanguageDataType
+    | TanstackTableLanguageDataTypeWithConstantKey;
+  rows: Record<
+    string,
+    {
+      enum?: readonly string[];
+      format?: string;
+      type: string;
+    }
+  >;
+};
