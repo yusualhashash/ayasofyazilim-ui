@@ -20,7 +20,7 @@ export function tanstackTableCreateColumnsByRowData<T>(
 ) {
   const { rows, config } = params;
   function createCell(
-    accessorKey: string,
+    accessorKey: keyof T,
     row: Row<T>,
     link?: TanstackTableColumnLink,
     faceted?: TanstackTableFacetedFilterType[],
@@ -31,7 +31,7 @@ export function tanstackTableCreateColumnsByRowData<T>(
     format?: string
   ) {
     let content: JSX.Element | string =
-      row.getValue(accessorKey)?.toString() || '';
+      row.getValue(accessorKey.toString())?.toString() || '';
     if (format) {
       if (format === 'date' || format === 'date-time')
         content = new Date(content).toLocaleDateString(
@@ -51,7 +51,7 @@ export function tanstackTableCreateColumnsByRowData<T>(
           {icon.icon && position === 'before' && (
             <icon.icon className={cn('w-4 h-4', icon.iconClassName)} />
           )}
-          {row.getValue(accessorKey)}
+          {row.getValue(accessorKey.toString())}
           {icon.icon && position === 'after' && (
             <icon.icon className={cn('w-4 h-4', icon.iconClassName)} />
           )}
@@ -80,7 +80,7 @@ export function tanstackTableCreateColumnsByRowData<T>(
     }
     if (faceted) {
       const facetedItem = faceted.find(
-        (item) => item.value === row.getValue(accessorKey)
+        (item) => item.value === row.getValue(accessorKey.toString())
       );
 
       if (facetedItem) {
@@ -195,17 +195,18 @@ export function tanstackTableCreateColumnsByRowData<T>(
       enableHiding: false,
     });
   }
-  Object.keys(rows)
+  const rowKeys = Object.keys(rows) as (keyof T)[];
+  rowKeys
     .filter((key) => !excludeColumns?.includes(key as keyof T))
     .forEach((accessorKey) => {
       const title = tanstackTableCreateTitleWithLanguageData({
         languageData,
-        accessorKey,
+        accessorKey: accessorKey.toString(),
       });
-      const link = links?.[accessorKey];
+      const link = links?.[accessorKey as keyof T];
       const { format } = rows[accessorKey];
       const column: ColumnDef<T> = {
-        id: accessorKey,
+        id: accessorKey.toString(),
         accessorKey,
         meta: title,
         header: ({ column }) => (
