@@ -34,12 +34,12 @@ export type CustomTableActionDialogProps<Tdata = unknown> = {
   type?: 'Sheet' | 'Dialog';
 };
 
-const AutoFormData = <Tdata = unknown,>(
+function AutoFormData<Tdata = unknown>(
   action: TableActionAutoform<Tdata>,
   values: Partial<z.infer<ZodObjectOrWrapped>>,
   onOpenChange: (e: boolean) => void,
   triggerData?: any
-) => {
+) {
   const [_values, setValues] =
     useState<Partial<z.infer<ZodObjectOrWrapped>>>(values);
   useEffect(() => {
@@ -69,7 +69,7 @@ const AutoFormData = <Tdata = unknown,>(
       </>
     </AutoForm>
   );
-};
+}
 
 export default function CustomTableActionDialog<Tdata = unknown>({
   open,
