@@ -19,7 +19,8 @@ export type TanstackTableProps<TData, TValue> = {
   filters?: TanstackTableFiltersType;
   pinColumns?: (keyof TData)[];
   rowActions?: TanstackTableRowActionsType<TData>[];
-  selectedRowAction?: TanstackTableSelectedRowActionType;
+  rowCount?: number;
+  selectedRowAction?: TanstackTableSelectedRowActionType<TData>;
   tableActions?: TanstackTableTableActionsType[];
 };
 export type TanstackTableConfig = {
@@ -158,11 +159,11 @@ export type TanstackTableTableActionsType = {
   | TanstackTableActionsCustomDialog
   | TanstackTableActionsAutoformDialog
 );
-export type TanstackTableSelectedRowActionType = {
+export type TanstackTableSelectedRowActionType<TData> = {
   actionLocation: 'table';
   cta: string;
   icon?: ComponentType<{ className?: string }>;
-  onClick: (selectedIds: string[]) => void;
+  onClick: (selectedIds: string[], selectedRows: TData[]) => void;
 };
 export type TanstackTableLanguageDataType = Record<string, string>;
 export type TanstackTableLanguageDataTypeWithConstantKey = {

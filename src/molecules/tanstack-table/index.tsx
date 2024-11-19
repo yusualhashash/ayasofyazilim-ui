@@ -8,6 +8,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   Row,
+  RowData,
   SortingState,
   useReactTable,
   VisibilityState,
@@ -40,6 +41,14 @@ import {
 } from './types';
 import { getCommonPinningStyles } from './utils';
 
+declare module '@tanstack/react-table' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface TableMeta<TData extends RowData> {
+    removeRow: (rowIndex: number, columnId: string, value: unknown) => void;
+    updateData: (rowIndex: number, columnId: string, value: unknown) => void;
+  }
+}
+
 const CellWithActions = <TData,>(
   row: Row<TData>,
   actions: TanstackTableRowActionsType<TData>[],
@@ -58,6 +67,7 @@ export default function TanstackTable<TData, TValue>({
   columns,
   columnOrder,
   data,
+  rowCount = 0,
   filters,
   columnVisibility,
   pinColumns,
@@ -120,6 +130,8 @@ export default function TanstackTable<TData, TValue>({
     return currentPagination;
   });
 
+  const [editedRows, setEditedRows] = React.useState<TData[]>(() => []);
+
   const getRowId = React.useCallback(
     (row: TData) => (row as TData & { id: string }).id,
     []
@@ -166,7 +178,33 @@ export default function TanstackTable<TData, TValue>({
     getExpandedRowModel: getExpandedRowModel(),
     onPaginationChange: setPagination,
     onColumnFiltersChange: setColumnFilters,
-    rowCount: 30,
+    rowCount,
+    meta: {
+      removeRow: () => {},
+      updateData: (rowIndex, columnId, value) => {
+        setEditedRows((old) => {
+          const newEditedRows = [...old];
+          const indexOfEditedRow = newEditedRows.findIndex(
+            (row) =>
+              (row as TData & { id: string }).id ===
+              (data[rowIndex] as TData & { id: string }).id
+          );
+          if (indexOfEditedRow === -1) {
+            const currentData = data[rowIndex];
+            newEditedRows.push({
+              ...currentData,
+              [columnId]: value,
+            } as TData);
+            return newEditedRows;
+          }
+          newEditedRows[indexOfEditedRow] = {
+            ...newEditedRows[indexOfEditedRow],
+            [columnId]: value,
+          };
+          return newEditedRows;
+        });
+      },
+    },
   });
 
   useEffect(() => {
@@ -200,6 +238,7 @@ export default function TanstackTable<TData, TValue>({
         filters={filters}
         selectedRowAction={selectedRowAction}
         tableActions={tableActions}
+        editedRows={editedRows}
         setTableAction={setTableAction}
       />
       <div className="rounded-md border overflow-auto">
