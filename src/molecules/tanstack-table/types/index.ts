@@ -19,6 +19,7 @@ export type TanstackTableProps<TData, TValue> = {
   filters?: TanstackTableFiltersType;
   pinColumns?: (keyof TData)[];
   rowActions?: TanstackTableRowActionsType<TData>[];
+  rowCount?: number;
   selectedRowAction?: TanstackTableSelectedRowActionType<TData>;
   tableActions?: TanstackTableTableActionsType[];
 };

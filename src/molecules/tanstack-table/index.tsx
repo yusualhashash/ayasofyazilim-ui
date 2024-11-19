@@ -67,6 +67,7 @@ export default function TanstackTable<TData, TValue>({
   columns,
   columnOrder,
   data,
+  rowCount = 0,
   filters,
   columnVisibility,
   pinColumns,
@@ -177,7 +178,7 @@ export default function TanstackTable<TData, TValue>({
     getExpandedRowModel: getExpandedRowModel(),
     onPaginationChange: setPagination,
     onColumnFiltersChange: setColumnFilters,
-    rowCount: 30,
+    rowCount,
     meta: {
       removeRow: () => {},
       updateData: (rowIndex, columnId, value) => {
