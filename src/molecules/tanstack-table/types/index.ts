@@ -196,9 +196,7 @@ export type TanstackTableCreateColumnsByRowId<T> = {
 
 export type TanstacktableEditableColumnsByRowId<T> = {
   excludeColumns?: Partial<keyof T>[];
-  languageData?:
-    | TanstackTableLanguageDataType
-    | TanstackTableLanguageDataTypeWithConstantKey;
+  languageData?: TanstackTableLanguageDataType;
   rows: Record<
     string,
     {
