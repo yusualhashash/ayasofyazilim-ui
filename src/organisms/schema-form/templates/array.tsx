@@ -1,5 +1,14 @@
-import { ArrayFieldTemplateProps } from '@rjsf/utils';
-import { Plus, Trash } from 'lucide-react';
+import {
+  ArrayFieldTemplateItemType,
+  ArrayFieldTemplateProps,
+} from '@rjsf/utils';
+import {
+  ChevronDown,
+  ChevronUp,
+  MoreHorizontal,
+  Plus,
+  Trash,
+} from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -8,6 +17,12 @@ import {
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
   const { items, title, required, canAdd, onAddClick, uiSchema, disabled } =
@@ -69,23 +84,13 @@ export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
           )}
         >
           {items &&
-            items.map((itemProps) => (
+            items.map((item, index) => (
               <div
-                className="flex relative pr-12 rounded-md border [&>fieldset]:border-none"
-                key={itemProps.key}
+                className="flex relative rounded-md border [&>fieldset]:border-none"
+                key={item.key}
               >
-                {itemProps.children}
-                {itemProps.hasRemove && (
-                  <Button
-                    variant="destructive"
-                    type="button"
-                    size="icon"
-                    className="text-destructive hover:text-white absolute right-0 top-0 h-full bg-destructive/10 rounded-l-none "
-                    onClick={itemProps.onDropIndexClick(itemProps.index)}
-                  >
-                    <Trash className="size-4" />
-                  </Button>
-                )}
+                {item.children}
+                <ArrayToolBar {...item} itemIndex={index} />
               </div>
             ))}
         </AccordionContent>
@@ -93,3 +98,49 @@ export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
     </Accordion>
   );
 };
+
+function ArrayToolBar({
+  itemIndex,
+  ...props
+}: ArrayFieldTemplateItemType & { itemIndex: number }) {
+  if (!props.hasMoveDown && !props.hasMoveUp && !props.hasRemove) return null;
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          className="absolute right-2 top-2"
+          size="icon"
+        >
+          <MoreHorizontal className="w-4" />
+          <span className="sr-only">Open menu</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {props.hasMoveUp && (
+          <DropdownMenuItem
+            onClick={props.onReorderClick(itemIndex, props.index - 1)}
+          >
+            <ChevronUp className="size-4 mr-2" /> Move Up
+          </DropdownMenuItem>
+        )}
+        {props.hasMoveDown && (
+          <DropdownMenuItem
+            onClick={props.onReorderClick(itemIndex, props.index + 1)}
+          >
+            <ChevronDown className="size-4 mr-2" /> Move Down
+          </DropdownMenuItem>
+        )}
+        {props.hasRemove && (
+          <DropdownMenuItem
+            className="text-destructive"
+            onClick={props.onDropIndexClick(props.index)}
+          >
+            <Trash className="size-4 mr-2" />
+            Delete Item
+          </DropdownMenuItem>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
