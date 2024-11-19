@@ -119,7 +119,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
         focusOnFirstError
         showErrorList={props.showErrorList || false}
         {...props}
-        className={cn('p-px', props.className)}
+        className={cn('p-px', withScrollArea && 'pr-4', props.className)}
         formData={formData}
         schema={
           removeFieldsfromGenericSchema(schema, [
