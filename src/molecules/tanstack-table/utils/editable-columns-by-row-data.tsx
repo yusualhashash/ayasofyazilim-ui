@@ -1,36 +1,22 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 import { TanstackTableColumnHeader } from '../fields';
-import {
-  TanstackTableLanguageDataType,
-  TanstackTableLanguageDataTypeWithConstantKey,
-} from '../types';
+import { TanstacktableEditableColumnsByRowId } from '../types';
 import { tanstackTableCreateTitleWithLanguageData } from './columnNames';
 
-export function tanstackTableEditableColumnsByRowData<T>(params: {
-  excludeColumns?: Partial<keyof T>[];
-  languageData?:
-    | TanstackTableLanguageDataType
-    | TanstackTableLanguageDataTypeWithConstantKey;
-  rows: Record<
-    string,
-    {
-      enum?: readonly string[];
-      format?: string;
-      type: string;
-    }
-  >;
-}) {
+export function tanstackTableEditableColumnsByRowData<T>(
+  params: TanstacktableEditableColumnsByRowId<T>
+) {
   const { rows, excludeColumns, languageData } = params;
   const columns: ColumnDef<T>[] = [];
 

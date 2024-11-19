@@ -1,7 +1,10 @@
 import { ColumnDef, Row, RowData } from '@tanstack/react-table';
 import { z } from 'zod';
-import { AutoFormProps, ZodObjectOrWrapped } from '../../organisms/auto-form';
-import { ColumnFilter } from './filter-column';
+import {
+  AutoFormProps,
+  ZodObjectOrWrapped,
+} from '../../../organisms/auto-form';
+import { ColumnFilter } from '../filter-column';
 
 export type { ColumnFilter };
 export type FilterColumnResult = { [key: string]: string | string[] };

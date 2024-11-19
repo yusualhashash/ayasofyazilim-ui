@@ -1,43 +1,23 @@
-import { Checkbox } from '@radix-ui/react-checkbox';
-import { Row, ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
+import { testConditions } from '.';
 import { TanstackTableColumnHeader } from '../fields';
 import {
   TanstackTableColumnBadge,
   TanstackTableColumnClassNames,
-  TanstackTableConfig,
-  TanstackTableFacetedFilterType,
   TanstackTableColumnIcon,
-  TanstackTableLanguageDataType,
-  TanstackTableLanguageDataTypeWithConstantKey,
   TanstackTableColumnLink,
+  TanstackTableCreateColumnsByRowId,
+  TanstackTableFacetedFilterType,
 } from '../types';
 import { tanstackTableCreateTitleWithLanguageData } from './columnNames';
-import { Badge } from '@/components/ui/badge';
-import { testConditions } from '.';
+import { Checkbox } from '@/components/ui/checkbox';
 
-export function tanstackTableCreateColumnsByRowData<T>(params: {
-  badges?: Record<string, TanstackTableColumnBadge>;
-  classNames?: Record<string, TanstackTableColumnClassNames[]>;
-  config?: TanstackTableConfig;
-  excludeColumns?: Partial<keyof T>[];
-  expandRowTrigger?: keyof T;
-  faceted?: Record<string, { options: TanstackTableFacetedFilterType[] }>;
-  icons?: Record<string, TanstackTableColumnIcon>;
-  languageData?:
-    | TanstackTableLanguageDataType
-    | TanstackTableLanguageDataTypeWithConstantKey;
-  links?: Record<string, TanstackTableColumnLink>;
-  rows: Record<
-    string,
-    {
-      format?: string;
-      type: string;
-    }
-  >;
-  selectableRows?: boolean;
-}) {
+export function tanstackTableCreateColumnsByRowData<T>(
+  params: TanstackTableCreateColumnsByRowId<T>
+) {
   const { rows, config } = params;
   function createCell(
     accessorKey: string,
@@ -199,7 +179,7 @@ export function tanstackTableCreateColumnsByRowData<T>(params: {
               table.toggleAllPageRowsSelected(!!value)
             }
             aria-label="Select all"
-            className="translate-y-0.5  align-top"
+            className="translate-y-0.5  align-middle"
           />
         </div>
       ),

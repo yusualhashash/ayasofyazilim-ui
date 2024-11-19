@@ -165,8 +165,44 @@ export type TanstackTableSelectedRowActionType<TData> = {
   icon?: ComponentType<{ className?: string }>;
   onClick: (selectedIds: string[], selectedRows: TData[]) => void;
 };
-export type TanstackTableLanguageDataType = Record<string, string>;
+
 export type TanstackTableLanguageDataTypeWithConstantKey = {
   constantKey: string;
   languageData: Record<string, string>;
+};
+export type TanstackTableLanguageDataType =
+  | Record<string, string>
+  | TanstackTableLanguageDataTypeWithConstantKey;
+
+export type TanstackTableCreateColumnsByRowId<T> = {
+  badges?: Record<string, TanstackTableColumnBadge>;
+  classNames?: Record<string, TanstackTableColumnClassNames[]>;
+  config?: TanstackTableConfig;
+  excludeColumns?: Partial<keyof T>[];
+  expandRowTrigger?: keyof T;
+  faceted?: Record<string, { options: TanstackTableFacetedFilterType[] }>;
+  icons?: Record<string, TanstackTableColumnIcon>;
+  languageData?: TanstackTableLanguageDataType;
+  links?: Record<string, TanstackTableColumnLink>;
+  rows: Record<
+    string,
+    {
+      format?: string;
+      type: string;
+    }
+  >;
+  selectableRows?: boolean;
+};
+
+export type TanstacktableEditableColumnsByRowId<T> = {
+  excludeColumns?: Partial<keyof T>[];
+  languageData?: TanstackTableLanguageDataType;
+  rows: Record<
+    string,
+    {
+      enum?: readonly string[];
+      format?: string;
+      type: string;
+    }
+  >;
 };
