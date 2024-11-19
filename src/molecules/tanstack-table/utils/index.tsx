@@ -18,6 +18,14 @@ import {
   TanstackTableLanguageDataTypeWithConstantKey,
 } from '../types';
 import { tanstackTableCreateTitleWithLanguageData } from './columnNames';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export * from './columnNames';
 export function getCommonPinningStyles<TData>({
@@ -313,6 +321,7 @@ export function tanstackTableEditableColumnsByRowData<T>(params: {
   rows: Record<
     string,
     {
+      enum?: readonly string[];
       format?: string;
       type: string;
     }
@@ -337,7 +346,7 @@ export function tanstackTableEditableColumnsByRowData<T>(params: {
           <TanstackTableColumnHeader column={column} title={title} />
         ),
         cell: ({ getValue, row: { index }, column: { id }, table }) => {
-          const initialValue = getValue();
+          const initialValue = getValue() as string;
 
           const [value, setValue] = useState(initialValue);
           const rowId = (table.options.data[index] as { id: string })?.id;
@@ -350,9 +359,57 @@ export function tanstackTableEditableColumnsByRowData<T>(params: {
             table.options.meta?.updateData(index, id, value);
           };
 
+          function handleValueChange(newValue: string) {
+            setValue(newValue);
+            if (isRowSelected && newValue === initialValue) {
+              table.setRowSelection((old) => ({
+                ...old,
+                [rowId]: false,
+              }));
+              return;
+            }
+
+            if (!isRowSelected && newValue !== initialValue) {
+              table.setRowSelection((old) => ({
+                ...old,
+                [rowId]: true,
+              }));
+            }
+          }
+
           useEffect(() => {
             setValue(initialValue);
           }, [initialValue]);
+
+          if (rows[accessorKey]?.enum) {
+            return (
+              <Select
+                defaultValue={value as string}
+                onValueChange={(value) => {
+                  handleValueChange(value);
+                  table.options.meta?.updateData(index, id, value);
+                }}
+              >
+                <SelectTrigger
+                  className={cn(
+                    'w-[180px] border-none rounded-none focus-visible:border-none focus-within:border-none ring-0 focus-visible:ring-0 focus-within:ring-0 ring-transparent shadow-none',
+                    isRowSelected ? 'font-bold' : ''
+                  )}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {rows[accessorKey].enum.map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            );
+          }
 
           return (
             <Input
@@ -362,13 +419,7 @@ export function tanstackTableEditableColumnsByRowData<T>(params: {
                 isRowSelected ? 'font-bold' : ''
               )}
               onChange={(e) => {
-                setValue(e.target.value);
-                if (!isRowSelected) {
-                  table.setRowSelection((old) => ({
-                    ...old,
-                    [rowId]: true,
-                  }));
-                }
+                handleValueChange(e.target.value);
               }}
               onBlur={onBlur}
             />
