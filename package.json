@@ -30,7 +30,7 @@
   "exports": {
     "./hooks/*": "./src/hooks/*.tsx",
     "./atoms/*": "./@/components/ui/*.tsx",
-    "./molecules/*/types": "./src/molecules/*/types.ts",
+    "./molecules/*/types": "./src/molecules/*/types/index.ts",
     "./molecules/*": "./src/molecules/*/index.tsx",
     "./molecules/**/*": "./src/molecules/**/*/index.tsx",
     "./molecules/*/utils": "./src/molecules/*/utils/index.tsx",
