@@ -208,3 +208,8 @@ export type TanstacktableEditableColumnsByRowId<T> = {
     }
   >;
 };
+
+export type TanstackTableCreationProps<T> = Omit<
+  TanstackTableProps<T, string>,
+  'columns' | 'data' | 'rowCount'
+>;
