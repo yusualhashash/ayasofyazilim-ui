@@ -175,17 +175,19 @@ export type TanstackTableLanguageDataType =
   | TanstackTableLanguageDataTypeWithConstantKey;
 
 export type TanstackTableCreateColumnsByRowId<T> = {
-  badges?: Record<string, TanstackTableColumnBadge>;
-  classNames?: Record<string, TanstackTableColumnClassNames[]>;
+  badges?: Partial<Record<keyof T, TanstackTableColumnBadge>>;
+  classNames?: Partial<Record<keyof T, TanstackTableColumnClassNames[]>>;
   config?: TanstackTableConfig;
   excludeColumns?: Partial<keyof T>[];
   expandRowTrigger?: keyof T;
-  faceted?: Record<string, { options: TanstackTableFacetedFilterType[] }>;
-  icons?: Record<string, TanstackTableColumnIcon>;
+  faceted?: Partial<
+    Record<keyof T, { options: TanstackTableFacetedFilterType[] }>
+  >;
+  icons?: Partial<Record<keyof T, TanstackTableColumnIcon>>;
   languageData?: TanstackTableLanguageDataType;
-  links?: Record<string, TanstackTableColumnLink>;
+  links?: Partial<Record<keyof T, TanstackTableColumnLink>>;
   rows: Record<
-    string,
+    keyof T,
     {
       format?: string;
       type: string;

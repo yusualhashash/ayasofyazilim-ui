@@ -314,28 +314,28 @@ export const merchants: Merchant[] = [
     individualId: null,
   },
 ];
-export const faceted = {
-  status: {
-    options: [
-      { value: 'inactive', label: 'Inactive', icon: Building2 },
-      { value: 'active', label: 'Active', icon: PersonIcon },
-    ],
-  },
-};
+
 export const col = tanstackTableCreateColumnsByRowData<Merchant>({
   rows: $merchantSchema.properties,
-  languageData: { userName: 'Kullanıcı Adı' },
+  languageData: { name: 'Kullanıcı Adı' },
   links: {
-    userName: {
+    name: {
       targetAccessorKey: 'id',
       prefix: 'http://192.168.1.105:1453/tr/app/admin',
       suffix: '/edit',
     },
-    email: {
+    id: {
       prefix: 'http://192.168.1.105:1453/tr/app/',
     },
   },
-  faceted,
+  faceted: {
+    entityInformationTypeCode: {
+      options: [
+        { value: 'inactive', label: 'Inactive', icon: Building2 },
+        { value: 'active', label: 'Active', icon: PersonIcon },
+      ],
+    },
+  },
   selectableRows: true,
 });
 const $schema = {
