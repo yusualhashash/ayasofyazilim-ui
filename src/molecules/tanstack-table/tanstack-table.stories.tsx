@@ -6,7 +6,6 @@ import {
   $editMerchantDto,
   $merchantSchema,
   col,
-  faceted,
   Merchant,
   merchants,
   rowActions,
@@ -42,7 +41,6 @@ export const Default = template.bind({});
 Default.args = {
   filters: {
     textFilters: ['name'],
-    facetedFilters: faceted,
   },
   selectedRowAction: {
     icon: Trash2,
