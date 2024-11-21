@@ -75,6 +75,7 @@ export default function TanstackTable<TData, TValue>({
   tableActions,
   selectedRowAction,
   expandedRowComponent,
+  fillerColumn,
 }: TanstackTableProps<TData, TValue>) {
   const { replace } = useRouter();
   const pathname = usePathname();
@@ -160,7 +161,6 @@ export default function TanstackTable<TData, TValue>({
         left: [
           'expanded-content',
           'select',
-          'name',
           ...((pinColumns as string[]) ?? []),
         ],
         right: ['actions'],
@@ -252,6 +252,7 @@ export default function TanstackTable<TData, TValue>({
                     style={getCommonPinningStyles({
                       column: header.column,
                       withBorder: true,
+                      fillerColumn,
                     })}
                   >
                     {header.isPlaceholder
@@ -272,11 +273,11 @@ export default function TanstackTable<TData, TValue>({
                   <TableRow data-state={row.getIsSelected() && 'selected'}>
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
-                        className="text-nowrap"
                         key={cell.id}
                         style={getCommonPinningStyles({
                           column: cell.column,
                           withBorder: true,
+                          fillerColumn,
                         })}
                       >
                         {flexRender(
