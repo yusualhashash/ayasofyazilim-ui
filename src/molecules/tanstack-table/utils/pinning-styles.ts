@@ -4,8 +4,10 @@ import { CSSProperties } from 'react';
 export function getCommonPinningStyles<TData>({
   column,
   withBorder = false,
+  fillerColumn,
 }: {
   column: Column<TData>;
+  fillerColumn: keyof TData;
   /**
    * Show box shadow between pinned and scrollable columns.
    * @default false
@@ -28,9 +30,10 @@ export function getCommonPinningStyles<TData>({
     left: isPinned === 'left' ? `${column.getStart('left')}px` : undefined,
     right: isPinned === 'right' ? `${column.getAfter('right')}px` : undefined,
     opacity: isPinned ? 0.97 : 1,
-    width: column.getSize(),
+    width: fillerColumn === column.id ? '100%' : column.getSize(),
     position: isPinned ? 'sticky' : 'relative',
     background: isPinned ? 'hsl(var(--background))' : 'hsl(var(--background))',
     zIndex: isPinned ? 1 : 0,
+    textWrap: 'nowrap',
   };
 }

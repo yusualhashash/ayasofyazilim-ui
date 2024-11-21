@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { testConditions } from '.';
 import { TanstackTableColumnHeader } from '../fields';
 import {
+  TanstackTableColumCell,
   TanstackTableColumnBadge,
   TanstackTableColumnClassNames,
   TanstackTableColumnIcon,
@@ -28,7 +29,8 @@ export function tanstackTableCreateColumnsByRowData<T>(
     icon?: TanstackTableColumnIcon,
     className?: TanstackTableColumnClassNames[],
     expandRowTrigger?: boolean,
-    format?: string
+    format?: string,
+    custom?: TanstackTableColumCell<T>
   ) {
     let content: JSX.Element | string =
       row.getValue(accessorKey.toString())?.toString() || '';
@@ -108,6 +110,7 @@ export function tanstackTableCreateColumnsByRowData<T>(
       })
       .join(' ');
 
+    if (custom) content = custom.content(row.original);
     if (!link || !testConditions(link.conditions, row)) {
       if (expandRowTrigger) {
         return (
@@ -162,6 +165,7 @@ export function tanstackTableCreateColumnsByRowData<T>(
     classNames,
     icons,
     expandRowTrigger,
+    custom,
   } = params;
   const columns: ColumnDef<T>[] = [];
   if (params.selectableRows) {
@@ -209,9 +213,12 @@ export function tanstackTableCreateColumnsByRowData<T>(
         id: accessorKey.toString(),
         accessorKey,
         meta: title,
-        header: ({ column }) => (
-          <TanstackTableColumnHeader column={column} title={title} />
-        ),
+        header:
+          !custom?.[accessorKey] || custom?.[accessorKey].showHeader
+            ? ({ column }) => (
+                <TanstackTableColumnHeader column={column} title={title} />
+              )
+            : undefined,
         cell: ({ row }) =>
           createCell(
             accessorKey,
@@ -222,7 +229,8 @@ export function tanstackTableCreateColumnsByRowData<T>(
             icons?.[accessorKey],
             classNames?.[accessorKey],
             expandRowTrigger === accessorKey,
-            format
+            format,
+            custom?.[accessorKey]
           ),
       };
       if (faceted?.[accessorKey]) {

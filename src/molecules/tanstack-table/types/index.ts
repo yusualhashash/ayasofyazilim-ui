@@ -16,6 +16,7 @@ export type TanstackTableProps<TData, TValue> = {
     row: TData,
     toggleExpanded: () => void
   ) => JSX.Element;
+  fillerColumn: keyof TData;
   filters?: TanstackTableFiltersType;
   pinColumns?: (keyof TData)[];
   rowActions?: TanstackTableRowActionsType<TData>[];
@@ -72,7 +73,11 @@ export type TanstackTableColumnIcon = {
   iconClassName?: string;
   position?: 'before' | 'after';
 };
-
+export type TanstackTableColumCell<TData> = {
+  conditions?: TanstackTableCellCondition[];
+  content: (row: TData) => JSX.Element;
+  showHeader?: boolean;
+};
 export type TanstackTableRowActionsSimple<TData> = {
   onClick: (row: TData) => void;
   type: 'simple';
@@ -178,6 +183,7 @@ export type TanstackTableCreateColumnsByRowId<T> = {
   badges?: Partial<Record<keyof T, TanstackTableColumnBadge>>;
   classNames?: Partial<Record<keyof T, TanstackTableColumnClassNames[]>>;
   config?: TanstackTableConfig;
+  custom?: Partial<Record<keyof T, TanstackTableColumCell<T>>>;
   excludeColumns?: Partial<keyof T>[];
   expandRowTrigger?: keyof T;
   faceted?: Partial<
