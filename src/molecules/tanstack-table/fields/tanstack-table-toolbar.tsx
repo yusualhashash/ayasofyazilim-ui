@@ -32,6 +32,7 @@ export const TanstackTableToolbar = <TData,>({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
+  const columnNames = table.getAllColumns().map((column) => column.id);
 
   function onFilter(accessorKey: string, selectedValues: string) {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -52,12 +53,16 @@ export const TanstackTableToolbar = <TData,>({
           filters.textFilters.map((accessorKey) => (
             <TanstackTableTextFilter
               key={accessorKey}
-              column={table.getColumn(accessorKey)}
+              column={
+                columnNames.includes(accessorKey)
+                  ? table.getColumn(accessorKey)
+                  : undefined
+              }
               accessorKey={accessorKey}
               params={params}
-              onFilter={(accessorKey, selectedValues) => {
-                onFilter(accessorKey, selectedValues);
-              }}
+              onFilter={(accessorKey, selectedValues) =>
+                onFilter(accessorKey, selectedValues)
+              }
             />
           ))}
 
@@ -65,7 +70,11 @@ export const TanstackTableToolbar = <TData,>({
           Object.keys(filters.facetedFilters)?.map((column) => (
             <TanstackTableFacetedFilter
               key={column}
-              column={table.getColumn(column)}
+              column={
+                columnNames.includes(column)
+                  ? table.getColumn(column)
+                  : undefined
+              }
               accessorKey={column}
               params={params}
               onFilter={(accessorKey, selectedValues) => {
