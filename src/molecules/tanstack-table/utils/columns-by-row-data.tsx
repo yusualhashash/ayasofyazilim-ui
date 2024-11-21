@@ -214,7 +214,7 @@ export function tanstackTableCreateColumnsByRowData<T>(
         accessorKey,
         meta: title,
         header:
-          !custom?.[accessorKey] || custom?.[accessorKey].showHeader
+          !custom?.[accessorKey] || custom?.[accessorKey]?.showHeader
             ? ({ column }) => (
                 <TanstackTableColumnHeader column={column} title={title} />
               )
