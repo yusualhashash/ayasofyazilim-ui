@@ -7,6 +7,7 @@ import {
   TanstackTableSelectedRowActionType,
   TanstackTableTableActionsType,
 } from '../types';
+import { TanstackTableDateFilter } from './tanstack-table-filter-date';
 import { TanstackTableFacetedFilter } from './tanstack-table-filter-faceted';
 import { TanstackTableTextFilter } from './tanstack-table-filter-text';
 import { TanstackTableViewOptions } from './tanstack-table-view-options';
@@ -32,6 +33,7 @@ export const TanstackTableToolbar = <TData,>({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
+  const columnNames = table.getAllColumns().map((column) => column.id);
 
   function onFilter(accessorKey: string, selectedValues: string) {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -52,12 +54,34 @@ export const TanstackTableToolbar = <TData,>({
           filters.textFilters.map((accessorKey) => (
             <TanstackTableTextFilter
               key={accessorKey}
-              column={table.getColumn(accessorKey)}
+              column={
+                columnNames.includes(accessorKey)
+                  ? table.getColumn(accessorKey)
+                  : undefined
+              }
               accessorKey={accessorKey}
               params={params}
-              onFilter={(accessorKey, selectedValues) => {
-                onFilter(accessorKey, selectedValues);
-              }}
+              onFilter={(accessorKey, selectedValues) =>
+                onFilter(accessorKey, selectedValues)
+              }
+            />
+          ))}
+
+        {filters?.dateFilters &&
+          filters.dateFilters.map((dateItem) => (
+            <TanstackTableDateFilter
+              key={dateItem.label}
+              accessorKey={dateItem.label}
+              column={
+                columnNames.includes(dateItem.label)
+                  ? table.getColumn(dateItem.label)
+                  : undefined
+              }
+              dateItem={dateItem}
+              params={params}
+              onFilter={(accessorKey, selectedValues) =>
+                onFilter(accessorKey, selectedValues)
+              }
             />
           ))}
 
@@ -65,7 +89,11 @@ export const TanstackTableToolbar = <TData,>({
           Object.keys(filters.facetedFilters)?.map((column) => (
             <TanstackTableFacetedFilter
               key={column}
-              column={table.getColumn(column)}
+              column={
+                columnNames.includes(column)
+                  ? table.getColumn(column)
+                  : undefined
+              }
               accessorKey={column}
               params={params}
               onFilter={(accessorKey, selectedValues) => {

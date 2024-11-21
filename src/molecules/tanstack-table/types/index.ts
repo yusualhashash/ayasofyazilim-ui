@@ -43,7 +43,14 @@ export type TanstackTableFacetedFilterType = {
   label: string;
   value: string;
 };
+export type TanstackTableDateFilterType = {
+  endAccessorKey?: string;
+  label: string;
+  startAccessorKey: string;
+};
+
 export type TanstackTableFiltersType = {
+  dateFilters?: TanstackTableDateFilterType[];
   facetedFilters?: Record<
     string,
     {
