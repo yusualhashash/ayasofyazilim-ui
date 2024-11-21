@@ -7,6 +7,7 @@ import {
   TanstackTableSelectedRowActionType,
   TanstackTableTableActionsType,
 } from '../types';
+import { TanstackTableDateFilter } from './tanstack-table-filter-date';
 import { TanstackTableFacetedFilter } from './tanstack-table-filter-faceted';
 import { TanstackTableTextFilter } from './tanstack-table-filter-text';
 import { TanstackTableViewOptions } from './tanstack-table-view-options';
@@ -59,6 +60,24 @@ export const TanstackTableToolbar = <TData,>({
                   : undefined
               }
               accessorKey={accessorKey}
+              params={params}
+              onFilter={(accessorKey, selectedValues) =>
+                onFilter(accessorKey, selectedValues)
+              }
+            />
+          ))}
+
+        {filters?.dateFilters &&
+          filters.dateFilters.map((dateItem) => (
+            <TanstackTableDateFilter
+              key={dateItem.label}
+              accessorKey={dateItem.label}
+              column={
+                columnNames.includes(dateItem.label)
+                  ? table.getColumn(dateItem.label)
+                  : undefined
+              }
+              dateItem={dateItem}
               params={params}
               onFilter={(accessorKey, selectedValues) =>
                 onFilter(accessorKey, selectedValues)
