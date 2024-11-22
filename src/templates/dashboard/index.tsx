@@ -16,11 +16,7 @@ export default function Dashboard({
 }: DashboardProps) {
   return (
     <>
-      {withCards && (
-        <div className="flex flex-row p-4 w-full">
-          <CardList isLoading={isLoading} cards={cards} />
-        </div>
-      )}
+      {withCards && <CardList isLoading={isLoading} cards={cards} />}
       {withTable && (
         <DataTable
           columnsData={columnsData}
