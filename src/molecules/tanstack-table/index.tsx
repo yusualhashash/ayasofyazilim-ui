@@ -44,6 +44,7 @@ import { getCommonPinningStyles } from './utils';
 declare module '@tanstack/react-table' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface TableMeta<TData extends RowData> {
+    addRow: () => void;
     removeRow: (rowIndex: number, columnId: string, value: unknown) => void;
     updateData: (rowIndex: number, columnId: string, value: unknown) => void;
   }
@@ -81,8 +82,12 @@ export default function TanstackTable<TData, TValue>({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const [newlyAddedRows, setNewlyAddedRows] = useState<TData[]>([]);
+  const tableData = useMemo<TData[]>(
+    () => [...newlyAddedRows, ...data],
+    [data, newlyAddedRows]
+  );
   const [sorting, setSorting] = React.useState<SortingState>([]);
-
   const [colVisibility, setColumnVisibility] = useState<VisibilityState>(
     columnVisibility
       ? Object.fromEntries(
@@ -131,7 +136,9 @@ export default function TanstackTable<TData, TValue>({
     return currentPagination;
   });
 
-  const [editedRows, setEditedRows] = React.useState<TData[]>(() => []);
+  const [editedRows, setEditedRows] = React.useState<TData[]>(() => [
+    ...tableData,
+  ]);
 
   const getRowId = React.useCallback(
     (row: TData) => (row as TData & { id: string }).id,
@@ -146,7 +153,7 @@ export default function TanstackTable<TData, TValue>({
   }, [rowAction]);
 
   const table = useReactTable({
-    data,
+    data: tableData,
     columns: tableColumns,
     getRowId,
     state: {
@@ -187,22 +194,21 @@ export default function TanstackTable<TData, TValue>({
           const indexOfEditedRow = newEditedRows.findIndex(
             (row) =>
               (row as TData & { id: string }).id ===
-              (data[rowIndex] as TData & { id: string }).id
+              (editedRows[rowIndex] as TData & { id: string }).id
           );
-          if (indexOfEditedRow === -1) {
-            const currentData = data[rowIndex];
-            newEditedRows.push({
-              ...currentData,
-              [columnId]: value,
-            } as TData);
-            return newEditedRows;
-          }
           newEditedRows[indexOfEditedRow] = {
             ...newEditedRows[indexOfEditedRow],
             [columnId]: value,
           };
           return newEditedRows;
         });
+      },
+      addRow: () => {
+        setNewlyAddedRows((old) => [
+          { id: `new-${Date.now()}` } as TData & { id: string },
+          ...old,
+        ]);
+        setEditedRows((old) => [{ id: `new-${Date.now()}` } as TData, ...old]);
       },
     },
   });

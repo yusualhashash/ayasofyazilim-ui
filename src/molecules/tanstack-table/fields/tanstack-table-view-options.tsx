@@ -27,7 +27,8 @@ interface TanstackTableViewOptionsProps<TData> {
   tableActions?: TanstackTableTableActionsType[];
 }
 
-const TablePrimaryActionButton = ({
+function TablePrimaryActionButton<TData>({
+  table,
   action,
   isMultipleActionProvided,
   setRowAction,
@@ -35,24 +36,33 @@ const TablePrimaryActionButton = ({
   action: TanstackTableTableActionsType;
   isMultipleActionProvided: boolean;
   setRowAction: (actions: TanstackTableTableActionsType) => void;
-}) => (
-  <Button
-    variant="outline"
-    size="sm"
-    type="button"
-    className={isMultipleActionProvided ? 'rounded-r-none ml-2' : 'ml-2'}
-    onClick={() => handleActionOnClick(action, setRowAction)}
-  >
-    {action?.icon && <action.icon className="mr-2 h-4 w-4" />}
-    {action.cta?.toString()}
-  </Button>
-);
-function handleActionOnClick(
+  table: Table<TData>;
+}) {
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      type="button"
+      className={isMultipleActionProvided ? 'rounded-r-none ml-2' : 'ml-2'}
+      onClick={() => handleActionOnClick(table, action, setRowAction)}
+    >
+      {action?.icon && <action.icon className="mr-2 h-4 w-4" />}
+      {action.cta?.toString()}
+    </Button>
+  );
+}
+function handleActionOnClick<TData>(
+  table: Table<TData>,
   action: TanstackTableTableActionsType,
   setRowAction: (actions: TanstackTableTableActionsType) => void
 ) {
   if (action.type === 'simple') {
     action.onClick();
+    return;
+  }
+  if (action.type === 'create-row') {
+    table.options.meta?.addRow();
+    action?.onClick?.();
     return;
   }
   setRowAction(action);
@@ -129,6 +139,7 @@ export function TanstackTableViewOptions<TData>(
       {primaryAction && otherActions && (
         <>
           <TablePrimaryActionButton
+            table={table}
             action={primaryAction}
             isMultipleActionProvided={otherActions?.length > 0}
             setRowAction={setRowAction}
@@ -153,7 +164,9 @@ export function TanstackTableViewOptions<TData>(
                       type="button"
                       size="sm"
                       className="justify-start w-full"
-                      onClick={() => handleActionOnClick(action, setRowAction)}
+                      onClick={() =>
+                        handleActionOnClick(table, action, setRowAction)
+                      }
                     >
                       {action.icon && <action.icon className="w-4 h-4" />}
                       <span className="ml-2">{action.cta}</span>

@@ -140,6 +140,11 @@ export type TanstackTableActionsSimple = {
   onClick: () => void;
   type: 'simple';
 };
+export type TanstackTableCreateRowAction = {
+  actionLocation: 'table';
+  onClick?: () => void;
+  type: 'create-row';
+};
 export type TanstackTableActionsDialog = {
   cancelText?: string;
   confirmationText?: string;
@@ -170,6 +175,7 @@ export type TanstackTableTableActionsType = {
   | TanstackTableActionsSimple
   | TanstackTableActionsCustomDialog
   | TanstackTableActionsAutoformDialog
+  | TanstackTableCreateRowAction
 );
 export type TanstackTableSelectedRowActionType<TData> = {
   actionLocation: 'table';
