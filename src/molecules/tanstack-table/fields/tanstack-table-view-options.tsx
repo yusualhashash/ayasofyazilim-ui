@@ -61,7 +61,7 @@ function handleActionOnClick<TData>(
     return;
   }
   if (action.type === 'create-row') {
-    table.options.meta?.addRow();
+    table.options.meta?.addRow(-1, '', null);
     action?.onClick?.();
     return;
   }
