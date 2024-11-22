@@ -39,6 +39,7 @@ const TablePrimaryActionButton = ({
   <Button
     variant="outline"
     size="sm"
+    type="button"
     className={isMultipleActionProvided ? 'rounded-r-none ml-2' : 'ml-2'}
     onClick={() => handleActionOnClick(action, setRowAction)}
   >
@@ -78,6 +79,7 @@ export function TanstackTableViewOptions<TData>(
           <Button
             variant="outline"
             size="sm"
+            type="button"
             className="ml-2"
             onClick={() => {
               const selectedRowIds = table
@@ -97,7 +99,7 @@ export function TanstackTableViewOptions<TData>(
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="ml-auto ">
+          <Button variant="outline" size="sm" className="ml-auto" type="button">
             <MixerHorizontalIcon className="mr-2 h-4 w-4" />
             See Columns
           </Button>
@@ -136,6 +138,7 @@ export function TanstackTableViewOptions<TData>(
               <DropdownMenuTrigger asChild>
                 <Button
                   size="sm"
+                  type="button"
                   variant="outline"
                   className="rounded-l-none border-l-0 px-2"
                 >
@@ -147,6 +150,7 @@ export function TanstackTableViewOptions<TData>(
                   <DropdownMenuItem key={action.cta}>
                     <Button
                       variant="ghost"
+                      type="button"
                       size="sm"
                       className="justify-start w-full"
                       onClick={() => handleActionOnClick(action, setRowAction)}
