@@ -1,5 +1,13 @@
 import { Meta, StoryFn } from '@storybook/react';
-import { Building2, Edit, LinkIcon, Trash2, User2 } from 'lucide-react';
+import {
+  Building2,
+  Edit,
+  LinkIcon,
+  PlusCircle,
+  SaveIcon,
+  Trash2,
+  User2,
+} from 'lucide-react';
 import { createZodObject } from 'src/lib/create-zod-object';
 import TanstackTable from '.';
 import {
@@ -11,7 +19,10 @@ import {
   rowActions,
   tableAction,
 } from './tanstack-table.stories.data';
-import { tanstackTableCreateColumnsByRowData } from './utils';
+import {
+  tanstackTableCreateColumnsByRowData,
+  tanstackTableEditableColumnsByRowData,
+} from './utils';
 
 export default {
   component: TanstackTable,
@@ -238,6 +249,45 @@ const editRowCol = tanstackTableCreateColumnsByRowData<Merchant>({
   },
 });
 export const EditRow = editRowStory.bind({});
+
+const editableRowStory: StoryFn<typeof TanstackTable> = (args) => (
+  <div className="max-w-[1400px]">
+    <TanstackTable
+      {...args}
+      data={merchants}
+      columns={editableRowCol}
+      columnVisibility={{
+        type: 'show',
+        columns: ['name', 'entityInformationTypeCode'],
+      }}
+      tableActions={[
+        {
+          type: 'create-row',
+          actionLocation: 'table',
+          cta: 'Create Row',
+          icon: PlusCircle,
+        },
+      ]}
+      selectedRowAction={{
+        actionLocation: 'table',
+        cta: 'Save',
+        icon: SaveIcon,
+        onClick: (selectedIds, selectedRows) => {
+          alert(JSON.stringify(selectedIds));
+          alert(JSON.stringify(selectedRows));
+        },
+      }}
+    />
+  </div>
+);
+const editableRowCol = tanstackTableEditableColumnsByRowData<Merchant>({
+  rows: $merchantSchema.properties,
+  languageData: {
+    name: 'Ad',
+    entityInformationTypeCode: 'Tip',
+  },
+});
+export const EditableRow = editableRowStory.bind({});
 
 const conditionalStory: StoryFn<typeof TanstackTable> = (args) => (
   <div className="max-w-[1400px]">
