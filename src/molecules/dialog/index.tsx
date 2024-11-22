@@ -92,12 +92,11 @@ export default function CustomTableActionDialog<Tdata = unknown>({
     'loadingContent' in action
       ? action?.content || action.loadingContent
       : undefined;
-  let cta = 'cta';
-  let description = 'description';
-  if (triggerData) {
-    cta = getCTA<Tdata>(action?.cta, triggerData);
-    description = getCTA<Tdata>(action?.description, triggerData);
-  }
+  const cta = getCTA<Tdata | undefined>(action?.cta, triggerData);
+  const description = getCTA<Tdata | undefined>(
+    action?.description,
+    triggerData
+  );
 
   return type === 'Sheet' ? (
     <SheetSide
