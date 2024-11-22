@@ -82,7 +82,9 @@ export function tanstackTableCreateColumnsByRowData<T>(
     }
     if (faceted) {
       const facetedItem = faceted.find(
-        (item) => item.value === row.getValue(accessorKey.toString())
+        (item) =>
+          item.value ===
+          (row.getValue(accessorKey.toString()) as string).toString()
       );
 
       if (facetedItem) {
