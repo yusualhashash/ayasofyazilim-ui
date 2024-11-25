@@ -11,6 +11,7 @@ export type TanstackTableProps<TData, TValue> = {
   };
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  editable?: boolean;
   excludeColumns?: (keyof TData)[];
   expandedRowComponent?: (
     row: TData,
@@ -86,6 +87,9 @@ export type TanstackTableColumCell<TData> = {
   content: (row: TData) => JSX.Element;
   showHeader?: boolean;
 };
+export type TanstackTableRowActionsDeleteRow = {
+  type: 'delete-row';
+};
 export type TanstackTableRowActionsSimple<TData> = {
   onClick: (row: TData) => void;
   type: 'simple';
@@ -132,6 +136,7 @@ export type TanstackTableRowActionsType<TData> = {
 } & (
   | TanstackTableRowActionsConfirmationDialog<TData>
   | TanstackTableRowActionsSimple<TData>
+  | TanstackTableRowActionsDeleteRow
   | TanstackTableRowActionsCustomDialog<TData>
   | TanstackTableRowActionsAutoformDialog<TData>
 );

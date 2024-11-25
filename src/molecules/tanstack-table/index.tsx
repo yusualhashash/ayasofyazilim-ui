@@ -12,6 +12,7 @@ import {
   SortingState,
   useReactTable,
   VisibilityState,
+  Table as TableType,
 } from '@tanstack/react-table';
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
 
@@ -40,6 +41,7 @@ import {
   TanstackTableTableActionsType,
 } from './types';
 import { getCommonPinningStyles } from './utils';
+import { cn } from '@/lib/utils';
 
 declare module '@tanstack/react-table' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -51,6 +53,7 @@ declare module '@tanstack/react-table' {
 }
 
 const CellWithActions = <TData,>(
+  table: TableType<TData>,
   row: Row<TData>,
   actions: TanstackTableRowActionsType<TData>[],
   setRowAction: (
@@ -58,9 +61,10 @@ const CellWithActions = <TData,>(
   ) => void
 ) => (
   <TanstackTableRowActions
-    row={row.original}
+    row={row}
     actions={actions}
     setRowAction={setRowAction}
+    table={table}
   />
 );
 
@@ -77,6 +81,7 @@ export default function TanstackTable<TData, TValue>({
   selectedRowAction,
   expandedRowComponent,
   fillerColumn,
+  editable = false,
 }: TanstackTableProps<TData, TValue>) {
   const { replace } = useRouter();
   const pathname = usePathname();
@@ -116,7 +121,8 @@ export default function TanstackTable<TData, TValue>({
     if (rowActions) {
       _columns.push({
         id: 'actions',
-        cell: ({ row }) => CellWithActions(row, rowActions, setRowAction),
+        cell: ({ row }) =>
+          CellWithActions(table, row, rowActions, setRowAction),
       });
     }
     return _columns;
@@ -187,7 +193,12 @@ export default function TanstackTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     rowCount,
     meta: {
-      removeRow: () => {},
+      removeRow: (rowIndex) => {
+        setNewlyAddedRows((old) =>
+          old.filter((_row, index) => index !== rowIndex)
+        );
+        setEditedRows((old) => old.filter((_row, index) => index !== rowIndex));
+      },
       updateData: (rowIndex, columnId, value) => {
         setEditedRows((old) => {
           const newEditedRows = [...old];
@@ -276,10 +287,14 @@ export default function TanstackTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <Fragment key={row.id}>
-                  <TableRow data-state={row.getIsSelected() && 'selected'}>
+                  <TableRow
+                    data-state={row.getIsSelected() && 'selected'}
+                    className={cn(editable && '[&>td:last-child]:border-r-0')}
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
+                        className={cn(editable && 'p-0 border border-b-0')}
                         style={getCommonPinningStyles({
                           column: cell.column,
                           withBorder: true,
@@ -309,7 +324,7 @@ export default function TanstackTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-auto text-center"
                 >
                   No data results
                 </TableCell>
