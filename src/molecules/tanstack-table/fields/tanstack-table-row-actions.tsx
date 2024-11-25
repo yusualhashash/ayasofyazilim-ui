@@ -1,5 +1,6 @@
 'use client';
 
+import { Row, Table } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,23 +12,28 @@ import { TanstackTableRowActionsType } from '../types';
 
 interface TanstackTableRowActionsProps<TData> {
   actions: TanstackTableRowActionsType<TData>[];
-  row: TData;
+  row: Row<TData>;
   setRowAction: (
     actions: TanstackTableRowActionsType<TData> & { row: TData }
   ) => void;
+  table: Table<TData>;
 }
 
 export const TanstackTableRowActions = <TData,>({
   row,
   setRowAction,
   actions,
+  table,
 }: TanstackTableRowActionsProps<TData>) => {
   function handleOnActionClick(action: TanstackTableRowActionsType<TData>) {
     if (action.type === 'simple') {
-      action.onClick(row);
+      action.onClick(row.original);
       return;
     }
-    setRowAction({ ...action, row });
+    if (action.type === 'delete-row') {
+      table.options.meta?.removeRow(row.index, '', null);
+    }
+    setRowAction({ ...action, row: row.original });
   }
   return (
     <DropdownMenu>

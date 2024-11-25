@@ -82,11 +82,18 @@ export function tanstackTableEditableColumnsByRowData<T>(
               >
                 <SelectTrigger
                   className={cn(
-                    'w-[180px] border-none rounded-none focus-visible:border-none focus-within:border-none ring-0 focus-visible:ring-0 focus-within:ring-0 ring-transparent shadow-none',
-                    isRowSelected ? 'font-bold' : ''
+                    'w-[180px] min-w-max border-none rounded-none focus-visible:border-none focus-within:border-none ring-0 focus-visible:ring-0 focus-within:ring-0 ring-transparent shadow-none',
+                    isRowSelected ? 'font-medium italic' : '',
+                    !value && 'text-muted-foreground'
                   )}
                 >
-                  <SelectValue />
+                  <SelectValue
+                    placeholder={
+                      (languageData?.[
+                        accessorKey as keyof typeof languageData
+                      ] as string) || accessorKey
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -106,8 +113,9 @@ export function tanstackTableEditableColumnsByRowData<T>(
               value={value as string}
               className={cn(
                 'w-full border-none rounded-none focus-visible:border-none focus-within:border-none ring-0 focus-visible:ring-0 focus-within:ring-0 ring-transparent shadow-none',
-                isRowSelected ? 'font-bold' : ''
+                isRowSelected ? 'font-medium italic' : ''
               )}
+              placeholder={accessorKey}
               onChange={(e) => {
                 handleValueChange(e.target.value);
               }}
