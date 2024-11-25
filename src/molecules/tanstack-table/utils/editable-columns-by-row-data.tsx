@@ -46,7 +46,9 @@ export function tanstackTableEditableColumnsByRowData<T>(
 
           // When the input is blurred, we'll call our table meta's updateData function
           const onBlur = () => {
-            table.options.meta?.updateData(index, id, value);
+            const $value =
+              rows[accessorKey].type === 'number' ? Number(value) : value;
+            table.options.meta?.updateData(index, id, $value);
           };
 
           function handleValueChange(newValue: string) {
@@ -75,9 +77,13 @@ export function tanstackTableEditableColumnsByRowData<T>(
             return (
               <Select
                 defaultValue={value as string}
-                onValueChange={(value) => {
-                  handleValueChange(value);
-                  table.options.meta?.updateData(index, id, value);
+                onValueChange={(_value) => {
+                  handleValueChange(_value);
+                  const $value =
+                    rows[accessorKey].type === 'number'
+                      ? Number(_value)
+                      : _value;
+                  table.options.meta?.updateData(index, id, $value);
                 }}
               >
                 <SelectTrigger
