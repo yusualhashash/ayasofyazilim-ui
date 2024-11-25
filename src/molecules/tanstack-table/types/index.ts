@@ -55,6 +55,7 @@ export type TanstackTableFiltersType = {
     string,
     {
       options: TanstackTableFacetedFilterType[];
+      title: string;
     }
   >;
   textFilters?: string[];
