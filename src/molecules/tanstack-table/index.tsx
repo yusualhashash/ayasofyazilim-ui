@@ -82,6 +82,7 @@ export default function TanstackTable<TData, TValue>({
   expandedRowComponent,
   fillerColumn,
   editable = false,
+  showPagination = true,
   onTableDataChange,
 }: TanstackTableProps<TData, TValue>) {
   const { replace } = useRouter();
@@ -342,7 +343,7 @@ export default function TanstackTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <TanstackTablePagination table={table} />
+      {showPagination && <TanstackTablePagination table={table} />}
       {rowAction?.type === 'confirmation-dialog' && (
         <TanstackTableConfirmationDialog<TData>
           setDialogOpen={() => setRowAction(null)}

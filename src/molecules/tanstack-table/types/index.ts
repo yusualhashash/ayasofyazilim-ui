@@ -24,6 +24,7 @@ export type TanstackTableProps<TData, TValue> = {
   rowActions?: TanstackTableRowActionsType<TData>[];
   rowCount?: number;
   selectedRowAction?: TanstackTableSelectedRowActionType<TData>;
+  showPagination?: boolean;
   tableActions?: TanstackTableTableActionsType[];
 };
 export type TanstackTableConfig = {
