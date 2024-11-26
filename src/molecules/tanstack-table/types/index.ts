@@ -19,6 +19,7 @@ export type TanstackTableProps<TData, TValue> = {
   ) => JSX.Element;
   fillerColumn: keyof TData;
   filters?: TanstackTableFiltersType;
+  onTableDataChange?: (data: TData[]) => void;
   pinColumns?: (keyof TData)[];
   rowActions?: TanstackTableRowActionsType<TData>[];
   rowCount?: number;
