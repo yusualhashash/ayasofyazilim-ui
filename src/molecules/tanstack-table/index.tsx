@@ -82,6 +82,7 @@ export default function TanstackTable<TData, TValue>({
   expandedRowComponent,
   fillerColumn,
   editable = false,
+  onTableDataChange,
 }: TanstackTableProps<TData, TValue>) {
   const { replace } = useRouter();
   const pathname = usePathname();
@@ -198,6 +199,10 @@ export default function TanstackTable<TData, TValue>({
           old.filter((_row, index) => index !== rowIndex)
         );
         setEditedRows((old) => old.filter((_row, index) => index !== rowIndex));
+        onTableDataChange?.(
+          editedRows.filter((_row, index) => index !== rowIndex)
+        );
+        // FIX : DOES NOT REMOVE ROW THAT COMES FROM INITIAL DATA
       },
       updateData: (rowIndex, columnId, value) => {
         setEditedRows((old) => {
@@ -211,15 +216,16 @@ export default function TanstackTable<TData, TValue>({
             ...newEditedRows[indexOfEditedRow],
             [columnId]: value,
           };
+          onTableDataChange?.(newEditedRows);
           return newEditedRows;
         });
       },
       addRow: () => {
-        setNewlyAddedRows((old) => [
-          { id: `new-${Date.now()}` } as TData & { id: string },
-          ...old,
-        ]);
-        setEditedRows((old) => [{ id: `new-${Date.now()}` } as TData, ...old]);
+        const newData = { id: `new-${Date.now()}` } as TData;
+        const updatedData = [newData, ...editedRows];
+        setNewlyAddedRows((old) => [newData, ...old]);
+        setEditedRows(updatedData);
+        onTableDataChange?.(updatedData);
       },
     },
   });

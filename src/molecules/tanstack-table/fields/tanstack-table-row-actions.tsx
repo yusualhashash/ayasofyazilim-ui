@@ -40,7 +40,11 @@ export const TanstackTableRowActions = <TData,>({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="flex data-[state=open]:bg-muted">
+        <Button
+          variant="ghost"
+          type="button"
+          className="flex data-[state=open]:bg-muted"
+        >
           Actions
           <span className="sr-only">Open Menu</span>
         </Button>
@@ -90,6 +94,7 @@ function ActionButton<TData>({
     <Button
       variant="ghost"
       size="sm"
+      type="button"
       className={cn('justify-start w-full', className)}
       onClick={() => handleOnActionClick(action)}
     >
