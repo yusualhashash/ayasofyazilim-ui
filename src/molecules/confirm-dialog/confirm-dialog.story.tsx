@@ -2,7 +2,7 @@ import { Meta, StoryFn } from '@storybook/react';
 import ConfirmDialog from '.';
 
 export default {
-  title: 'Molecules/ConfirmationModal',
+  title: 'Molecules/confirm-dialog',
   component: ConfirmDialog,
   argTypes: {
     title: { control: 'text' },
