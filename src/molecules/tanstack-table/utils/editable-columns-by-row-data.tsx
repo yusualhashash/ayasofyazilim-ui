@@ -37,7 +37,7 @@ export function tanstackTableEditableColumnsByRowData<T>(
           <TanstackTableColumnHeader column={column} title={title} />
         ),
         cell: ({ getValue, row: { index }, column: { id }, table }) => {
-          const initialValue = (getValue() as string) || '';
+          const initialValue = (getValue() as string).toString() || '';
 
           const [value, setValue] = useState(initialValue);
           const rowId = (table.options.data[index] as { id: string })?.id;
