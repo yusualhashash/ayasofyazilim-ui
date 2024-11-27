@@ -206,20 +206,18 @@ export default function TanstackTable<TData, TValue>({
         // FIX : DOES NOT REMOVE ROW THAT COMES FROM INITIAL DATA
       },
       updateData: (rowIndex, columnId, value) => {
-        setEditedRows((old) => {
-          const newEditedRows = [...old];
-          const indexOfEditedRow = newEditedRows.findIndex(
-            (row) =>
-              (row as TData & { id: string }).id ===
-              (editedRows[rowIndex] as TData & { id: string }).id
-          );
-          newEditedRows[indexOfEditedRow] = {
-            ...newEditedRows[indexOfEditedRow],
-            [columnId]: value,
-          };
-          onTableDataChange?.(newEditedRows);
-          return newEditedRows;
-        });
+        const newEditedRows = [...editedRows];
+        const indexOfEditedRow = newEditedRows.findIndex(
+          (row) =>
+            (row as TData & { id: string }).id ===
+            (editedRows[rowIndex] as TData & { id: string }).id
+        );
+        newEditedRows[indexOfEditedRow] = {
+          ...newEditedRows[indexOfEditedRow],
+          [columnId]: value,
+        };
+        setEditedRows(newEditedRows);
+        onTableDataChange?.(newEditedRows);
       },
       addRow: () => {
         const newData = { id: `new-${Date.now()}` } as TData;
