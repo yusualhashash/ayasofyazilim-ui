@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import { TanstackTableColumnHeader } from '../fields';
 import { TanstacktableEditableColumnsByRowId } from '../types';
 import { tanstackTableCreateTitleWithLanguageData } from './columnNames';
+import { Switch } from '@/components/ui/switch';
 
 export function tanstackTableEditableColumnsByRowData<T>(
   params: TanstacktableEditableColumnsByRowId<T>
@@ -46,8 +47,17 @@ export function tanstackTableEditableColumnsByRowData<T>(
 
           // When the input is blurred, we'll call our table meta's updateData function
           const onBlur = () => {
-            const $value =
-              rows[accessorKey].type === 'number' ? Number(value) : value;
+            let $value: string | number | boolean;
+            switch (rows[accessorKey]?.type) {
+              case 'number':
+                $value = Number(value);
+                break;
+              case 'boolean':
+                $value = value === 'true';
+                break;
+              default:
+                $value = value;
+            }
             table.options.meta?.updateData(index, id, $value);
           };
 
@@ -114,6 +124,20 @@ export function tanstackTableEditableColumnsByRowData<T>(
             );
           }
 
+          if (rows[accessorKey]?.type === 'boolean') {
+            return (
+              <div className="text-center">
+                <Switch
+                  className="align-middle"
+                  defaultChecked={value === 'true'}
+                  onBlur={onBlur}
+                  onCheckedChange={(value) => {
+                    handleValueChange(String(value));
+                  }}
+                />
+              </div>
+            );
+          }
           return (
             <Input
               value={value as string}
