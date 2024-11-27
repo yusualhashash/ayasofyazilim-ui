@@ -4,6 +4,7 @@ import TanstackTable from '../../../molecules/tanstack-table';
 import { TanstackTableProps } from '../../../molecules/tanstack-table/types';
 import { ErrorSchemaTemplate } from '../fields';
 import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
 
 type TableFieldProps<TData> = Omit<
   TanstackTableProps<TData, TData>,
@@ -12,11 +13,16 @@ type TableFieldProps<TData> = Omit<
 
 export function TableField<TData>({ ...tableProps }: TableFieldProps<TData>) {
   const Field = (props: FieldProps) => {
-    const { uiSchema } = props;
+    const { uiSchema, disabled } = props;
     const title = uiSchema?.['ui:title'];
     const memory = useMemo(
       () => (
-        <div className="flex flex-col border rounded-md p-4">
+        <div
+          className={cn(
+            'flex flex-col border rounded-md p-4',
+            disabled && 'opacity-50 [&>div]:pointer-events-none select-none'
+          )}
+        >
           {title && <Label>{title}</Label>}
           <TanstackTable
             {...tableProps}
@@ -27,7 +33,7 @@ export function TableField<TData>({ ...tableProps }: TableFieldProps<TData>) {
           <ErrorSchemaTemplate errorSchema={props.errorSchema} />
         </div>
       ),
-      [props.errorSchema]
+      [props.errorSchema, props.disabled]
     );
     return memory;
   };
