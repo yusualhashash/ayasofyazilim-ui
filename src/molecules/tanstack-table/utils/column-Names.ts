@@ -7,6 +7,7 @@ const isTypeLanguageDataTypeWithConstantKey = (
   value: object
 ): value is TanstackTableLanguageDataTypeWithConstantKey =>
   value && typeof value !== 'undefined' && 'constantKey' in value;
+
 export function tanstackTableCreateTitleWithLanguageData({
   languageData,
   accessorKey,

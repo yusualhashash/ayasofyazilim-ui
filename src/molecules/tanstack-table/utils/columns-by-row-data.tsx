@@ -13,7 +13,7 @@ import {
   TanstackTableCreateColumnsByRowId,
   TanstackTableFacetedFilterType,
 } from '../types';
-import { tanstackTableCreateTitleWithLanguageData } from './columnNames';
+import { tanstackTableCreateTitleWithLanguageData } from './column-names';
 import { Checkbox } from '@/components/ui/checkbox';
 
 export function tanstackTableCreateColumnsByRowData<T>(

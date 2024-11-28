@@ -9,11 +9,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
+import { tanstackTableCreateTitleWithLanguageData } from '.';
 import { TanstackTableColumnHeader } from '../fields';
 import { TanstacktableEditableColumnsByRowId } from '../types';
-import { Switch } from '@/components/ui/switch';
-import { tanstackTableCreateTitleWithLanguageData } from './column-names';
 
 export function tanstackTableEditableColumnsByRowData<T>(
   params: TanstacktableEditableColumnsByRowId<T>
