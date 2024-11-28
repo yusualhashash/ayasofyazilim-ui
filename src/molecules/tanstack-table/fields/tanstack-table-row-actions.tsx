@@ -87,6 +87,7 @@ function ActionButton<TData>({
     }
     if (action.type === 'delete-row') {
       table.options.meta?.removeRow(row.index, '', null);
+      return;
     }
     setRowAction({ ...action, row: row.original });
   }

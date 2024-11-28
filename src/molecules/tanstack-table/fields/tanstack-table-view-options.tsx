@@ -20,11 +20,12 @@ import {
 } from '../types';
 
 interface TanstackTableViewOptionsProps<TData> {
-  editedRows: TData[];
+  editable?: boolean;
   selectedRowAction?: TanstackTableSelectedRowActionType<TData>;
   setTableAction: (actions: TanstackTableTableActionsType) => void;
   table: Table<TData>;
   tableActions?: TanstackTableTableActionsType[];
+  tableData: TData[];
 }
 
 function TablePrimaryActionButton<TData>({
@@ -76,7 +77,8 @@ export function TanstackTableViewOptions<TData>(
     tableActions,
     selectedRowAction,
     setTableAction: setRowAction,
-    editedRows,
+    tableData,
+    editable,
   } = props;
   const primaryAction = tableActions?.[0];
   const otherActions = tableActions?.slice(1);
@@ -94,9 +96,9 @@ export function TanstackTableViewOptions<TData>(
             onClick={() => {
               const selectedRowIds = table
                 .getSelectedRowModel()
-                .rows.map((row) => row.getValue('id') as string);
+                .rows.map((row) => row.index.toString());
 
-              selectedRowAction.onClick(selectedRowIds, editedRows);
+              selectedRowAction.onClick(selectedRowIds, tableData);
             }}
           >
             {selectedRowAction?.icon && (
@@ -107,34 +109,42 @@ export function TanstackTableViewOptions<TData>(
         </div>
       )}
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="ml-auto" type="button">
-            <MixerHorizontalIcon className="mr-2 h-4 w-4" />
-            See Columns
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[160px]">
-          <DropdownMenuLabel>Edit Columns</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {table
-            .getAllColumns()
-            .filter(
-              (column) =>
-                typeof column.accessorFn !== 'undefined' && column.getCanHide()
-            )
-            .map((column) => (
-              <DropdownMenuCheckboxItem
-                key={column.id}
-                className="capitalize"
-                checked={column.getIsVisible()}
-                onCheckedChange={(value) => column.toggleVisibility(!!value)}
-              >
-                {column.id}
-              </DropdownMenuCheckboxItem>
-            ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {!editable && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-auto"
+              type="button"
+            >
+              <MixerHorizontalIcon className="mr-2 h-4 w-4" />
+              See Columns
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[160px]">
+            <DropdownMenuLabel>Edit Columns</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {table
+              .getAllColumns()
+              .filter(
+                (column) =>
+                  typeof column.accessorFn !== 'undefined' &&
+                  column.getCanHide()
+              )
+              .map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
 
       {primaryAction && otherActions && (
         <>
