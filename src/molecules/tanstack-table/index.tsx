@@ -20,7 +20,6 @@ import {
   TanstackTableToolbar,
 } from './fields';
 
-import TanstackEditableTable from './index copy';
 import {
   TanstackTableProps,
   TanstackTableRowActionsType,
@@ -28,7 +27,6 @@ import {
 } from './types';
 import { CellWithActions } from './utils/cell-with-actions';
 
-export const TanstackEditableTablee = TanstackEditableTable;
 declare module '@tanstack/react-table' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface TableMeta<TData extends RowData> {
