@@ -12,8 +12,8 @@ import {
 import { cn } from '@/lib/utils';
 import { TanstackTableColumnHeader } from '../fields';
 import { TanstacktableEditableColumnsByRowId } from '../types';
-import { tanstackTableCreateTitleWithLanguageData } from './columnNames';
 import { Switch } from '@/components/ui/switch';
+import { tanstackTableCreateTitleWithLanguageData } from './column-names';
 
 export function tanstackTableEditableColumnsByRowData<T>(
   params: TanstacktableEditableColumnsByRowId<T>
