@@ -38,12 +38,9 @@ export function tanstackTableEditableColumnsByRowData<T>(
         ),
         cell: ({ getValue, row: { index }, column: { id }, table }) => {
           const initialValue = (getValue() as string)?.toString() || '';
-
           const [value, setValue] = useState(initialValue);
-          const rowId = (table.options.data[index] as { id: string })?.id;
-          const isRowSelected = rowId
-            ? table.getRow(rowId)?.getIsSelected()
-            : false;
+          const rowId = index.toString();
+          const isRowSelected = table.getRow(rowId)?.getIsSelected();
 
           // When the input is blurred, we'll call our table meta's updateData function
           const onBlur = () => {
@@ -86,7 +83,7 @@ export function tanstackTableEditableColumnsByRowData<T>(
           if (rows[accessorKey]?.enum) {
             return (
               <Select
-                defaultValue={value as string}
+                value={value as string}
                 onValueChange={(_value) => {
                   handleValueChange(_value);
                   const $value =
@@ -129,7 +126,7 @@ export function tanstackTableEditableColumnsByRowData<T>(
               <div className="text-center">
                 <Switch
                   className="align-middle"
-                  defaultChecked={value === 'true'}
+                  checked={value === 'true'}
                   onBlur={onBlur}
                   onCheckedChange={(value) => {
                     handleValueChange(String(value));
