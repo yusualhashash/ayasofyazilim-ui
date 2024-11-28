@@ -11,7 +11,7 @@ import {
   TanstackTableTableCustomDialog,
 } from '.';
 
-function TanstackTableActionDialogs<TData>({
+export function TanstackTableActionDialogs<TData>({
   rowAction,
   setRowAction,
   tableAction,
@@ -104,5 +104,3 @@ function TanstackTableActionDialogs<TData>({
     </>
   );
 }
-
-export default TanstackTableActionDialogs;

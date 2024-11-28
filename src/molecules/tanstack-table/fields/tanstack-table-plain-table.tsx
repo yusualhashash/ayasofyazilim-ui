@@ -15,7 +15,7 @@ import {
 import { cn } from '@/lib/utils';
 import { getCommonPinningStyles } from '../utils';
 
-function TanstackTablePlainTable<TData, TValue>({
+export function TanstackTablePlainTable<TData, TValue>({
   table,
   columns,
   fillerColumn,
@@ -104,5 +104,3 @@ function TanstackTablePlainTable<TData, TValue>({
     </Table>
   );
 }
-
-export default TanstackTablePlainTable;
