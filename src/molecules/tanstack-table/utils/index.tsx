@@ -1,4 +1,4 @@
-export * from './column-names';
+export * from './column-names2';
 
 export * from './columns-by-row-data';
 export * from './editable-columns-by-row-data';
