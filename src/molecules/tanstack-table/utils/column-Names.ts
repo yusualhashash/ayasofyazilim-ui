@@ -21,5 +21,6 @@ export function tanstackTableCreateTitleWithLanguageData({
     const { constantKey, languageData: res } = languageData;
     return res[`${constantKey}.${accessorKey}`] || accessorKey;
   }
+
   return languageData?.[accessorKey] || accessorKey;
 }

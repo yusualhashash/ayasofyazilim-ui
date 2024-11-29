@@ -28,7 +28,6 @@ export function tanstackTableEditableColumnsByRowData<T>(
         languageData,
         accessorKey,
       });
-
       const column: ColumnDef<T> = {
         id: accessorKey,
         accessorKey,

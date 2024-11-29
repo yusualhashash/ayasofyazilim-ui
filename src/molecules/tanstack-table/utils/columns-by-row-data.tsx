@@ -1,8 +1,9 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { testConditions } from '.';
+import { Checkbox } from '@/components/ui/checkbox';
+import { cn } from '@/lib/utils';
+import { tanstackTableCreateTitleWithLanguageData, testConditions } from '.';
 import { TanstackTableColumnHeader } from '../fields';
 import {
   TanstackTableColumCell,
@@ -13,8 +14,6 @@ import {
   TanstackTableCreateColumnsByRowId,
   TanstackTableFacetedFilterType,
 } from '../types';
-import { tanstackTableCreateTitleWithLanguageData } from './column-names';
-import { Checkbox } from '@/components/ui/checkbox';
 
 export function tanstackTableCreateColumnsByRowData<T>(
   params: TanstackTableCreateColumnsByRowId<T>
