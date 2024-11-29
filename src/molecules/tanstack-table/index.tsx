@@ -192,6 +192,7 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
         tableActions={tableActions}
         tableData={data}
         setTableAction={setTableAction}
+        editable={editable}
       />
       <div className="rounded-md border overflow-auto">
         <TanstackTablePlainTable

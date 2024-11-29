@@ -42,16 +42,3 @@ export const CustomPhoneField = function (props: FieldProps) {
     />
   );
 };
-
-// (val) => {
-//   const isValid = isPhoneValid(val);
-//   let raiseError: any;
-//   if (val !== 'x') {
-//     console.log(val);
-//     raiseError = {
-//       __errors: ['Value must be "test"'],
-//     };
-//   }
-//   console.log;
-//   props.onChange(splitPhone(val), raiseError, props.id);
-// };

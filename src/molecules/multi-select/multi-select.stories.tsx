@@ -16,7 +16,6 @@ export default { component: MultiSelect } as Meta<typeof MultiSelect>;
 export const Default: StoryObj<typeof MultiSelect> = {
   args: {
     options: frameworksList,
-    // onValueChange: console.log,
     defaultValue: ['react'],
     placeholder: 'Select frameworks',
     variant: 'inverted',

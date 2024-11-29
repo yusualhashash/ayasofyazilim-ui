@@ -66,7 +66,11 @@ export function tanstackTableCreateColumnsByRowData<T>(
         item.conditions?.map((condition) => {
           if (condition.when(row.getValue(condition.conditionAccessorKey))) {
             return (
-              <Badge variant="outline" className={item.badgeClassName}>
+              <Badge
+                variant="outline"
+                className={item.badgeClassName}
+                key={item.label}
+              >
                 {item.label}
               </Badge>
             );
