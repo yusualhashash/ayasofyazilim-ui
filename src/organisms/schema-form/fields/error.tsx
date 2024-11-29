@@ -22,7 +22,9 @@ export const ErrorSchemaTemplate = ({ errorSchema }: ErrorSchema) => {
           const errors = fields[fieldKey]?.__errors;
           if (errors) {
             return errors.map((error) => (
-              <span className="text-destructive text-xs">{error}</span>
+              <span key={error} className="text-destructive text-xs">
+                {error}
+              </span>
             ));
           }
           return null;
