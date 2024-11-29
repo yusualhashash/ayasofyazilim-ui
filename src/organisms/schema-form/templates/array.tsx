@@ -108,11 +108,7 @@ function ArrayToolBar({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          className="absolute right-2 top-2"
-          size="icon"
-        >
+        <Button variant="ghost" className="absolute right-0 top-0" size="icon">
           <MoreHorizontal className="w-4" />
           <span className="sr-only">Open menu</span>
         </Button>
