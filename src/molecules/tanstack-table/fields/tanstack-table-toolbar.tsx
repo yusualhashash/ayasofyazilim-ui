@@ -13,21 +13,23 @@ import { TanstackTableTextFilter } from './tanstack-table-filter-text';
 import { TanstackTableViewOptions } from './tanstack-table-view-options';
 
 interface TanstackTableToolbarProps<TData> {
-  editedRows: TData[];
+  editable?: boolean;
   filters?: TanstackTableFiltersType;
   selectedRowAction?: TanstackTableSelectedRowActionType<TData>;
   setTableAction: (actions: TanstackTableTableActionsType) => void;
   table: Table<TData>;
   tableActions?: TanstackTableTableActionsType[];
+  tableData: TData[];
 }
 
 export const TanstackTableToolbar = <TData,>({
   table,
   filters,
-  editedRows,
+  tableData,
   selectedRowAction,
   tableActions,
   setTableAction,
+  editable,
 }: TanstackTableToolbarProps<TData>) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -108,7 +110,8 @@ export const TanstackTableToolbar = <TData,>({
         selectedRowAction={selectedRowAction}
         tableActions={tableActions}
         setTableAction={setTableAction}
-        editedRows={editedRows}
+        tableData={tableData}
+        editable={editable}
       />
     </div>
   );

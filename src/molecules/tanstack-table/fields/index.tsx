@@ -10,3 +10,5 @@ export * from './tanstack-table-table-actions-autoform-dialog';
 export * from './tanstack-table-table-actions-custom-dialog';
 export * from './tanstack-table-toolbar';
 export * from './tanstack-table-view-options';
+export * from './tanstack-table-plain-table';
+export * from './tanstack-table-action-dialogs';
