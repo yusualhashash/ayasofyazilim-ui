@@ -60,7 +60,6 @@ export function EditableTanstackTable<TData>({
       },
       addRow: () => {
         const newData = [...tableData, {} as TData];
-        console.log(newData);
         setTableData(newData);
         onTableDataChange?.(newData);
       },

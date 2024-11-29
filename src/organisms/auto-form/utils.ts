@@ -300,7 +300,6 @@ function filterUndefinedAndEmpty<T>(obj: T): FilteredObject<T> {
   const filtered: Partial<FilteredObject<T>> = {};
 
   for (const [key, value] of Object.entries(obj)) {
-    // console.log(value);
     const filteredValue = filterUndefinedAndEmpty(value);
     // Check if the value is not undefined and not an empty object
     if (
@@ -323,15 +322,13 @@ function filterUndefinedAndEmpty<T>(obj: T): FilteredObject<T> {
  * @param target - The second FieldConfig object to merge.
  * @param maxDepth - The maximum depth to merge. Defaults to Infinity.
  * @param skipKeys - An array of keys to skip during merging. Defaults to an empty array.
- * @param debug - Whether to log the merging process. Defaults to false.
  * @returns A new merged FieldConfig object.
  */
 export function mergeFieldConfigs(
   source: FieldConfigType,
   target: FieldConfigType,
   maxDepth: number = Infinity,
-  skipKeys: string[] = [],
-  debug: boolean = false
+  skipKeys: string[] = []
 ): FieldConfigType {
   const result: FieldConfigType = { ...source }; // İlk nesneyi kopyala
   const currentDepth =
@@ -346,7 +343,6 @@ export function mergeFieldConfigs(
         currentDepth < maxDepth
       ) {
         // Derinlemesine birleştir
-        if (debug) console.log(`Merging: ${key}`);
         result[key] = mergeFieldConfigs(
           result[key] as FieldConfigType,
           target[key] as FieldConfigType,
@@ -355,11 +351,7 @@ export function mergeFieldConfigs(
         );
       } else {
         // Değerleri birleştir
-        if (result[key] !== target[key] && debug) {
-          console.log(
-            `Hit: ${key} (source: ${result[key]}, target: ${target[key]})`
-          );
-        }
+
         result[key] = target[key];
       }
     }
@@ -373,23 +365,12 @@ export function fieldConfigFromSchema({
   object,
   resources,
   constantKey,
-  debug = false,
 }: {
   constantKey: string;
-  debug?: boolean;
   name: string;
   object: SchemaType;
   resources: Record<string, string>;
 }) {
-  if (debug) {
-    console.log({
-      name,
-      object,
-      resources,
-      constantKey,
-    });
-  }
-
   const fieldConfig = {
     [name]: {},
   };
