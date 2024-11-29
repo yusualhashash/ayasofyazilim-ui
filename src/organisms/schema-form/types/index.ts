@@ -1,13 +1,14 @@
 import { FormProps } from '@rjsf/core';
-import { GenericObjectType } from '@rjsf/utils';
+import { GenericObjectType, UiSchema } from '@rjsf/utils';
 
-export interface SchemaFormProps<T> extends Omit<FormProps, 'validator'> {
+export interface SchemaFormProps<T>
+  extends Omit<FormProps<T>, 'validator' | 'uiSchema'> {
   defaultSubmitClassName?: string;
   filter?: FilterType<T>;
   schema: GenericObjectType;
   submitText?: string;
+  uiSchema?: UiSchema;
   useDefaultSubmit?: boolean;
-  usePhoneField?: boolean;
   withScrollArea?: boolean;
 }
 
