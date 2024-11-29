@@ -37,7 +37,6 @@ Simple.args = {
       'ui:inputType': 'password',
     },
   },
-  usePhoneField: true,
   className: 'w-full p-4 border rounded-sm',
   onSubmit: (values) => console.log(values.formData),
   children: (
