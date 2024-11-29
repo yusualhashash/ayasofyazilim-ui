@@ -20,7 +20,8 @@ export function TableField<TData>({ ...tableProps }: TableFieldProps<TData>) {
         <div
           className={cn(
             'flex flex-col border rounded-md p-4',
-            disabled && 'opacity-50 [&>div]:pointer-events-none select-none'
+            disabled && 'opacity-50 [&>div]:pointer-events-none select-none',
+            uiSchema?.['ui:className']
           )}
         >
           {title && <Label>{title}</Label>}
