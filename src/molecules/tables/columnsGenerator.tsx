@@ -256,9 +256,9 @@ export function columnsGenerator<Tdata>({
                   if ('loadingContent' in action) {
                     if (typeof setActiveAction === 'function')
                       setActiveAction(action);
-                    if (action?.callback) {
+                    if (action?.customComponentRendering) {
                       action
-                        ?.callback(row.original)
+                        ?.customComponentRendering(row.original, setIsOpen)
                         .then((res: JSX.Element) => {
                           if (typeof setActiveAction === 'function')
                             setActiveAction({
