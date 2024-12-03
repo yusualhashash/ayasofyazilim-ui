@@ -53,6 +53,7 @@ export default function TanstackTable<TData, TValue>({
   expandedRowComponent,
   fillerColumn,
   editable,
+  excludeColumns,
   onTableDataChange,
 }: TanstackTablePropsType<TData, TValue>) {
   const commonProps = {
@@ -62,6 +63,7 @@ export default function TanstackTable<TData, TValue>({
     rowActions,
     tableActions,
     selectedRowAction,
+    excludeColumns,
     expandedRowComponent,
   };
   if (editable) {
@@ -100,6 +102,7 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
     expandedRowComponent,
     fillerColumn,
     editable,
+    excludeColumns,
     onPaginationChange,
     onColumnFiltersChange,
     columnFilters,
@@ -128,7 +131,9 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
     useState<TanstackTableTableActionsType | null>(null);
 
   const tableColumns = useMemo(() => {
-    const _columns = [...columns];
+    const _columns = [...columns].filter(
+      (col) => !excludeColumns?.includes(col.id as keyof TData)
+    );
 
     if (rowActions) {
       _columns.push({
