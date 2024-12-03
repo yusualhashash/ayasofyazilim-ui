@@ -66,7 +66,10 @@ export type TableActionAutoform<TData> = {
   componentType: 'Autoform';
 };
 export type TableActionCustom = {
-  callback?: (values?: any) => Promise<JSX.Element>;
+  customComponentRendering?: (
+    values?: any,
+    setIsOpen?: (e: boolean) => void
+  ) => Promise<JSX.Element>;
   componentType: 'CustomComponent';
   content?: JSX.Element;
   loadingContent: JSX.Element;

@@ -412,7 +412,7 @@ const subContentDialogAction: TableAction = {
   loadingContent: <div>Loading...</div>,
   componentType: 'CustomComponent',
   content: <>Data</>,
-  callback: async () => <div>Content</div>,
+  customComponentRendering: async () => <div>Content</div>,
 };
 export const SubContentDialog: StoryObj<typeof Table> = {
   args: {
@@ -444,7 +444,9 @@ export const SubContentMenuActionDialog: StoryObj<typeof Table> = {
             description: 'Change History',
             componentType: 'CustomComponent',
             cta: 'Change History',
-            callback: async () => <div className="text-center">No changes</div>,
+            customComponentRendering: async () => (
+              <div className="text-center">No changes</div>
+            ),
           },
           {
             type: 'Dialog',
