@@ -36,6 +36,7 @@ export type TanstackBaseProps<TData, TValue> = {
   rowCount?: number;
   selectedRowAction?: TanstackTableSelectedRowActionType<TData>;
   tableActions?: TanstackTableTableActionsType[];
+  excludeColumns?: (keyof TData)[];
   expandedRowComponent?: (
     row: TData,
     toggleExpanded: () => void
