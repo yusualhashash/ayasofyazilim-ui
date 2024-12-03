@@ -7,6 +7,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { toast } from 'sonner';
+import Link from 'next/link';
 import { PasswordInput } from '../../password-input';
 import { Button } from '@/components/ui/button';
 import {
@@ -162,13 +163,20 @@ export default function RegisterForm({
           <span className="w-full h-px bg-muted" />
         </div>
         <Button variant="outline" disabled={isLoading} className="" asChild>
-          <a href={loginPath} className="text-center text-sm w-full">
+          <Link
+            href={loginPath}
+            className={
+              isLoading ? 'pointer-events-none' : 'text-center text-sm w-full'
+            }
+            aria-disabled={isLoading}
+            tabIndex={isLoading ? -1 : undefined}
+          >
             {isLoading ? (
               <ReloadIcon className="mr-2 h-4 w-4  animate-spin" />
             ) : (
               resources?.AbpUi?.texts?.Login
             )}
-          </a>
+          </Link>
         </Button>
       </div>
       <p className="px-4 text-center text-xs text-muted-foreground">
