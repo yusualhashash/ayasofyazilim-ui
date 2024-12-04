@@ -64,7 +64,7 @@ export default function TableToolbar<TData>({
     classNames,
     filterType,
   } = inputProps;
-
+  const filterClass = filterType === 'Column' ? 'flex flex-col gap-2' : '';
   return (
     <>
       {activeAction &&
@@ -178,40 +178,38 @@ export default function TableToolbar<TData>({
           </div>
         </div>
       )}
-      {filterType !== 'Column' && (
-        <div className={cn('my-3', classNames?.filters?.container)}>
-          {detailedFilter && (
-            <div className={cn('flex', classNames?.filters?.items)}>
-              {filteredColumns && filteredColumns.length >= 2 && (
-                <Badge
-                  variant="outline"
-                  className="rounded-full cursor-pointer hover:bg-gray-50 transition mr-2"
-                  onClick={() => setFilteredColumns([])}
-                >
-                  Clear All
-                </Badge>
-              )}
-              {filteredColumns &&
-                filteredColumns.map((column) => (
-                  <FilterColumn
-                    key={column.name}
-                    column={column}
-                    setFilteredColumns={setFilteredColumns}
-                  />
-                ))}
-              {getNonSelectedFilters(detailedFilter, filteredColumns).length >
-                0 && (
-                <FilterButton
-                  detailedFilter={detailedFilter}
-                  filteredColumns={filteredColumns}
-                  isLoading={isLoading || false}
+      <div className={cn('my-3', classNames?.filters?.container, filterClass)}>
+        {detailedFilter && (
+          <div className={cn('flex', classNames?.filters?.items, filterClass)}>
+            {filteredColumns && filteredColumns.length >= 2 && (
+              <Badge
+                variant="outline"
+                className="rounded-full cursor-pointer hover:bg-gray-50 transition mr-2"
+                onClick={() => setFilteredColumns([])}
+              >
+                Clear All
+              </Badge>
+            )}
+            {filteredColumns &&
+              filteredColumns.map((column) => (
+                <FilterColumn
+                  key={column.name}
+                  column={column}
                   setFilteredColumns={setFilteredColumns}
                 />
-              )}
-            </div>
-          )}
-        </div>
-      )}
+              ))}
+            {getNonSelectedFilters(detailedFilter, filteredColumns).length >
+              0 && (
+              <FilterButton
+                detailedFilter={detailedFilter}
+                filteredColumns={filteredColumns}
+                isLoading={isLoading || false}
+                setFilteredColumns={setFilteredColumns}
+              />
+            )}
+          </div>
+        )}
+      </div>
     </>
   );
 }
