@@ -1,5 +1,6 @@
 import { Meta, StoryFn } from '@storybook/react';
 import ConfirmDialog from '.';
+import { Button } from '@/components/ui/button';
 
 export default {
   title: 'Molecules/confirm-dialog',
@@ -32,15 +33,14 @@ WithTrigger.args = {
 export const WithoutTriggerOpen = Template.bind({});
 WithoutTriggerOpen.args = {
   type: 'without-trigger',
-  isOpen: true,
   title: 'Confirm Action',
   description: 'Are you sure you want to perform this action?',
+  children: <Button>Open Dialog</Button>,
 };
 
 export const LoadingState = Template.bind({});
 LoadingState.args = {
   type: 'without-trigger',
-  isOpen: true,
   title: 'Confirm Action',
   description: 'Loading confirmation...',
   loading: true,

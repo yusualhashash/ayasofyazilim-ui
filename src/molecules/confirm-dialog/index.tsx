@@ -27,21 +27,19 @@ type WithTriggerConfirmDialogProps = {
   type: 'with-trigger';
 };
 type WithoutTriggerConfirmDialogProps = {
-  isOpen: boolean;
   type: 'without-trigger';
+  children: JSX.Element;
 };
 export default function ConfirmDialog(props: ConfirmDialogProps) {
-  const [open, setOpen] = useState(
-    props.type === 'without-trigger' ? props.isOpen : false
-  );
+  const [open, setOpen] = useState(false);
   const isWithTrigger = props.type === 'with-trigger';
   const { title, description, loading, confirmProps } = props;
   const { closeAfterConfirm, onConfirm, ...confirmButtonProps } =
     confirmProps || {};
   return (
     <Dialog open={loading ? true : open} onOpenChange={setOpen}>
-      {isWithTrigger ? (
-        <DialogTrigger asChild>
+      <DialogTrigger asChild>
+        {isWithTrigger ? (
           <Button
             type="button"
             {...props.triggerProps}
@@ -52,8 +50,10 @@ export default function ConfirmDialog(props: ConfirmDialogProps) {
           >
             {props.triggerProps.children}
           </Button>
-        </DialogTrigger>
-      ) : null}
+        ) : (
+          props.children
+        )}
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
