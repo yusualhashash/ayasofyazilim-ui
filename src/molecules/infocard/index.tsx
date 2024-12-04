@@ -6,7 +6,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -18,8 +17,9 @@ export type infoCardProps = {
     href: string;
     text: string;
   };
-  description: string;
-  footer: string;
+  description?: string;
+  footer?: string;
+  icon?: string | React.ReactNode;
   loading?: boolean;
   onDelete?: () => void;
   onEdit?: string;
@@ -43,32 +43,40 @@ export default function InfoCard(infoCard: infoCardProps) {
 
   return (
     <Card className="min-w-60">
-      <CardHeader className="text-base leading-7 text-gray-600">
-        <CardTitle>
-          {checkIsLoading(infoCard.loading, infoCard.title, 12)}
-        </CardTitle>
-        <CardDescription>
-          {checkIsLoading(infoCard.loading, infoCard.description, 30)}
-        </CardDescription>
+      <CardHeader className="space-y-0 pb-2">
+        <div className="flex flex-row items-center justify-between ">
+          <CardTitle className="text-sm font-medium">
+            {checkIsLoading(infoCard.loading, infoCard.title, 12)}
+          </CardTitle>
+          {infoCard.icon && infoCard.icon}
+        </div>
+        {infoCard.description && (
+          <CardDescription>
+            {checkIsLoading(infoCard.loading, infoCard.description, 30)}
+          </CardDescription>
+        )}
       </CardHeader>
-      <CardContent className="order-first text-center text-3xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+
+      <CardContent className="order-first text-2xl font-bold">
         <p>{checkIsLoading(infoCard.loading, infoCard.content, 30, 24)}</p>
+        {infoCard.footer && (
+          <div className="font-normal text-xs">
+            <p>{checkIsLoading(infoCard.loading, infoCard.footer, 24)}</p>
+            {tempCta && (
+              <Button className="w-full m-4" asChild>
+                <Link className="w-full m-4" href={tempCta.href}>
+                  {tempCta.text}
+                </Link>
+              </Button>
+            )}
+            {infoCard.onDelete && (
+              <Button className="w-full m-4" onClick={infoCard.onDelete}>
+                Delete
+              </Button>
+            )}
+          </div>
+        )}
       </CardContent>
-      <CardFooter className="text-gray-400">
-        <p>{checkIsLoading(infoCard.loading, infoCard.footer, 24)}</p>
-        {tempCta && (
-          <Button className="w-full m-4" asChild>
-            <Link className="w-full m-4" href={tempCta.href}>
-              {tempCta.text}
-            </Link>
-          </Button>
-        )}
-        {infoCard.onDelete && (
-          <Button className="w-full m-4" onClick={infoCard.onDelete}>
-            Delete
-          </Button>
-        )}
-      </CardFooter>
     </Card>
   );
 }

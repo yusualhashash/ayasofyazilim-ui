@@ -6,6 +6,8 @@ import {
 } from '@radix-ui/react-icons';
 import { Table } from '@tanstack/react-table';
 
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -16,13 +18,46 @@ import {
 } from '@/components/ui/select';
 
 interface TanstackTablePaginationProps<TData> {
+  pagination: {
+    pageIndex: number;
+    pageSize: number;
+  };
   table: Table<TData>;
 }
 
 export function TanstackTablePagination<TData>(
   props: TanstackTablePaginationProps<TData>
 ) {
-  const { table } = props;
+  const { table, pagination } = props;
+  const { replace } = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (Number(searchParams?.get('maxResultCount')) !== pagination.pageSize) {
+      params.set('maxResultCount', pagination.pageSize.toString());
+    }
+    if (
+      Number(searchParams?.get('skipCount')) !==
+      pagination.pageIndex * pagination.pageSize
+    ) {
+      params.set(
+        'skipCount',
+        (pagination.pageIndex * pagination.pageSize).toString()
+      );
+    }
+    if (Number(params?.get('maxResultCount')) === 10) {
+      params.delete('maxResultCount');
+    }
+    if (Number(params?.get('skipCount')) === 0) {
+      params.delete('skipCount');
+    }
+
+    replace(`${pathname}?${params.toString()}`);
+  }, [pagination]);
+
   return (
     <div className="flex items-center justify-between px-2 pb-2">
       <div className="flex-1 text-sm text-muted-foreground">

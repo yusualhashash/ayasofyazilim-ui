@@ -28,13 +28,12 @@ module.exports = {
     'typescript-sort-keys',
     'unused-imports',
     'prettier',
-    'prefer-arrow',
     'sort-class-members',
   ],
 
   rules: {
     'no-shadow': 'off',
-
+    'typescript-sort-keys/interface': 'off',
     '@typescript-eslint/no-unused-vars': 'error',
     'import/extensions': 'off',
     'import/no-extraneous-dependencies': 'off',
@@ -54,17 +53,8 @@ module.exports = {
     'react/jsx-props-no-spreading': 'off',
     'react/require-default-props': 'off',
     'react/react-in-jsx-scope': 'off',
-    'typescript-sort-keys/interface': 'error',
     'typescript-sort-keys/string-enum': 'error',
     'unused-imports/no-unused-imports': 'error',
-    'prefer-arrow/prefer-arrow-functions': [
-      'error',
-      {
-        disallowPrototype: true,
-        singleReturnOnly: true,
-        classPropertiesAllowed: false,
-      },
-    ],
     'sort-class-members/sort-class-members': [
       'error',
       {

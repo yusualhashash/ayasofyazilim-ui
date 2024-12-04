@@ -1,29 +1,88 @@
-import { ColumnDef } from '@tanstack/react-table';
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  OnChangeFn,
+  PaginationState,
+  TableMeta,
+} from '@tanstack/react-table';
 import { ComponentType } from 'react';
 import { z } from 'zod';
 import { ZodObjectOrWrapped } from '../../../organisms/auto-form/utils';
 
-export type TanstackTableProps<TData, TValue> = {
-  columnOrder?: (keyof TData)[];
-  columnVisibility?: {
-    columns: (keyof TData | 'select')[];
-    type: 'show' | 'hide';
-  };
-  columns: ColumnDef<TData, TValue>[];
+export type NonEditableTanstackTableProps<TData> = {
+  rowCount: number;
   data: TData[];
+  columnFilters: ColumnFiltersState;
+  pagination: PaginationState;
+  onPaginationChange?: OnChangeFn<PaginationState>;
+  onColumnFiltersChange?: OnChangeFn<ColumnFiltersState>;
+};
+export type EditableTanstackTableProps<TData> = {
+  data: TData[];
+  meta?: TableMeta<TData>;
+};
+export type TanstackBaseProps<TData, TValue> = {
+  columns: ColumnDef<TData, TValue>[];
+  columnOrder?: (keyof TData)[];
+  data: TData[];
+  columnVisibility?:
+    | {
+        columns: ('select' | keyof TData)[];
+        type: 'show' | 'hide';
+      }
+    | undefined;
+  pinColumns?: (keyof TData)[];
+  rowActions?: TanstackTableRowActionsType<TData>[];
+  rowCount?: number;
+  selectedRowAction?: TanstackTableSelectedRowActionType<TData>;
+  tableActions?: TanstackTableTableActionsType[];
   excludeColumns?: (keyof TData)[];
   expandedRowComponent?: (
     row: TData,
     toggleExpanded: () => void
   ) => JSX.Element;
   fillerColumn: keyof TData;
+  editable: boolean;
+  onPaginationChange?: OnChangeFn<PaginationState>;
+  onColumnFiltersChange?: OnChangeFn<ColumnFiltersState>;
+  columnFilters?: ColumnFiltersState;
+  pagination?: PaginationState;
   filters?: TanstackTableFiltersType;
-  pinColumns?: (keyof TData)[];
-  rowActions?: TanstackTableRowActionsType<TData>[];
-  rowCount?: number;
-  selectedRowAction?: TanstackTableSelectedRowActionType<TData>;
-  tableActions?: TanstackTableTableActionsType[];
+  meta?: TableMeta<TData>;
 };
+export type TanstackTablePropsType<TData, TValue> = {
+  data: TData[];
+  columns: ColumnDef<TData, TValue>[];
+  fillerColumn: keyof TData;
+  pinColumns?: (keyof TData)[] | undefined;
+  columnOrder?: (keyof TData)[] | undefined;
+  columnVisibility?:
+    | {
+        columns: (keyof TData | 'select')[];
+        type: 'show' | 'hide';
+      }
+    | undefined;
+  excludeColumns?: (keyof TData)[];
+  rowActions?: TanstackTableRowActionsType<TData>[] | undefined;
+  selectedRowAction?: TanstackTableSelectedRowActionType<TData> | undefined;
+  tableActions?: TanstackTableTableActionsType[] | undefined;
+  filters?: TanstackTableFiltersType | undefined;
+  expandedRowComponent?:
+    | ((row: TData, toggleExpanded: () => void) => JSX.Element)
+    | undefined;
+} & (
+  | {
+      rowCount?: number;
+      editable?: undefined;
+      onTableDataChange?: undefined;
+    }
+  | {
+      editable: true;
+      rowCount?: undefined;
+      onTableDataChange?: (data: TData[]) => void;
+    }
+);
+
 export type TanstackTableConfig = {
   dateOptions?: Intl.LocaleOptions;
   locale?: Intl.LocalesArgument;
@@ -55,6 +114,7 @@ export type TanstackTableFiltersType = {
     string,
     {
       options: TanstackTableFacetedFilterType[];
+      title: string;
     }
   >;
   textFilters?: string[];
@@ -84,6 +144,9 @@ export type TanstackTableColumCell<TData> = {
   conditions?: TanstackTableCellCondition[];
   content: (row: TData) => JSX.Element;
   showHeader?: boolean;
+};
+export type TanstackTableRowActionsDeleteRow = {
+  type: 'delete-row';
 };
 export type TanstackTableRowActionsSimple<TData> = {
   onClick: (row: TData) => void;
@@ -131,6 +194,7 @@ export type TanstackTableRowActionsType<TData> = {
 } & (
   | TanstackTableRowActionsConfirmationDialog<TData>
   | TanstackTableRowActionsSimple<TData>
+  | TanstackTableRowActionsDeleteRow
   | TanstackTableRowActionsCustomDialog<TData>
   | TanstackTableRowActionsAutoformDialog<TData>
 );
@@ -139,6 +203,11 @@ export type TanstackTableActionsSimple = {
   actionLocation: 'table';
   onClick: () => void;
   type: 'simple';
+};
+export type TanstackTableCreateRowAction = {
+  actionLocation: 'table';
+  onClick?: () => void;
+  type: 'create-row';
 };
 export type TanstackTableActionsDialog = {
   cancelText?: string;
@@ -170,6 +239,7 @@ export type TanstackTableTableActionsType = {
   | TanstackTableActionsSimple
   | TanstackTableActionsCustomDialog
   | TanstackTableActionsAutoformDialog
+  | TanstackTableCreateRowAction
 );
 export type TanstackTableSelectedRowActionType<TData> = {
   actionLocation: 'table';
@@ -223,6 +293,6 @@ export type TanstacktableEditableColumnsByRowId<T> = {
 };
 
 export type TanstackTableCreationProps<T> = Omit<
-  TanstackTableProps<T, string>,
-  'columns' | 'data' | 'rowCount'
+  TanstackTablePropsType<T, string>,
+  'columns' | 'data' | 'rowCount' | 'editable' | 'onTableDataChange'
 >;

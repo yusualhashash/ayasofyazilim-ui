@@ -20,14 +20,16 @@ import {
 } from '../types';
 
 interface TanstackTableViewOptionsProps<TData> {
-  editedRows: TData[];
+  editable?: boolean;
   selectedRowAction?: TanstackTableSelectedRowActionType<TData>;
   setTableAction: (actions: TanstackTableTableActionsType) => void;
   table: Table<TData>;
   tableActions?: TanstackTableTableActionsType[];
+  tableData: TData[];
 }
 
-const TablePrimaryActionButton = ({
+function TablePrimaryActionButton<TData>({
+  table,
   action,
   isMultipleActionProvided,
   setRowAction,
@@ -35,23 +37,33 @@ const TablePrimaryActionButton = ({
   action: TanstackTableTableActionsType;
   isMultipleActionProvided: boolean;
   setRowAction: (actions: TanstackTableTableActionsType) => void;
-}) => (
-  <Button
-    variant="outline"
-    size="sm"
-    className={isMultipleActionProvided ? 'rounded-r-none ml-2' : 'ml-2'}
-    onClick={() => handleActionOnClick(action, setRowAction)}
-  >
-    {action?.icon && <action.icon className="mr-2 h-4 w-4" />}
-    {action.cta?.toString()}
-  </Button>
-);
-function handleActionOnClick(
+  table: Table<TData>;
+}) {
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      type="button"
+      className={isMultipleActionProvided ? 'rounded-r-none ml-2' : 'ml-2'}
+      onClick={() => handleActionOnClick(table, action, setRowAction)}
+    >
+      {action?.icon && <action.icon className="mr-2 h-4 w-4" />}
+      {action.cta?.toString()}
+    </Button>
+  );
+}
+function handleActionOnClick<TData>(
+  table: Table<TData>,
   action: TanstackTableTableActionsType,
   setRowAction: (actions: TanstackTableTableActionsType) => void
 ) {
   if (action.type === 'simple') {
     action.onClick();
+    return;
+  }
+  if (action.type === 'create-row') {
+    table.options.meta?.addRow(-1, '', null);
+    action?.onClick?.();
     return;
   }
   setRowAction(action);
@@ -65,7 +77,8 @@ export function TanstackTableViewOptions<TData>(
     tableActions,
     selectedRowAction,
     setTableAction: setRowAction,
-    editedRows,
+    tableData,
+    editable,
   } = props;
   const primaryAction = tableActions?.[0];
   const otherActions = tableActions?.slice(1);
@@ -78,13 +91,14 @@ export function TanstackTableViewOptions<TData>(
           <Button
             variant="outline"
             size="sm"
+            type="button"
             className="ml-2"
             onClick={() => {
               const selectedRowIds = table
                 .getSelectedRowModel()
-                .rows.map((row) => row.getValue('id') as string);
+                .rows.map((row) => row.index.toString());
 
-              selectedRowAction.onClick(selectedRowIds, editedRows);
+              selectedRowAction.onClick(selectedRowIds, tableData);
             }}
           >
             {selectedRowAction?.icon && (
@@ -95,38 +109,47 @@ export function TanstackTableViewOptions<TData>(
         </div>
       )}
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="ml-auto ">
-            <MixerHorizontalIcon className="mr-2 h-4 w-4" />
-            See Columns
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[160px]">
-          <DropdownMenuLabel>Edit Columns</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {table
-            .getAllColumns()
-            .filter(
-              (column) =>
-                typeof column.accessorFn !== 'undefined' && column.getCanHide()
-            )
-            .map((column) => (
-              <DropdownMenuCheckboxItem
-                key={column.id}
-                className="capitalize"
-                checked={column.getIsVisible()}
-                onCheckedChange={(value) => column.toggleVisibility(!!value)}
-              >
-                {column.id}
-              </DropdownMenuCheckboxItem>
-            ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {!editable && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-auto"
+              type="button"
+            >
+              <MixerHorizontalIcon className="mr-2 h-4 w-4" />
+              See Columns
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[160px]">
+            <DropdownMenuLabel>Edit Columns</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {table
+              .getAllColumns()
+              .filter(
+                (column) =>
+                  typeof column.accessorFn !== 'undefined' &&
+                  column.getCanHide()
+              )
+              .map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
 
       {primaryAction && otherActions && (
         <>
           <TablePrimaryActionButton
+            table={table}
             action={primaryAction}
             isMultipleActionProvided={otherActions?.length > 0}
             setRowAction={setRowAction}
@@ -136,6 +159,7 @@ export function TanstackTableViewOptions<TData>(
               <DropdownMenuTrigger asChild>
                 <Button
                   size="sm"
+                  type="button"
                   variant="outline"
                   className="rounded-l-none border-l-0 px-2"
                 >
@@ -147,9 +171,12 @@ export function TanstackTableViewOptions<TData>(
                   <DropdownMenuItem key={action.cta}>
                     <Button
                       variant="ghost"
+                      type="button"
                       size="sm"
                       className="justify-start w-full"
-                      onClick={() => handleActionOnClick(action, setRowAction)}
+                      onClick={() =>
+                        handleActionOnClick(table, action, setRowAction)
+                      }
                     >
                       {action.icon && <action.icon className="w-4 h-4" />}
                       <span className="ml-2">{action.cta}</span>

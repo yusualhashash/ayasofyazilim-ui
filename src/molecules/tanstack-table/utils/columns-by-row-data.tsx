@@ -1,8 +1,9 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { testConditions } from '.';
+import { Checkbox } from '@/components/ui/checkbox';
+import { cn } from '@/lib/utils';
+import { tanstackTableCreateTitleWithLanguageData, testConditions } from '.';
 import { TanstackTableColumnHeader } from '../fields';
 import {
   TanstackTableColumCell,
@@ -13,8 +14,6 @@ import {
   TanstackTableCreateColumnsByRowId,
   TanstackTableFacetedFilterType,
 } from '../types';
-import { tanstackTableCreateTitleWithLanguageData } from './columnNames';
-import { Checkbox } from '@/components/ui/checkbox';
 
 export function tanstackTableCreateColumnsByRowData<T>(
   params: TanstackTableCreateColumnsByRowId<T>
@@ -36,14 +35,16 @@ export function tanstackTableCreateColumnsByRowData<T>(
       row.getValue(accessorKey.toString())?.toString() || '';
     if (format) {
       if (format === 'date' || format === 'date-time')
-        content = new Date(content).toLocaleDateString(
-          config?.locale,
-          config?.dateOptions || {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-          }
-        );
+        content = content
+          ? new Date(content).toLocaleDateString(
+              config?.locale,
+              config?.dateOptions || {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+              }
+            )
+          : '';
     }
 
     if (icon) {
@@ -65,7 +66,11 @@ export function tanstackTableCreateColumnsByRowData<T>(
         item.conditions?.map((condition) => {
           if (condition.when(row.getValue(condition.conditionAccessorKey))) {
             return (
-              <Badge variant="outline" className={item.badgeClassName}>
+              <Badge
+                variant="outline"
+                className={item.badgeClassName}
+                key={item.label}
+              >
                 {item.label}
               </Badge>
             );
@@ -82,7 +87,9 @@ export function tanstackTableCreateColumnsByRowData<T>(
     }
     if (faceted) {
       const facetedItem = faceted.find(
-        (item) => item.value === row.getValue(accessorKey.toString())
+        (item) =>
+          item.value ===
+          (row.getValue(accessorKey.toString()) as string).toString()
       );
 
       if (facetedItem) {

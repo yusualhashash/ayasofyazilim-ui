@@ -1,74 +1,50 @@
 'use client';
 
 import {
-  ColumnFiltersState,
-  flexRender,
   getCoreRowModel,
   getExpandedRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  Row,
   RowData,
   SortingState,
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table';
-import React, { Fragment, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  TanstackTableAutoformDialog,
-  TanstackTableConfirmationDialog,
-  TanstackTableCustomDialog,
+  TanstackTableActionDialogs,
   TanstackTablePagination,
-  TanstackTableRowActions,
-  TanstackTableTableAutoformDialog,
-  TanstackTableTableCustomDialog,
+  TanstackTablePlainTable,
   TanstackTableToolbar,
 } from './fields';
+
 import {
-  TanstackTableProps,
+  TanstackBaseProps,
+  TanstackTablePropsType,
   TanstackTableRowActionsType,
   TanstackTableTableActionsType,
 } from './types';
-import { getCommonPinningStyles } from './utils';
+import {
+  CellWithActions,
+  EditableTanstackTable,
+  NonEditableTanstackTable,
+} from './utils';
 
 declare module '@tanstack/react-table' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface TableMeta<TData extends RowData> {
+    addRow: (rowIndex: number, columnId: string, value: unknown) => void;
     removeRow: (rowIndex: number, columnId: string, value: unknown) => void;
     updateData: (rowIndex: number, columnId: string, value: unknown) => void;
   }
 }
 
-const CellWithActions = <TData,>(
-  row: Row<TData>,
-  actions: TanstackTableRowActionsType<TData>[],
-  setRowAction: (
-    actions: TanstackTableRowActionsType<TData> & { row: TData }
-  ) => void
-) => (
-  <TanstackTableRowActions
-    row={row.original}
-    actions={actions}
-    setRowAction={setRowAction}
-  />
-);
-
 export default function TanstackTable<TData, TValue>({
+  data,
+  rowCount,
   columns,
   columnOrder,
-  data,
-  rowCount = 0,
-  filters,
   columnVisibility,
   pinColumns,
   rowActions,
@@ -76,13 +52,67 @@ export default function TanstackTable<TData, TValue>({
   selectedRowAction,
   expandedRowComponent,
   fillerColumn,
-}: TanstackTableProps<TData, TValue>) {
-  const { replace } = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  editable,
+  excludeColumns,
+  onTableDataChange,
+  filters,
+}: TanstackTablePropsType<TData, TValue>) {
+  const commonProps = {
+    pinColumns,
+    columnOrder,
+    columnVisibility,
+    rowActions,
+    tableActions,
+    selectedRowAction,
+    excludeColumns,
+    expandedRowComponent,
+  };
+  if (editable) {
+    return (
+      <TanstackBase<TData, TValue>
+        {...commonProps}
+        {...EditableTanstackTable({ initialData: data, onTableDataChange })}
+        columns={columns}
+        editable
+        fillerColumn={fillerColumn}
+      />
+    );
+  }
+  return (
+    <TanstackBase<TData, TValue>
+      {...commonProps}
+      {...NonEditableTanstackTable(data, rowCount || 0)}
+      columns={columns}
+      editable={false}
+      filters={filters}
+      fillerColumn={fillerColumn}
+    />
+  );
+}
 
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-
+function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
+  const {
+    data,
+    columns,
+    columnOrder,
+    rowCount,
+    columnVisibility,
+    pinColumns,
+    rowActions,
+    tableActions,
+    selectedRowAction,
+    expandedRowComponent,
+    fillerColumn,
+    editable,
+    excludeColumns,
+    onPaginationChange,
+    onColumnFiltersChange,
+    columnFilters,
+    pagination,
+    filters,
+    meta,
+  } = props;
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [colVisibility, setColumnVisibility] = useState<VisibilityState>(
     columnVisibility
       ? Object.fromEntries(
@@ -96,54 +126,32 @@ export default function TanstackTable<TData, TValue>({
         )
       : {}
   );
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [rowAction, setRowAction] = React.useState<
+  const [rowAction, setRowAction] = useState<
     (TanstackTableRowActionsType<TData> & { row: TData }) | null
   >(null);
   const [tableAction, setTableAction] =
-    React.useState<TanstackTableTableActionsType | null>(null);
+    useState<TanstackTableTableActionsType | null>(null);
 
   const tableColumns = useMemo(() => {
-    const _columns = [...columns];
+    const _columns = [...columns].filter(
+      (col) => !excludeColumns?.includes(col.id as keyof TData)
+    );
 
     if (rowActions) {
       _columns.push({
         id: 'actions',
-        cell: ({ row }) => CellWithActions(row, rowActions, setRowAction),
+        cell: ({ row }) =>
+          CellWithActions(table, row, rowActions, setRowAction),
       });
     }
     return _columns;
   }, [columns, rowActions]);
 
-  const [pagination, setPagination] = useState(() => {
-    const currentPagination = { pageIndex: 0, pageSize: 10 };
-    if (searchParams?.get('maxResultCount')) {
-      currentPagination.pageSize =
-        Number(searchParams?.get('maxResultCount')) || 10;
-    }
-    if (searchParams?.get('skipCount')) {
-      currentPagination.pageIndex =
-        Number(searchParams?.get('skipCount')) / currentPagination.pageSize ||
-        0;
-    }
-    return currentPagination;
-  });
-
-  const [editedRows, setEditedRows] = React.useState<TData[]>(() => []);
-
-  const getRowId = React.useCallback(
-    (row: TData) => (row as TData & { id: string }).id,
+  const getRowId = useCallback(
+    (row: TData, index: number) =>
+      editable ? index.toString() : (row as TData & { id: string }).id,
     []
   );
-
-  useEffect(() => {
-    if (rowAction?.type === 'simple') {
-      rowAction.onClick(rowAction.row);
-      setRowAction(null);
-    }
-  }, [rowAction]);
 
   const table = useReactTable({
     data,
@@ -176,61 +184,12 @@ export default function TanstackTable<TData, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     getPaginationRowModel: getPaginationRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
-    onPaginationChange: setPagination,
-    onColumnFiltersChange: setColumnFilters,
+    onPaginationChange,
+    onColumnFiltersChange,
     rowCount,
-    meta: {
-      removeRow: () => {},
-      updateData: (rowIndex, columnId, value) => {
-        setEditedRows((old) => {
-          const newEditedRows = [...old];
-          const indexOfEditedRow = newEditedRows.findIndex(
-            (row) =>
-              (row as TData & { id: string }).id ===
-              (data[rowIndex] as TData & { id: string }).id
-          );
-          if (indexOfEditedRow === -1) {
-            const currentData = data[rowIndex];
-            newEditedRows.push({
-              ...currentData,
-              [columnId]: value,
-            } as TData);
-            return newEditedRows;
-          }
-          newEditedRows[indexOfEditedRow] = {
-            ...newEditedRows[indexOfEditedRow],
-            [columnId]: value,
-          };
-          return newEditedRows;
-        });
-      },
-    },
+    meta,
   });
 
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (Number(searchParams?.get('maxResultCount')) !== pagination.pageSize) {
-      params.set('maxResultCount', pagination.pageSize.toString());
-    }
-    if (
-      Number(searchParams?.get('skipCount')) !==
-      pagination.pageIndex * pagination.pageSize
-    ) {
-      params.set(
-        'skipCount',
-        (pagination.pageIndex * pagination.pageSize).toString()
-      );
-    }
-    if (Number(params?.get('maxResultCount')) === 10) {
-      params.delete('maxResultCount');
-    }
-    if (Number(params?.get('skipCount')) === 0) {
-      params.delete('skipCount');
-    }
-
-    replace(`${pathname}?${params.toString()}`);
-  }, [pagination]);
   return (
     <div className="space-y-4 flex flex-col h-full">
       <TanstackTableToolbar<TData>
@@ -238,142 +197,28 @@ export default function TanstackTable<TData, TValue>({
         filters={filters}
         selectedRowAction={selectedRowAction}
         tableActions={tableActions}
-        editedRows={editedRows}
+        tableData={data}
         setTableAction={setTableAction}
+        editable={editable}
       />
       <div className="rounded-md border overflow-auto">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    style={getCommonPinningStyles({
-                      column: header.column,
-                      withBorder: true,
-                      fillerColumn,
-                    })}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <Fragment key={row.id}>
-                  <TableRow data-state={row.getIsSelected() && 'selected'}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        style={getCommonPinningStyles({
-                          column: cell.column,
-                          withBorder: true,
-                          fillerColumn,
-                        })}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                  {row.getIsExpanded() && expandedRowComponent && (
-                    <TableRow>
-                      <TableCell colSpan={row.getAllCells().length}>
-                        {expandedRowComponent(
-                          row.original,
-                          row.getToggleExpandedHandler()
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </Fragment>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No data results
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+        <TanstackTablePlainTable
+          table={table}
+          columns={tableColumns}
+          fillerColumn={fillerColumn}
+          editable={editable}
+          expandedRowComponent={expandedRowComponent}
+        />
       </div>
-      <TanstackTablePagination table={table} />
-      {rowAction?.type === 'confirmation-dialog' && (
-        <TanstackTableConfirmationDialog<TData>
-          setDialogOpen={() => setRowAction(null)}
-          row={rowAction.row}
-          title={rowAction.title}
-          description={rowAction.description}
-          confirmationText={rowAction.confirmationText}
-          cancelText={rowAction.cancelText}
-          onConfirm={rowAction.onConfirm}
-          onCancel={rowAction.onCancel}
-          type="confirmation-dialog"
-        />
+      {pagination && (
+        <TanstackTablePagination table={table} pagination={pagination} />
       )}
-      {rowAction?.type === 'custom-dialog' && (
-        <TanstackTableCustomDialog<TData>
-          setDialogOpen={() => setRowAction(null)}
-          row={rowAction.row}
-          title={rowAction.title}
-          content={rowAction.content}
-          confirmationText={rowAction.confirmationText}
-          cancelText={rowAction.cancelText}
-          onConfirm={rowAction.onConfirm}
-          onCancel={rowAction.onCancel}
-          type="custom-dialog"
-        />
-      )}
-      {rowAction?.type === 'autoform-dialog' && (
-        <TanstackTableAutoformDialog<TData>
-          setDialogOpen={() => setRowAction(null)}
-          row={rowAction.row}
-          title={rowAction.title}
-          schema={rowAction.schema}
-          submitText={rowAction.submitText}
-          onSubmit={rowAction.onSubmit}
-          values={rowAction.values}
-          type="autoform-dialog"
-        />
-      )}
-      {tableAction?.type === 'autoform-dialog' && (
-        <TanstackTableTableAutoformDialog
-          setDialogOpen={() => setTableAction(null)}
-          title={tableAction.title}
-          schema={tableAction.schema}
-          submitText={tableAction.submitText}
-          onSubmit={tableAction.onSubmit}
-          values={tableAction.values}
-          type="autoform-dialog"
-        />
-      )}
-      {tableAction?.type === 'custom-dialog' && (
-        <TanstackTableTableCustomDialog
-          setDialogOpen={() => setTableAction(null)}
-          title={tableAction.title}
-          type="custom-dialog"
-          content={tableAction.content}
-          confirmationText={tableAction.confirmationText}
-          cancelText={tableAction.cancelText}
-          onConfirm={tableAction.onConfirm}
-          onCancel={tableAction.onCancel}
-        />
-      )}
+      <TanstackTableActionDialogs
+        tableAction={tableAction}
+        setTableAction={setTableAction}
+        rowAction={rowAction}
+        setRowAction={setRowAction}
+      />
     </div>
   );
 }
