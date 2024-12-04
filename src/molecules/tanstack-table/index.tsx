@@ -55,6 +55,7 @@ export default function TanstackTable<TData, TValue>({
   editable,
   excludeColumns,
   onTableDataChange,
+  filters,
 }: TanstackTablePropsType<TData, TValue>) {
   const commonProps = {
     pinColumns,
@@ -83,6 +84,7 @@ export default function TanstackTable<TData, TValue>({
       {...NonEditableTanstackTable(data, rowCount || 0)}
       columns={columns}
       editable={false}
+      filters={filters}
       fillerColumn={fillerColumn}
     />
   );
