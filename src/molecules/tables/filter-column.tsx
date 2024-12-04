@@ -1,6 +1,7 @@
 import { Cross1Icon } from '@radix-ui/react-icons';
 import { Trash2 } from 'lucide-react';
 import React, { Dispatch, useEffect, useState } from 'react';
+
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -195,6 +196,12 @@ export default function FilterColumn({
     }
     setIsDropdownOpen(open);
   }
+
+  const handleRemoveAllSelectedRows = () => {
+    setSelectedRows([]);
+    setFilteredValue('');
+  };
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
     <>
@@ -211,6 +218,15 @@ export default function FilterColumn({
               <>
                 selected Rows
                 <br />
+                {selectedRows && selectedRows.length >= 2 && (
+                  <Badge
+                    variant="outline"
+                    className="rounded-full cursor-pointer hover:bg-gray-50 transition mr-2"
+                    onClick={handleRemoveAllSelectedRows}
+                  >
+                    Clear All
+                  </Badge>
+                )}
                 {selectedRows.map((row) => {
                   const _row = row as Record<string, unknown>;
                   if (column.type !== 'select-async') return row;
