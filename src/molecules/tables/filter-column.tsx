@@ -78,6 +78,7 @@ export type valueType<T> = {
 export interface IFilterColumnProps {
   column: ColumnFilter;
   setFilteredColumns: Dispatch<React.SetStateAction<ColumnFilter[]>>;
+  filterType: DataTableProps<unknown>['filterType'];
 }
 const BadgeWithDelete = ({
   badgeText,
@@ -141,6 +142,7 @@ function DropDownCTA({
 export default function FilterColumn({
   column,
   setFilteredColumns,
+  filterType,
 }: IFilterColumnProps) {
   const [filteredValue, setFilteredValue] = useState<string>(column.value);
   const [isDropdownOpen, setIsDropdownOpen] = useState(!column.value);
@@ -149,6 +151,8 @@ export default function FilterColumn({
     items: [],
     totalCount: 0,
   });
+  const isColumn = filterType === 'Column';
+
   useEffect(() => {
     if (column.type === 'select-async') {
       setData({
@@ -367,44 +371,56 @@ export default function FilterColumn({
           }}
         />
       ) : null}
-      <DropdownMenu
-        open={isDropdownOpen}
-        onOpenChange={(open) => {
-          handleOpenChange(open);
-        }}
-      >
-        {column.value !== '' ? (
-          <Badge variant="outline" className="rounded-full px-3 py-1 mr-2">
-            <DropdownMenuTrigger>
-              <DropDownCTA
-                column={column}
-                selectedRows={selectedRows as Record<string, unknown>[]}
-              />
-            </DropdownMenuTrigger>
-            <Button
-              variant="ghost"
-              className="p-0 ml-2 h-auto"
-              onClick={() => handleDelete()}
-            >
-              <Cross1Icon className="size-3" />
-            </Button>
-          </Badge>
-        ) : (
-          <DropdownMenuTrigger />
-        )}
+      {isColumn ? (
+        <FilterDropDownContent
+          column={column}
+          setFilteredValue={setFilteredValue}
+          filteredValue={filteredValue}
+          handleDelete={() => handleDelete()}
+          handleSave={() => handleSave()}
+          setIsDropdownOpen={setIsDropdownOpen}
+          setIsDialogOpen={setIsDialogOpen}
+        />
+      ) : (
+        <DropdownMenu
+          open={isDropdownOpen}
+          onOpenChange={(open) => {
+            handleOpenChange(open);
+          }}
+        >
+          {column.value !== '' ? (
+            <Badge variant="outline" className="rounded-full px-3 py-1 mr-2">
+              <DropdownMenuTrigger>
+                <DropDownCTA
+                  column={column}
+                  selectedRows={selectedRows as Record<string, unknown>[]}
+                />
+              </DropdownMenuTrigger>
+              <Button
+                variant="ghost"
+                className="p-0 ml-2 h-auto"
+                onClick={() => handleDelete()}
+              >
+                <Cross1Icon className="size-3" />
+              </Button>
+            </Badge>
+          ) : (
+            <DropdownMenuTrigger />
+          )}
 
-        <DropdownMenuContent className="sm:max-w-md p-2">
-          <FilterDropDownContent
-            column={column}
-            setFilteredValue={setFilteredValue}
-            filteredValue={filteredValue}
-            handleDelete={() => handleDelete()}
-            handleSave={() => handleSave()}
-            setIsDropdownOpen={setIsDropdownOpen}
-            setIsDialogOpen={setIsDialogOpen}
-          />
-        </DropdownMenuContent>
-      </DropdownMenu>
+          <DropdownMenuContent className="sm:max-w-md p-2">
+            <FilterDropDownContent
+              column={column}
+              setFilteredValue={setFilteredValue}
+              filteredValue={filteredValue}
+              handleDelete={() => handleDelete()}
+              handleSave={() => handleSave()}
+              setIsDropdownOpen={setIsDropdownOpen}
+              setIsDialogOpen={setIsDialogOpen}
+            />
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
     </>
   );
 }

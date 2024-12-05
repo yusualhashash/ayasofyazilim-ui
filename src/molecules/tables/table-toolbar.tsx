@@ -194,20 +194,22 @@ export default function TableToolbar<TData>({
             {filteredColumns &&
               filteredColumns.map((column) => (
                 <FilterColumn
+                  filterType={filterType}
                   key={column.name}
                   column={column}
                   setFilteredColumns={setFilteredColumns}
                 />
               ))}
-            {getNonSelectedFilters(detailedFilter, filteredColumns).length >
-              0 && (
-              <FilterButton
-                detailedFilter={detailedFilter}
-                filteredColumns={filteredColumns}
-                isLoading={isLoading || false}
-                setFilteredColumns={setFilteredColumns}
-              />
-            )}
+            {!isColumn &&
+              getNonSelectedFilters(detailedFilter, filteredColumns).length >
+                0 && (
+                <FilterButton
+                  detailedFilter={detailedFilter}
+                  filteredColumns={filteredColumns}
+                  isLoading={isLoading || false}
+                  setFilteredColumns={setFilteredColumns}
+                />
+              )}
           </div>
         )}
       </div>
