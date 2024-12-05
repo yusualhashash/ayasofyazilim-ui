@@ -394,30 +394,15 @@ export default function FilterColumn({
         )}
 
         <DropdownMenuContent className="sm:max-w-md p-2">
-          <div className="flex flex-row justify-between items-center mb-2">
-            <Label htmlFor="name">{column.displayName}</Label>
-            <Button variant="ghost" onClick={() => handleDelete()}>
-              <Trash2 className="w-4 h-4" />
-            </Button>
-          </div>
-          <div className="flex flex-row items-center gap-2 justify-center mb-2">
-            <GenerateFilterByType
-              column={column}
-              setFilteredValue={setFilteredValue}
-              filteredValue={filteredValue}
-              openDialog={(open) => {
-                setIsDropdownOpen(open);
-                setIsDialogOpen(!open);
-              }}
-            />
-          </div>
-          <Button
-            variant="secondary"
-            onClick={() => handleSave()}
-            className="w-full"
-          >
-            Filtrele
-          </Button>
+          <FilterDropDownContent
+            column={column}
+            setFilteredValue={setFilteredValue}
+            filteredValue={filteredValue}
+            handleDelete={() => handleDelete()}
+            handleSave={() => handleSave()}
+            setIsDropdownOpen={setIsDropdownOpen}
+            setIsDialogOpen={setIsDialogOpen}
+          />
         </DropdownMenuContent>
       </DropdownMenu>
     </>
@@ -521,4 +506,51 @@ function GenerateFilterByType({
       throw new Error(`Unhandled filter case: ${exhaustiveCheck}`);
     }
   }
+}
+
+export function FilterDropDownContent({
+  column,
+  setFilteredValue,
+  filteredValue,
+  handleDelete,
+  handleSave,
+  setIsDropdownOpen,
+  setIsDialogOpen,
+}: {
+  column: ColumnFilter;
+  setFilteredValue: Dispatch<React.SetStateAction<string>>;
+  filteredValue: string;
+  handleDelete: () => void;
+  handleSave: () => void;
+  setIsDropdownOpen: Dispatch<React.SetStateAction<boolean>>;
+  setIsDialogOpen: Dispatch<React.SetStateAction<boolean>>;
+}) {
+  return (
+    <>
+      <div className="flex flex-row justify-between items-center mb-2">
+        <Label htmlFor="name">{column.displayName}</Label>
+        <Button variant="ghost" onClick={() => handleDelete()}>
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </div>
+      <div className="flex flex-row items-center gap-2 justify-center mb-2">
+        <GenerateFilterByType
+          column={column}
+          setFilteredValue={setFilteredValue}
+          filteredValue={filteredValue}
+          openDialog={(open) => {
+            setIsDropdownOpen(open);
+            setIsDialogOpen(!open);
+          }}
+        />
+      </div>
+      <Button
+        variant="secondary"
+        onClick={() => handleSave()}
+        className="w-full"
+      >
+        Filtrele
+      </Button>
+    </>
+  );
 }
