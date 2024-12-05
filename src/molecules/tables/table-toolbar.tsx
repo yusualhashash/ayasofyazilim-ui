@@ -64,7 +64,8 @@ export default function TableToolbar<TData>({
     classNames,
     filterType,
   } = inputProps;
-  const filterClass = filterType === 'Column' ? 'flex flex-col gap-2' : '';
+  const isColumn = filterType === 'Column';
+  const filterClass = isColumn ? 'flex flex-col gap-2' : '';
   return (
     <>
       {activeAction &&
