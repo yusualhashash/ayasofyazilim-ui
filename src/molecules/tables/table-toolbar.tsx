@@ -179,40 +179,69 @@ export default function TableToolbar<TData>({
           </div>
         </div>
       )}
-      <div className={cn('my-3', classNames?.filters?.container, filterClass)}>
-        {detailedFilter && (
-          <div className={cn('flex', classNames?.filters?.items, filterClass)}>
-            {filteredColumns && filteredColumns.length >= 2 && (
-              <Badge
-                variant="outline"
-                className="rounded-full cursor-pointer hover:bg-gray-50 transition mr-2"
-                onClick={() => setFilteredColumns([])}
-              >
-                Clear All
-              </Badge>
-            )}
-            {filteredColumns &&
-              filteredColumns.map((column) => (
-                <FilterColumn
-                  filterType={filterType}
-                  key={column.name}
-                  column={column}
-                  setFilteredColumns={setFilteredColumns}
-                />
-              ))}
-            {!isColumn &&
-              getNonSelectedFilters(detailedFilter, filteredColumns).length >
-                0 && (
-                <FilterButton
-                  detailedFilter={detailedFilter}
-                  filteredColumns={filteredColumns}
-                  isLoading={isLoading || false}
-                  setFilteredColumns={setFilteredColumns}
-                />
-              )}
-          </div>
-        )}
-      </div>
+      <FilterToolbar<TData>
+        classNames={classNames}
+        detailedFilter={detailedFilter}
+        filteredColumns={filteredColumns}
+        filterType={filterType}
+        isLoading={isLoading || false}
+        setFilteredColumns={setFilteredColumns}
+        filterClass={filterClass}
+      />
     </>
+  );
+}
+
+function FilterToolbar<TData>({
+  classNames,
+  detailedFilter,
+  filteredColumns,
+  filterType,
+  isLoading,
+  setFilteredColumns,
+  filterClass,
+}: {
+  classNames: DataTableProps<TData>['classNames'];
+  detailedFilter: DataTableProps<TData>['detailedFilter'];
+  filteredColumns: ColumnFilter[];
+  filterType: DataTableProps<TData>['filterType'];
+  isLoading: boolean;
+  setFilteredColumns: IFilterColumnProps['setFilteredColumns'];
+  filterClass: string;
+}) {
+  return (
+    <div className={cn('my-3', classNames?.filters?.container, filterClass)}>
+      {detailedFilter && (
+        <div className={cn('flex', classNames?.filters?.items, filterClass)}>
+          {filteredColumns && filteredColumns.length >= 2 && (
+            <Badge
+              variant="outline"
+              className="rounded-full cursor-pointer hover:bg-gray-50 transition mr-2"
+              onClick={() => setFilteredColumns([])}
+            >
+              Clear All
+            </Badge>
+          )}
+          {filteredColumns &&
+            filteredColumns.map((column) => (
+              <FilterColumn
+                filterType={filterType}
+                key={column.name}
+                column={column}
+                setFilteredColumns={setFilteredColumns}
+              />
+            ))}
+          {getNonSelectedFilters(detailedFilter, filteredColumns).length >
+            0 && (
+            <FilterButton
+              detailedFilter={detailedFilter}
+              filteredColumns={filteredColumns}
+              isLoading={isLoading}
+              setFilteredColumns={setFilteredColumns}
+            />
+          )}
+        </div>
+      )}
+    </div>
   );
 }
