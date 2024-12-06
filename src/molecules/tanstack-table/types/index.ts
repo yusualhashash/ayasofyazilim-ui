@@ -291,7 +291,6 @@ export type TanstacktableEditableColumnsByRowId<T> = {
         value: string;
       }>;
       format?: string;
-      selector?: string;
       type: string;
     }
   >;

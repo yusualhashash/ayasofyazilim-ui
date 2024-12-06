@@ -69,20 +69,7 @@ export function tanstackTableEditableColumnsByRowData<T>(
               config,
             });
           }
-          const rawValue = getValue();
-          let initialValue = (getValue() as string)?.toString() || '';
-          if (
-            typeof rawValue === 'object' &&
-            rawValue &&
-            rows[accessorKey].enum &&
-            rows[accessorKey].selector
-          ) {
-            Object.keys(rawValue).forEach((itemKey) => {
-              if (itemKey === rows[accessorKey].selector) {
-                initialValue = rawValue[itemKey as keyof typeof rawValue];
-              }
-            });
-          }
+          const initialValue = (getValue() as string)?.toString() || '';
           const [value, setValue] = useState(initialValue);
           const rowId = row.index.toString();
           const isRowSelected = table.getRow(rowId)?.getIsSelected();
