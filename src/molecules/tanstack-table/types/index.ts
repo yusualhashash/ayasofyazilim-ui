@@ -286,8 +286,14 @@ export type TanstacktableEditableColumnsByRowId<T> = {
   rows: Record<
     string,
     {
-      enum?: readonly string[];
+      enum?:
+        | readonly string[]
+        | Array<{
+            label: string;
+            value: string;
+          }>;
       format?: string;
+      selector?: string;
       type: string;
     }
   >;

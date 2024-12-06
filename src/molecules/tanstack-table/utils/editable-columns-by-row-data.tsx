@@ -13,12 +13,29 @@ import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { createCell, tanstackTableCreateTitleWithLanguageData } from '.';
 import { TanstackTableColumnHeader } from '../fields';
-import { TanstacktableEditableColumnsByRowId } from '../types';
+import {
+  TanstackTableCreateColumnsByRowId,
+  TanstacktableEditableColumnsByRowId,
+} from '../types';
 
 export function tanstackTableEditableColumnsByRowData<T>(
-  params: TanstacktableEditableColumnsByRowId<T>
+  params: TanstacktableEditableColumnsByRowId<T> &
+    Omit<TanstackTableCreateColumnsByRowId<T>, 'rows' | 'selectableRows'>
 ) {
-  const { rows, excludeColumns, languageData, editableColumns } = params;
+  const {
+    rows,
+    excludeColumns,
+    languageData,
+    editableColumns,
+    config,
+    faceted,
+    links,
+    badges,
+    classNames,
+    custom,
+    expandRowTrigger,
+    icons,
+  } = params;
   const columns: ColumnDef<T>[] = [];
 
   Object.keys(rows)
@@ -36,13 +53,36 @@ export function tanstackTableEditableColumnsByRowData<T>(
           <TanstackTableColumnHeader column={column} title={title} />
         ),
         cell: ({ getValue, row, column: { id }, table }) => {
-          if (
-            editableColumns &&
-            !editableColumns.includes(accessorKey as keyof T)
-          ) {
-            return createCell<T>({ accessorKey: accessorKey as keyof T, row });
+          const _accesorKey = accessorKey as keyof T;
+          if (editableColumns && !editableColumns.includes(_accesorKey)) {
+            return createCell<T>({
+              accessorKey: _accesorKey,
+              row,
+              link: links?.[_accesorKey],
+              faceted: faceted?.[_accesorKey]?.options,
+              badge: badges?.[_accesorKey],
+              icon: icons?.[_accesorKey],
+              className: classNames?.[_accesorKey],
+              expandRowTrigger: expandRowTrigger === _accesorKey,
+              format: rows[accessorKey].format,
+              custom: custom?.[_accesorKey],
+              config,
+            });
           }
-          const initialValue = (getValue() as string)?.toString() || '';
+          const rawValue = getValue();
+          let initialValue = (getValue() as string)?.toString() || '';
+          if (
+            typeof rawValue === 'object' &&
+            rawValue &&
+            rows[accessorKey].enum &&
+            rows[accessorKey].selector
+          ) {
+            Object.keys(rawValue).forEach((itemKey) => {
+              if (itemKey === rows[accessorKey].selector) {
+                initialValue = rawValue[itemKey as keyof typeof rawValue];
+              }
+            });
+          }
           const [value, setValue] = useState(initialValue);
           const rowId = row.index.toString();
           const isRowSelected = table.getRow(rowId)?.getIsSelected();
@@ -115,11 +155,20 @@ export function tanstackTableEditableColumnsByRowData<T>(
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {rows[accessorKey]?.enum?.map((item) => (
-                      <SelectItem key={item} value={item}>
-                        {item}
-                      </SelectItem>
-                    ))}
+                    {rows[accessorKey]?.enum?.map((item) => {
+                      if (typeof item === 'object') {
+                        return (
+                          <SelectItem key={item.value} value={item.value}>
+                            {item.label}
+                          </SelectItem>
+                        );
+                      }
+                      return (
+                        <SelectItem key={item} value={item}>
+                          {item}
+                        </SelectItem>
+                      );
+                    })}
                   </SelectGroup>
                 </SelectContent>
               </Select>
