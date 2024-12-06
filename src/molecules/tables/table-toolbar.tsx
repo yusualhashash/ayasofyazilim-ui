@@ -231,6 +231,15 @@ function FilterToolbar<TData>({
                 setFilteredColumns={setFilteredColumns}
               />
             ))}
+          {/* {filteredColumns && filterType === "Column" && (
+             <Button
+             variant="secondary"
+             onClick={() => handleSave()}
+             className="w-full"
+           >
+             Filtrele
+           </Button>
+          )} */}
           {getNonSelectedFilters(detailedFilter, filteredColumns).length >
             0 && (
             <FilterButton

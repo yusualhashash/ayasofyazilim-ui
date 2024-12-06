@@ -380,6 +380,7 @@ export default function FilterColumn({
           handleSave={() => handleSave()}
           setIsDropdownOpen={setIsDropdownOpen}
           setIsDialogOpen={setIsDialogOpen}
+          filterType={filterType}
         />
       ) : (
         <DropdownMenu
@@ -417,6 +418,7 @@ export default function FilterColumn({
               handleSave={() => handleSave()}
               setIsDropdownOpen={setIsDropdownOpen}
               setIsDialogOpen={setIsDialogOpen}
+              filterType={filterType}
             />
           </DropdownMenuContent>
         </DropdownMenu>
@@ -430,11 +432,13 @@ function GenerateFilterByType({
   setFilteredValue,
   filteredValue,
   openDialog,
+  filterType,
 }: {
   column: ColumnFilter;
   filteredValue: string;
   openDialog: (open: boolean) => void;
   setFilteredValue: Dispatch<React.SetStateAction<string>>;
+  filterType?: DataTableProps<unknown>['filterType'];
 }) {
   const columnType = column.type;
   switch (columnType) {
@@ -514,6 +518,17 @@ function GenerateFilterByType({
       );
     }
     case 'select-async': {
+      if (filterType === 'Column') {
+        return (
+          <Button
+            onClick={() => {
+              openDialog(false);
+            }}
+          >
+            Seç
+          </Button>
+        );
+      }
       openDialog(false);
       break;
     }
@@ -532,6 +547,7 @@ export function FilterDropDownContent({
   handleSave,
   setIsDropdownOpen,
   setIsDialogOpen,
+  filterType,
 }: {
   column: ColumnFilter;
   setFilteredValue: Dispatch<React.SetStateAction<string>>;
@@ -540,6 +556,7 @@ export function FilterDropDownContent({
   handleSave: () => void;
   setIsDropdownOpen: Dispatch<React.SetStateAction<boolean>>;
   setIsDialogOpen: Dispatch<React.SetStateAction<boolean>>;
+  filterType?: DataTableProps<unknown>['filterType'];
 }) {
   return (
     <>
@@ -554,12 +571,14 @@ export function FilterDropDownContent({
           column={column}
           setFilteredValue={setFilteredValue}
           filteredValue={filteredValue}
+          filterType={filterType}
           openDialog={(open) => {
             setIsDropdownOpen(open);
             setIsDialogOpen(!open);
           }}
         />
       </div>
+      {/* {filterType === 'Column' ? <> </> : */}
       <Button
         variant="secondary"
         onClick={() => handleSave()}
@@ -567,6 +586,7 @@ export function FilterDropDownContent({
       >
         Filtrele
       </Button>
+      {/* } */}
     </>
   );
 }
