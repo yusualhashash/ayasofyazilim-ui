@@ -155,20 +155,11 @@ export function tanstackTableEditableColumnsByRowData<T>(
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {rows[accessorKey]?.enum?.map((item) => {
-                      if (typeof item === 'object') {
-                        return (
-                          <SelectItem key={item.value} value={item.value}>
-                            {item.label}
-                          </SelectItem>
-                        );
-                      }
-                      return (
-                        <SelectItem key={item} value={item}>
-                          {item}
-                        </SelectItem>
-                      );
-                    })}
+                    {rows[accessorKey]?.enum?.map((item) => (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
