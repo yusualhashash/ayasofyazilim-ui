@@ -228,7 +228,7 @@ export default function DataTable<TData, TValue>(
           setFilteredColumns={setFilteredColumns}
         />
       )}
-      <div className={cn('flex flex-col p-4', classNames?.container)}>
+      <div className={cn('flex flex-col p-4 w-full', classNames?.container)}>
         {inputProps.filterType !== 'Column' && (
           <TableToolbar<TData>
             inputProps={inputProps}
