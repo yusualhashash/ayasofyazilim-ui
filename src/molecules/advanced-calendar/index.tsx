@@ -73,6 +73,7 @@ export type AdvancedCalendarProps = CalendarProps & {
   toYear?: number;
   type?: 'buttons' | 'dropdown' | 'dropdown-buttons';
   view?: 'single' | 'multiple';
+  placeholder?: string;
 };
 
 /**
@@ -91,6 +92,7 @@ export default function AdvancedCalendar({
   fromYear = new Date().getFullYear() - 5,
   toYear = new Date().getFullYear(),
   type = 'buttons',
+  placeholder = 'Select date...',
   ...props
 }: AdvancedCalendarProps): JSX.Element {
   const [open, setOpen] = React.useState(false);
@@ -136,7 +138,7 @@ export default function AdvancedCalendar({
             >
               {value
                 ? dateOptions.find((date) => date.value === value)?.label
-                : 'Select date...'}
+                : placeholder}
               <CalendarIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
@@ -175,6 +177,7 @@ export default function AdvancedCalendar({
         locale={locale}
         fromYear={fromYear}
         toYear={toYear}
+        title="asdasd"
         month={month}
         onMonthChange={setMonth}
         captionLayout={type}
