@@ -1,3 +1,5 @@
+'use client';
+
 export * from './table';
 export * from './column-names';
 export * from './cell-with-actions';

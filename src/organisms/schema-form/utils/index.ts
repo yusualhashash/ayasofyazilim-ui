@@ -1,3 +1,5 @@
+'use client';
+
 import { GenericObjectType, UiSchema } from '@rjsf/utils';
 import { PhoneNumberUtil } from 'google-libphonenumber';
 import { FilteredObject, FilterType } from '../types';

@@ -1,3 +1,5 @@
+'use client';
+
 import Form, { ThemeProps } from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
 import { customizeValidator } from '@rjsf/validator-ajv8';

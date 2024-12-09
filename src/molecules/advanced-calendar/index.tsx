@@ -1,4 +1,7 @@
+'use client';
+
 import React from 'react';
+
 import { CalendarIcon, CheckIcon } from '@radix-ui/react-icons';
 
 import { Calendar, CalendarProps } from '@/components/ui/calendar';

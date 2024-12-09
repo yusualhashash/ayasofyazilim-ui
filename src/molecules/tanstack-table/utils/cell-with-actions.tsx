@@ -1,3 +1,5 @@
+'use client';
+
 import { Row, Table as TableType } from '@tanstack/react-table';
 import { TanstackTableRowActions } from '../fields';
 import { TanstackTableRowActionsType } from '../types';

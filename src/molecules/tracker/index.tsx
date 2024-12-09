@@ -1,3 +1,5 @@
+'use client';
+
 // Tremor Raw Tracker [v0.1.0]
 
 import React from 'react';

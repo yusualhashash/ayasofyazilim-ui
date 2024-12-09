@@ -1,3 +1,5 @@
+'use client';
+
 import { ColumnDef, Row } from '@tanstack/react-table';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';

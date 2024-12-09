@@ -1,3 +1,5 @@
+'use client';
+
 // @ts-ignore
 import Link from 'next/link';
 import AvatarWrapper from '../../molecules/avatar';

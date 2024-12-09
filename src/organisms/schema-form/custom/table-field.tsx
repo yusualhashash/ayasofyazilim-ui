@@ -1,3 +1,5 @@
+'use client';
+
 import { FieldProps } from '@rjsf/utils';
 import { useMemo } from 'react';
 import TanstackTable from '../../../molecules/tanstack-table';

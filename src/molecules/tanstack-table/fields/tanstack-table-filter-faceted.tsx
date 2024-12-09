@@ -1,6 +1,7 @@
 import { CheckIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 import { Column } from '@tanstack/react-table';
 
+import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -38,7 +39,12 @@ export function TanstackTableFacetedFilter<TData, TValue>({
 }: DataTableFacetedFilterProps<TData, TValue>) {
   const title = column?.columnDef?.meta?.toString() || accessorKey;
   const facets = column?.getFacetedUniqueValues();
-  const selectedValues = new Set(params?.get(accessorKey)?.split(',') || []);
+  const [selectedValues, setSelectedValues] = useState(
+    new Set(params?.get(accessorKey)?.split(',') || [])
+  );
+  useEffect(() => {
+    setSelectedValues(new Set(params?.get(accessorKey)?.split(',') || []));
+  }, [params?.get(accessorKey)]);
 
   return (
     <Popover>
@@ -104,6 +110,7 @@ export function TanstackTableFacetedFilter<TData, TValue>({
                       }
 
                       onFilter(accessorKey, current.join(','));
+                      setSelectedValues(new Set(current));
                     }}
                   >
                     <div

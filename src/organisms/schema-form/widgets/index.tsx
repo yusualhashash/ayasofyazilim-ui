@@ -1,3 +1,5 @@
+'use client';
+
 export * from './checkbox';
 export * from './date';
 export * from './select';
