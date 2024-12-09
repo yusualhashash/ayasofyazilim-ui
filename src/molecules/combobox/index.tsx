@@ -1,3 +1,5 @@
+'use client';
+
 import { CaretSortIcon } from '@radix-ui/react-icons';
 import { CheckIcon } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';

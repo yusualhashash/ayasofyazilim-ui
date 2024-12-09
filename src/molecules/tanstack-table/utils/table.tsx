@@ -1,3 +1,5 @@
+'use client';
+
 import { ColumnFiltersState } from '@tanstack/react-table';
 import { useState, useEffect } from 'react';
 import {

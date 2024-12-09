@@ -1,3 +1,5 @@
+'use client';
+
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { cva } from 'class-variance-authority';
 import { Button, ButtonProps } from '@/components/ui/button';

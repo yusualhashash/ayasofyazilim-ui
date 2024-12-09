@@ -1,3 +1,5 @@
+'use client';
+
 import AvatarWrapper from '../../molecules/avatar';
 import Navigation from '../../molecules/navigation-menu';
 import { navigationLinkTypes } from '../../molecules/navigation-menu/types';

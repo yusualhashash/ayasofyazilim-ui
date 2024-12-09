@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 
 import InfoCard, { infoCardProps } from '../../molecules/infocard';
