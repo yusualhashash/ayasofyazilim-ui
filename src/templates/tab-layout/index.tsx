@@ -3,9 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ComponentType, ReactNode, Suspense } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ScrollBar, ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 
 const defaultClassNames = {
@@ -14,14 +13,12 @@ const defaultClassNames = {
     tabList: 'flex flex-col h-full justify-start max-w-sm overflow-hidden',
     tabTrigger: 'justify-start max-w-lg overflow-hidden w-full',
     tabContent: 'mx-2 my-0 w-full h-full overflow-auto flex-1',
-    scrollArea: 'w-full [&>div>div]:!grid [&>div>div]:!grid',
   },
   vertical: {
     tabs: 'flex h-full overflow-hidden flex-col',
-    tabList: 'w-full mx:w-max overflow-hidden',
+    tabList: 'w-full mx:w-max overflow-x-auto min-h-max',
     tabTrigger: 'min-w-max',
     tabContent: 'h-full my-2 overflow-auto',
-    scrollArea: '[&>div>div]:!flex',
   },
 };
 
@@ -60,35 +57,25 @@ export function TabLayout({
           classNames?.[orientation].tabList
         )}
       >
-        <ScrollArea
-          className={cn(
-            defaultClassNames[orientation].scrollArea,
-            classNames?.[orientation].scrollArea
-          )}
-        >
-          {tabList.map((tab) => (
-            <TabsTrigger
-              key={tab.href}
-              value={tab.href}
-              asChild
-              className={cn(
-                defaultClassNames[orientation].tabTrigger,
-                classNames?.[orientation].tabTrigger
-              )}
+        {tabList.map((tab) => (
+          <TabsTrigger
+            key={tab.href}
+            value={tab.href}
+            asChild
+            className={cn(
+              defaultClassNames[orientation].tabTrigger,
+              classNames?.[orientation].tabTrigger
+            )}
+          >
+            <Link
+              href={tab.href}
+              className="w-full overflow-hidden text-elipsis data-[state=active]:sticky data-[state=active]:left-0 data-[state=active]:right-0"
             >
-              <Link
-                href={tab.href}
-                className="w-full overflow-hidden text-elipsis"
-              >
-                {tab.icon && <tab.icon className="block md:hidden" />}
-                {tab.label}
-              </Link>
-            </TabsTrigger>
-          ))}
-          <ScrollBar
-            orientation={orientation === 'vertical' ? 'horizontal' : 'vertical'}
-          />
-        </ScrollArea>
+              {tab.icon && <tab.icon className="block md:hidden" />}
+              {tab.label}
+            </Link>
+          </TabsTrigger>
+        ))}
       </TabsList>
       <TabsContent
         value={active}
