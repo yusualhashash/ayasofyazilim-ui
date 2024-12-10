@@ -175,20 +175,22 @@ function FormObject<SchemaType extends z.ZodObject<any, any>>({
       </div>
     );
   }
+  const fieldConfigItem: FieldConfigItem = fieldConfig?.[name] ?? {};
   if (zodBaseType === 'ZodArray') {
-    return (
-      <AutoFormArray
-        key={key}
-        name={name}
-        item={item as unknown as z.ZodArray<any>}
-        form={form}
-        fieldConfig={fieldConfig?.[name] ?? {}}
-        path={[...path, name]}
-      />
-    );
+    const Renderer = fieldConfigItem.renderer;
+    if (!Renderer)
+      return (
+        <AutoFormArray
+          key={key}
+          name={name}
+          item={item as unknown as z.ZodArray<any>}
+          form={form}
+          fieldConfig={fieldConfig?.[name] ?? {}}
+          path={[...path, name]}
+        />
+      );
   }
 
-  const fieldConfigItem: FieldConfigItem = fieldConfig?.[name] ?? {};
   const zodInputProps = zodToHtmlInputProps(item);
   const isRequired =
     isRequiredByDependency ||
