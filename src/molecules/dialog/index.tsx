@@ -40,8 +40,9 @@ function AutoFormData<Tdata = unknown>(
   onOpenChange: (e: boolean) => void,
   triggerData?: any
 ) {
-  const [_values, setValues] =
-    useState<Partial<z.infer<ZodObjectOrWrapped>>>(values);
+  const [_values, setValues] = useState<Partial<z.infer<ZodObjectOrWrapped>>>(
+    values || triggerData
+  );
   useEffect(() => {
     if (action?.autoFormArgs?.preFetch) {
       const { functionCall } = action.autoFormArgs.preFetch;
