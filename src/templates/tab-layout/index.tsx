@@ -19,7 +19,7 @@ const defaultClassNames = {
   vertical: {
     tabs: 'flex h-full overflow-hidden flex-col',
     tabList: 'w-full mx:w-max overflow-hidden',
-    tabTrigger: '',
+    tabTrigger: 'min-w-max',
     tabContent: 'h-full my-2 overflow-auto',
     scrollArea: '[&>div>div]:!flex',
   },
