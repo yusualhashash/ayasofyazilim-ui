@@ -130,6 +130,7 @@ export type TanstackTableColumnBadge = {
   className?: string;
   hideColumnValue?: boolean;
   values: {
+    position?: 'before' | 'after';
     badgeClassName?: string;
     conditions?: TanstackTableCellCondition[];
     label: string;
