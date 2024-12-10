@@ -75,10 +75,15 @@ export function createCell<T>(props: {
     );
   }
   if (badge) {
-    const badges = badge.values.map((item) =>
-      item.conditions?.map((condition) => {
+    const position: { before: JSX.Element[]; after: JSX.Element[] } = {
+      before: [],
+      after: [],
+    };
+    badge.values.forEach((item) => {
+      const itemPosition = item.position || 'before';
+      item.conditions?.forEach((condition) => {
         if (condition.when(row.getValue(condition.conditionAccessorKey))) {
-          return (
+          position[itemPosition].push(
             <Badge
               variant="outline"
               className={item.badgeClassName}
@@ -89,12 +94,13 @@ export function createCell<T>(props: {
           );
         }
         return null;
-      })
-    );
+      });
+    });
     content = (
       <>
-        {badges}
+        {position.before}
         {!badge.hideColumnValue && content}
+        {position.after}
       </>
     );
   }
