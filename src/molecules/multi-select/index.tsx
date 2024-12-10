@@ -142,6 +142,11 @@ export const MultiSelect = React.forwardRef<
   ) => {
     const [selectedValues, setSelectedValues] =
       React.useState<string[]>(defaultValue);
+    React.useEffect(() => {
+      if (JSON.stringify(selectedValues) !== JSON.stringify(defaultValue)) {
+        setSelectedValues(defaultValue);
+      }
+    }, [defaultValue]);
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
 
@@ -201,6 +206,7 @@ export const MultiSelect = React.forwardRef<
           <Button
             ref={ref}
             {...props}
+            type="button"
             onClick={handleTogglePopover}
             className={cn(
               'flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit',
