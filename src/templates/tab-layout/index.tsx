@@ -56,6 +56,9 @@ export function TabLayout({
           defaultClassNames[orientation].tabList,
           classNames?.[orientation].tabList
         )}
+        style={{
+          scrollbarWidth: 'thin',
+        }}
       >
         {tabList.map((tab) => (
           <TabsTrigger
