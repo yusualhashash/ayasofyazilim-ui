@@ -82,7 +82,9 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
   }
   const [formData, setFormData] = useState<T | undefined>(props.formData);
   return (
-    <Wrapper {...(withScrollArea && { className: 'h-full' })}>
+    <Wrapper
+      {...(withScrollArea && { className: 'h-full [&>div>div]:!block' })}
+    >
       <Form<T>
         noHtml5Validate
         liveValidate
