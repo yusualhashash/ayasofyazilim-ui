@@ -10,8 +10,10 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export type infoCardProps = {
+  className?: string;
   content: string;
   cta?: {
     href: string;
@@ -42,7 +44,7 @@ export default function InfoCard(infoCard: infoCardProps) {
   }
 
   return (
-    <Card className="min-w-60">
+    <Card className={cn('min-w-60', infoCard.className)}>
       <CardHeader className="space-y-0 pb-2">
         <div className="flex flex-row items-center justify-between ">
           <CardTitle className="text-sm font-medium">
