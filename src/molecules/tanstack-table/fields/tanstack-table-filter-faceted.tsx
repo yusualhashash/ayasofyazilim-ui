@@ -28,6 +28,7 @@ interface DataTableFacetedFilterProps<TData, TValue> {
   onFilter: (accessorKey: string, selectedValues: string) => void;
   options: TanstackTableFacetedFilterType[];
   params: URLSearchParams;
+  title: string;
 }
 
 export function TanstackTableFacetedFilter<TData, TValue>({
@@ -36,8 +37,8 @@ export function TanstackTableFacetedFilter<TData, TValue>({
   options,
   onFilter,
   params,
+  title,
 }: DataTableFacetedFilterProps<TData, TValue>) {
-  const title = column?.columnDef?.meta?.toString() || accessorKey;
   const facets = column?.getFacetedUniqueValues();
   const [selectedValues, setSelectedValues] = useState(
     new Set(params?.get(accessorKey)?.split(',') || [])

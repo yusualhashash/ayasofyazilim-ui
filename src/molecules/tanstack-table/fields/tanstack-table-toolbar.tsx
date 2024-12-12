@@ -36,7 +36,6 @@ export const TanstackTableToolbar = <TData,>({
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
   const columnNames = table.getAllColumns().map((column) => column.id);
-
   function onFilter(accessorKey: string, selectedValues: string) {
     const newParams = new URLSearchParams(searchParams.toString());
     if (selectedValues) {
@@ -101,6 +100,7 @@ export const TanstackTableToolbar = <TData,>({
               onFilter={(accessorKey, selectedValues) => {
                 onFilter(accessorKey, selectedValues);
               }}
+              title={filters?.facetedFilters?.[column]?.title ?? column}
               options={filters?.facetedFilters?.[column]?.options ?? []}
             />
           ))}
