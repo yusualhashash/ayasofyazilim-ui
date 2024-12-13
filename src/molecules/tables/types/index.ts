@@ -10,6 +10,7 @@ export type { ColumnFilter };
 export type FilterColumnResult = { [key: string]: string | string[] };
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
+    addRow: (rowIndex: number, columnId: string, value: unknown) => void;
     removeRow: (
       rowIndex: number,
       columnId: string,
