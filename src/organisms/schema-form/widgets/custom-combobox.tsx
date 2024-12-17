@@ -69,12 +69,13 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
         >
           <span className=" overflow-hidden text-ellipsis has-[role=dialog]:max-w-xs">
             {(fieldValueDisplayName && fieldValueDisplayName.toString()) ||
-              emptyValue ||
-              uiSchema?.['ui:placeholder']?.toString() ||
-              uiOptions?.['ui:placeholder']?.toString() ||
-              emptyValue ||
-              `Please select an ${label?.toLocaleLowerCase()}` ||
-              'Please select'}
+            emptyValue ||
+            uiSchema?.['ui:placeholder']?.toString() ||
+            uiOptions?.['ui:placeholder']?.toString() ||
+            emptyValue ||
+            label
+              ? `Please select an ${label.toLocaleLowerCase()}`
+              : 'Please select'}
           </span>
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -98,12 +99,13 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
           )}
         >
           {(fieldValueDisplayName && fieldValueDisplayName.toString()) ||
-            emptyValue ||
-            uiSchema?.['ui:placeholder']?.toString() ||
-            uiOptions?.['ui:placeholder']?.toString() ||
-            emptyValue ||
-            `Please select an ${label?.toLocaleLowerCase()}` ||
-            'Please select'}
+          emptyValue ||
+          uiSchema?.['ui:placeholder']?.toString() ||
+          uiOptions?.['ui:placeholder']?.toString() ||
+          emptyValue ||
+          label
+            ? `Please select an ${label.toLocaleLowerCase()}`
+            : 'Please select'}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </DrawerTrigger>
