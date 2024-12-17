@@ -1,18 +1,14 @@
 'use client';
 
 import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
-import { MixerHorizontalIcon } from '@radix-ui/react-icons';
 import { Table } from '@tanstack/react-table';
 
 import { ChevronDownIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import {
   TanstackTableSelectedRowActionType,
@@ -109,7 +105,8 @@ export function TanstackTableViewOptions<TData>(
         </div>
       )}
 
-      {!editable && (
+      {editable && null}
+      {/* {!editable && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -144,7 +141,7 @@ export function TanstackTableViewOptions<TData>(
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
-      )}
+      )} */}
 
       {primaryAction && otherActions && (
         <>
