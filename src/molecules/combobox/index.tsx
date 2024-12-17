@@ -46,6 +46,7 @@ export function Combobox<T>(props: CustomComboboxProps<T>) {
     selectIdentifier,
     required,
     errorMessage,
+    emptyValue,
   } = props;
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [open, setOpen] = useState(false);
@@ -53,8 +54,10 @@ export function Combobox<T>(props: CustomComboboxProps<T>) {
     (list?.find(
       (x: T) => x[props.selectIdentifier] === value?.[selectIdentifier]
     )?.[props.selectLabel] as string) ||
-    `Please select an ${label?.toLocaleLowerCase()}` ||
-    'Please select';
+    emptyValue ||
+    label
+      ? `Please select an ${label?.toLocaleLowerCase()}`
+      : 'Please select';
   const DesktopContent = (
     <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger asChild>

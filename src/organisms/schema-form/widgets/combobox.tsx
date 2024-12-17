@@ -44,11 +44,12 @@ export const Combobox = (props: WidgetProps) => {
           )}
         >
           {fieldValueDisplayName ||
-            fieldValue ||
-            uiSchema?.['ui:placeholder'] ||
-            uiOptions?.['ui:placeholder'] ||
-            `Please select an ${label.toLocaleLowerCase()}` ||
-            'Please select'}
+          fieldValue ||
+          uiSchema?.['ui:placeholder'] ||
+          uiOptions?.['ui:placeholder'] ||
+          label
+            ? `Please select an ${label.toLocaleLowerCase()}`
+            : 'Please select'}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -70,10 +71,9 @@ export const Combobox = (props: WidgetProps) => {
             fieldValue && 'text-black'
           )}
         >
-          {fieldValue ||
-            props?.uiSchema?.['ui:placeholder'] ||
-            `Please select an ${props.label.toLocaleLowerCase()}` ||
-            'Please select'}
+          {fieldValue || props?.uiSchema?.['ui:placeholder'] || label
+            ? `Please select an ${label.toLocaleLowerCase()}`
+            : 'Please select'}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </DrawerTrigger>
