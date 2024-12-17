@@ -55,9 +55,8 @@ export function Combobox<T>(props: CustomComboboxProps<T>) {
       (x: T) => x[props.selectIdentifier] === value?.[selectIdentifier]
     )?.[props.selectLabel] as string) ||
     emptyValue ||
-    label
-      ? `Please select an ${label?.toLocaleLowerCase()}`
-      : 'Please select';
+    (label && `Please select an ${label.toLocaleLowerCase()}`) ||
+    'Please select';
   const DesktopContent = (
     <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger asChild>
@@ -108,7 +107,7 @@ export function Combobox<T>(props: CustomComboboxProps<T>) {
   const Content = isDesktop ? DesktopContent : MobileContent;
 
   return (
-    <div>
+    <div className="w-full">
       {label && (
         <Label>
           {label}
