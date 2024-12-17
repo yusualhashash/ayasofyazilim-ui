@@ -49,7 +49,6 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
     (x) => x[selectIdentifier] === fieldValue
   )?.[selectLabel];
   const uiOptions = uiSchema?.['ui:options'];
-  console.log(fieldValueDisplayName);
   const DesktopContent = (
     <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger
