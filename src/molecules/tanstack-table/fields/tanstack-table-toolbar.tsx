@@ -47,7 +47,21 @@ export const TanstackTableToolbar = <TData,>({
       router.replace(`${pathname}?${newParams.toString()}`);
     }
   }
-
+  function onFilterMultiple(
+    filter: { accessorKey: string; selectedValues: string }[]
+  ) {
+    const newParams = new URLSearchParams(searchParams.toString());
+    filter.forEach(({ accessorKey, selectedValues }) => {
+      if (selectedValues) {
+        newParams.set(accessorKey, selectedValues);
+      } else {
+        newParams.delete(accessorKey);
+      }
+    });
+    if (newParams.toString() !== searchParams.toString()) {
+      router.replace(`${pathname}?${newParams.toString()}`);
+    }
+  }
   return (
     <div className="flex w-full items-center justify-between p-px">
       <div className="flex flex-1 items-center space-x-2">
@@ -83,6 +97,7 @@ export const TanstackTableToolbar = <TData,>({
               onFilter={(accessorKey, selectedValues) =>
                 onFilter(accessorKey, selectedValues)
               }
+              onFilterMultiple={(filter) => onFilterMultiple(filter)}
             />
           ))}
 
