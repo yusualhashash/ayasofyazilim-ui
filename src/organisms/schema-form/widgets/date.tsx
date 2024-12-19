@@ -1,4 +1,3 @@
-import { WidgetProps } from '@rjsf/utils';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -9,15 +8,57 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { WidgetProps } from '../types';
+import { getDateFnsLocale } from '../utils';
+
+type DateOptions = {
+  fromDate?: Date;
+  toDate?: Date;
+  fromYear?: number;
+  toYear?: number;
+};
+
+/**
+ * Looks up a date-fns locale from the Expo localization object.  This falls back to `en-US`
+ * @param localization Expo Localization object containing the locale and region.
+ * @returns date-fns locale.
+ */
+
+const getDateRange = (uiOptions: DateOptions) => {
+  const { fromDate, toDate, fromYear, toYear } = uiOptions;
+
+  const defaultFromYear =
+    fromDate?.getFullYear() ?? fromYear ?? new Date().getFullYear();
+  const defaultToYear =
+    toDate?.getFullYear() ?? toYear ?? new Date().getFullYear() + 100;
+  const defaultFromDate = fromDate ?? new Date(defaultFromYear, 0, 1);
+  const defaultToDate = toDate ?? new Date(defaultToYear, 11, 31);
+  return {
+    fromDate: defaultFromDate,
+    toDate: defaultToDate,
+    fromYear: defaultFromYear,
+    toYear: defaultToYear,
+  };
+};
 
 export const CustomDate = (props: WidgetProps) => {
-  const { value, uiSchema, onChange, disabled } = props;
-  const uiOptions = uiSchema?.['ui:options'];
+  const { value, uiSchema, onChange, disabled, required, formContext } = props;
+  const uiOptions = uiSchema?.['ui:options'] ?? {};
+  const { fromDate, toDate, fromYear, toYear } = getDateRange(
+    uiOptions as DateOptions
+  );
   const placeholder =
     uiSchema?.['ui:placeholder']?.toString() ||
     uiOptions?.['ui:placeholder']?.toString() ||
     'Pick a date';
-  const [date, setDate] = useState<Date>(new Date(value));
+  const locale = formContext?.locale || 'en';
+  // Handle invalid date value
+  const initialDate =
+    value && !Number.isNaN(new Date(value).getTime())
+      ? new Date(value)
+      : new Date(fromYear, 0, 1);
+
+  const [date, setDate] = useState<Date>(initialDate);
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -30,34 +71,29 @@ export const CustomDate = (props: WidgetProps) => {
             !date && 'text-muted-foreground'
           )}
         >
-          {date ? format(date, 'PPP') : <span>{placeholder}</span>}
+          {date ? (
+            format(date, 'PPP', { locale: getDateFnsLocale({ locale }) })
+          ) : (
+            <span>{placeholder}</span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
+          required={required}
+          locale={getDateFnsLocale({ locale })}
           mode="single"
-          disabled={
-            uiOptions?.fromDate
-              ? { before: uiOptions?.fromDate as Date }
-              : undefined
-          }
-          fromYear={
-            (uiOptions?.fromYear as number) || date
-              ? date.getFullYear() - 100
-              : new Date().getFullYear() - 100
-          }
-          toYear={
-            (uiOptions?.toYear as number) || date
-              ? date.getFullYear() + 100
-              : new Date().getFullYear() + 100
-          }
-          month={date}
+          disabled={[toDate, fromDate]}
+          fromYear={fromYear}
+          toYear={toYear}
+          defaultMonth={date}
           selected={date}
           initialFocus
-          onSelect={(e) => {
-            if (!e) return;
-            setDate(e);
-            onChange(e.toISOString());
+          onSelect={(selectedDate) => {
+            if (selectedDate) {
+              setDate(selectedDate);
+              onChange(selectedDate.toISOString());
+            }
           }}
         />
       </PopoverContent>

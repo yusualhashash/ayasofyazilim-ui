@@ -1,8 +1,11 @@
 'use client';
 
-import { GenericObjectType, UiSchema } from '@rjsf/utils';
+import { GenericObjectType } from '@rjsf/utils';
 import { PhoneNumberUtil } from 'google-libphonenumber';
-import { FilteredObject, FilterType } from '../types';
+import { Locale } from 'date-fns';
+import * as Locales from 'date-fns/locale';
+import { FilteredObject, FilterType, UiSchema } from '../types';
+
 // if google-libphonenumber gives type error simply do this; pnpm add @types/google-libphonenumber
 
 /**
@@ -632,4 +635,24 @@ export function bulkCreateUiSchema<T>({
     Object.assign(uiSchema, { [element]: config });
   }
   return filterUndefinedAndEmpty(uiSchema);
+}
+
+/**
+ * Looks up a date-fns locale from the Expo localization object.  This falls back to `en-US`
+ * @param localization Expo Localization object containing the locale and region.
+ * @returns date-fns locale.
+ */
+
+export function getDateFnsLocale({
+  locale,
+  region,
+}: {
+  locale: string;
+  region?: string;
+}): Locale {
+  return (
+    Locales[(locale.substring(0, 2) + region) as keyof typeof Locales] ??
+    Locales[locale.substring(0, 2) as keyof typeof Locales] ??
+    Locales.enUS
+  );
 }

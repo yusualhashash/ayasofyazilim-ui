@@ -1,6 +1,18 @@
 import { FormProps } from '@rjsf/core';
-import { GenericObjectType, UiSchema } from '@rjsf/utils';
+import { UiSchema as BaseUiSchema, GenericObjectType } from '@rjsf/utils';
 
+import type {
+  FieldProps as BaseFieldProps,
+  TemplatesType as BaseTemplatesType,
+  WidgetProps as BaseWidgetProps,
+  RJSFSchema,
+  StrictRJSFSchema,
+} from '@rjsf/utils';
+
+export type FormContext = {
+  locale?: string;
+};
+export type UiSchema = BaseUiSchema & { 'ui:config'?: FormContext };
 export interface SchemaFormProps<T>
   extends Omit<FormProps<T>, 'validator' | 'uiSchema'> {
   defaultSubmitClassName?: string;
@@ -36,5 +48,17 @@ export type FilteredObject<T> = {
       ? never
       : T[K];
 };
+export type WidgetProps<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+> = BaseWidgetProps<T, S, FormContext>;
 
-export type { WidgetProps, FieldProps, TemplatesType } from '@rjsf/utils';
+export type FieldProps<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+> = BaseFieldProps<T, S, FormContext>;
+
+export type TemplatesType<
+  T,
+  S extends StrictRJSFSchema = RJSFSchema,
+> = BaseTemplatesType<T, S, FormContext>;

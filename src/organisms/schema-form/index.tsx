@@ -5,6 +5,7 @@ import { RJSFSchema } from '@rjsf/utils';
 import { customizeValidator } from '@rjsf/validator-ajv8';
 import { Fragment, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { ScrollBar } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import ScrollArea from '../../molecules/scroll-area';
 import { AsyncSelect, CustomPhoneField, FieldErrorTemplate } from './fields';
@@ -14,7 +15,7 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
 } from './templates';
-import { SchemaFormProps } from './types';
+import { FormContext, SchemaFormProps } from './types';
 import {
   createSchemaWithFilters,
   mergeUISchemaObjects,
@@ -29,7 +30,6 @@ import {
   CustomTextInput,
   PasswordInputWidget,
 } from './widgets';
-import { ScrollBar } from '@/components/ui/scroll-area';
 
 /**
  * SchemaForm component that renders a form based on the provided schema and options.
@@ -39,7 +39,7 @@ import { ScrollBar } from '@/components/ui/scroll-area';
  * @returns {JSX.Element} - The rendered form component.
  */
 export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
-  const Default: ThemeProps<T> = {
+  const Default: ThemeProps<T, any, FormContext> = {
     fields: {
       phone: CustomPhoneField,
     },
@@ -69,7 +69,11 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
     defaultSubmitClassName,
   } = props; // Start with the provided schema
   const Wrapper = withScrollArea ? ScrollArea : Fragment;
-  let uiSchema = {}; // Initialize the UI schema
+  let uiSchema = {
+    'ui:config': {
+      locale: 'en',
+    },
+  }; // Initialize the UI schema
   let { schema } = props;
   if (filter) {
     schema = createSchemaWithFilters({
@@ -86,9 +90,12 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
     <Wrapper
       {...(withScrollArea && { className: 'h-full [&>div>div]:!block' })}
     >
-      <Form<T>
+      <Form<T, any, FormContext>
         noHtml5Validate
         liveValidate
+        formContext={{
+          ...uiSchema['ui:config'],
+        }}
         focusOnFirstError
         showErrorList={props.showErrorList || false}
         {...props}
