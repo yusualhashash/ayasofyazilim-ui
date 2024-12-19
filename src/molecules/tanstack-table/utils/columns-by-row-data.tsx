@@ -63,7 +63,7 @@ export function createCell<T>(props: {
   if (icon) {
     const position = icon.position || 'before';
     content = (
-      <>
+      <div>
         {icon.icon && position === 'before' && (
           <icon.icon className={cn('w-4 h-4', icon.iconClassName)} />
         )}
@@ -71,7 +71,7 @@ export function createCell<T>(props: {
         {icon.icon && position === 'after' && (
           <icon.icon className={cn('w-4 h-4', icon.iconClassName)} />
         )}
-      </>
+      </div>
     );
   }
   if (badge) {
@@ -196,6 +196,7 @@ export function tanstackTableCreateColumnsByRowData<T>(
     icons,
     expandRowTrigger,
     custom,
+    onSelectedRowChange,
   } = params;
   const columns: ColumnDef<T>[] = [];
   if (params.selectableRows) {
@@ -209,18 +210,37 @@ export function tanstackTableCreateColumnsByRowData<T>(
               table.getIsAllPageRowsSelected() ||
               (table.getIsSomePageRowsSelected() && 'indeterminate')
             }
-            onCheckedChange={(value) =>
-              table.toggleAllPageRowsSelected(!!value)
-            }
+            onCheckedChange={(value) => {
+              table.toggleAllPageRowsSelected(!!value);
+              const selectedRows: T[] = [];
+              if (value) {
+                table.getRowModel().rows.forEach((row) => {
+                  selectedRows.push(row.original);
+                });
+              }
+              onSelectedRowChange?.(selectedRows);
+            }}
             aria-label="Select all"
             className="translate-y-0.5  align-middle"
           />
         </div>
       ),
-      cell: ({ row }) => (
+      cell: ({ row, table }) => (
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          onCheckedChange={(value) => {
+            const selectedRows: T[] = [];
+            table.getSelectedRowModel().rows.forEach((row) => {
+              selectedRows.push(row.original);
+            });
+            if (value) {
+              selectedRows.push(row.original);
+            } else {
+              selectedRows.splice(selectedRows.indexOf(row.original), 1);
+            }
+            row.toggleSelected(!!value);
+            onSelectedRowChange?.(selectedRows);
+          }}
           aria-label="Select row"
           className="translate-y-0.5 align-top"
         />

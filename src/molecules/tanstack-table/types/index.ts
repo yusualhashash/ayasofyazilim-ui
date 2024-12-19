@@ -279,6 +279,7 @@ export type TanstackTableCreateColumnsByRowId<T> = {
     }
   >;
   selectableRows?: boolean;
+  onSelectedRowChange?: (selectedRows: T[]) => void;
 };
 
 export type TanstacktableEditableColumnsByRowId<T> = {
