@@ -1,14 +1,14 @@
 import { WidgetProps } from '@rjsf/utils';
-import { useState } from 'react';
 import { format } from 'date-fns';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
-  PopoverTrigger,
   PopoverContent,
+  PopoverTrigger,
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import AdvancedCalendar from '../../../molecules/advanced-calendar';
 
 export const CustomDate = (props: WidgetProps) => {
   const { value, uiSchema, onChange, disabled } = props;
@@ -17,7 +17,7 @@ export const CustomDate = (props: WidgetProps) => {
     uiSchema?.['ui:placeholder']?.toString() ||
     uiOptions?.['ui:placeholder']?.toString() ||
     'Pick a date';
-  const [date, setDate] = useState<Date>(value);
+  const [date, setDate] = useState<Date>(new Date(value));
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -34,24 +34,31 @@ export const CustomDate = (props: WidgetProps) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <AdvancedCalendar
-          placeholder={placeholder}
+        <Calendar
           mode="single"
-          presets
+          disabled={
+            uiOptions?.fromDate
+              ? { before: uiOptions?.fromDate as Date }
+              : undefined
+          }
           fromYear={
-            (uiOptions?.fromYear as number) ||
-            new Date(date).getFullYear() - 100
+            (uiOptions?.fromYear as number) || date
+              ? date.getFullYear() - 100
+              : new Date().getFullYear() - 100
           }
           toYear={
-            (uiOptions?.toYear as number) || new Date(date).getFullYear() + 100
+            (uiOptions?.toYear as number) || date
+              ? date.getFullYear() + 100
+              : new Date().getFullYear() + 100
           }
+          month={date}
           selected={date}
+          initialFocus
           onSelect={(e) => {
             if (!e) return;
             setDate(e);
             onChange(e.toISOString());
           }}
-          initialFocus
         />
       </PopoverContent>
     </Popover>

@@ -125,7 +125,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
           />
         )}
       </Form>
-      <ScrollBar orientation="horizontal" />
+      {withScrollArea && <ScrollBar orientation="horizontal" />}
     </Wrapper>
   );
 }
