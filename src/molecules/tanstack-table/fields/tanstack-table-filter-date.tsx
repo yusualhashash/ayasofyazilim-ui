@@ -18,6 +18,12 @@ interface TanstackTableDateFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;
   dateItem: TanstackTableDateFilterType;
   onFilter: (accessorKey: string, selectedValues: string) => void;
+  onFilterMultiple: (
+    filter: {
+      accessorKey: string;
+      selectedValues: string;
+    }[]
+  ) => void;
   params: URLSearchParams;
 }
 
@@ -26,6 +32,7 @@ export function TanstackTableDateFilter<TData, TValue>({
   accessorKey,
   params,
   onFilter,
+  onFilterMultiple,
   dateItem,
 }: TanstackTableDateFilterProps<TData, TValue>) {
   const title = column?.columnDef?.meta?.toString() || accessorKey;
@@ -47,30 +54,69 @@ export function TanstackTableDateFilter<TData, TValue>({
   );
 
   useEffect(() => {
+    function isFilterChanged(accessorKey: string, date: Date | undefined) {
+      return params.get(accessorKey) !== date?.toISOString();
+    }
+
+    function isFiltered(accessorKey: string) {
+      return !!params.get(accessorKey);
+    }
+
+    const filter: {
+      accessorKey: string;
+      selectedValues: string;
+    }[] = [];
+
     if (!date) {
-      if (params?.get(dateItem.startAccessorKey)) {
-        onFilter(dateItem?.startAccessorKey, '');
+      // This works when filters cleared
+      if (isFiltered(dateItem.startAccessorKey)) {
+        filter.push({
+          accessorKey: dateItem.startAccessorKey,
+          selectedValues: '',
+        });
       }
-      if (dateItem?.endAccessorKey && params?.get(dateItem.endAccessorKey)) {
-        onFilter(dateItem?.endAccessorKey, '');
+      if (dateItem?.endAccessorKey && isFiltered(dateItem.endAccessorKey)) {
+        filter.push({
+          accessorKey: dateItem.endAccessorKey,
+          selectedValues: '',
+        });
+      }
+
+      if (filter.length > 0) {
+        onFilterMultiple(filter);
       }
       return;
     }
 
     if (date instanceof Date) {
-      if (params?.get(dateItem.startAccessorKey) !== date.toISOString()) {
+      // It's a single date, no endAccessorKey
+      if (isFilterChanged(dateItem?.startAccessorKey, date)) {
         onFilter(dateItem?.startAccessorKey, date.toISOString());
       }
       return;
     }
 
-    if (params?.get(dateItem.startAccessorKey) !== date.from?.toISOString()) {
-      onFilter(dateItem?.startAccessorKey, date.from?.toISOString() || '');
-    }
-    if (!dateItem?.endAccessorKey) return;
+    if (!dateItem.canFilteredBySingleDate && (!date.from || !date.to)) return;
 
-    if (params?.get(dateItem.endAccessorKey) !== date.to?.toISOString()) {
-      onFilter(dateItem?.endAccessorKey, date.to?.toISOString() || '');
+    if (isFilterChanged(dateItem.startAccessorKey, date.from)) {
+      filter.push({
+        accessorKey: dateItem.startAccessorKey,
+        selectedValues: date.from?.toISOString() || '',
+      });
+    }
+
+    if (
+      dateItem.endAccessorKey &&
+      isFilterChanged(dateItem.endAccessorKey, date.to)
+    ) {
+      filter.push({
+        accessorKey: dateItem.endAccessorKey,
+        selectedValues: date.to?.toISOString() || '',
+      });
+    }
+
+    if (filter.length > 0) {
+      onFilterMultiple(filter);
     }
   }, [date]);
 

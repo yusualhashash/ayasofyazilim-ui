@@ -106,6 +106,7 @@ export type TanstackTableDateFilterType = {
   endAccessorKey?: string;
   label: string;
   startAccessorKey: string;
+  canFilteredBySingleDate?: boolean;
 };
 
 export type TanstackTableFiltersType = {
