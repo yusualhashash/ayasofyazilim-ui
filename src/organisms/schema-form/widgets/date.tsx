@@ -56,7 +56,7 @@ export const CustomDate = (props: WidgetProps) => {
   const initialDate =
     value && !Number.isNaN(new Date(value).getTime())
       ? new Date(value)
-      : new Date(fromYear, 0, 1);
+      : new Date(fromDate);
 
   const [date, setDate] = useState<Date>(initialDate);
   return (
@@ -80,10 +80,14 @@ export const CustomDate = (props: WidgetProps) => {
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
+          key={props.id}
           required={required}
           locale={getDateFnsLocale({ locale })}
           mode="single"
-          disabled={[toDate, fromDate]}
+          disabled={{
+            before: fromDate,
+            after: toDate,
+          }}
           fromYear={fromYear}
           toYear={toYear}
           defaultMonth={date}
