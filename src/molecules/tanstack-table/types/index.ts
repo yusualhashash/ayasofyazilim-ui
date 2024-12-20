@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-table';
 import { ComponentType } from 'react';
 import { z } from 'zod';
-import { FieldConfig } from 'src/organisms/auto-form';
+import { FieldConfig } from '../../../organisms/auto-form';
 import { ZodObjectOrWrapped } from '../../../organisms/auto-form/utils';
 
 export type NonEditableTanstackTableProps<TData> = {
