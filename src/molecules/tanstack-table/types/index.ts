@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-table';
 import { ComponentType } from 'react';
 import { z } from 'zod';
+import { FieldConfig } from 'src/organisms/auto-form';
 import { ZodObjectOrWrapped } from '../../../organisms/auto-form/utils';
 
 export type NonEditableTanstackTableProps<TData> = {
@@ -185,6 +186,7 @@ export type TanstackTableRowActionsAutoformDialog<TData> = Omit<
   className?: { autoform: string; submit: string };
   onSubmit: (row: TData, values: Partial<z.infer<ZodObjectOrWrapped>>) => void;
   schema: ZodObjectOrWrapped;
+  fieldConfig?: FieldConfigType;
   submitText: string;
   type: 'autoform-dialog';
   values?: (row: TData) => Partial<z.infer<ZodObjectOrWrapped>>;
@@ -218,6 +220,11 @@ export type TanstackTableActionsDialog = {
   onConfirm?: () => void;
   title: string;
 };
+export type FieldConfigType =
+  | FieldConfig<{
+      [x: string]: any;
+    }>
+  | undefined;
 export type TanstackTableActionsAutoformDialog = Omit<
   TanstackTableActionsDialog,
   'cancelText' | 'onCancel' | 'confirmationText' | 'onConfirm'
@@ -225,6 +232,7 @@ export type TanstackTableActionsAutoformDialog = Omit<
   className?: { autoform: string; submit: string };
   onSubmit: (values: Partial<z.infer<ZodObjectOrWrapped>>) => void;
   schema: ZodObjectOrWrapped;
+  fieldConfig?: FieldConfigType;
   submitText: string;
   type: 'autoform-dialog';
   values?: Partial<z.infer<ZodObjectOrWrapped>>;
