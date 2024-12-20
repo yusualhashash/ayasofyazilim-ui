@@ -72,6 +72,7 @@ export function TanstackTableActionDialogs<TData>({
           row={rowAction.row}
           title={rowAction.title}
           schema={rowAction.schema}
+          fieldConfig={rowAction.fieldConfig}
           submitText={rowAction.submitText}
           onSubmit={rowAction.onSubmit}
           values={rowAction.values}
@@ -83,6 +84,7 @@ export function TanstackTableActionDialogs<TData>({
           setDialogOpen={() => setTableAction(null)}
           title={tableAction.title}
           schema={tableAction.schema}
+          fieldConfig={tableAction.fieldConfig}
           submitText={tableAction.submitText}
           onSubmit={tableAction.onSubmit}
           values={tableAction.values}

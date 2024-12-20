@@ -186,6 +186,7 @@ export type TanstackTableRowActionsAutoformDialog<TData> = Omit<
   className?: { autoform: string; submit: string };
   onSubmit: (row: TData, values: Partial<z.infer<ZodObjectOrWrapped>>) => void;
   schema: ZodObjectOrWrapped;
+  fieldConfig?: FieldConfigType;
   submitText: string;
   type: 'autoform-dialog';
   values?: (row: TData) => Partial<z.infer<ZodObjectOrWrapped>>;
