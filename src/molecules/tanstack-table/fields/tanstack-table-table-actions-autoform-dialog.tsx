@@ -22,6 +22,7 @@ export const TanstackTableTableAutoformDialog = ({
   submitText,
   onSubmit,
   schema,
+  fieldConfig,
   className,
   values,
   setDialogOpen,
@@ -33,6 +34,7 @@ export const TanstackTableTableAutoformDialog = ({
       </DialogHeader>
       <AutoForm
         formSchema={schema}
+        fieldConfig={fieldConfig}
         className={className?.autoform}
         values={values}
         onSubmit={(formData) => {
