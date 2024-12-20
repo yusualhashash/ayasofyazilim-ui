@@ -241,7 +241,11 @@ export function columnsGenerator<Tdata>({
                   'id' in row.original &&
                   typeof row.original.id === 'string'
                 ) {
-                  navigator.clipboard.writeText(row.original.id);
+                  if (navigator.clipboard) {
+                    navigator.clipboard.writeText(row.original.id);
+                  } else {
+                    alert(row.original.id);
+                  }
                 }
               }}
             >
