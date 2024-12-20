@@ -1,5 +1,4 @@
 import { Meta, StoryFn } from '@storybook/react';
-import React from 'react';
 import { z } from 'zod';
 import LoginForm from '.';
 import locale from '../../../locale_tr.json';
