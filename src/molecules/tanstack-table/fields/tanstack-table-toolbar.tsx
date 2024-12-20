@@ -64,7 +64,7 @@ export const TanstackTableToolbar = <TData,>({
   }
   return (
     <div className="flex w-full items-center justify-between p-px">
-      <div className="flex flex-1 items-center space-x-2">
+      <div className="flex flex-1 flex-wrap items-center gap-x-2">
         {filters?.textFilters &&
           filters.textFilters.map((accessorKey) => (
             <TanstackTableTextFilter
