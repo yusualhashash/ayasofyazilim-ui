@@ -44,6 +44,7 @@ export type LoginFormPropsType = {
   registerPath: string;
   resources?: { [key: string]: any };
   router: any;
+  defaultValues?: Partial<LoginFormDataType>;
 };
 
 export default function LoginForm({
@@ -54,6 +55,7 @@ export default function LoginForm({
   allowTenantChange,
   registerPath,
   resources = localeTr.resources,
+  defaultValues,
 }: LoginFormPropsType) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
@@ -78,6 +80,7 @@ export default function LoginForm({
       tenantId: '',
       userIdentifier: '',
       password: '',
+      ...defaultValues,
     },
   });
 
