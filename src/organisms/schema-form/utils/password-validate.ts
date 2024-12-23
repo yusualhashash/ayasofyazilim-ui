@@ -16,12 +16,8 @@ export function customPasswordValidate<T>({
   if (!formData) {
     return errors;
   }
-
   if (formData[keyOne] !== formData[keyTwo]) {
-    if (errors[keyTwo]) {
-      errors[keyTwo].addError(errorMessage);
-    }
+    errors[keyTwo]?.addError(errorMessage);
   }
-
   return errors;
 }
