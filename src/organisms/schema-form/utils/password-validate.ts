@@ -14,10 +14,10 @@ export function customPasswordValidate<T>({
   errors: FormValidation<T>;
 }): FormValidation<T> {
   if (!formData) {
-    return errors; // or throw an error, depending on your requirements
+    return errors;
   }
-  if (formData[keyOne] !== formData[keyTwo] && errors && errors[keyTwo]) {
-    errors[keyTwo].addError(errorMessage);
+  if (formData[keyOne] !== formData[keyTwo] && errors?.[keyTwo]) {
+    errors[keyTwo].addError?.(errorMessage);
   }
   return errors;
 }
