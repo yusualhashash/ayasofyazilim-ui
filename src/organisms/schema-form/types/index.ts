@@ -1,5 +1,10 @@
 import { FormProps } from '@rjsf/core';
-import { UiSchema as BaseUiSchema, GenericObjectType } from '@rjsf/utils';
+import {
+  UiSchema as BaseUiSchema,
+  GenericObjectType,
+  ErrorSchema as BaseErrorSchema,
+  FormValidation as BaseFormValidation,
+} from '@rjsf/utils';
 
 import type {
   FieldProps as BaseFieldProps,
@@ -12,6 +17,8 @@ import type {
 export type FormContext = {
   locale?: string;
 };
+export type ErrorSchema = BaseErrorSchema;
+export type FormValidation<T> = BaseFormValidation<T>;
 export type UiSchema = BaseUiSchema & { 'ui:config'?: FormContext };
 export interface SchemaFormProps<T>
   extends Omit<FormProps<T>, 'validator' | 'uiSchema'> {

@@ -6,6 +6,7 @@ import { Locale } from 'date-fns';
 import * as Locales from 'date-fns/locale';
 import { FilteredObject, FilterType, UiSchema } from '../types';
 
+export * from './password-validate';
 // if google-libphonenumber gives type error simply do this; pnpm add @types/google-libphonenumber
 
 /**
