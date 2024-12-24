@@ -1,15 +1,16 @@
 import React, { Dispatch, useEffect } from 'react';
 import {
-  TanstackTableRowActionsType,
-  TanstackTableTableActionsType,
-} from '../types';
-import {
   TanstackTableAutoformDialog,
   TanstackTableConfirmationDialog,
   TanstackTableCustomDialog,
   TanstackTableTableAutoformDialog,
   TanstackTableTableCustomDialog,
 } from '.';
+import {
+  TanstackTableRowActionsType,
+  TanstackTableTableActionsType,
+} from '../types';
+import { TanstackTableTableSchemaFormDialog } from './tanstack-table-table-actions-schemaform-dialog';
 
 export function TanstackTableActionDialogs<TData>({
   rowAction,
@@ -101,6 +102,19 @@ export function TanstackTableActionDialogs<TData>({
           cancelText={tableAction.cancelText}
           onConfirm={tableAction.onConfirm}
           onCancel={tableAction.onCancel}
+        />
+      )}
+      {tableAction?.type === 'schemaform-dialog' && (
+        <TanstackTableTableSchemaFormDialog
+          setDialogOpen={() => setTableAction(null)}
+          title={tableAction.title}
+          type="schemaform-dialog"
+          schema={tableAction.schema}
+          submitText={tableAction.submitText}
+          onSubmit={tableAction.onSubmit}
+          uiSchema={tableAction.uiSchema}
+          filter={tableAction.filter}
+          widgets={tableAction.widgets}
         />
       )}
     </>
