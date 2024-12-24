@@ -8,15 +8,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 
 const defaultClassNames = {
-  horizontal: {
+  vertical: {
     tabs: 'flex h-full',
     tabList: 'flex flex-col h-full justify-start max-w-sm overflow-hidden',
     tabTrigger: 'justify-start max-w-lg overflow-hidden w-full',
     tabContent: 'mx-2 my-0 w-full h-full overflow-auto flex-1',
   },
-  vertical: {
+  horizontal: {
     tabs: 'flex h-full overflow-hidden flex-col',
-    tabList: 'w-full mx:w-max overflow-x-auto min-h-max',
+    tabList: 'w-full mx:w-max overflow-x-auto overflow-y-hidden min-h-max',
     tabTrigger: 'min-w-max',
     tabContent: 'h-full my-2 overflow-auto',
   },
@@ -25,7 +25,7 @@ const defaultClassNames = {
 export function TabLayout({
   tabList,
   children,
-  orientation = 'vertical',
+  orientation = 'horizontal',
   classNames,
 }: {
   tabList: {
