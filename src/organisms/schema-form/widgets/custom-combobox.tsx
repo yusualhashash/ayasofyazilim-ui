@@ -28,6 +28,7 @@ type CustomComboboxProps<T> = {
   searchResultLabel?: string;
   selectIdentifier: keyof T;
   selectLabel: keyof T;
+  disabledItems?: T[keyof T][];
 } & WidgetProps;
 
 export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
@@ -164,6 +165,7 @@ function List<T>({
         <CommandGroup>
           {list?.map((item: T) => (
             <CommandItem
+              disabled={props.disabledItems?.includes(item[selectIdentifier])}
               onSelect={() => {
                 onChange(
                   uiOptions?.allowEmpty !== false
@@ -191,4 +193,38 @@ function List<T>({
       </CommandList>
     </Command>
   );
+}
+
+export function CustomComboboxWidget<T>({
+  languageData,
+  selectLabel,
+  selectIdentifier,
+  list,
+  disabledItems,
+}: {
+  languageData: {
+    'Select.Placeholder': string;
+    'Select.ResultLabel': string;
+    'Select.EmptyValue': string;
+  };
+  selectIdentifier: keyof T;
+  selectLabel: keyof T;
+  list: T[];
+  disabledItems?: T[keyof T][];
+}) {
+  function Widget(props: WidgetProps) {
+    return (
+      <CustomCombobox<T>
+        {...props}
+        list={list}
+        searchPlaceholder={languageData['Select.Placeholder']}
+        searchResultLabel={languageData['Select.ResultLabel']}
+        emptyValue={languageData['Select.EmptyValue']}
+        selectIdentifier={selectIdentifier}
+        selectLabel={selectLabel}
+        disabledItems={disabledItems}
+      />
+    );
+  }
+  return Widget;
 }

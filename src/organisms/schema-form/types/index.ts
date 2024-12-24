@@ -29,6 +29,7 @@ export interface SchemaFormProps<T>
   uiSchema?: UiSchema;
   useDefaultSubmit?: boolean;
   withScrollArea?: boolean;
+  formData?: T | undefined;
 }
 
 export type FilterType<T> = CommonFilterType<T> &

@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-table';
 import { ComponentType } from 'react';
 import { z } from 'zod';
+import { SchemaFormProps } from '../../../organisms/schema-form/types';
 import { FieldConfig } from '../../../organisms/auto-form';
 import { ZodObjectOrWrapped } from '../../../organisms/auto-form/utils';
 
@@ -237,6 +238,15 @@ export type TanstackTableActionsAutoformDialog = Omit<
   type: 'autoform-dialog';
   values?: Partial<z.infer<ZodObjectOrWrapped>>;
 };
+export type TanstackTableActionsSchemaFormDialog = Omit<
+  TanstackTableActionsDialog,
+  'cancelText' | 'onCancel' | 'confirmationText' | 'onConfirm'
+> & {
+  className?: { autoform: string; submit: string };
+  onSubmit: (values: any | undefined) => void;
+  submitText: string;
+  type: 'schemaform-dialog';
+} & SchemaFormProps<undefined>;
 export type TanstackTableActionsCustomDialog = TanstackTableActionsDialog & {
   content: JSX.Element;
   type: 'custom-dialog';
@@ -249,6 +259,7 @@ export type TanstackTableTableActionsType = {
   | TanstackTableActionsSimple
   | TanstackTableActionsCustomDialog
   | TanstackTableActionsAutoformDialog
+  | TanstackTableActionsSchemaFormDialog
   | TanstackTableCreateRowAction
 );
 export type TanstackTableSelectedRowActionType<TData> = {
