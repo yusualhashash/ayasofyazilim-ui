@@ -1,7 +1,10 @@
 'use client';
 
 import { ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
 
 interface IPageBackButtonProps {
   LinkElement: any;
@@ -25,6 +28,11 @@ export const PageHeader = ({
   LinkElement,
   href,
 }: IPageHeaderProps | IPageBackButtonProps) => {
+  const hasReferer = useMemo(
+    () => typeof window !== 'undefined' && !!document.referrer,
+    [window, document]
+  );
+  const router = useRouter();
   if (isLoading) {
     return (
       <div className="mb-4 flex items-center gap-4 px-2">
@@ -38,14 +46,25 @@ export const PageHeader = ({
   }
   return (
     <div className="mb-4 flex items-center gap-4 px-2">
-      {LinkElement && (
+      {hasReferer && LinkElement ? (
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => {
+            router.back();
+          }}
+        >
+          <ArrowLeft />
+        </Button>
+      ) : LinkElement ? (
         <LinkElement
           className="size-12 rounded-xl cursor-pointer border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground items-center justify-center flex"
           href={href}
         >
           <ArrowLeft />
         </LinkElement>
-      )}
+      ) : null}
+
       <div>
         <h1 className="text-2xl font-medium">{title}</h1>
         <p className="text-sm text-neutral-500">{description}</p>
