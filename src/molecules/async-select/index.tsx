@@ -9,24 +9,22 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useDebounce } from '../../hooks/useDebounce';
+
+type SearchItem = { id: string; name: string };
 
 function CommandGroupItem({
   items,
   title,
-  onSelectionChange,
-  selectedItems,
+  onChange,
+  value,
 }: {
   title: string;
-  items: { id: string; name: string }[];
-  selectedItems: { id: string; name: string }[];
-  onSelectionChange: (
-    value: {
-      id: string;
-      name: string;
-    }[]
-  ) => void;
+  items: SearchItem[];
+  value: SearchItem[];
+  onChange: (value: SearchItem[]) => void;
 }) {
   return (
     <CommandGroup heading={title}>
@@ -34,17 +32,15 @@ function CommandGroupItem({
         <CommandItem
           key={currentItem.id}
           onSelect={() => {
-            if (selectedItems.find((i) => i.id === currentItem.id)) {
-              return onSelectionChange(
-                selectedItems.filter((i) => i.id !== currentItem.id)
-              );
+            if (value.find((i) => i.id === currentItem.id)) {
+              return onChange(value.filter((i) => i.id !== currentItem.id));
             }
-            return onSelectionChange([...selectedItems, currentItem]);
+            return onChange([...value, currentItem]);
           }}
           value={currentItem.name}
         >
           {currentItem.name}
-          {selectedItems.find((i) => i.id === currentItem.id) && (
+          {value.find((i) => i.id === currentItem.id) && (
             <CheckIcon className={cn('ml-auto h-4 w-4')} />
           )}
         </CommandItem>
@@ -53,42 +49,37 @@ function CommandGroupItem({
   );
 }
 
-type SearchableCommand = {
-  suggestions?: { id: string; name: string }[];
-  data?: { id: string; name: string }[];
-  fetchAction: (search: string) => Promise<{ id: string; name: string }[]>;
+type AsyncSelectType = {
+  suggestions?: SearchItem[];
+  data?: SearchItem[];
+  value: SearchItem[];
+  onChange: (value: SearchItem[]) => void;
+  fetchAction: (search: string) => Promise<SearchItem[]>;
   resultText?: string;
-  fetchText?: string;
   searchText?: string;
   noResultText?: string;
-  onSelectedItemsChange: (value: string[]) => void;
 };
 
-export default function AsyncCommand({
-  data,
-  fetchAction,
+export default function AsyncSelect({
   suggestions = [],
-  resultText = 'Results',
-  fetchText = 'Fetching...',
-  searchText = 'Search...',
-  noResultText = 'No results found.',
-  onSelectedItemsChange,
-}: SearchableCommand) {
+  data,
+  value,
+  fetchAction,
+  onChange,
+  resultText = 'Result',
+  searchText = 'Search',
+  noResultText = 'No result',
+}: AsyncSelectType) {
+  const [loading, setLoading] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const searchValue = useDebounce(searchInput, 500);
-  const [selectedItems, setSelectedItems] = useState<
-    { id: string; name: string }[]
-  >([]);
-  const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState<{ id: string; name: string }[]>(
-    data || []
-  );
 
+  const [items, setItems] = useState<SearchItem[]>(data || []);
   const showableItems = items.filter(
-    (item) => !selectedItems.find((i) => i.id === item.id)
+    (item) => !value.find((i) => i.id === item.id)
   );
   const showableSuggestions = suggestions.filter(
-    (item) => !selectedItems.find((i) => i.id === item.id)
+    (item) => !value.find((i) => i.id === item.id)
   );
 
   function onSearch(search: string) {
@@ -103,17 +94,13 @@ export default function AsyncCommand({
     setSearchInput(search);
   }
 
-  function onSelectionChange(items: { id: string; name: string }[]) {
-    setSelectedItems(items);
-    onSelectedItemsChange(items.map((i) => i.id));
-  }
   useEffect(() => {
-    if (searchInput.length && searchInput === searchValue) {
-      fetchAction(searchValue).then((res) => {
-        setItems(res);
-        setLoading(false);
-      });
-    }
+    if (!searchValue || searchValue !== searchInput) return;
+
+    fetchAction(searchValue).then((res) => {
+      setItems(res);
+      setLoading(false);
+    });
   }, [searchValue]);
 
   return (
@@ -124,18 +111,22 @@ export default function AsyncCommand({
       />
 
       <CommandList className="overflow-y-auto max-h-48">
-        {loading && <div className="p-2 text-sm">{fetchText}</div>}
+        {loading && (
+          <div className="p-1 text-sm">
+            <Skeleton className="h-7 w-full mb-1" />
+          </div>
+        )}
 
         {!loading && items.length === 0 && searchValue.length > 0 && (
           <div className="text-sm p-2">{noResultText}</div>
         )}
 
-        {selectedItems.length > 0 && (
+        {value.length > 0 && (
           <CommandGroupItem
-            items={selectedItems}
-            selectedItems={selectedItems}
+            items={value}
+            value={value}
             title="Selected"
-            onSelectionChange={(value) => onSelectionChange(value)}
+            onChange={(value) => onChange(value)}
           />
         )}
 
@@ -144,18 +135,18 @@ export default function AsyncCommand({
           showableSuggestions?.length > 0 && (
             <CommandGroupItem
               items={showableSuggestions}
-              selectedItems={selectedItems}
+              value={value}
               title="Suggestions"
-              onSelectionChange={(value) => onSelectionChange(value)}
+              onChange={(value) => onChange(value)}
             />
           )}
 
         {!loading && showableItems.length > 0 && (
           <CommandGroupItem
             items={showableItems}
-            selectedItems={selectedItems}
+            value={value}
             title={resultText}
-            onSelectionChange={(value) => onSelectionChange(value)}
+            onChange={(value) => onChange(value)}
           />
         )}
       </CommandList>
