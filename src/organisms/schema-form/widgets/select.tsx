@@ -8,31 +8,33 @@ import {
 } from '@/components/ui/select';
 
 export const CustomSelect = (props: WidgetProps) => {
-  const hasValue = props.value || props.defaultValue;
+  const { label, options, onChange, value, defaultValue, disabled } = props;
+  const _value = value?.toString() || defaultValue?.toString();
+  const hasValue = !!_value;
   return (
     <Select
-      defaultValue={props.value || props.defaultValue}
-      value={props.value || props.defaultValue}
+      defaultValue={_value}
       onValueChange={(value) => {
-        props.onChange(value);
+        onChange(value);
       }}
     >
       <SelectTrigger
-        className={hasValue ? '' : 'text-muted-foreground'}
-        disabled={props.disabled}
+        className={hasValue ? 'text-black ' : 'text-muted-foreground'}
+        disabled={disabled}
       >
         <SelectValue
           placeholder={
+            _value ||
             props?.uiSchema?.['ui:placeholder'] ||
-            `Please select an ${props.label.toLocaleLowerCase()}`
+            `Please select an ${label.toLocaleLowerCase()}`
           }
         />
       </SelectTrigger>
       <SelectContent>
-        {props.options.enumOptions?.map((enumOption) => (
+        {options.enumOptions?.map((enumOption) => (
           <SelectItem
             key={JSON.stringify(enumOption.value)}
-            value={enumOption.value}
+            value={enumOption.value.toString()}
           >
             {enumOption.label}
           </SelectItem>
