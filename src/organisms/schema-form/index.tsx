@@ -29,6 +29,7 @@ import {
   CustomSwitch,
   CustomTextInput,
   PasswordInputWidget,
+  EmailInputWidget,
 } from './widgets';
 
 /**
@@ -52,6 +53,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       TextWidget: CustomTextInput,
       DateTimeWidget: CustomDate,
       password: PasswordInputWidget,
+      email: EmailInputWidget,
     },
     templates: {
       ArrayFieldTemplate: AccordionArrayFieldTemplate,
