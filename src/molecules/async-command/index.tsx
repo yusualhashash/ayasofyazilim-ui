@@ -108,8 +108,6 @@ export default function AsyncCommand({
     onSelectedItemsChange(items.map((i) => i.id));
   }
   useEffect(() => {
-    if (!fetchAction) return;
-
     if (searchInput.length && searchInput === searchValue) {
       fetchAction(searchValue).then((res) => {
         setItems(res);
