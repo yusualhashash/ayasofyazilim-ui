@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-type SearchItem = { id: string; name: string };
+export type FilterComponentSearchItem = { id: string; name: string };
 type DateSelectType = {
   title: string;
   onChange: Dispatch<SetStateAction<string>>;
@@ -32,9 +32,9 @@ type MultiSelectType = {
 };
 type AsyncSelectType = {
   title: string;
-  fetchAction: (search: string) => Promise<SearchItem[]>;
-  onChange: Dispatch<SetStateAction<SearchItem[]>>;
-  value: SearchItem[];
+  fetchAction: (search: string) => Promise<FilterComponentSearchItem[]>;
+  onChange: Dispatch<SetStateAction<FilterComponentSearchItem[]>>;
+  value: FilterComponentSearchItem[];
 };
 export default function FilterComponent({
   dateSelect,
