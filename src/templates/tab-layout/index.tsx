@@ -2,7 +2,7 @@
 
 import { cva, VariantProps } from 'class-variance-authority';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { ComponentType, ReactNode, Suspense } from 'react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -125,8 +125,12 @@ export function TabLayout({
   const tabTriggerClassNames = tabTriggerVariants({ orientation, variant });
   const tabContentClassNames = tabContentVariants({ orientation, variant });
   const path = usePathname();
+  const currentPath = path.split('/').at(-1);
+  const searchParams = `?${useSearchParams().toString()}`;
+
   const active =
-    tabList.find((tab) => tab.href === path.split('/').at(-1))?.href ||
+    tabList.find((tab) => tab.href === currentPath)?.href ||
+    tabList.find((tab) => tab.href === currentPath + searchParams)?.href ||
     tabList[0].href;
 
   return (
