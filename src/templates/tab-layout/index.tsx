@@ -1,12 +1,17 @@
 'use client';
 
+import { cva, VariantProps } from 'class-variance-authority';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ComponentType, ReactNode, Suspense } from 'react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
+type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;
 const defaultClassNames = {
   vertical: {
     tabs: 'flex h-full',
@@ -22,11 +27,87 @@ const defaultClassNames = {
   },
 };
 
+const tabsVariants = cva('', {
+  variants: {
+    variant: {
+      default: '',
+      simple: '',
+    },
+    orientation: {
+      horizontal: 'flex h-full overflow-hidden flex-col',
+      vertical: 'flex h-full',
+    },
+  },
+  defaultVariants: {
+    orientation: 'horizontal',
+    variant: 'default',
+  },
+});
+
+const tabListVariants = cva('', {
+  variants: {
+    variant: {
+      default:
+        'inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground',
+      simple: '',
+    },
+    orientation: {
+      horizontal: 'w-max mx:w-max overflow-x-auto overflow-y-hidden min-h-max',
+      vertical: 'flex flex-col h-full justify-start max-w-sm overflow-hidden',
+    },
+  },
+  defaultVariants: {
+    orientation: 'horizontal',
+    variant: 'default',
+  },
+});
+
+const tabTriggerVariants = cva(
+  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
+  {
+    variants: {
+      variant: {
+        default:
+          'px-3 py-1 ring-offset-background transition-all focus-visible:ring-2 focus-visible:ring-offset-2 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow',
+        simple:
+          'px-3 py-1 ring-offset-background transition-all focus-visible:ring-2 focus-visible:ring-offset-2 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow',
+      },
+      orientation: {
+        horizontal: '',
+        vertical: 'justify-start max-w-lg overflow-hidden w-full',
+      },
+    },
+    defaultVariants: {
+      orientation: 'horizontal',
+      variant: 'default',
+    },
+  }
+);
+
+const tabContentVariants = cva('', {
+  variants: {
+    variant: {
+      default:
+        'mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+      simple: '',
+    },
+    orientation: {
+      horizontal: 'h-full my-2 overflow-auto',
+      vertical: 'mx-2 my-0 w-full h-full overflow-auto flex-1',
+    },
+  },
+  defaultVariants: {
+    orientation: 'horizontal',
+    variant: 'default',
+  },
+});
+
 export function TabLayout({
   tabList,
   children,
   orientation = 'horizontal',
   classNames,
+  variant = 'default',
 }: {
   tabList: {
     label: string;
@@ -36,38 +117,38 @@ export function TabLayout({
   }[];
   children: ReactNode;
   orientation?: 'horizontal' | 'vertical';
-  classNames?: typeof defaultClassNames;
+  classNames?: DeepPartial<typeof defaultClassNames>;
+  variant?: VariantProps<typeof tabsVariants>['variant'];
 }) {
+  const tabsClassNames = tabsVariants({ orientation, variant });
+  const tabListClassNames = tabListVariants({ orientation, variant });
+  const tabTriggerClassNames = tabTriggerVariants({ orientation, variant });
+  const tabContentClassNames = tabContentVariants({ orientation, variant });
   const path = usePathname();
   const active =
     tabList.find((tab) => tab.href === path.split('/').at(-1))?.href ||
     tabList[0].href;
 
   return (
-    <Tabs
-      defaultValue={active}
-      className={cn(
-        defaultClassNames[orientation].tabs,
-        classNames?.[orientation].tabs
-      )}
+    <div
+      className={cn(tabsClassNames, classNames?.[orientation]?.tabs)}
+      role="tabpanel"
     >
-      <TabsList
-        className={cn(
-          defaultClassNames[orientation].tabList,
-          classNames?.[orientation].tabList
-        )}
+      <div
+        role="tablist"
+        className={cn(tabListClassNames, classNames?.[orientation]?.tabList)}
         style={{
           scrollbarWidth: 'thin',
         }}
       >
         {tabList.map((tab) => (
-          <TabsTrigger
+          <span
+            role="tab"
             key={tab.href}
-            value={tab.href}
-            asChild
+            data-state={tab.href === active ? 'active' : 'inactive'}
             className={cn(
-              defaultClassNames[orientation].tabTrigger,
-              classNames?.[orientation].tabTrigger
+              tabTriggerClassNames,
+              classNames?.[orientation]?.tabTrigger
             )}
           >
             <Link
@@ -77,20 +158,19 @@ export function TabLayout({
               {tab.icon && <tab.icon className="block md:hidden" />}
               {tab.label}
             </Link>
-          </TabsTrigger>
+          </span>
         ))}
-      </TabsList>
-      <TabsContent
-        value={active}
+      </div>
+      <div
         className={cn(
-          defaultClassNames[orientation].tabContent,
-          classNames?.[orientation].tabContent
+          tabContentClassNames,
+          classNames?.[orientation]?.tabContent
         )}
       >
         <Suspense fallback={<Skeleton className="flex-1 size-full" />}>
           {children}
         </Suspense>
-      </TabsContent>
-    </Tabs>
+      </div>
+    </div>
   );
 }
