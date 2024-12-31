@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 
 type CustomComboboxProps<T> = {
+  id?: string;
   disabled?: boolean;
   emptyValue?: string;
   errorMessage?: string;
@@ -138,10 +139,12 @@ function List<T>({
     searchResultLabel,
     value,
     onValueChange,
+    id,
   } = props;
 
   return (
     <Command
+      id={id}
       filter={(value, search) => {
         const filterResult = list?.find(
           (i) =>
