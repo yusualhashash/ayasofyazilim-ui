@@ -58,6 +58,7 @@ type AsyncSelectType = {
   resultText?: string;
   searchText?: string;
   noResultText?: string;
+  disabled?: boolean;
 };
 
 export default function AsyncSelect({
@@ -69,6 +70,7 @@ export default function AsyncSelect({
   resultText = 'Result',
   searchText = 'Search',
   noResultText = 'No result',
+  disabled = false,
 }: AsyncSelectType) {
   const [loading, setLoading] = useState(false);
   const [searchInput, setSearchInput] = useState('');
@@ -93,6 +95,11 @@ export default function AsyncSelect({
     setItems([]);
     setSearchInput(search);
   }
+  function handleOnChange(value: SearchItem[]) {
+    if (disabled) return;
+
+    onChange(value);
+  }
 
   useEffect(() => {
     if (!searchValue || searchValue !== searchInput) return;
@@ -104,10 +111,11 @@ export default function AsyncSelect({
   }, [searchValue]);
 
   return (
-    <Cmd className="border">
+    <Cmd className="border" aria-disabled={disabled}>
       <CommandInput
         placeholder={searchText}
         onValueChange={(search) => onSearch(search)}
+        disabled={disabled}
       />
 
       <CommandList className="overflow-y-auto max-h-48">
@@ -126,7 +134,7 @@ export default function AsyncSelect({
             items={value}
             value={value}
             title="Selected"
-            onChange={(value) => onChange(value)}
+            onChange={(value) => handleOnChange(value)}
           />
         )}
 
@@ -137,7 +145,7 @@ export default function AsyncSelect({
               items={showableSuggestions}
               value={value}
               title="Suggestions"
-              onChange={(value) => onChange(value)}
+              onChange={(value) => handleOnChange(value)}
             />
           )}
 
@@ -146,7 +154,7 @@ export default function AsyncSelect({
             items={showableItems}
             value={value}
             title={resultText}
-            onChange={(value) => onChange(value)}
+            onChange={(value) => handleOnChange(value)}
           />
         )}
       </CommandList>
