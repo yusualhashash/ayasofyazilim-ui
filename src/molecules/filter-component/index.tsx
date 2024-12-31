@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+type SearchItem = { id: string; name: string };
 type DateSelectType = {
   title: string;
   onChange: Dispatch<SetStateAction<string>>;
@@ -31,35 +32,24 @@ type MultiSelectType = {
 };
 type AsyncSelectType = {
   title: string;
-  fetchAction: (search: string) => Promise<
-    {
-      id: string;
-      name: string;
-    }[]
-  >;
-  onChange: Dispatch<
-    SetStateAction<
-      {
-        id: string;
-        name: string;
-      }[]
-    >
-  >;
-  value: {
-    id: string;
-    name: string;
-  }[];
+  fetchAction: (search: string) => Promise<SearchItem[]>;
+  onChange: Dispatch<SetStateAction<SearchItem[]>>;
+  value: SearchItem[];
 };
 export default function FilterComponent({
   dateSelect,
   multiSelect,
   asyncSelect,
   onSubmit,
+  filtersText = 'Filters',
+  applyFilterText = 'Apply',
 }: {
   dateSelect: DateSelectType[];
   multiSelect: MultiSelectType[];
   asyncSelect: AsyncSelectType[];
   onSubmit: () => void;
+  filtersText?: string;
+  applyFilterText?: string;
 }) {
   const [isPending, startTransition] = useTransition();
 
@@ -71,7 +61,7 @@ export default function FilterComponent({
 
   return (
     <Card>
-      <CardHeader>Filters</CardHeader>
+      <CardHeader>{filtersText}</CardHeader>
       <CardContent className="flex flex-col gap-5">
         {dateSelect.map((filter) => (
           <div className="grid items-center gap-1.5" key={filter.title}>
@@ -127,7 +117,7 @@ export default function FilterComponent({
           onClick={() => handleSubmit()}
           variant="default"
         >
-          Apply
+          {applyFilterText}
         </Button>
       </CardContent>
     </Card>
