@@ -63,13 +63,13 @@ export function createCell<T>(props: {
   if (icon) {
     const position = icon.position || 'before';
     content = (
-      <div>
+      <div className="inline-flex">
         {icon.icon && position === 'before' && (
-          <icon.icon className={cn('w-4 h-4', icon.iconClassName)} />
+          <icon.icon className={cn('w-4 h-4 mr-2', icon.iconClassName)} />
         )}
         {row.getValue(accessorKey.toString())}
         {icon.icon && position === 'after' && (
-          <icon.icon className={cn('w-4 h-4', icon.iconClassName)} />
+          <icon.icon className={cn('w-4 h-4 ml-2', icon.iconClassName)} />
         )}
       </div>
     );
