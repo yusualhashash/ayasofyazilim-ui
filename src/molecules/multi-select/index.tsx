@@ -134,7 +134,6 @@ export const MultiSelect = React.forwardRef<
       animation = 0,
       maxCount = 3,
       modalPopover = false,
-      asChild = false,
       className,
       ...props
     },
@@ -207,7 +206,7 @@ export const MultiSelect = React.forwardRef<
         onOpenChange={setIsPopoverOpen}
         modal={modalPopover}
       >
-        <PopoverTrigger asChild={asChild} className="w-full">
+        <PopoverTrigger asChild className="w-full">
           <Button
             ref={ref}
             {...props}
