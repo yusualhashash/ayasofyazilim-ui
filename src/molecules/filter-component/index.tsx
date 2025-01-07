@@ -42,6 +42,7 @@ export default function FilterComponent({
   asyncSelect,
   onSubmit,
   filtersText = 'Filters',
+  searchText = 'Search',
   applyFilterText = 'Apply',
 }: {
   dateSelect: DateSelectType[];
@@ -50,6 +51,7 @@ export default function FilterComponent({
   onSubmit: () => void;
   filtersText?: string;
   applyFilterText?: string;
+  searchText?: string;
 }) {
   const [isPending, startTransition] = useTransition();
 
@@ -108,6 +110,7 @@ export default function FilterComponent({
               onChange={filter.onChange}
               value={filter.value}
               disabled={isPending}
+              searchText={searchText}
             />
           </div>
         ))}

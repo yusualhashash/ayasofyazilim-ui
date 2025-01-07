@@ -1,7 +1,9 @@
 'use client';
 
-import { CheckIcon } from 'lucide-react';
+import { CheckIcon, ChevronDown, XCircle, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Command as Cmd,
   CommandGroup,
@@ -9,6 +11,12 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useDebounce } from '../../hooks/useDebounce';
@@ -61,13 +69,13 @@ type AsyncSelectType = {
   disabled?: boolean;
 };
 
-export default function AsyncSelect({
+export function AsyncSelectBase({
   suggestions = [],
   data,
   value,
   fetchAction,
   onChange,
-  resultText = 'Result',
+  resultText = 'Results',
   searchText = 'Search',
   noResultText = 'No result',
   disabled = false,
@@ -159,5 +167,80 @@ export default function AsyncSelect({
         )}
       </CommandList>
     </Cmd>
+  );
+}
+export default function AsyncSelect(props: AsyncSelectType) {
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  return (
+    <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+      <PopoverTrigger asChild className="w-full">
+        <Button
+          type="button"
+          onClick={() => setIsPopoverOpen(true)}
+          className={cn(
+            'flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit'
+          )}
+        >
+          {props.value.length > 0 ? (
+            <div className="flex justify-between items-center w-full">
+              <div className="flex flex-wrap items-center">
+                {props.value.slice(0, 3).map((value) => (
+                  <Badge
+                    key={value.id}
+                    className="m-1 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 border-foreground/10 text-foreground bg-card hover:bg-card/80"
+                  >
+                    {value.name}
+                    <XCircle
+                      className="ml-2 h-4 w-4 cursor-pointer"
+                      onClick={() => {
+                        props.onChange(
+                          props.value.filter((i) => i.id !== value.id)
+                        );
+                      }}
+                    />
+                  </Badge>
+                ))}
+                {props.value.length > 3 && (
+                  <Badge
+                    className={cn(
+                      'bg-transparent text-foreground border-foreground/1 hover:bg-transparent'
+                    )}
+                  >
+                    {props.value.length - 3} more
+                  </Badge>
+                )}
+              </div>
+              <div className="flex items-center justify-between">
+                <XIcon
+                  className="h-4 mx-2 cursor-pointer text-muted-foreground"
+                  onClick={() => {
+                    props.onChange([]);
+                  }}
+                />
+                <Separator
+                  orientation="vertical"
+                  className="flex min-h-6 h-full"
+                />
+                <ChevronDown className="h-4 mx-2 cursor-pointer text-muted-foreground" />
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between w-full mx-auto">
+              <span className="text-sm text-black mx-3 font-normal">
+                {props.searchText}
+              </span>
+              <ChevronDown className="h-4 cursor-pointer text-muted-foreground mx-2" />
+            </div>
+          )}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-auto p-0"
+        align="start"
+        onEscapeKeyDown={() => setIsPopoverOpen(false)}
+      >
+        <AsyncSelectBase {...props} />
+      </PopoverContent>
+    </Popover>
   );
 }
