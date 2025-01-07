@@ -86,7 +86,7 @@ export type TanstackTablePropsType<TData, TValue> = {
 );
 
 export type TanstackTableConfig = {
-  dateOptions?: Intl.LocaleOptions;
+  dateOptions?: Intl.DateTimeFormatOptions;
   locale?: Intl.LocalesArgument;
 };
 export type TanstackTableCellCondition = {
