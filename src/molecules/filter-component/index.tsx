@@ -64,7 +64,7 @@ export default function FilterComponent({
   return (
     <Card>
       <CardHeader>{filtersText}</CardHeader>
-      <CardContent className="flex flex-col gap-5">
+      <CardContent className="flex flex-col gap-2.5">
         {dateSelect.map((filter) => (
           <div className="grid items-center gap-1.5" key={filter.title}>
             <Label htmlFor="refund-point">{filter.title}</Label>
