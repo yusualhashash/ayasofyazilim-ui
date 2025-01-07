@@ -30,7 +30,10 @@ export const PageHeader = ({
 }: IPageHeaderProps | IPageBackButtonProps) => {
   const hasReferer = useMemo(
     () => typeof window !== 'undefined' && !!document.referrer,
-    [window, document]
+    [
+      typeof window !== 'undefined' && window,
+      typeof document !== 'undefined' && document,
+    ]
   );
   const router = useRouter();
   if (isLoading) {
