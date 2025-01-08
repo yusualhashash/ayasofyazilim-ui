@@ -18,21 +18,29 @@ export function CustomMultiSelect(
     uiSchema?.['ui:placeholder'] ||
     uiOptions?.['ui:placeholder'];
   return (
-    <MultiSelect
-      {...props}
-      defaultValue={fieldValue}
-      placeholder={placeholder}
-      options={optionList}
-      onValueChange={(values) => {
-        onChange(values);
-      }}
-    />
+    <div className="custom-multi-select-wrapper">
+      <MultiSelect
+        {...props}
+        defaultValue={fieldValue}
+        placeholder={placeholder}
+        options={optionList}
+        onValueChange={(values) => {
+          onChange(values);
+        }}
+      />
+    </div>
   );
 }
 
 export function CustomMultiSelectWidget(props: CustomMultiSelectProps) {
   function Widget(_props: Omit<WidgetProps, 'options'>) {
-    return <CustomMultiSelect {..._props} optionList={props.optionList} />;
+    return (
+      <CustomMultiSelect
+        {..._props}
+        optionList={props.optionList}
+        title={props.title}
+      />
+    );
   }
   return Widget;
 }
