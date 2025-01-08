@@ -44,8 +44,10 @@ export function createCell<T>(props: {
     config,
     faceted,
   } = props;
+
   let content: JSX.Element | string =
     row.getValue(accessorKey.toString())?.toString() || '';
+  console.log(content);
   if (format) {
     if (format === 'date' || format === 'date-time')
       content = content
@@ -106,9 +108,7 @@ export function createCell<T>(props: {
   }
   if (faceted) {
     const facetedItem = faceted.find(
-      (item) =>
-        item.value ===
-        (row.getValue(accessorKey.toString()) as string).toString()
+      (item) => item.value === row.getValue(accessorKey.toString())?.toString()
     );
 
     if (facetedItem) {
