@@ -127,10 +127,13 @@ export function TabLayout({
   const path = usePathname();
   const currentPath = path.split('/').at(-1);
   const searchParams = `?${useSearchParams().toString()}`;
-
   const active =
     tabList.find((tab) => tab.href === currentPath)?.href ||
     tabList.find((tab) => tab.href === currentPath + searchParams)?.href ||
+    tabList.find((tab) => tab.href.split('/').at(-1) === currentPath)?.href ||
+    tabList.find(
+      (tab) => tab.href.split('/').at(-1) === currentPath + searchParams
+    )?.href ||
     tabList[0].href;
 
   return (
