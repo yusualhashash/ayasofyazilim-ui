@@ -118,7 +118,6 @@ export interface MultiSelectProps
    * Optional, defaults to "Select options".
    */
   placeholder?: string;
-  title?: string;
 }
 
 export const MultiSelect = React.forwardRef<
@@ -136,7 +135,6 @@ export const MultiSelect = React.forwardRef<
       maxCount = 3,
       modalPopover = false,
       className,
-      title,
       ...props
     },
     ref
@@ -208,7 +206,6 @@ export const MultiSelect = React.forwardRef<
         onOpenChange={setIsPopoverOpen}
         modal={modalPopover}
       >
-        {title && <div className="text-sm font-medium">{title}</div>}
         <PopoverTrigger asChild className="w-full">
           <Button
             ref={ref}
