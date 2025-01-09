@@ -47,7 +47,6 @@ export function createCell<T>(props: {
 
   let content: JSX.Element | string =
     row.getValue(accessorKey.toString())?.toString() || '';
-  console.log(content);
   if (format) {
     if (format === 'date' || format === 'date-time')
       content = content
