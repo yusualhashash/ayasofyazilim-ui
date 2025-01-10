@@ -42,6 +42,7 @@ export default function FilterComponent({
   asyncSelect,
   onSubmit,
   filtersText = 'Filters',
+  searchText = 'Search',
   applyFilterText = 'Apply',
 }: {
   dateSelect: DateSelectType[];
@@ -50,6 +51,7 @@ export default function FilterComponent({
   onSubmit: () => void;
   filtersText?: string;
   applyFilterText?: string;
+  searchText?: string;
 }) {
   const [isPending, startTransition] = useTransition();
 
@@ -62,7 +64,7 @@ export default function FilterComponent({
   return (
     <Card>
       <CardHeader>{filtersText}</CardHeader>
-      <CardContent className="flex flex-col gap-5">
+      <CardContent className="flex flex-col gap-2.5">
         {dateSelect.map((filter) => (
           <div className="grid items-center gap-1.5" key={filter.title}>
             <Label htmlFor="refund-point">{filter.title}</Label>
@@ -108,6 +110,7 @@ export default function FilterComponent({
               onChange={filter.onChange}
               value={filter.value}
               disabled={isPending}
+              searchText={searchText}
             />
           </div>
         ))}
