@@ -62,11 +62,15 @@ export const CustomDate = (props: WidgetProps) => {
   const initialDate =
     value && !Number.isNaN(new Date(value).getTime())
       ? new Date(value)
-      : new Date();
+      : undefined;
   const [date, setDate] = useState(initialDate);
 
-  const month = date.getMonth();
-  const year = date.getFullYear();
+  const month =
+    typeof date !== 'undefined' ? date?.getMonth() : new Date().getMonth();
+  const year =
+    typeof date !== 'undefined'
+      ? date?.getFullYear()
+      : new Date().getFullYear();
 
   const months = Array.from({ length: 12 }, (_, i) =>
     format(new Date(0, i), 'MMMM', { locale: getDateFnsLocale({ locale }) })
@@ -170,8 +174,8 @@ export const CustomDate = (props: WidgetProps) => {
             }
             fromYear={fromYear}
             toYear={toYear}
-            defaultMonth={date}
-            selected={date}
+            defaultMonth={typeof date !== 'undefined' ? date : new Date()}
+            selected={typeof date !== 'undefined' ? date : undefined}
             initialFocus
             onSelect={(selectedDate) => {
               if (selectedDate) {
