@@ -7,6 +7,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { WidgetProps } from '../types';
 import { getDateFnsLocale } from '../utils';
@@ -25,19 +32,18 @@ type DateOptions = {
  */
 
 const getDateRange = (uiOptions: DateOptions) => {
-  const { fromDate, toDate, fromYear, toYear } = uiOptions;
-
-  const defaultFromYear =
-    fromDate?.getFullYear() ?? fromYear ?? new Date().getFullYear();
-  const defaultToYear =
-    toDate?.getFullYear() ?? toYear ?? new Date().getFullYear() + 100;
-  const defaultFromDate = fromDate ?? new Date(defaultFromYear, 0, 1);
-  const defaultToDate = toDate ?? new Date(defaultToYear, 11, 31);
+  const currentYear = new Date().getFullYear();
+  const {
+    fromDate,
+    toDate,
+    fromYear = currentYear - 100,
+    toYear = currentYear + 100,
+  } = uiOptions;
   return {
-    fromDate: defaultFromDate,
-    toDate: defaultToDate,
-    fromYear: defaultFromYear,
-    toYear: defaultToYear,
+    fromDate: fromDate ?? new Date(fromYear, 0, 1),
+    toDate: toDate ?? new Date(toYear, 11, 31),
+    fromYear,
+    toYear,
   };
 };
 
@@ -57,8 +63,29 @@ export const CustomDate = (props: WidgetProps) => {
     value && !Number.isNaN(new Date(value).getTime())
       ? new Date(value)
       : new Date(fromDate);
+  const [date, setDate] = useState(initialDate);
 
-  const [date, setDate] = useState<Date>(initialDate);
+  const month = date.getMonth();
+  const year = date.getFullYear();
+
+  const months = Array.from({ length: 12 }, (_, i) =>
+    format(new Date(0, i), 'MMMM', { locale: getDateFnsLocale({ locale }) })
+  );
+
+  const handleMonthChange = (value: string) => {
+    const newMonth = parseInt(value, 10);
+    const newDate = new Date(year, newMonth, 1);
+    setDate(newDate);
+    onChange(newDate.toISOString());
+  };
+
+  const handleYearChange = (value: string) => {
+    const newYear = parseInt(value, 10);
+    const newDate = new Date(newYear, month, 1);
+    setDate(newDate);
+    onChange(newDate.toISOString());
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -79,27 +106,69 @@ export const CustomDate = (props: WidgetProps) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          key={props.id}
-          required={required}
-          locale={getDateFnsLocale({ locale })}
-          mode="single"
-          disabled={{
-            before: fromDate,
-            after: toDate,
-          }}
-          fromYear={fromYear}
-          toYear={toYear}
-          defaultMonth={date}
-          selected={date}
-          initialFocus
-          onSelect={(selectedDate) => {
-            if (selectedDate) {
-              setDate(selectedDate);
-              onChange(selectedDate.toISOString());
-            }
-          }}
-        />
+        <div className="flex justify-between p-4 gap-3">
+          <Select
+            defaultValue={month.toString()}
+            onValueChange={handleMonthChange}
+            disabled={disabled}
+          >
+            <SelectTrigger aria-label="Month">
+              <SelectValue placeholder="Month" />
+            </SelectTrigger>
+            <SelectContent>
+              {months.map((month) => (
+                <SelectItem
+                  key={month}
+                  value={months.indexOf(month).toString()}
+                >
+                  {month}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select
+            defaultValue={year.toString()}
+            onValueChange={handleYearChange}
+            disabled={disabled}
+          >
+            <SelectTrigger aria-label="Year">
+              <SelectValue placeholder="Year" />
+            </SelectTrigger>
+            <SelectContent>
+              {Array.from({ length: toYear - fromYear + 1 }, (_, index) => (
+                <SelectItem
+                  key={fromYear + index}
+                  value={(fromYear + index).toString()}
+                >
+                  {fromYear + index}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex justify-center text-center gap-3">
+          <Calendar
+            key={`${month}-${year}`}
+            required={required}
+            locale={getDateFnsLocale({ locale })}
+            mode="single"
+            disabled={{
+              before: fromDate,
+              after: toDate,
+            }}
+            fromYear={fromYear}
+            toYear={toYear}
+            defaultMonth={date}
+            selected={date}
+            initialFocus
+            onSelect={(selectedDate) => {
+              if (selectedDate) {
+                setDate(selectedDate);
+                onChange(selectedDate.toISOString());
+              }
+            }}
+          />
+        </div>
       </PopoverContent>
     </Popover>
   );
