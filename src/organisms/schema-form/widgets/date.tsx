@@ -40,8 +40,8 @@ const getDateRange = (uiOptions: DateOptions) => {
     toYear = currentYear + 100,
   } = uiOptions;
   return {
-    fromDate: fromDate ?? new Date(fromYear, 0, 1),
-    toDate: toDate ?? new Date(toYear, 11, 31),
+    fromDate: fromDate ?? undefined,
+    toDate: toDate ?? undefined,
     fromYear,
     toYear,
   };
@@ -62,7 +62,7 @@ export const CustomDate = (props: WidgetProps) => {
   const initialDate =
     value && !Number.isNaN(new Date(value).getTime())
       ? new Date(value)
-      : new Date(fromDate);
+      : new Date();
   const [date, setDate] = useState(initialDate);
 
   const month = date.getMonth();
@@ -152,10 +152,22 @@ export const CustomDate = (props: WidgetProps) => {
             required={required}
             locale={getDateFnsLocale({ locale })}
             mode="single"
-            disabled={{
-              before: fromDate,
-              after: toDate,
-            }}
+            disabled={
+              fromDate && toDate
+                ? {
+                    before: fromDate,
+                    after: toDate,
+                  }
+                : fromDate
+                  ? {
+                      before: fromDate,
+                    }
+                  : toDate
+                    ? {
+                        after: toDate,
+                      }
+                    : undefined
+            }
             fromYear={fromYear}
             toYear={toYear}
             defaultMonth={date}
