@@ -19,6 +19,9 @@ import {
 } from '@/components/ui/popover';
 import { useMediaQuery } from '@/components/ui/useMediaQuery';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
+
+type BadgeOptions = { className?: string; showValue?: boolean; label?: string };
 
 type CustomComboboxProps<T> = {
   emptyValue?: string;
@@ -29,6 +32,7 @@ type CustomComboboxProps<T> = {
   selectIdentifier: keyof T;
   selectLabel: keyof T;
   disabledItems?: T[keyof T][];
+  badges?: Partial<Record<keyof T, BadgeOptions>>;
 } & WidgetProps;
 
 export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
@@ -137,6 +141,7 @@ function List<T>({
     searchPlaceholder,
     searchResultLabel,
     onValueChange,
+    badges,
   } = props;
   const uiOptions = uiSchema?.['ui:options'];
 
@@ -183,9 +188,28 @@ function List<T>({
               key={JSON.stringify(item[selectIdentifier])}
               value={item[selectIdentifier] as string}
             >
-              {item[selectLabel] as string}
               {item[selectIdentifier] === value && (
-                <CheckIcon className={cn('ml-auto h-4 w-4')} />
+                <CheckIcon className={cn('mr-2 h-4 w-4')} />
+              )}
+              {item[selectLabel] as string}
+              {badges && (
+                <div className="ml-auto">
+                  {Object.keys(badges).map((badgeKey) => {
+                    const badgeOptions = badges[badgeKey as keyof T];
+                    if (!badgeOptions) return null;
+                    return (
+                      <Badge
+                        key={badgeKey}
+                        variant="outline"
+                        className={cn('ml-2', badgeOptions.className)}
+                      >
+                        {badgeOptions.showValue !== false &&
+                          (item[badgeKey as keyof T] as string)}
+                        {badgeOptions.label && badgeOptions.label}
+                      </Badge>
+                    );
+                  })}
+                </div>
               )}
             </CommandItem>
           ))}
@@ -201,6 +225,7 @@ export function CustomComboboxWidget<T>({
   selectIdentifier,
   list,
   disabledItems,
+  badges,
 }: {
   languageData: {
     'Select.Placeholder': string;
@@ -211,6 +236,7 @@ export function CustomComboboxWidget<T>({
   selectLabel: keyof T;
   list: T[];
   disabledItems?: T[keyof T][];
+  badges?: CustomComboboxProps<T>['badges'];
 }) {
   function Widget(props: WidgetProps) {
     return (
@@ -223,6 +249,7 @@ export function CustomComboboxWidget<T>({
         selectIdentifier={selectIdentifier}
         selectLabel={selectLabel}
         disabledItems={disabledItems}
+        badges={badges}
       />
     );
   }
