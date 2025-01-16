@@ -195,6 +195,7 @@ export type TanstackTableRowActionsAutoformDialog<TData> = Omit<
 export type TanstackTableRowActionsType<TData> = {
   actionLocation: 'row';
   cta: string;
+  condition?: (row: TData) => boolean;
   icon?: ComponentType<{ className?: string }>;
 } & (
   | TanstackTableRowActionsConfirmationDialog<TData>
