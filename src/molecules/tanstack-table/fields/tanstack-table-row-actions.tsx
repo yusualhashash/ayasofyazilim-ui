@@ -8,8 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { TanstackTableRowActionsType } from '../types';
 import { cn } from '@/lib/utils';
+import { TanstackTableRowActionsType } from '../types';
 
 interface TanstackTableRowActionsProps<TData> {
   actions: TanstackTableRowActionsType<TData>[];
@@ -26,6 +26,7 @@ export const TanstackTableRowActions = <TData,>({
   actions,
   table,
 }: TanstackTableRowActionsProps<TData>) => {
+  if (actions.length === 0) return null;
   if (actions.length === 1) {
     return (
       <ActionButton
@@ -50,16 +51,20 @@ export const TanstackTableRowActions = <TData,>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {actions.map((action) => (
-          <DropdownMenuItem key={action.cta}>
-            <ActionButton
-              action={action}
-              table={table}
-              row={row}
-              setRowAction={setRowAction}
-            />
-          </DropdownMenuItem>
-        ))}
+        {actions.map((action) => {
+          if (action.condition && !action.condition?.(row.original))
+            return null;
+          return (
+            <DropdownMenuItem key={action.cta}>
+              <ActionButton
+                action={action}
+                table={table}
+                row={row}
+                setRowAction={setRowAction}
+              />
+            </DropdownMenuItem>
+          );
+        })}
       </DropdownMenuContent>
     </DropdownMenu>
   );
