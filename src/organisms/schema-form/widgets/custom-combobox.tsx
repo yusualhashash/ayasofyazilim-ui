@@ -150,7 +150,7 @@ function List<T>({
       filter={(value, search) => {
         const filterResult = list?.find(
           (i) =>
-            (i[selectIdentifier] as string)?.toLocaleLowerCase() ===
+            (i[selectIdentifier] as string).toString()?.toLocaleLowerCase() ===
             value.toLocaleLowerCase()
         )?.[selectLabel] as string;
         if (
