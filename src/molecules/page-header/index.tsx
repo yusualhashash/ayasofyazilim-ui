@@ -21,13 +21,13 @@ interface IPageHeaderProps {
   title?: string;
 }
 
-export const PageHeader = ({
+export default function PageHeader({
   title,
   description,
   isLoading,
   LinkElement,
   href,
-}: IPageHeaderProps | IPageBackButtonProps) => {
+}: IPageHeaderProps | IPageBackButtonProps) {
   const hasReferer = useMemo(
     () => typeof window !== 'undefined' && !!document.referrer,
     [
@@ -74,4 +74,4 @@ export const PageHeader = ({
       </div>
     </div>
   );
-};
+}
