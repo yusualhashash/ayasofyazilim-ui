@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { PageHeader } from '.';
+import PageHeader from '.';
 
 export default { component: PageHeader } as Meta<typeof PageHeader>;
 
