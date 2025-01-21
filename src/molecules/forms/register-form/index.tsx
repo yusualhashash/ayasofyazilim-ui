@@ -162,7 +162,7 @@ export default function RegisterForm({
           </span>
           <span className="w-full h-px bg-muted" />
         </div>
-        <Button variant="outline" disabled={isLoading} className="" asChild>
+        <Button variant="outline" disabled={isLoading} asChild>
           <Link
             href={loginPath}
             className={

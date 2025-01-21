@@ -96,7 +96,7 @@ export default function AutoFormArray({
               className="z-10 !no-underline"
               asChild
             >
-              <div className="">
+              <div>
                 {fieldConfig?.add ? (
                   fieldConfig.add
                 ) : (
