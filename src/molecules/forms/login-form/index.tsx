@@ -198,7 +198,7 @@ export default function LoginForm({
           </span>
           <span className="w-full h-px bg-muted" />
         </div>
-        <Button variant="outline" asChild className="">
+        <Button variant="outline" asChild>
           <a
             href={registerPath}
             className={`text-center cursor-pointer text-sm w-full  ${isLoading ? 'pointer-events-none opacity-50' : ''}`}
