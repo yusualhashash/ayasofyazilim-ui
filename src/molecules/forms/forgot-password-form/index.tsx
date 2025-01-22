@@ -70,7 +70,6 @@ export default function ForgotPasswordForm({
   async function onSubmit(values: ForgotPasswordFormDataType) {
     setIsLoading(true);
     if (passwordResetFunction) {
-      console.log(values);
       const response = await passwordResetFunction(values);
       if (response?.status === 200) {
         setAlert({
