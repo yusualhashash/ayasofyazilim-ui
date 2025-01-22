@@ -53,7 +53,8 @@ const tabListVariants = cva('', {
     },
     orientation: {
       horizontal: 'w-max mx:w-max overflow-x-auto overflow-y-hidden min-h-max',
-      vertical: 'flex flex-col h-full justify-start max-w-sm overflow-hidden',
+      vertical:
+        'flex flex-col h-full justify-start max-w-[220px] w-full overflow-hidden pr-3 border-r border-muted',
     },
   },
   defaultVariants: {
@@ -70,7 +71,7 @@ const tabTriggerVariants = cva(
         default:
           'px-3 py-1 ring-offset-background transition-all focus-visible:ring-2 focus-visible:ring-offset-2 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow',
         simple:
-          'px-3 py-1 ring-offset-background transition-all focus-visible:ring-2 focus-visible:ring-offset-2 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow',
+          'px-3 py-2 ring-offset-background transition-all rounded-lg focus-visible:ring-2 focus-visible:ring-offset-2 data-[state=active]:bg-muted data-[state=active]:text-foreground',
       },
       orientation: {
         horizontal: '',
