@@ -5,6 +5,7 @@ import locale from '../../../locale_tr.json';
 
 export const defaultForgotPasswordFormSchema = z.object({
   email: z.string().email(),
+  tenant: z.string(),
 });
 export default {
   component: ForgotPasswordForm,

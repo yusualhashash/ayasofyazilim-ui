@@ -1,16 +1,16 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  CheckCircledIcon,
+  ExclamationTriangleIcon,
+} from '@radix-ui/react-icons';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import {
-  ExclamationTriangleIcon,
-  CheckCircledIcon,
-} from '@radix-ui/react-icons';
 import { Button } from '@/components/ui/button';
 
-import localeTr from '../../../locale_tr.json';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   Dialog,
   DialogContent,
@@ -29,10 +29,11 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { replacePlaceholders } from '../../../lib/replace-placeholders';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import localeTr from '../../../locale_tr.json';
 
 export type ForgotPasswordFormDataType = {
   email: string;
+  tenant: string;
 };
 
 export type ForgotPasswordFormPropsType = {
@@ -62,12 +63,14 @@ export default function ForgotPasswordForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
+      tenant: '',
     },
   });
 
   async function onSubmit(values: ForgotPasswordFormDataType) {
     setIsLoading(true);
     if (passwordResetFunction) {
+      console.log(values);
       const response = await passwordResetFunction(values);
       if (response?.status === 200) {
         setAlert({
@@ -122,6 +125,24 @@ export default function ForgotPasswordForm({
             className="space-y-2"
             id="forgot-password-form"
           >
+            <FormField
+              control={form.control}
+              name="tenant"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tenant</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={
+                        isLoading || (alert && alert.variant === 'default')
+                      }
+                      placeholder="Tenant Id"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="email"
