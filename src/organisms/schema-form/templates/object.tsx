@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
   const { uiSchema, title, required } = props;
   return (
-    <fieldset
+    <div
       className={cn(
         'flex flex-col gap-2 flex-1 w-full',
         uiSchema?.['ui:className'],
@@ -22,6 +22,6 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
       {props.properties.map((element) => (
         <Fragment key={element.name}>{element.content}</Fragment>
       ))}
-    </fieldset>
+    </div>
   );
 };
