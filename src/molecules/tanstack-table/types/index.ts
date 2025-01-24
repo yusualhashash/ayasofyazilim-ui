@@ -300,6 +300,7 @@ export type TanstackTableCreateColumnsByRowId<T> = {
   >;
   selectableRows?: boolean;
   onSelectedRowChange?: (selectedRows: T[]) => void;
+  disabledRowIds?: string[];
 };
 
 export type TanstacktableEditableColumnsByRowId<T> = {
