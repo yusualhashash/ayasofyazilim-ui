@@ -78,7 +78,7 @@ export function TanstackTableViewOptions<TData>(
   } = props;
   const primaryAction = tableActions?.[0];
   const otherActions = tableActions?.slice(1);
-  const selectedRowCount = table.getSelectedRowModel().rows.length;
+  const selectedRowCount = Object.keys(table.getState().rowSelection).length;
 
   return (
     <>
@@ -90,11 +90,8 @@ export function TanstackTableViewOptions<TData>(
             type="button"
             className="ml-2"
             onClick={() => {
-              const selectedRowIds = table
-                .getSelectedRowModel()
-                .rows.map((row) => row.index.toString());
-
-              selectedRowAction.onClick(selectedRowIds, tableData);
+              const selectedRowIds = table.getState().rowSelection;
+              selectedRowAction.onClick(Object.keys(selectedRowIds), tableData);
             }}
           >
             {selectedRowAction?.icon && (
