@@ -106,10 +106,9 @@ export function createCell<T>(props: {
     );
   }
   if (faceted) {
-    const facetedItem = faceted.find(
-      (item) => item.value === row.getValue(accessorKey.toString())?.toString()
+    const facetedItem = faceted.find((item) =>
+      item.when(row.getValue(accessorKey.toString()))
     );
-
     if (facetedItem) {
       content = (
         <div className={cn('flex items-center', facetedItem.className)}>
@@ -121,7 +120,7 @@ export function createCell<T>(props: {
               )}
             />
           )}
-          <span>{facetedItem.label}</span>
+          {facetedItem.hideColumnValue ? '' : <span>{facetedItem.label}</span>}
         </div>
       );
     }

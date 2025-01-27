@@ -102,7 +102,8 @@ export type TanstackTableFacetedFilterType = {
   icon?: ComponentType<{ className?: string }>;
   iconClassName?: string;
   label: string;
-  value: string;
+  when: (value: string | boolean | number | Date) => boolean;
+  hideColumnValue?: boolean;
 };
 export type TanstackTableDateFilterType = {
   endAccessorKey?: string;
