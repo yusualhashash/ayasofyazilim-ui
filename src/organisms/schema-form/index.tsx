@@ -30,6 +30,7 @@ import {
   CustomTextInput,
   PasswordInputWidget,
   EmailInputWidget,
+  CustomTextareaInput,
 } from './widgets';
 
 /**
@@ -51,6 +52,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       SelectWidget: CustomSelect,
       'async-select': AsyncSelect,
       TextWidget: CustomTextInput,
+      TextareaWidget: CustomTextareaInput,
       DateTimeWidget: CustomDate,
       password: PasswordInputWidget,
       email: EmailInputWidget,
