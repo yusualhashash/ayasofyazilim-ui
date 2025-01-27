@@ -206,24 +206,36 @@ export function tanstackTableCreateColumnsByRowData<T>(
         <div className="w-14">
           <Checkbox
             checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && 'indeterminate')
+              table
+                .getRowModel()
+                .rows.filter((row) => !params.disabledRowIds?.includes(row.id))
+                .every((row) => row.getIsSelected()) &&
+              table
+                .getRowModel()
+                .rows.some(
+                  (row) =>
+                    !params.disabledRowIds?.includes(row.id) &&
+                    row.getIsSelected()
+                )
             }
             onCheckedChange={(value) => {
-              table.toggleAllPageRowsSelected(!!value);
               const selectedRows: T[] = [];
-              if (value) {
-                table.getRowModel().rows.forEach((row) => {
-                  selectedRows.push(row.original);
-                });
-              }
+              table.getRowModel().rows.forEach((row) => {
+                if (!params.disabledRowIds?.includes(row.id)) {
+                  row.toggleSelected(!!value);
+                  if (value) {
+                    selectedRows.push(row.original);
+                  }
+                }
+              });
               onSelectedRowChange?.(selectedRows);
             }}
             aria-label="Select all"
-            className="translate-y-0.5  align-middle"
+            className="translate-y-0.5 align-middle"
           />
         </div>
       ),
+
       cell: ({ row, table }) => (
         <Checkbox
           checked={row.getIsSelected()}
@@ -240,6 +252,7 @@ export function tanstackTableCreateColumnsByRowData<T>(
             row.toggleSelected(!!value);
             onSelectedRowChange?.(selectedRows);
           }}
+          disabled={params.disabledRowIds?.some((id) => id === row.id)}
           aria-label="Select row"
           className="translate-y-0.5 align-top"
         />
