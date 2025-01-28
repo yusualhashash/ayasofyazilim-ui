@@ -1,7 +1,6 @@
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
   PopoverContent,
@@ -17,6 +16,7 @@ import {
 import { cn } from '@/lib/utils';
 import { WidgetProps } from '../types';
 import { getDateFnsLocale } from '../utils';
+import { DatePicker } from '../../../molecules/date-picker';
 
 type DateOptions = {
   fromDate?: Date;
@@ -48,11 +48,9 @@ const getDateRange = (uiOptions: DateOptions) => {
 };
 
 export const CustomDate = (props: WidgetProps) => {
-  const { value, uiSchema, onChange, disabled, required, formContext } = props;
+  const { value, uiSchema, onChange, disabled, formContext } = props;
   const uiOptions = uiSchema?.['ui:options'] ?? {};
-  const { fromDate, toDate, fromYear, toYear } = getDateRange(
-    uiOptions as DateOptions
-  );
+  const { fromYear, toYear } = getDateRange(uiOptions as DateOptions);
   const placeholder =
     uiSchema?.['ui:placeholder']?.toString() ||
     uiOptions?.['ui:placeholder']?.toString() ||
@@ -151,33 +149,9 @@ export const CustomDate = (props: WidgetProps) => {
           </Select>
         </div>
         <div className="flex justify-center text-center gap-3">
-          <Calendar
-            key={`${month}-${year}`}
-            required={required}
-            locale={getDateFnsLocale({ locale })}
-            mode="single"
-            disabled={
-              fromDate && toDate
-                ? {
-                    before: fromDate,
-                    after: toDate,
-                  }
-                : fromDate
-                  ? {
-                      before: fromDate,
-                    }
-                  : toDate
-                    ? {
-                        after: toDate,
-                      }
-                    : undefined
-            }
-            fromYear={fromYear}
-            toYear={toYear}
-            defaultMonth={typeof date !== 'undefined' ? date : new Date()}
-            selected={typeof date !== 'undefined' ? date : undefined}
-            initialFocus
-            onSelect={(selectedDate) => {
+          <DatePicker
+            defaultValue={date}
+            onChange={(selectedDate) => {
               if (selectedDate) {
                 setDate(selectedDate);
                 onChange(selectedDate.toISOString());
