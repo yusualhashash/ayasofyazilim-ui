@@ -107,7 +107,10 @@ export function createCell<T>(props: {
   }
   if (faceted) {
     const facetedItem = faceted.find((item) =>
-      item.when(row.getValue(accessorKey.toString()))
+      item.when?.(
+        row.getValue(accessorKey.toString()) ||
+          row.getValue(accessorKey.toString()) === item.value
+      )
     );
     if (facetedItem) {
       content = (
