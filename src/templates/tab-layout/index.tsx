@@ -115,6 +115,7 @@ export function TabLayout({
     href: string;
     icon?: ComponentType<{ className?: string }>;
     fallback?: ReactNode;
+    disabled?: boolean;
   }[];
   children: ReactNode;
   orientation?: 'horizontal' | 'vertical';
@@ -156,16 +157,24 @@ export function TabLayout({
             data-state={tab.href === active ? 'active' : 'inactive'}
             className={cn(
               tabTriggerClassNames,
-              classNames?.[orientation]?.tabTrigger
+              classNames?.[orientation]?.tabTrigger,
+              tab.disabled && 'text-muted-foreground cursor-not-allowed'
             )}
           >
-            <Link
-              href={tab.href}
-              className="w-full overflow-hidden text-elipsis data-[state=active]:sticky data-[state=active]:left-0 data-[state=active]:right-0"
-            >
-              {tab.icon && <tab.icon className="block md:hidden" />}
-              {tab.label}
-            </Link>
+            {tab.disabled ? (
+              <span className="w-full overflow-hidden text-elipsis data-[state=active]:sticky data-[state=active]:left-0 data-[state=active]:right-0">
+                {tab.icon && <tab.icon className="block md:hidden" />}
+                {tab.label}
+              </span>
+            ) : (
+              <Link
+                href={tab.href}
+                className="w-full overflow-hidden text-elipsis data-[state=active]:sticky data-[state=active]:left-0 data-[state=active]:right-0"
+              >
+                {tab.icon && <tab.icon className="block md:hidden" />}
+                {tab.label}
+              </Link>
+            )}
           </span>
         ))}
       </div>
