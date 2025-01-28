@@ -191,7 +191,7 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
   });
 
   return (
-    <div className="flex flex-col size-full">
+    <div className="flex flex-col gap-2 size-full">
       <TanstackTableToolbar<TData>
         table={table}
         filters={filters}

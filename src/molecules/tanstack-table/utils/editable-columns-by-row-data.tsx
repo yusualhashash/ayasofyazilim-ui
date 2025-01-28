@@ -19,6 +19,7 @@ import {
   TanstackTableCreateColumnsByRowId,
   TanstacktableEditableColumnsByRowId,
 } from '../types';
+import { DatePicker } from '../../date-picker';
 
 export function tanstackTableEditableColumnsByRowData<T>(
   params: TanstacktableEditableColumnsByRowId<T> &
@@ -154,7 +155,6 @@ export function tanstackTableEditableColumnsByRowData<T>(
               </Select>
             );
           }
-
           if (rows[accessorKey]?.type === 'boolean') {
             return (
               <div className="text-center">
@@ -164,6 +164,30 @@ export function tanstackTableEditableColumnsByRowData<T>(
                   onBlur={onBlur}
                   onCheckedChange={(value) => {
                     handleValueChange(String(value));
+                  }}
+                />
+              </div>
+            );
+          }
+          if (rows[accessorKey]?.format === 'date-time') {
+            const date = new Date(value);
+            return (
+              <div className="text-center">
+                <DatePicker
+                  defaultValue={
+                    date instanceof Date && !Number.isNaN(date.getTime())
+                      ? date
+                      : undefined
+                  }
+                  onChange={(date) => {
+                    const $value =
+                      rows[accessorKey].format === 'date-time'
+                        ? date?.toISOString()
+                        : date;
+                    table.options.meta?.updateData(row.index, id, $value);
+                  }}
+                  classNames={{
+                    dateInput: 'border-none rounded-none',
                   }}
                 />
               </div>
