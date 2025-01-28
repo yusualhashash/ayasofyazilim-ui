@@ -31,7 +31,7 @@ export default {
     className: 'w-full',
     fromYear: new Date().getFullYear() - 5,
     toYear: new Date().getFullYear(),
-    type: 'buttons',
+    type: 'label',
   },
 } as Meta<typeof AdvancedCalendar>;
 

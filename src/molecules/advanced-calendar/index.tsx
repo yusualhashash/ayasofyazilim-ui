@@ -74,7 +74,7 @@ export type AdvancedCalendarProps = CalendarProps & {
   onSelect: (date: Date) => void;
   presets?: boolean;
   toYear?: number;
-  type?: 'buttons' | 'dropdown' | 'dropdown-buttons';
+  type?: 'label' | 'dropdown' | 'dropdown-months' | 'dropdown-years';
   view?: 'single' | 'multiple';
   placeholder?: string;
 };
@@ -94,7 +94,7 @@ export default function AdvancedCalendar({
   view = 'single',
   fromYear = new Date().getFullYear() - 5,
   toYear = new Date().getFullYear(),
-  type = 'buttons',
+  type = 'label',
   placeholder = 'Select date...',
   ...props
 }: AdvancedCalendarProps): JSX.Element {
@@ -102,7 +102,7 @@ export default function AdvancedCalendar({
   const [value, setValue] = React.useState('');
 
   const [month, setMonth] = React.useState<Date>(
-    props.selected instanceof Date ? props.selected : new Date()
+    props.month instanceof Date ? props.month : new Date()
   );
   const locale = getLocale();
 
