@@ -79,6 +79,7 @@ function AutoForm({
     );
 
   const form = useForm<z.infer<typeof objectFormSchema>>({
+    // @ts-ignore
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues ?? undefined,
     values: valuesProp,
