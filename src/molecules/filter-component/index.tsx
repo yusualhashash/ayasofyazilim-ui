@@ -85,6 +85,17 @@ export default function FilterComponent({
                     </SelectItem>
                   ))}
                 </SelectGroup>
+                <Button
+                  className="w-full px-2"
+                  variant="secondary"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    filter.onChange('');
+                  }}
+                >
+                  Clear
+                </Button>
               </SelectContent>
             </Select>
           </div>
