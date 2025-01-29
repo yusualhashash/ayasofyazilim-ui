@@ -32,8 +32,8 @@ export type Dependency<T> = {
 
 export type ErrorSchema = BaseErrorSchema;
 export type FormValidation<T> = BaseFormValidation<T>;
-type UiConfig<T> = { 'ui:config'?: FormContext<T> } | undefined;
-export type UiSchema<T> = BaseUiSchema & UiConfig<T>;
+type UiConfig<T = unknown> = { 'ui:config'?: FormContext<T> } | undefined;
+export type UiSchema<T = unknown> = BaseUiSchema & UiConfig<T>;
 export interface SchemaFormProps<T>
   extends Omit<FormProps<T>, 'validator' | 'uiSchema'> {
   defaultSubmitClassName?: string;
@@ -41,7 +41,7 @@ export interface SchemaFormProps<T>
   filter?: FilterType<T>;
   schema: GenericObjectType;
   submitText?: string;
-  uiSchema?: UiSchema<T>;
+  uiSchema?: UiSchema;
   useDefaultSubmit?: boolean;
   withScrollArea?: boolean;
   formData?: T | undefined;
