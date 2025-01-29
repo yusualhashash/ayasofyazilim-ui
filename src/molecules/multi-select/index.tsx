@@ -118,6 +118,12 @@ export interface MultiSelectProps
    * Optional, defaults to "Select options".
    */
   placeholder?: string;
+
+  /**
+   * If true, the multi-select component will be disabled.
+   * Optional, defaults to false.
+   */
+  disabled?: boolean;
 }
 
 export const MultiSelect = React.forwardRef<
@@ -135,6 +141,7 @@ export const MultiSelect = React.forwardRef<
       maxCount = 3,
       modalPopover = false,
       className,
+      disabled,
       ...props
     },
     ref
@@ -211,6 +218,7 @@ export const MultiSelect = React.forwardRef<
             ref={ref}
             {...props}
             type="button"
+            disabled={disabled}
             onClick={handleTogglePopover}
             className={cn(
               'flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit',
