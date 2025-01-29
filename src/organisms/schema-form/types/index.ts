@@ -14,15 +14,30 @@ import type {
   StrictRJSFSchema,
 } from '@rjsf/utils';
 
-export type FormContext = {
+export type FormContext<T> = {
   locale?: string;
+  formData?: T;
 };
+export enum DependencyType {
+  DISABLES = 'DISABLES',
+  HIDES = 'HIDES',
+  REQUIRES = 'REQUIRES',
+}
+export type Dependency<T> = {
+  sourceField: string;
+  targetField: string;
+  when: (targetValue: T) => boolean;
+  type: DependencyType;
+};
+
 export type ErrorSchema = BaseErrorSchema;
 export type FormValidation<T> = BaseFormValidation<T>;
-export type UiSchema = BaseUiSchema & { 'ui:config'?: FormContext };
+type UiConfig<T = unknown> = { 'ui:config'?: FormContext<T> } | undefined;
+export type UiSchema<T = unknown> = BaseUiSchema & UiConfig<T>;
 export interface SchemaFormProps<T>
   extends Omit<FormProps<T>, 'validator' | 'uiSchema'> {
   defaultSubmitClassName?: string;
+  useDependency?: boolean;
   filter?: FilterType<T>;
   schema: GenericObjectType;
   submitText?: string;
@@ -59,14 +74,14 @@ export type FilteredObject<T> = {
 export type WidgetProps<
   T = any,
   S extends StrictRJSFSchema = RJSFSchema,
-> = BaseWidgetProps<T, S, FormContext>;
+> = BaseWidgetProps<T, S, FormContext<T>>;
 
 export type FieldProps<
   T = any,
   S extends StrictRJSFSchema = RJSFSchema,
-> = BaseFieldProps<T, S, FormContext>;
+> = BaseFieldProps<T, S, FormContext<T>>;
 
 export type TemplatesType<
   T,
   S extends StrictRJSFSchema = RJSFSchema,
-> = BaseTemplatesType<T, S, FormContext>;
+> = BaseTemplatesType<T, S, FormContext<T>>;

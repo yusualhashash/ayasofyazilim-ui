@@ -1,10 +1,21 @@
 import { ObjectFieldTemplateProps } from '@rjsf/utils';
 import { Fragment } from 'react/jsx-runtime';
-import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { fieldOptionsByDependency } from '../utils/dependency';
+import { FieldLabel } from '../custom/label';
 
 export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
-  const { uiSchema, title, required } = props;
+  const { uiSchema, title, required, disabled } = props;
+  const dependencyOptions = fieldOptionsByDependency(
+    uiSchema,
+    props.formContext
+  );
+  const fieldOptions = {
+    disabled,
+    required,
+    ...dependencyOptions,
+  };
+  if (fieldOptions.hidden) return null;
   return (
     <div
       className={cn(
@@ -14,10 +25,7 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
       )}
     >
       {title && uiSchema?.displayLabel !== false && (
-        <Label className="w-full col-span-full">
-          {title}
-          {required ? <span className="text-destructive">*</span> : null}
-        </Label>
+        <FieldLabel id={title} label={title} required={fieldOptions.required} />
       )}
       {props.properties.map((element) => (
         <Fragment key={element.name}>{element.content}</Fragment>

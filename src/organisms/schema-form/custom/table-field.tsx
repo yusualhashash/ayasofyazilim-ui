@@ -5,8 +5,9 @@ import { useMemo } from 'react';
 import TanstackTable from '../../../molecules/tanstack-table';
 import { TanstackTablePropsType } from '../../../molecules/tanstack-table/types';
 import { ErrorSchemaTemplate } from '../fields';
-import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { fieldOptionsByDependency } from '../utils/dependency';
+import { FieldLabel } from './label';
 
 type TableFieldProps<TData> = Omit<
   TanstackTablePropsType<TData, TData>,
@@ -15,8 +16,18 @@ type TableFieldProps<TData> = Omit<
 
 export function TableField<TData>({ ...tableProps }: TableFieldProps<TData>) {
   const Field = (props: FieldProps) => {
-    const { uiSchema, disabled } = props;
+    const { uiSchema, id, disabled, required } = props;
     const title = uiSchema?.['ui:title'];
+    const dependencyOptions = fieldOptionsByDependency(
+      uiSchema,
+      props.formContext
+    );
+    const fieldOptions = {
+      disabled,
+      required,
+      ...dependencyOptions,
+    };
+    if (fieldOptions.hidden) return null;
     const memory = useMemo(
       () => (
         <div
@@ -26,7 +37,7 @@ export function TableField<TData>({ ...tableProps }: TableFieldProps<TData>) {
             uiSchema?.['ui:className']
           )}
         >
-          {title && <Label>{title}</Label>}
+          <FieldLabel id={id} label={title} required={fieldOptions.required} />
           <TanstackTable
             {...tableProps}
             editable

@@ -41,7 +41,7 @@ import {
  * @returns {JSX.Element} - The rendered form component.
  */
 export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
-  const Default: ThemeProps<T, any, FormContext> = {
+  const Default: ThemeProps<T, any, FormContext<T>> = {
     fields: {
       phone: CustomPhoneField,
     },
@@ -70,6 +70,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
     children,
     withScrollArea = true,
     useDefaultSubmit = true,
+    useDependency = false,
     defaultSubmitClassName,
   } = props; // Start with the provided schema
   const Wrapper = withScrollArea ? ScrollArea : Fragment;
@@ -87,6 +88,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
   }
   // Merge any additional UI schema provided via props
   if (props.uiSchema) {
+    // @ts-expect-error
     uiSchema = mergeUISchemaObjects(uiSchema, props.uiSchema);
   }
   const [formData, setFormData] = useState<T | undefined>(props.formData);
@@ -94,11 +96,12 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
     <Wrapper
       {...(withScrollArea && { className: 'h-full [&>div>div]:!block' })}
     >
-      <Form<T, any, FormContext>
+      <Form<T, any, FormContext<T>>
         noHtml5Validate
         liveValidate
         formContext={{
           ...uiSchema['ui:config'],
+          formData: useDependency ? formData : undefined,
         }}
         focusOnFirstError
         showErrorList={props.showErrorList || false}
