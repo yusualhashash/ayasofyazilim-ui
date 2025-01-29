@@ -1,6 +1,7 @@
 import { FieldTemplateProps } from '@rjsf/utils';
-import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { FieldLabel } from '../custom/label';
+import { fieldOptionsByDependency } from '../utils/dependency';
 
 export function FieldTemplate(props: FieldTemplateProps) {
   const {
@@ -15,20 +16,28 @@ export function FieldTemplate(props: FieldTemplateProps) {
     uiSchema,
     displayLabel,
     schema,
+    disabled,
   } = props;
   if (schema.type === 'object' || schema.type === 'array') {
     return children;
   }
+  const dependencyOptions = fieldOptionsByDependency(
+    uiSchema,
+    props.formContext
+  );
+  const fieldOptions = {
+    disabled,
+    required,
+    ...dependencyOptions,
+  };
+  if (fieldOptions.hidden) return null;
   return (
     <div
       className={cn(uiSchema?.['ui:className'], classNames, 'w-full')}
       style={style}
     >
       {displayLabel && schema.type !== 'boolean' && (
-        <Label htmlFor={id}>
-          {label}
-          {required ? <span className="text-destructive">*</span> : null}
-        </Label>
+        <FieldLabel id={id} label={label} required={fieldOptions.required} />
       )}
       {description}
       {/* TODO : Add description field */}

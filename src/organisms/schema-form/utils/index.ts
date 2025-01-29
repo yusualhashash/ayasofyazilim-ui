@@ -300,11 +300,11 @@ export const isObject = (value: any): value is GenericObjectType =>
  * @param target - The second UISchema object to merge.
  * @returns A new merged UISchema object.
  */
-export function mergeUISchemaObjects<T extends UiSchema, U extends UiSchema>(
-  source: T,
-  target: U
-): T & U {
-  const mergedResult: UiSchema = { ...source }; // Copy the source UISchema object
+export function mergeUISchemaObjects<
+  T extends UiSchema<T>,
+  U extends UiSchema<T>,
+>(source: T, target: U): T & U {
+  const mergedResult: UiSchema<T> = { ...source }; // Copy the source UISchema object
   for (const key of Object.keys(target)) {
     // If both keys are objects, merge them recursively
     if (isObject(mergedResult[key]) && isObject(target[key])) {
@@ -489,12 +489,12 @@ export type CreateFieldConfigWithResourceProps = {
  *
  * @returns {UISchemaType} The created field configuration.
  */
-export function createUiSchemaWithResource({
+export function createUiSchemaWithResource<T = unknown>({
   resources,
   schema,
   extend,
   name = 'Form',
-}: CreateFieldConfigWithResourceProps): UiSchema {
+}: CreateFieldConfigWithResourceProps): UiSchema<T> {
   const uiSchema = uiSchemaFromSchema({
     object: schema,
     resources,
@@ -628,9 +628,9 @@ export function bulkCreateUiSchema<T>({
   elements,
   config,
 }: {
-  config: UiSchema;
+  config: UiSchema<T>;
   elements: Array<keyof T>;
-}): UiSchema {
+}): UiSchema<T> {
   const uiSchema = {};
   for (const element of elements) {
     Object.assign(uiSchema, { [element]: config });
@@ -656,4 +656,83 @@ export function getDateFnsLocale({
     Locales[locale.substring(0, 2) as keyof typeof Locales] ??
     Locales.enUS
   );
+}
+
+export function extendFieldInGenericSchema(
+  inputSchema: GenericObjectType,
+  fieldToFind: string,
+  newField?: object
+): GenericObjectType {
+  if (inputSchema.type === 'object' && inputSchema.properties) {
+    const schemaProperties = inputSchema.properties;
+
+    // Use `Object.keys()` instead of `for..in`
+    Object.keys(schemaProperties).forEach((propertyKey) => {
+      if (schemaProperties[propertyKey].type === 'object') {
+        schemaProperties[propertyKey] = extendFieldInGenericSchema(
+          schemaProperties[propertyKey],
+          fieldToFind
+        );
+      } else if (
+        schemaProperties[propertyKey].type === 'array' &&
+        schemaProperties[propertyKey].items
+      ) {
+        schemaProperties[propertyKey].items = extendFieldInGenericSchema(
+          schemaProperties[propertyKey].items,
+          fieldToFind
+        );
+      }
+    });
+
+    const shouldTransform = Object.prototype.hasOwnProperty.call(
+      schemaProperties,
+      fieldToFind
+    );
+    if (shouldTransform) {
+      const transformedSchema = {
+        ...inputSchema,
+        ...newField,
+      };
+      // Remove specified fields
+
+      return transformedSchema;
+    }
+  }
+  return inputSchema;
+}
+
+export function findFieldInGenericSchema(
+  inputSchema: GenericObjectType,
+  fieldToFind: string
+): GenericObjectType {
+  if (inputSchema.type === 'object' && inputSchema.properties) {
+    const schemaProperties = inputSchema.properties;
+
+    // Use `Object.keys()` instead of `for..in`
+    Object.keys(schemaProperties).forEach((propertyKey) => {
+      if (schemaProperties[propertyKey].type === 'object') {
+        schemaProperties[propertyKey] = extendFieldInGenericSchema(
+          schemaProperties[propertyKey],
+          fieldToFind
+        );
+      } else if (
+        schemaProperties[propertyKey].type === 'array' &&
+        schemaProperties[propertyKey].items
+      ) {
+        schemaProperties[propertyKey].items = extendFieldInGenericSchema(
+          schemaProperties[propertyKey].items,
+          fieldToFind
+        );
+      }
+    });
+
+    const shouldTransform = Object.prototype.hasOwnProperty.call(
+      schemaProperties,
+      fieldToFind
+    );
+    if (shouldTransform) {
+      return schemaProperties[fieldToFind];
+    }
+  }
+  return inputSchema;
 }

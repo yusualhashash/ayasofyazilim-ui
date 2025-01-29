@@ -23,12 +23,23 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { fieldOptionsByDependency } from '../utils/dependency';
 
 export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
   const { items, title, required, canAdd, onAddClick, uiSchema, disabled } =
     props;
   const displayName = uiSchema?.['ui:title'] || title;
   const addable = uiSchema?.['ui:options']?.addable || canAdd;
+  const dependencyOptions = fieldOptionsByDependency(
+    uiSchema,
+    props.formContext
+  );
+  const fieldOptions = {
+    disabled,
+    required,
+    ...dependencyOptions,
+  };
+  if (fieldOptions.hidden) return null;
   return (
     <Accordion
       type="single"

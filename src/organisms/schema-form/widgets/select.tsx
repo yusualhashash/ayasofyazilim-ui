@@ -6,10 +6,32 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
+import { fieldOptionsByDependency } from '../utils/dependency';
 
 export const CustomSelect = (props: WidgetProps) => {
-  const { label, options, onChange, value, defaultValue, disabled } = props;
+  const {
+    label,
+    options,
+    onChange,
+    value,
+    defaultValue,
+    disabled,
+    uiSchema,
+    required,
+  } = props;
   const _value = value?.toString() || defaultValue?.toString();
+
+  const dependencyOptions = fieldOptionsByDependency(
+    uiSchema,
+    props.formContext
+  );
+  const fieldOptions = {
+    disabled,
+    required,
+    ...dependencyOptions,
+  };
+  if (fieldOptions.hidden) return null;
+
   const hasValue = !!_value;
   return (
     <Select
@@ -20,7 +42,7 @@ export const CustomSelect = (props: WidgetProps) => {
     >
       <SelectTrigger
         className={hasValue ? 'text-black ' : 'text-muted-foreground'}
-        disabled={disabled}
+        disabled={fieldOptions.disabled}
       >
         <SelectValue
           placeholder={

@@ -2,6 +2,7 @@ import { WidgetProps } from '@rjsf/utils';
 import { MultiSelect, MultiSelectProps } from '../../../molecules/multi-select';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { fieldOptionsByDependency } from '../utils/dependency';
 
 type CustomMultiSelectProps = Omit<MultiSelectProps, 'options' | 'onChange'> & {
   optionList: MultiSelectProps['options'];
@@ -21,6 +22,7 @@ export function CustomMultiSelect(
     required,
     classNames,
     displayLabel,
+    disabled,
   } = props;
   const fieldValue: string[] = Array.isArray(value)
     ? value
@@ -30,6 +32,17 @@ export function CustomMultiSelect(
     props.placeholder ||
     uiSchema?.['ui:placeholder'] ||
     uiOptions?.['ui:placeholder'];
+
+  const dependencyOptions = fieldOptionsByDependency(
+    uiSchema,
+    props.formContext
+  );
+  const fieldOptions = {
+    disabled,
+    required,
+    ...dependencyOptions,
+  };
+  if (fieldOptions.hidden) return null;
   return (
     <div className={cn(uiSchema?.['ui:className'], classNames, 'w-full')}>
       {label && displayLabel !== false && (
@@ -43,6 +56,7 @@ export function CustomMultiSelect(
         defaultValue={fieldValue}
         placeholder={placeholder}
         options={optionList}
+        disabled={fieldOptions.disabled}
         onValueChange={(values) => {
           onChange(values);
         }}

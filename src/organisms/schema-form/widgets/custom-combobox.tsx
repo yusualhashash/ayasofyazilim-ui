@@ -20,6 +20,7 @@ import {
 import { useMediaQuery } from '@/components/ui/useMediaQuery';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { fieldOptionsByDependency } from '../utils/dependency';
 
 type BadgeOptions = { className?: string; showValue?: boolean; label?: string };
 
@@ -46,6 +47,7 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
     selectLabel,
     disabled,
     emptyValue,
+    required,
   } = props;
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [open, setOpen] = useState(false);
@@ -54,11 +56,21 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
     (x) => x[selectIdentifier] === fieldValue
   )?.[selectLabel];
   const uiOptions = uiSchema?.['ui:options'];
+  const dependencyOptions = fieldOptionsByDependency(
+    uiSchema,
+    props.formContext
+  );
+  const fieldOptions = {
+    disabled,
+    required,
+    ...dependencyOptions,
+  };
+  if (fieldOptions.hidden) return null;
   const DesktopContent = (
     <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger
         asChild
-        disabled={disabled}
+        disabled={fieldOptions.disabled}
         className={cn(disabled && 'cursor-not-allowed')}
       >
         <Button
@@ -96,7 +108,7 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
       <DrawerTrigger asChild>
         <Button
           type="button"
-          disabled={disabled}
+          disabled={fieldOptions.disabled}
           variant="outline"
           className={cn(
             'text-muted-foreground w-full justify-between font-normal',
