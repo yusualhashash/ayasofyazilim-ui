@@ -30,7 +30,6 @@ export function FieldTemplate(props: FieldTemplateProps) {
     required,
     ...dependencyOptions,
   };
-  console.log(props.label, required, fieldOptions);
   if (fieldOptions.hidden) return null;
   return (
     <div
