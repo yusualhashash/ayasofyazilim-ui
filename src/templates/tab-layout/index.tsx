@@ -103,6 +103,28 @@ const tabContentVariants = cva('', {
   },
 });
 
+function findActiveTab(tabList: { href: string }[], path: string) {
+  const indexOfActiveTab = path
+    .split('/')
+    .reverse()
+    .findIndex((_, index) => {
+      if (index === 0) {
+        return tabList.find((i) => i.href === path);
+      }
+      const link = path.split('/').slice(0, -index).join('/');
+      return tabList.find((i) => i.href === link);
+    });
+  if (indexOfActiveTab === -1) {
+    return undefined;
+  }
+  if (indexOfActiveTab === 0) {
+    return tabList.find((i) => i.href === path)?.href;
+  }
+  return tabList.find(
+    (i) => i.href === path.split('/').slice(0, -indexOfActiveTab).join('/')
+  )?.href;
+}
+
 export function TabLayout({
   tabList,
   children,
@@ -127,15 +149,11 @@ export function TabLayout({
   const tabTriggerClassNames = tabTriggerVariants({ orientation, variant });
   const tabContentClassNames = tabContentVariants({ orientation, variant });
   const path = usePathname();
-  const currentPath = path.split('/').at(-1);
+
   const searchParams = `?${useSearchParams().toString()}`;
   const active =
-    tabList.find((tab) => tab.href === currentPath)?.href ||
-    tabList.find((tab) => tab.href === currentPath + searchParams)?.href ||
-    tabList.find((tab) => tab.href.split('/').at(-1) === currentPath)?.href ||
-    tabList.find(
-      (tab) => tab.href.split('/').at(-1) === currentPath + searchParams
-    )?.href ||
+    findActiveTab(tabList, path) ||
+    findActiveTab(tabList, path + searchParams) ||
     tabList[0].href;
 
   return (
