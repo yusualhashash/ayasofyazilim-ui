@@ -1,3 +1,4 @@
+import { filterUndefinedAndEmpty } from '.';
 import { FormContext, UiSchema } from '../types';
 
 type Options = {
@@ -28,9 +29,9 @@ export function fieldOptionsByDependency<T>(
       Object.assign(fieldOptions, onTheFlyOptions);
     }
   }
-  return {
+  return filterUndefinedAndEmpty({
     hidden: fieldOptions.hidden,
     disabled: fieldOptions.disabled,
     required: fieldOptions.required,
-  };
+  });
 }
