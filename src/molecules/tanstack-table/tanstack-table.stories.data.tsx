@@ -394,7 +394,7 @@ export const tableAction: TanstackTableTableActionsType[] = [
     icon: KeyIcon,
     title: 'Permission',
     onCancel: () => {
-      console.log('Perrr');
+      alert('Perrr');
     },
   },
 ];
@@ -432,7 +432,7 @@ export const rowActions: TanstackTableRowActionsType<Merchant>[] = [
     icon: KeyIcon,
     title: (row) => row.name,
     onCancel: (row) => {
-      console.log(row.name);
+      alert(row.name);
     },
   },
   {
@@ -445,10 +445,10 @@ export const rowActions: TanstackTableRowActionsType<Merchant>[] = [
     description: 'Are you sure you want to delete this user?',
     title: (row) => row.name,
     onConfirm: (row) => {
-      console.log(row.name);
+      alert(row.name);
     },
     onCancel: (row) => {
-      console.log(row.name);
+      alert(row.name);
     },
   },
 ];

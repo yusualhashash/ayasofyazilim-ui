@@ -106,7 +106,7 @@ export const AutoColumns: StoryObj<typeof Table> = {
       data: {
         selectable: true,
         onSelect(row) {
-          console.log(row);
+          alert(row);
         },
         tableType: jsonSchema,
         excludeList: ['id'],
@@ -399,7 +399,7 @@ export const DetailedFilter: StoryObj<typeof Table> = {
           animation: 0,
           maxCount: 3,
           modalPopover: false,
-          // onValueChange: (value) => console.log(value),
+          // onValueChange: (value) => alert(value),
         },
       },
     ],
@@ -460,7 +460,7 @@ export const SubContentMenuActionDialog: StoryObj<typeof Table> = {
             componentType: 'ConfirmationDialog',
             description: 'View Details description',
             variant: 'destructive',
-            // callback: async (triggerData: Payment) => console.log(triggerData),
+            // callback: async (triggerData: Payment) => alert(triggerData),
           },
           {
             type: 'Dialog',
@@ -471,7 +471,7 @@ export const SubContentMenuActionDialog: StoryObj<typeof Table> = {
               return `Are you sure to delete ${_triggerData.email}?`;
             },
             variant: 'destructive',
-            // callback: async (triggerData: Payment) => console.log(triggerData),
+            // callback: async (triggerData: Payment) => alert(triggerData),
           },
         ],
       },

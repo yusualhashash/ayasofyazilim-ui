@@ -38,7 +38,7 @@ Simple.args = {
     },
   },
   className: 'w-full p-4 border rounded-sm',
-  onSubmit: (values) => console.log(values.formData),
+  onSubmit: (values) => alert(values.formData),
   children: (
     <div>
       Hey I&apos;m a child <Button>Submit</Button>
