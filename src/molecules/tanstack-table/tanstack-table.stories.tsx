@@ -342,7 +342,7 @@ const conditionalCol = tanstackTableCreateColumnsByRowData<Merchant>({
           {
             conditionAccessorKey: 'entityInformationTypeCode',
             when: (value) => {
-              console.log(value);
+              alert(value);
               return value !== 'ORGANIZATION';
             },
           },
