@@ -25,10 +25,12 @@ import { replacePlaceholders } from '../../../lib/replace-placeholders';
 export type RegisterFormDataType = {
   email: string;
   password: string;
+  tenantId: string;
   userName: string;
 };
 
 export type RegisterFormPropsType = {
+  allowTenantChange: boolean;
   formSchema: z.ZodObject<any>;
   loginPath: string;
   registerFunction?: (values: RegisterFormDataType) => {
@@ -37,6 +39,7 @@ export type RegisterFormPropsType = {
   };
   resources?: { [key: string]: any };
   router: any;
+  defaultValues?: Partial<RegisterFormDataType>;
 };
 
 export default function RegisterForm({
@@ -45,6 +48,8 @@ export default function RegisterForm({
   loginPath,
   resources = localeTr.resources,
   router,
+  defaultValues,
+  allowTenantChange,
 }: RegisterFormPropsType) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
@@ -54,6 +59,7 @@ export default function RegisterForm({
       userName: '',
       email: '',
       password: '',
+      ...defaultValues,
     },
   });
   async function onSubmit(values: RegisterFormDataType) {
@@ -87,6 +93,27 @@ export default function RegisterForm({
       <div className="grid gap-4 my-1">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {allowTenantChange && (
+              <FormField
+                control={form.control}
+                name="tenantId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {resources?.AbpIdentity?.texts?.Tenant}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isLoading}
+                        placeholder="Tenant"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="userName"
