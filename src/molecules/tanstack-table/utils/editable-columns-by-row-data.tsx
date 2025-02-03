@@ -162,8 +162,9 @@ export function tanstackTableEditableColumnsByRowData<T>(
                   className="align-middle"
                   checked={value === 'true'}
                   onBlur={onBlur}
-                  onCheckedChange={(value) => {
+                  onCheckedChange={(_value) => {
                     handleValueChange(String(value));
+                    table.options.meta?.updateData(row.index, id, _value);
                   }}
                 />
               </div>
