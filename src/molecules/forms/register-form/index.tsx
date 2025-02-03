@@ -52,10 +52,10 @@ export default function RegisterForm({
   allowTenantChange,
 }: RegisterFormPropsType) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-
   const form = useForm<RegisterFormDataType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      tenantId: '',
       userName: '',
       email: '',
       password: '',
