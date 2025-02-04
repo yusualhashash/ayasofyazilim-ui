@@ -7,7 +7,7 @@ export function getCommonPinningStyles<TData>({
   fillerColumn,
 }: {
   column: Column<TData>;
-  fillerColumn: keyof TData;
+  fillerColumn?: keyof TData;
   /**
    * Show box shadow between pinned and scrollable columns.
    * @default false
