@@ -35,12 +35,23 @@ export function DatePicker({
   defaultValue?: Date;
   onChange?: (date: Date) => void;
 }) {
+  const offset = new Date().getTimezoneOffset() * 60 * 1000;
   const [dateValue, setDateValue] = useState(
-    defaultValue && parseDate(defaultValue.toJSON().split('T').at(0) || '')
+    defaultValue &&
+      parseDate(
+        new Date(defaultValue.getTime() - offset).toJSON().split('T').at(0) ||
+          ''
+      )
   );
   const [timeValue, setTimeValue] = useState(
     defaultValue &&
-      parseTime(defaultValue.toJSON().split('T').at(1)?.replace('Z', '') || '')
+      parseTime(
+        new Date(defaultValue.getTime() - offset)
+          .toJSON()
+          .split('T')
+          .at(1)
+          ?.replace('Z', '') || ''
+      )
   );
   useEffect(() => {
     if (!dateValue) return;
