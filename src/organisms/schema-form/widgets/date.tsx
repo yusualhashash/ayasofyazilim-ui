@@ -16,9 +16,8 @@ export const CustomDate = (props: WidgetProps) => {
   if (fieldOptions.hidden) return null;
   const initialDate =
     value && !Number.isNaN(new Date(value).getTime())
-      ? new Date(value)
+      ? new Date(new Date(value).toJSON())
       : undefined;
-
   return (
     <DatePicker
       defaultValue={initialDate}
