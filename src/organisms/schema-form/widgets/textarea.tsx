@@ -14,7 +14,10 @@ export const CustomTextareaInput = (props: WidgetProps) => {
     required,
     ...dependencyOptions,
   };
-  if (fieldOptions.hidden) return null;
+  if (fieldOptions.hidden) {
+    onChange(undefined);
+    return null;
+  }
   return (
     <Textarea
       id={id}

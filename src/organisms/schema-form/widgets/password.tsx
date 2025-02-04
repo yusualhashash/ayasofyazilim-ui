@@ -23,13 +23,22 @@ export const PasswordInputWidget = (props: WidgetProps) => {
     required,
     ...dependencyOptions,
   };
-  if (fieldOptions.hidden) return null;
+  if (fieldOptions.hidden) {
+    onChange(undefined);
+    return null;
+  }
   return (
     <PasswordInput
       id={id}
       className={className}
       required={required}
-      onChange={(event) => onChange(event.target.value)}
+      onChange={(event) => {
+        if (event.target.value === '') {
+          onChange(undefined);
+        } else {
+          onChange(event.target.value);
+        }
+      }}
       defaultValue={value || defaultValue}
       readOnly={readOnly}
       disabled={fieldOptions.disabled}

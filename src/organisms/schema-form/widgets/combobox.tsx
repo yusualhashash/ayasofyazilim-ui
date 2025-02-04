@@ -22,8 +22,16 @@ import { cn } from '@/lib/utils';
 import { fieldOptionsByDependency } from '../utils/dependency';
 
 export const Combobox = (props: WidgetProps) => {
-  const { label, value, defaultValue, disabled, uiSchema, options, required } =
-    props;
+  const {
+    label,
+    value,
+    defaultValue,
+    disabled,
+    uiSchema,
+    options,
+    required,
+    onChange,
+  } = props;
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [open, setOpen] = useState(false);
 
@@ -42,7 +50,10 @@ export const Combobox = (props: WidgetProps) => {
     required,
     ...dependencyOptions,
   };
-  if (fieldOptions.hidden) return null;
+  if (fieldOptions.hidden) {
+    onChange(undefined);
+    return null;
+  }
   const DesktopContent = (
     <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger asChild>

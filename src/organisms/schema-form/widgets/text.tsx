@@ -15,7 +15,10 @@ export const CustomTextInput = (props: WidgetProps) => {
     required,
     ...dependencyOptions,
   };
-  if (fieldOptions.hidden) return null;
+  if (fieldOptions.hidden) {
+    onChange(undefined);
+    return null;
+  }
   return (
     <Input
       type={uiOptions?.inputType || 'text'}
