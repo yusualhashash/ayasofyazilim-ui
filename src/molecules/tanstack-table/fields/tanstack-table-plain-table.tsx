@@ -28,7 +28,7 @@ export function TanstackTablePlainTable<TData, TValue>({
     row: TData,
     toggleExpanded: () => void
   ) => JSX.Element;
-  fillerColumn: keyof TData;
+  fillerColumn?: keyof TData;
   table: TableType<TData>;
 }) {
   return (

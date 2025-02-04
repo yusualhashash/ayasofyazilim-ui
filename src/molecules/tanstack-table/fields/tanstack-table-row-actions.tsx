@@ -101,7 +101,7 @@ function ActionButton<TData>({
       variant="ghost"
       size="sm"
       type="button"
-      className={cn('justify-start w-full', className)}
+      className={cn('justify-center w-full', className)}
       onClick={() => handleOnActionClick(action)}
     >
       {action.icon && <action.icon className="w-4 h-4" />}

@@ -43,7 +43,7 @@ export type TanstackBaseProps<TData, TValue> = {
     row: TData,
     toggleExpanded: () => void
   ) => JSX.Element;
-  fillerColumn: keyof TData;
+  fillerColumn?: keyof TData;
   editable: boolean;
   onPaginationChange?: OnChangeFn<PaginationState>;
   onColumnFiltersChange?: OnChangeFn<ColumnFiltersState>;
@@ -55,7 +55,7 @@ export type TanstackBaseProps<TData, TValue> = {
 export type TanstackTablePropsType<TData, TValue> = {
   data: TData[];
   columns: ColumnDef<TData, TValue>[];
-  fillerColumn: keyof TData;
+  fillerColumn?: keyof TData;
   pinColumns?: (keyof TData)[] | undefined;
   columnOrder?: (keyof TData)[] | undefined;
   columnVisibility?:
