@@ -13,7 +13,10 @@ export const CustomDate = (props: WidgetProps) => {
     required,
     ...dependencyOptions,
   };
-  if (fieldOptions.hidden) return null;
+  if (fieldOptions.hidden) {
+    onChange(undefined);
+    return null;
+  }
   const initialDate =
     value && !Number.isNaN(new Date(value).getTime())
       ? new Date(new Date(value).toJSON())

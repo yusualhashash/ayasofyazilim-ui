@@ -30,7 +30,7 @@ export function FieldTemplate(props: FieldTemplateProps) {
     required,
     ...dependencyOptions,
   };
-  if (fieldOptions.hidden) return null;
+  if (fieldOptions.hidden) return children;
   return (
     <div
       className={cn(uiSchema?.['ui:className'], classNames, 'w-full')}

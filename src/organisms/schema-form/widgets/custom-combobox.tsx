@@ -47,6 +47,7 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
     selectLabel,
     disabled,
     emptyValue,
+    onChange,
     required,
   } = props;
   const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -65,7 +66,11 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
     required,
     ...dependencyOptions,
   };
-  if (fieldOptions.hidden) return null;
+  if (fieldOptions.hidden) {
+    onChange(undefined);
+    return null;
+  }
+
   const DesktopContent = (
     <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger

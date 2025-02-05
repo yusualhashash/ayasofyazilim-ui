@@ -30,7 +30,10 @@ export const CustomSelect = (props: WidgetProps) => {
     required,
     ...dependencyOptions,
   };
-  if (fieldOptions.hidden) return null;
+  if (fieldOptions.hidden) {
+    onChange(undefined);
+    return null;
+  }
 
   const hasValue = !!_value;
   return (
