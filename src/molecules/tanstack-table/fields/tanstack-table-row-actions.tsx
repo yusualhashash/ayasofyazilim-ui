@@ -31,7 +31,7 @@ export const TanstackTableRowActions = <TData,>({
     return (
       <ActionButton
         action={actions[0]}
-        className="h-9"
+        className="h-9 justify-center"
         setRowAction={setRowAction}
         table={table}
         row={row}
@@ -101,7 +101,7 @@ function ActionButton<TData>({
       variant="ghost"
       size="sm"
       type="button"
-      className={cn('justify-center w-full', className)}
+      className={cn('justify-start w-full', className)}
       onClick={() => handleOnActionClick(action)}
     >
       {action.icon && <action.icon className="w-4 h-4" />}
