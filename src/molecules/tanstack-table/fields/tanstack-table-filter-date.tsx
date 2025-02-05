@@ -2,7 +2,6 @@ import { PlusCircledIcon } from '@radix-ui/react-icons';
 import { Column } from '@tanstack/react-table';
 
 import { useEffect, useState } from 'react';
-import { DateRange } from 'react-day-picker';
 import { Button } from '@/components/ui/button';
 import {
   Popover,
@@ -10,8 +9,9 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
-import AdvancedCalendar from '../../advanced-calendar';
 import { TanstackTableDateFilterType } from '../types';
+import { DatePicker, DateRangePicker } from '../../../molecules/date-picker';
+import { DateRange } from '../../../molecules/date-picker/types';
 
 interface TanstackTableDateFilterProps<TData, TValue> {
   accessorKey: string;
@@ -41,10 +41,10 @@ export function TanstackTableDateFilter<TData, TValue>({
   const [date, setDate] = useState<Date | DateRange | undefined>(
     dateItem?.endAccessorKey
       ? {
-          from: params?.get(dateItem.startAccessorKey)
+          start: params?.get(dateItem.startAccessorKey)
             ? new Date(params?.get(dateItem.startAccessorKey) as string)
             : undefined,
-          to: params?.get(dateItem?.endAccessorKey)
+          end: params?.get(dateItem?.endAccessorKey)
             ? new Date(params?.get(dateItem.endAccessorKey) as string)
             : undefined,
         }
@@ -96,22 +96,22 @@ export function TanstackTableDateFilter<TData, TValue>({
       return;
     }
 
-    if (!dateItem.canFilteredBySingleDate && (!date.from || !date.to)) return;
+    if (!dateItem.canFilteredBySingleDate && (!date.start || !date.end)) return;
 
-    if (isFilterChanged(dateItem.startAccessorKey, date.from)) {
+    if (isFilterChanged(dateItem.startAccessorKey, date.start)) {
       filter.push({
         accessorKey: dateItem.startAccessorKey,
-        selectedValues: date.from?.toISOString() || '',
+        selectedValues: date.start?.toISOString() || '',
       });
     }
 
     if (
       dateItem.endAccessorKey &&
-      isFilterChanged(dateItem.endAccessorKey, date.to)
+      isFilterChanged(dateItem.endAccessorKey, date.end)
     ) {
       filter.push({
         accessorKey: dateItem.endAccessorKey,
-        selectedValues: date.to?.toISOString() || '',
+        selectedValues: date.end?.toISOString() || '',
       });
     }
 
@@ -126,11 +126,11 @@ export function TanstackTableDateFilter<TData, TValue>({
         <Button variant="outline" size="sm" className="h-8 border-dashed">
           <PlusCircledIcon className="mr-2 h-4 w-4" />
           {title}
-          {date && 'from' in date && 'to' in date && date.from && (
+          {date && 'start' in date && 'to' in date && date.start && (
             <div className="hidden space-x-1 md:flex">
               <Separator orientation="vertical" className="mx-2 h-4" />
-              {new Date(date.from).toLocaleDateString()} -
-              {date.to && new Date(date?.to).toLocaleDateString()}
+              {new Date(date.start).toLocaleDateString()} -
+              {date.end && new Date(date?.end).toLocaleDateString()}
             </div>
           )}
           {date instanceof Date && (
@@ -141,24 +141,23 @@ export function TanstackTableDateFilter<TData, TValue>({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0" align="start">
+      <PopoverContent className="p-0 w-full min-w-fit" align="start">
         {dateItem?.endAccessorKey ? (
-          <AdvancedCalendar
-            type="dropdown"
-            mode="range"
-            onSelect={(date) => {
-              setDate(date);
+          <DateRangePicker
+            classNames={{
+              dateInput: 'border-0 border-b rounded-none',
             }}
-            selected={date as DateRange | undefined}
+            onChange={(_date) => {
+              setDate(_date);
+            }}
+            defaultValues={date as DateRange}
           />
         ) : (
-          <AdvancedCalendar
-            type="dropdown"
-            mode="single"
-            onSelect={(date) => {
-              setDate(date);
+          <DatePicker
+            onChange={(_date) => {
+              setDate(_date);
             }}
-            selected={date as Date | undefined}
+            defaultValue={date as Date | undefined}
           />
         )}
         <div className="p-1">
