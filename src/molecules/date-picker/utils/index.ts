@@ -38,5 +38,5 @@ export function createTime({
         ?.replace('Z', '') || ''
     );
 
-  return parseTime('');
+  return parseTime('00:00');
 }
