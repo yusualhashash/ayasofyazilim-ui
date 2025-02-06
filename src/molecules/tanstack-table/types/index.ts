@@ -164,7 +164,7 @@ export type TanstackTableRowDialog<TData> = {
   confirmationText?: string;
   onCancel?: (row: TData) => void;
   onConfirm?: (row: TData) => void;
-  title: string | ((row: TData) => string);
+  title: string | ((row: TData) => string | JSX.Element);
 };
 export type TanstackTableRowActionsCustomDialog<TData> =
   TanstackTableRowDialog<TData> & {
