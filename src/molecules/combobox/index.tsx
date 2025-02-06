@@ -27,9 +27,18 @@ type CustomComboboxProps<T> = {
   disabled?: boolean;
   emptyValue?: string;
   errorMessage?: string;
+  classNames?: {
+    container?: string;
+    label?: string;
+    trigger?: string;
+    error?: string;
+    required?: string;
+  };
   label?: string;
   list: Array<T> | null | undefined;
-  onValueChange: Dispatch<SetStateAction<T | null | undefined>>;
+  onValueChange:
+    | Dispatch<SetStateAction<T | null | undefined>>
+    | ((value: T | null | undefined) => void);
   required?: boolean;
   searchPlaceholder?: string;
   searchResultLabel?: string;
@@ -48,6 +57,7 @@ export function Combobox<T>(props: CustomComboboxProps<T>) {
     required,
     errorMessage,
     emptyValue,
+    classNames,
   } = props;
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [open, setOpen] = useState(false);
@@ -68,7 +78,8 @@ export function Combobox<T>(props: CustomComboboxProps<T>) {
           role="combobox"
           className={cn(
             'text-muted-foreground w-full justify-between font-normal',
-            value && 'text-black'
+            value && 'text-black',
+            classNames?.trigger
           )}
         >
           {fieldValue}
@@ -90,7 +101,8 @@ export function Combobox<T>(props: CustomComboboxProps<T>) {
           variant="outline"
           className={cn(
             'text-muted-foreground w-full justify-between font-normal',
-            value && 'text-black'
+            value && 'text-black',
+            classNames?.trigger
           )}
         >
           {fieldValue}
@@ -108,16 +120,25 @@ export function Combobox<T>(props: CustomComboboxProps<T>) {
   const Content = isDesktop ? DesktopContent : MobileContent;
 
   return (
-    <div className="w-full">
+    <div className={cn('w-full', classNames?.container)}>
       {label && (
-        <Label>
+        <Label className={classNames?.label}>
           {label}
-          {required && <span className="text-destructive">*</span>}
+          {required && (
+            <span className={cn('text-destructive', classNames?.required)}>
+              *
+            </span>
+          )}
         </Label>
       )}
       {Content}
       {errorMessage && (
-        <span className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-destructive">
+        <span
+          className={cn(
+            'text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-destructive',
+            classNames?.error
+          )}
+        >
           {errorMessage}
         </span>
       )}
