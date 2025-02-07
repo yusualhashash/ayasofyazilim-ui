@@ -1,6 +1,9 @@
 import { ZodSchema, z } from 'zod';
 import { ZodObjectOrWrapped } from '../../organisms/auto-form/utils';
 
+export { z } from 'zod';
+export { zodResolver } from '@hookform/resolvers/zod';
+
 export interface JsonSchema {
   additionalProperties?: boolean;
   default?: any;
