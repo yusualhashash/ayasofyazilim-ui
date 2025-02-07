@@ -25,6 +25,7 @@ import {
   Combobox,
   CustomCheckbox,
   CustomDate,
+  CustomPhoneField,
   CustomSelect,
   CustomSwitch,
   CustomTextareaInput,
@@ -32,7 +33,6 @@ import {
   EmailInputWidget,
   PasswordInputWidget,
 } from './widgets';
-import { CustomPhoneField } from './widgets/phone';
 
 /**
  * SchemaForm component that renders a form based on the provided schema and options.
