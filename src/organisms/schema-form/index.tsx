@@ -42,9 +42,6 @@ import {
  */
 export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
   const Default: ThemeProps<T, any, FormContext<T>> = {
-    fields: {
-      phone: CustomPhoneField,
-    },
     widgets: {
       switch: CustomSwitch,
       CheckboxWidget: CustomCheckbox,
@@ -56,6 +53,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       DateTimeWidget: CustomDate,
       password: PasswordInputWidget,
       email: EmailInputWidget,
+      phone: CustomPhoneField,
     },
     templates: {
       ArrayFieldTemplate: AccordionArrayFieldTemplate,
