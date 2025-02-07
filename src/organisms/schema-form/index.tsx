@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import { ScrollBar } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import ScrollArea from '../../molecules/scroll-area';
-import { AsyncSelect, CustomPhoneField, FieldErrorTemplate } from './fields';
+import { AsyncSelect, FieldErrorTemplate } from './fields';
 import {
   AccordionArrayFieldTemplate,
   ErrorListTemplate,
@@ -25,12 +25,13 @@ import {
   Combobox,
   CustomCheckbox,
   CustomDate,
+  CustomPhoneField,
   CustomSelect,
   CustomSwitch,
-  CustomTextInput,
-  PasswordInputWidget,
-  EmailInputWidget,
   CustomTextareaInput,
+  CustomTextInput,
+  EmailInputWidget,
+  PasswordInputWidget,
 } from './widgets';
 
 /**
@@ -42,9 +43,6 @@ import {
  */
 export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
   const Default: ThemeProps<T, any, FormContext<T>> = {
-    fields: {
-      phone: CustomPhoneField,
-    },
     widgets: {
       switch: CustomSwitch,
       CheckboxWidget: CustomCheckbox,
@@ -56,6 +54,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       DateTimeWidget: CustomDate,
       password: PasswordInputWidget,
       email: EmailInputWidget,
+      phone: CustomPhoneField,
     },
     templates: {
       ArrayFieldTemplate: AccordionArrayFieldTemplate,
