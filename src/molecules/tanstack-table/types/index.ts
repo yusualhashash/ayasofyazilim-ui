@@ -154,6 +154,15 @@ export type TanstackTableColumCell<TData> = {
 export type TanstackTableRowActionsDeleteRow = {
   type: 'delete-row';
 };
+export type TanstackTableRowActionsDuplicateRow = {
+  type: 'duplicate-row';
+};
+export type TanstackTableRowActionsMoveRowUp = {
+  type: 'move-row-up';
+};
+export type TanstackTableRowActionsMoveRowDown = {
+  type: 'move-row-down';
+};
 export type TanstackTableRowActionsSimple<TData> = {
   onClick: (row: TData) => void;
   type: 'simple';
@@ -203,6 +212,9 @@ export type TanstackTableRowActionsType<TData> = {
   | TanstackTableRowActionsConfirmationDialog<TData>
   | TanstackTableRowActionsSimple<TData>
   | TanstackTableRowActionsDeleteRow
+  | TanstackTableRowActionsDuplicateRow
+  | TanstackTableRowActionsMoveRowUp
+  | TanstackTableRowActionsMoveRowDown
   | TanstackTableRowActionsCustomDialog<TData>
   | TanstackTableRowActionsAutoformDialog<TData>
 );
