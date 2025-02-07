@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import { ScrollBar } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import ScrollArea from '../../molecules/scroll-area';
-import { AsyncSelect, CustomPhoneField, FieldErrorTemplate } from './fields';
+import { AsyncSelect, FieldErrorTemplate } from './fields';
 import {
   AccordionArrayFieldTemplate,
   ErrorListTemplate,
@@ -27,11 +27,12 @@ import {
   CustomDate,
   CustomSelect,
   CustomSwitch,
-  CustomTextInput,
-  PasswordInputWidget,
-  EmailInputWidget,
   CustomTextareaInput,
+  CustomTextInput,
+  EmailInputWidget,
+  PasswordInputWidget,
 } from './widgets';
+import { CustomPhoneField } from './widgets/phone';
 
 /**
  * SchemaForm component that renders a form based on the provided schema and options.
