@@ -65,6 +65,19 @@ export function EditableTanstackTable<TData>({
         setTableData(newData);
         onTableDataChange?.(newData);
       },
+      duplicateRow: (rowIndex, value) => {
+        const newData = [...tableData];
+        newData.splice(rowIndex, 0, value);
+        setTableData(newData);
+        onTableDataChange?.(newData);
+      },
+      orderRow: (newIndex, oldIndex) => {
+        const newData = [...tableData];
+        const item = newData.splice(oldIndex, 1)[0];
+        newData.splice(newIndex, 0, item);
+        setTableData(newData);
+        onTableDataChange?.(newData);
+      },
     },
   };
 }

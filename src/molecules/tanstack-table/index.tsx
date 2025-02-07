@@ -37,6 +37,8 @@ declare module '@tanstack/react-table' {
     addRow: (rowIndex: number, columnId: string, value: unknown) => void;
     removeRow: (rowIndex: number, columnId: string, value: unknown) => void;
     updateData: (rowIndex: number, columnId: string, value: unknown) => void;
+    duplicateRow: (rowIndex: number, value: TData) => void;
+    orderRow: (newIndex: number, oldIndex: number) => void;
   }
 }
 

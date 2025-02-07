@@ -1,6 +1,7 @@
 'use client';
 
 import { Row, Table } from '@tanstack/react-table';
+import { ArrowDown, ArrowUp, Copy, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -55,14 +56,12 @@ export const TanstackTableRowActions = <TData,>({
           if (action.condition && !action.condition?.(row.original))
             return null;
           return (
-            <DropdownMenuItem key={action.cta}>
-              <ActionButton
-                action={action}
-                table={table}
-                row={row}
-                setRowAction={setRowAction}
-              />
-            </DropdownMenuItem>
+            <ActionButton
+              action={action}
+              table={table}
+              row={row}
+              setRowAction={setRowAction}
+            />
           );
         })}
       </DropdownMenuContent>
@@ -94,18 +93,47 @@ function ActionButton<TData>({
       table.options.meta?.removeRow(row.index, '', null);
       return;
     }
+    if (action.type === 'duplicate-row') {
+      table.options.meta?.duplicateRow(row.index + 1, row.original);
+      return;
+    }
+    if (action.type === 'move-row-up') {
+      table.options.meta?.orderRow(row.index, row.index - 1);
+      return;
+    }
+    if (action.type === 'move-row-down') {
+      table.options.meta?.orderRow(row.index, row.index + 1);
+      return;
+    }
     setRowAction({ ...action, row: row.original });
   }
+  if (action.type === 'move-row-down' && row.index === table.getRowCount() - 1)
+    return null;
+  if (action.type === 'move-row-up' && row.index === 0) return null;
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      type="button"
-      className={cn('justify-start w-full', className)}
-      onClick={() => handleOnActionClick(action)}
-    >
-      {action.icon && <action.icon className="w-4 h-4" />}
-      <span className="ml-2">{action.cta}</span>
-    </Button>
+    <DropdownMenuItem key={action.cta}>
+      <Button
+        variant="ghost"
+        size="sm"
+        type="button"
+        className={cn('justify-start w-full', className)}
+        onClick={() => handleOnActionClick(action)}
+      >
+        {action.icon && <action.icon className="w-4 h-4" />}
+        {!action.icon && action.type === 'move-row-down' && (
+          <ArrowDown className="w-4 h-4" />
+        )}
+        {!action.icon && action.type === 'move-row-up' && (
+          <ArrowUp className="w-4 h-4" />
+        )}
+        {!action.icon && action.type === 'duplicate-row' && (
+          <Copy className="w-4 h-4" />
+        )}
+        {!action.icon && action.type === 'delete-row' && (
+          <Trash2 className="w-4 h-4" />
+        )}
+        <span className="ml-2">{action.cta}</span>
+      </Button>
+    </DropdownMenuItem>
   );
 }
