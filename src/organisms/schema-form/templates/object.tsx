@@ -25,7 +25,12 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
       )}
     >
       {title && uiSchema?.displayLabel !== false && (
-        <FieldLabel id={title} label={title} required={fieldOptions.required} />
+        <FieldLabel
+          id={title}
+          label={title}
+          required={fieldOptions.required}
+          className="col-span-full"
+        />
       )}
       {props.properties.map((element) => (
         <Fragment key={element.name}>{element.content}</Fragment>
