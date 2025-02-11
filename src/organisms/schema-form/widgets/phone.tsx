@@ -11,7 +11,7 @@ const phoneUtil = PhoneNumberUtil.getInstance();
 
 export const CustomPhoneField = (props: WidgetProps) => {
   const { value = '', onChange, name, className } = props;
-  const [inputValue, setInputValue] = useState(value);
+  const [inputValue, setInputValue] = useState(value || '');
   const [error, setError] = useState<string | null>(null);
 
   const handlePhoneChange = (val: string) => {
