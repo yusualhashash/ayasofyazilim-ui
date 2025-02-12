@@ -70,7 +70,10 @@ export function TanstackTablePlainTable<TData, TValue>({
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
-                    className={cn(editable && 'p-0 border border-b-0')}
+                    className={cn(
+                      (editable || cell.column.id === 'actions') &&
+                        'p-0 border border-b-0'
+                    )}
                     style={getCommonPinningStyles({
                       column: cell.column,
                       withBorder: true,
