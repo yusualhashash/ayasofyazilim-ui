@@ -32,7 +32,7 @@ export const TanstackTableRowActions = <TData,>({
     return (
       <ActionButton
         action={actions[0]}
-        className="h-9 justify-center"
+        className="h-9 justify-center rounded-none"
         setRowAction={setRowAction}
         table={table}
         row={row}
@@ -45,7 +45,7 @@ export const TanstackTableRowActions = <TData,>({
         <Button
           variant="ghost"
           type="button"
-          className="flex data-[state=open]:bg-muted"
+          className="flex data-[state=open]:bg-muted rounded-none"
         >
           Actions
           <span className="sr-only">Open Menu</span>

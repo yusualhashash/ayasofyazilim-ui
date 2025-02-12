@@ -38,7 +38,6 @@ type CustomComboboxProps<T> = {
 
 export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
   const {
-    label,
     value,
     defaultValue,
     uiSchema,
@@ -46,7 +45,7 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
     selectIdentifier,
     selectLabel,
     disabled,
-    emptyValue,
+    emptyValue = 'Please select',
     onChange,
     required,
   } = props;
@@ -56,7 +55,6 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
   const fieldValueDisplayName = list?.find(
     (x) => x[selectIdentifier] === fieldValue
   )?.[selectLabel];
-  const uiOptions = uiSchema?.['ui:options'];
   const dependencyOptions = fieldOptionsByDependency(
     uiSchema,
     props.formContext
@@ -70,7 +68,6 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
     onChange(undefined);
     return null;
   }
-
   const DesktopContent = (
     <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger
@@ -92,12 +89,7 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
           <span className=" overflow-hidden text-ellipsis has-[role=dialog]:max-w-xs">
             {fieldValueDisplayName
               ? fieldValueDisplayName.toString()
-              : emptyValue ||
-                  uiSchema?.['ui:placeholder']?.toString() ||
-                  uiOptions?.['ui:placeholder']?.toString() ||
-                  label
-                ? `Please select an ${label.toLocaleLowerCase()}`
-                : 'Please select'}
+              : emptyValue}
           </span>
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -122,12 +114,7 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
         >
           {fieldValueDisplayName
             ? fieldValueDisplayName.toString()
-            : emptyValue ||
-                uiSchema?.['ui:placeholder']?.toString() ||
-                uiOptions?.['ui:placeholder']?.toString() ||
-                label
-              ? `Please select an ${label.toLocaleLowerCase()}`
-              : 'Please select'}
+            : emptyValue}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </DrawerTrigger>
