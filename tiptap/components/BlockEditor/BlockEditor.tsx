@@ -96,7 +96,7 @@ export const BlockEditor = ({
         <EditorContent
           editor={editor}
           ref={editorRef}
-          className="h-full [&>div]:!p-0"
+          className={cn('h-full', editable ? '[&>div]:!p-4' : '[&>div]:!p-0')}
         />
         {editable && (
           <div>
