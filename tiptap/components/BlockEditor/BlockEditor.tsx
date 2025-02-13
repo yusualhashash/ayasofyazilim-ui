@@ -17,6 +17,7 @@ import { ExtensionKit } from '@tiptap-location/extensions/extension-kit';
 import { Content } from 'tippy.js';
 import { ContentItemMenu } from '../menus/ContentItemMenu';
 import { TextMenu } from '../menus/TextMenu';
+import { cn } from '@/lib/utils';
 
 let timeout: NodeJS.Timeout;
 export interface IBlockEditorProps {
@@ -24,12 +25,14 @@ export interface IBlockEditorProps {
   editorContent: JSONContent | undefined;
   setEditorContent?: React.Dispatch<React.SetStateAction<JSONContent>>;
   setWordCount?: React.Dispatch<React.SetStateAction<number>>;
+  className?: string;
 }
 export const BlockEditor = ({
   setEditorContent,
   setWordCount,
   editorContent,
   editable,
+  className,
 }: IBlockEditorProps) => {
   const menuContainerRef = useRef(null);
   const editorRef = useRef<HTMLDivElement | null>(null);
@@ -83,10 +86,10 @@ export const BlockEditor = ({
   }
 
   return (
-    <div className="flex h-full" ref={menuContainerRef}>
+    <div className={cn('flex size-full', className)} ref={menuContainerRef}>
       <div
         className={
-          'relative flex flex-col flex-1 h-full ' +
+          'relative flex flex-col flex-1 size-full ' +
           (editable ? 'edit-mode' : 'preview-mode')
         }
       >
