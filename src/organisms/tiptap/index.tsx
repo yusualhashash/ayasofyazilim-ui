@@ -25,6 +25,7 @@ export interface ITiptapEditorProps {
   minWordCount?: number;
   onSaveFunction?: (editorId: string, editorContent: string) => Promise<string>;
   onWordCountChanged?: (wordCount: number) => void;
+  editorClassName?: string;
 }
 
 export default function TipTapEditor({
@@ -35,6 +36,7 @@ export default function TipTapEditor({
   minWordCount = 10,
   onSaveFunction,
   onWordCountChanged,
+  editorClassName,
 }: ITiptapEditorProps) {
   const [isButtonsDisabled, setIsButtonsDisabled] = useState<boolean>(false);
   const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
@@ -87,7 +89,7 @@ export default function TipTapEditor({
     setEditable(!editable);
   }
   return (
-    <div className="relative h-full">
+    <div className="relative h-full overflow-hidden">
       {canEditable && !isButtonsDisabled && (
         <div className="absolute right-5 top-5 z-10">
           {editable ? (
@@ -127,6 +129,7 @@ export default function TipTapEditor({
         setWordCount={setWordCount}
         editorContent={content}
         editable={editable}
+        className={editorClassName}
       />
     </div>
   );
