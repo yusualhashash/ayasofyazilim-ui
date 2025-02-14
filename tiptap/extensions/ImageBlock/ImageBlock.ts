@@ -110,7 +110,7 @@ export const ImageBlock = Image.extend({
   },
 
   addNodeView() {
-    //@ts-expect-error
+    //@ts-ignore
     return ReactNodeViewRenderer(ImageBlockView);
   },
 });
