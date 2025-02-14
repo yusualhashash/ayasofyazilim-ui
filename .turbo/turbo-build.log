@@ -1,0 +1,13 @@
+
+> @repo/ayasofyazilim-ui@0.0.0 build C:\Users\ertugrul.bakas\Repos\upwithcrowd-web\packages\ayasofyazilim-ui
+> pnpm link:self
+
+
+> @repo/ayasofyazilim-ui@0.0.0 link:self C:\Users\ertugrul.bakas\Repos\upwithcrowd-web\packages\ayasofyazilim-ui
+> pnpm link --global
+
+ ERR_PNPM_NO_GLOBAL_BIN_DIR  Unable to find the global bin directory
+
+Run "pnpm setup" to create it automatically, or set the global-bin-dir setting, or the PNPM_HOME env variable. The global bin directory should be in the PATH.
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
