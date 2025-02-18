@@ -132,7 +132,7 @@ export default function TipTapEditor({
         editorContent={content}
         editable={editable}
         className={editorClassName}
-        mode={mode || 'edit'}
+        mode={mode ?? 'edit'}
       />
     </div>
   );
