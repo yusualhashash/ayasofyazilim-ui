@@ -9,7 +9,7 @@ interface ImageBlockViewProps {
   getPos: () => number;
   node: Node & {
     attrs: {
-      src: string;
+      src?: string;
     };
   };
 }
