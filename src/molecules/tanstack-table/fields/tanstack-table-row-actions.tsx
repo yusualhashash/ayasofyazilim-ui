@@ -1,7 +1,7 @@
 'use client';
 
-import { Row, Table } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp, Copy, Trash2 } from 'lucide-react';
+import { Row, Table } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -27,11 +27,15 @@ export const TanstackTableRowActions = <TData,>({
   actions,
   table,
 }: TanstackTableRowActionsProps<TData>) => {
-  if (actions.length === 0) return null;
-  if (actions.length === 1) {
+  const availableActions = actions.filter(
+    (i) => !i.condition || (i.condition && i.condition?.(row.original))
+  );
+  if (availableActions.length === 0) return null;
+
+  if (availableActions.length === 1) {
     return (
       <ActionButton
-        action={actions[0]}
+        action={availableActions[0]}
         className="h-9 justify-center rounded-none"
         setRowAction={setRowAction}
         table={table}
@@ -52,7 +56,7 @@ export const TanstackTableRowActions = <TData,>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {actions.map((action) => {
+        {availableActions.map((action) => {
           if (action.condition && !action.condition?.(row.original))
             return null;
           if (
