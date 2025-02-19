@@ -26,7 +26,7 @@ export interface IBlockEditorProps {
   setEditorContent?: React.Dispatch<React.SetStateAction<JSONContent>>;
   setWordCount?: React.Dispatch<React.SetStateAction<number>>;
   className?: string;
-  mode: string;
+  mode?: string; // Made optional with ?
 }
 export const BlockEditor = ({
   setEditorContent,
@@ -34,7 +34,7 @@ export const BlockEditor = ({
   editorContent,
   editable,
   className,
-  mode,
+  mode = 'edit', // Added default value
 }: IBlockEditorProps) => {
   const menuContainerRef = useRef(null);
   const editorRef = useRef<HTMLDivElement | null>(null);
