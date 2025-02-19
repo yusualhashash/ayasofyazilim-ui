@@ -30,9 +30,17 @@
     }
   }
 }
-.preview-mode .ProseMirror {
+.live .ProseMirror {
   @apply bg-white px-5 md:px-20 py-10 min-h-[80vh];
 }
+.preview .ProseMirror {
+  @apply bg-muted px-5 md:px-20 py-10 min-h-[80vh];
+}
+
+.edit .ProseMirror {
+  @apply bg-gray-50 px-5 md:px-20 py-10 min-h-[80vh];
+}
+
 [data-theme='slash-command'] {
   width: 1000vw;
 }

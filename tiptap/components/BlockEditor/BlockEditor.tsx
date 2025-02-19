@@ -26,6 +26,7 @@ export interface IBlockEditorProps {
   setEditorContent?: React.Dispatch<React.SetStateAction<JSONContent>>;
   setWordCount?: React.Dispatch<React.SetStateAction<number>>;
   className?: string;
+  mode?: string; // Made optional with ?
 }
 export const BlockEditor = ({
   setEditorContent,
@@ -33,6 +34,7 @@ export const BlockEditor = ({
   editorContent,
   editable,
   className,
+  mode = 'edit', // Added default value
 }: IBlockEditorProps) => {
   const menuContainerRef = useRef(null);
   const editorRef = useRef<HTMLDivElement | null>(null);
@@ -73,7 +75,6 @@ export const BlockEditor = ({
     },
     []
   );
-
   useEffect(() => {
     if (editor && editor.isEditable !== editable) {
       editor?.commands.setContent(editorContent as Content);
@@ -87,12 +88,7 @@ export const BlockEditor = ({
 
   return (
     <div className={cn('flex size-full', className)} ref={menuContainerRef}>
-      <div
-        className={
-          'relative flex flex-col flex-1 size-full ' +
-          (editable ? 'edit-mode' : 'preview-mode')
-        }
-      >
+      <div className={'relative flex flex-col flex-1 size-full ' + mode}>
         <EditorContent
           editor={editor}
           ref={editorRef}

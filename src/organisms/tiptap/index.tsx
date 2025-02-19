@@ -26,6 +26,7 @@ export interface ITiptapEditorProps {
   onSaveFunction?: (editorId: string, editorContent: string) => Promise<string>;
   onWordCountChanged?: (wordCount: number) => void;
   editorClassName?: string;
+  mode?: string;
 }
 
 export default function TipTapEditor({
@@ -37,6 +38,7 @@ export default function TipTapEditor({
   onSaveFunction,
   onWordCountChanged,
   editorClassName,
+  mode,
 }: ITiptapEditorProps) {
   const [isButtonsDisabled, setIsButtonsDisabled] = useState<boolean>(false);
   const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
@@ -130,6 +132,7 @@ export default function TipTapEditor({
         editorContent={content}
         editable={editable}
         className={editorClassName}
+        mode={mode ?? 'edit'}
       />
     </div>
   );
