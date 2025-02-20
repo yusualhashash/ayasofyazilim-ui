@@ -1,3 +1,5 @@
+'use client';
+
 import { PhoneInput } from 'react-international-phone';
 import { FormControl, FormItem, FormMessage } from '@/components/ui/form';
 import 'react-international-phone/style.css';
@@ -14,6 +16,9 @@ export default function AutoFormPhone({
   fieldProps,
   field,
 }: AutoFormInputComponentProps) {
+  const defaultCountryCode =
+    (typeof window !== 'undefined' && localStorage.getItem('countryCode2')) ||
+    'us';
   const { showLabel: _showLabel } = fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
   if (fieldProps.isLoading)
@@ -39,7 +44,7 @@ export default function AutoFormPhone({
         {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
         <FormControl>
           <PhoneInput
-            defaultCountry="tr"
+            defaultCountry={defaultCountryCode}
             value={field.value}
             onChange={field.onChange}
             inputClassName={cn('flex-1', fieldProps.className)}

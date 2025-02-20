@@ -10,6 +10,9 @@ import 'react-international-phone/style.css';
 const phoneUtil = PhoneNumberUtil.getInstance();
 
 export const CustomPhoneField = (props: WidgetProps) => {
+  const defaultCountryCode =
+    (typeof window !== 'undefined' && localStorage.getItem('countryCode2')) ||
+    'us';
   const { value = '', onChange, name, className } = props;
   const [inputValue, setInputValue] = useState(value || '');
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +36,7 @@ export const CustomPhoneField = (props: WidgetProps) => {
     <>
       <PhoneInput
         name={name}
-        defaultCountry="tr"
+        defaultCountry={defaultCountryCode}
         value={inputValue}
         onChange={handlePhoneChange}
         inputClassName={cn('flex-1', className)}
