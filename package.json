@@ -39,7 +39,6 @@
     "./organisms/*/types": "./src/organisms/*/types/index.ts",
     "./organisms/*/utils": "./src/organisms/*/utils/index.ts",
     "./templates/*": "./src/templates/*/index.tsx",
-    "./pages/*": "./src/pages/*/index.tsx",
     "./lib/*": "./src/lib/*/index.tsx"
   },
   "files": [
