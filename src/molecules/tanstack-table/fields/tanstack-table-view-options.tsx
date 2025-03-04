@@ -83,7 +83,7 @@ export function TanstackTableViewOptions<TData>(
   return (
     <>
       {selectedRowAction && selectedRowCount > 0 && (
-        <div className="mr-2">
+        <div className={primaryAction && otherActions && 'mr-2'}>
           <Button
             variant="outline"
             size="sm"
@@ -103,42 +103,6 @@ export function TanstackTableViewOptions<TData>(
       )}
 
       {editable && null}
-      {/* {!editable && (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className="ml-auto"
-              type="button"
-            >
-              <MixerHorizontalIcon className="mr-2 h-4 w-4" />
-              See Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[160px]">
-            <DropdownMenuLabel>Edit Columns</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {table
-              .getAllColumns()
-              .filter(
-                (column) =>
-                  typeof column.accessorFn !== 'undefined' &&
-                  column.getCanHide()
-              )
-              .map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )} */}
 
       {primaryAction && otherActions && (
         <>
