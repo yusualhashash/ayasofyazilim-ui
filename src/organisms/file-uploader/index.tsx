@@ -234,7 +234,7 @@ export function FileUploader(props: BaseFileUploaderProps) {
                   {...getRootProps()}
                   {...dropzoneProps}
                   className={cn(
-                    'relative flex items-center gap-4 overflow-hidden rounded-lg',
+                    'relative flex items-center gap-4 rounded-lg',
                     classNames?.dropzone
                   )}
                 >
@@ -244,6 +244,7 @@ export function FileUploader(props: BaseFileUploaderProps) {
                     variant="outline"
                     size="icon"
                     className="min-h-9 min-w-9"
+                    disabled={isDisabled}
                   >
                     <Upload
                       className="text-muted-foreground size-4"
@@ -309,7 +310,15 @@ export function FileUploader(props: BaseFileUploaderProps) {
       </Dropzone>
       {files?.length ? (
         <ScrollArea className="h-fit w-full">
-          <div className="grid max-h-48 grid-cols-3 flex-col gap-4">
+          <div
+            className={cn(
+              'grid max-h-48 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 flex-col gap-4',
+              files.length === 1 && '!grid-cols-1',
+              files.length === 2 && 'sm:!grid-cols-2',
+              files.length === 3 && 'lg:!grid-cols-3',
+              files.length === 4 && '2xl:!grid-cols-4'
+            )}
+          >
             {files?.map((file, index) => (
               <FileCard
                 key={file.name + file.lastModified + file.webkitRelativePath}
@@ -333,12 +342,12 @@ interface FileCardProps {
 
 function FileCard({ file, progress, onRemove }: FileCardProps) {
   return (
-    <div className="bg-muted relative flex items-center gap-2.5 rounded-md p-2">
+    <div className="bg-muted relative flex items-center gap-2.5 overflow-hidden rounded-md p-2">
       <div className="flex flex-1 gap-2.5">
         {isFileWithPreview(file) ? <FilePreview file={file} /> : null}
         <div className="flex w-full flex-col gap-2">
-          <div className="flex flex-col gap-px">
-            <p className="text-foreground/80 line-clamp-1 text-sm font-medium">
+          <div className="flex flex-col gap-px overflow-hidden">
+            <p className="text-foreground/80 line-clamp-1 text-sm font-medium max-w-60 text-ellipsis">
               {file.name}
             </p>
             <p className="text-muted-foreground text-xs">
