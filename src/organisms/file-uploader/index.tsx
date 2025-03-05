@@ -310,7 +310,15 @@ export function FileUploader(props: BaseFileUploaderProps) {
       </Dropzone>
       {files?.length ? (
         <ScrollArea className="h-fit w-full">
-          <div className="grid max-h-48 sm:grid-cols-2 md:grid-cols-3 flex-col gap-4">
+          <div
+            className={cn(
+              'grid max-h-48 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 flex-col gap-4',
+              files.length === 1 && '!grid-cols-1',
+              files.length === 2 && 'sm:!grid-cols-2',
+              files.length === 3 && 'lg:!grid-cols-3',
+              files.length === 4 && '2xl:!grid-cols-4'
+            )}
+          >
             {files?.map((file, index) => (
               <FileCard
                 key={file.name + file.lastModified + file.webkitRelativePath}
