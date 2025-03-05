@@ -13,6 +13,7 @@ import { cn, formatBytes } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Progress } from '@/components/ui/progress';
 import { useControllableState } from './hooks/use-controllable-state';
+import { Separator } from '@/components/ui/separator';
 
 type BaseFileUploaderProps = React.HTMLAttributes<HTMLDivElement> & {
   /**
@@ -309,26 +310,29 @@ export function FileUploader(props: BaseFileUploaderProps) {
         }}
       </Dropzone>
       {files?.length ? (
-        <ScrollArea className="h-fit w-full">
-          <div
-            className={cn(
-              'grid max-h-48 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 flex-col gap-4',
-              files.length === 1 && '!grid-cols-1',
-              files.length === 2 && 'sm:!grid-cols-2',
-              files.length === 3 && 'lg:!grid-cols-3',
-              files.length === 4 && '2xl:!grid-cols-4'
-            )}
-          >
-            {files?.map((file, index) => (
-              <FileCard
-                key={file.name + file.lastModified + file.webkitRelativePath}
-                file={file}
-                onRemove={() => onRemove(index)}
-                progress={progresses?.[file.name]}
-              />
-            ))}
-          </div>
-        </ScrollArea>
+        <>
+          <Separator className="w-auto -mx-4" />
+          <ScrollArea className="h-fit w-full">
+            <div
+              className={cn(
+                'grid max-h-48 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 flex-col gap-4',
+                files.length === 1 && '!grid-cols-1',
+                files.length === 2 && 'sm:!grid-cols-2',
+                files.length === 3 && 'lg:!grid-cols-3',
+                files.length === 4 && '2xl:!grid-cols-4'
+              )}
+            >
+              {files?.map((file, index) => (
+                <FileCard
+                  key={file.name + file.lastModified + file.webkitRelativePath}
+                  file={file}
+                  onRemove={() => onRemove(index)}
+                  progress={progresses?.[file.name]}
+                />
+              ))}
+            </div>
+          </ScrollArea>
+        </>
       ) : null}
     </div>
   );
