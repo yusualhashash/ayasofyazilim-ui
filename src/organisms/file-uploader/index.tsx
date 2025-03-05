@@ -338,8 +338,8 @@ function FileCard({ file, progress, onRemove }: FileCardProps) {
       <div className="flex flex-1 gap-2.5">
         {isFileWithPreview(file) ? <FilePreview file={file} /> : null}
         <div className="flex w-full flex-col gap-2">
-          <div className="flex flex-col gap-px">
-            <p className="text-foreground/80 line-clamp-1 text-sm font-medium">
+          <div className="flex flex-col gap-px overflow-hidden">
+            <p className="text-foreground/80 line-clamp-1 text-sm font-medium max-w-full text-ellipsis">
               {file.name}
             </p>
             <p className="text-muted-foreground text-xs">
