@@ -234,7 +234,7 @@ export function FileUploader(props: BaseFileUploaderProps) {
                   {...getRootProps()}
                   {...dropzoneProps}
                   className={cn(
-                    'relative flex items-center gap-4 overflow-hidden rounded-lg',
+                    'relative flex items-center gap-4 rounded-lg',
                     classNames?.dropzone
                   )}
                 >
@@ -244,6 +244,7 @@ export function FileUploader(props: BaseFileUploaderProps) {
                     variant="outline"
                     size="icon"
                     className="min-h-9 min-w-9"
+                    disabled={isDisabled}
                   >
                     <Upload
                       className="text-muted-foreground size-4"
