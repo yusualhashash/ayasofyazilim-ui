@@ -11,8 +11,7 @@
     "lib": ["ES2021"],
     "paths": {
       "@tiptap-location/*": ["./tiptap/*"],
-      "@/*": ["@/*", "./src/*"],
-      "@/hooks/*": ["./src/hooks/*", "@/hooks/*"]
+      "@/*": ["@/*", "./src/*"]
     }
   }
 }
