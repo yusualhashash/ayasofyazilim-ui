@@ -310,7 +310,7 @@ export function FileUploader(props: BaseFileUploaderProps) {
       </Dropzone>
       {files?.length ? (
         <ScrollArea className="h-fit w-full">
-          <div className="grid max-h-48 grid-cols-3 flex-col gap-4">
+          <div className="grid max-h-48 sm:grid-cols-2 md:grid-cols-3 flex-col gap-4">
             {files?.map((file, index) => (
               <FileCard
                 key={file.name + file.lastModified + file.webkitRelativePath}
@@ -334,12 +334,12 @@ interface FileCardProps {
 
 function FileCard({ file, progress, onRemove }: FileCardProps) {
   return (
-    <div className="bg-muted relative flex items-center gap-2.5 rounded-md p-2">
+    <div className="bg-muted relative flex items-center gap-2.5 overflow-hidden rounded-md p-2">
       <div className="flex flex-1 gap-2.5">
         {isFileWithPreview(file) ? <FilePreview file={file} /> : null}
         <div className="flex w-full flex-col gap-2">
           <div className="flex flex-col gap-px overflow-hidden">
-            <p className="text-foreground/80 line-clamp-1 text-sm font-medium max-w-full text-ellipsis">
+            <p className="text-foreground/80 line-clamp-1 text-sm font-medium max-w-60 text-ellipsis">
               {file.name}
             </p>
             <p className="text-muted-foreground text-xs">
