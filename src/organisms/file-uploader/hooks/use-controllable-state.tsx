@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import { useCallbackRef } from './use-callback-ref';
 
 /**
@@ -6,9 +7,9 @@ import { useCallbackRef } from './use-callback-ref';
  */
 
 type UseControllableStateParams<T> = {
+  prop?: T | undefined;
   defaultProp?: T | undefined;
   onChange?: (state: T) => void;
-  prop?: T | undefined;
 };
 
 type SetStateFn<T> = (prevState?: T) => T;
