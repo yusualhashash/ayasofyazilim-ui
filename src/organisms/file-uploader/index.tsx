@@ -8,13 +8,12 @@ import Dropzone, {
   type DropzoneProps,
   type FileRejection,
 } from 'react-dropzone';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from '@/components/ui/sonner';
@@ -106,7 +105,7 @@ type BaseFileUploaderProps = React.HTMLAttributes<HTMLDivElement> & {
   noDrag?: boolean;
   classNames?: {
     container?: string;
-    childContainer?: string;
+    dropzoneContainer?: string;
     dropzone?: string;
   };
 } & (ButtonFileUploaderProps | DropzoneFileUploaderProps);
@@ -157,7 +156,7 @@ export function FileUploader(props: BaseFileUploaderProps) {
           preview: URL.createObjectURL(file),
         })
       );
-
+      if (newFiles.length > 0 && !isOpen) setIsOpen(true);
       const updatedFiles = files ? [...files, ...newFiles] : newFiles;
 
       setFiles(updatedFiles);
@@ -196,6 +195,7 @@ export function FileUploader(props: BaseFileUploaderProps) {
     if (!files) return;
     const newFiles = files.filter((_, i) => i !== index);
     setFiles(newFiles);
+    if (newFiles.length === 0) setIsOpen(false);
     onValueChange?.(newFiles);
   }
 
@@ -213,48 +213,49 @@ export function FileUploader(props: BaseFileUploaderProps) {
   );
 
   const isDisabled = disabled || (files?.length ?? 0) >= maxFileCount;
-
+  const [isOpen, setIsOpen] = React.useState(false);
   return (
-    <Accordion collapsible type="single">
-      <AccordionItem
-        value="test"
+    <Collapsible
+      onOpenChange={setIsOpen}
+      open={isOpen}
+      className="transition-all"
+    >
+      <div
         className={cn('flex flex-col w-full border rounded-lg [&>h3]:w-full')}
       >
-        <AccordionTrigger
-          className={cn(
-            'pr-4 [&>svg]:hidden [&[data-state=open]>svg]:bg-red-200 group/trigger hover:no-underline',
-            !files?.length && 'opacity-50'
-          )}
-          disabled={!files?.length}
-          secondChildren={
-            <Dropzone
-              onDrop={onDrop}
-              accept={accept}
-              maxSize={maxSize}
-              maxFiles={maxFileCount}
-              multiple={maxFileCount > 1 || multiple}
-              disabled={isDisabled}
-              noDrag={noDrag}
-            >
-              {(dropzone) => (
-                <DropzoneTrigger
-                  {...dropzone}
-                  {...props}
-                  isDisabled={isDisabled}
-                />
-              )}
-            </Dropzone>
-          }
-        >
-          <Button variant="outline" className="gap-2" asChild>
-            <div>
+        <div className="flex flex-col sm:flex-row gap-4 p-4">
+          <Dropzone
+            onDrop={onDrop}
+            accept={accept}
+            maxSize={maxSize}
+            maxFiles={maxFileCount}
+            multiple={maxFileCount > 1 || multiple}
+            disabled={isDisabled}
+            noDrag={noDrag}
+          >
+            {(dropzone) => (
+              <DropzoneTrigger
+                {...dropzone}
+                {...props}
+                isDisabled={isDisabled}
+              />
+            )}
+          </Dropzone>
+          <CollapsibleTrigger
+            className={cn(
+              'gap-4 group/trigger hover:no-underline',
+              !files?.length && 'opacity-50'
+            )}
+            asChild
+          >
+            <Button variant="outline" className="gap-2" disabled={!files}>
               <FolderOpen className="w-4 group-data-[state=open]/trigger:hidden" />
               <Folder className="w-4 group-data-[state=closed]/trigger:hidden" />
               Files
-            </div>
-          </Button>
-        </AccordionTrigger>
-        <AccordionContent className="w-full p-0">
+            </Button>
+          </CollapsibleTrigger>
+        </div>
+        <CollapsibleContent className="w-full p-0">
           <div
             className={cn(
               'group relative flex flex-col gap-4 overflow-hidden p-4 border-t',
@@ -287,9 +288,9 @@ export function FileUploader(props: BaseFileUploaderProps) {
               </ScrollArea>
             ) : null}
           </div>
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+        </CollapsibleContent>
+      </div>
+    </Collapsible>
   );
 }
 
@@ -377,7 +378,12 @@ function DropzoneTrigger(props: DropzoneTriggerProps) {
   } = props;
   if (variant === 'button') {
     return (
-      <div className={cn('flex gap-4 w-full px-4', classNames?.childContainer)}>
+      <div
+        className={cn(
+          'flex flex-col sm:flex-row gap-4 w-full',
+          classNames?.dropzoneContainer
+        )}
+      >
         <div
           {...getRootProps()}
           {...dropzoneProps}
@@ -390,7 +396,7 @@ function DropzoneTrigger(props: DropzoneTriggerProps) {
           <Button
             type="button"
             variant="outline"
-            className="min-h-9 gap-2"
+            className="min-h-9 gap-2 w-full sm:max-w-max"
             disabled={isDisabled}
           >
             <Upload className="size-4" aria-hidden="true" />
