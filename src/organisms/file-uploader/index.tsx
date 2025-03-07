@@ -103,10 +103,13 @@ type BaseFileUploaderProps = React.HTMLAttributes<HTMLDivElement> & {
    * @example noDrag
    */
   noDrag?: boolean;
+  label?: string;
+  description?: string;
   classNames?: {
     container?: string;
     dropzoneContainer?: string;
     dropzone?: string;
+    children?: string;
   };
 } & (ButtonFileUploaderProps | DropzoneFileUploaderProps);
 
@@ -132,6 +135,8 @@ export function FileUploader(props: BaseFileUploaderProps) {
     disabled = false,
     classNames,
     noDrag = false,
+    label,
+    description,
   } = props;
 
   const [files, setFiles] = useControllableState({
@@ -224,6 +229,19 @@ export function FileUploader(props: BaseFileUploaderProps) {
         className={cn('flex flex-col w-full border rounded-lg [&>h3]:w-full')}
       >
         <div className="flex flex-col sm:flex-row gap-4 p-4">
+          <CollapsibleTrigger
+            className={cn(
+              'gap-4 group/trigger hover:no-underline',
+              !files?.length && 'opacity-50'
+            )}
+            asChild
+          >
+            <Button variant="outline" className="gap-2" disabled={!files}>
+              <FolderOpen className="w-4 group-data-[state=open]/trigger:hidden" />
+              <Folder className="w-4 group-data-[state=closed]/trigger:hidden" />
+              Files
+            </Button>
+          </CollapsibleTrigger>
           <Dropzone
             onDrop={onDrop}
             accept={accept}
@@ -241,20 +259,24 @@ export function FileUploader(props: BaseFileUploaderProps) {
               />
             )}
           </Dropzone>
-          <CollapsibleTrigger
-            className={cn(
-              'gap-4 group/trigger hover:no-underline',
-              !files?.length && 'opacity-50'
+          <div className="flex flex-col text-nowrap justify-center">
+            {label && (
+              <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                {label}
+              </span>
             )}
-            asChild
-          >
-            <Button variant="outline" className="gap-2" disabled={!files}>
-              <FolderOpen className="w-4 group-data-[state=open]/trigger:hidden" />
-              <Folder className="w-4 group-data-[state=closed]/trigger:hidden" />
-              Files
-            </Button>
-          </CollapsibleTrigger>
+            {description && (
+              <span className="text-muted-foreground text-sm">
+                {description}
+              </span>
+            )}
+          </div>
         </div>
+        {props.children && (
+          <div className={cn('p-4 border-t', classNames?.children)}>
+            {props.children}
+          </div>
+        )}
         <CollapsibleContent className="w-full p-0">
           <div
             className={cn(
@@ -380,7 +402,7 @@ function DropzoneTrigger(props: DropzoneTriggerProps) {
     return (
       <div
         className={cn(
-          'flex flex-col sm:flex-row gap-4 w-full',
+          'flex flex-col sm:flex-row gap-4',
           classNames?.dropzoneContainer
         )}
       >
@@ -403,7 +425,6 @@ function DropzoneTrigger(props: DropzoneTriggerProps) {
             Select
           </Button>
         </div>
-        {props.children}
       </div>
     );
   }
