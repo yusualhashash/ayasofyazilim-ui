@@ -46,7 +46,7 @@ export function ConfirmationDialog({
     });
   }
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={isPending || open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
