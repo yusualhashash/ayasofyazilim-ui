@@ -298,7 +298,7 @@ export function FileUploader(props: BaseFileUploaderProps) {
             {props.children}
           </div>
         )}
-        <CollapsibleContent className="w-full p-0 h-screen">
+        <CollapsibleContent className="w-full p-0 h-max">
           <div
             className={cn(
               'group relative flex flex-col gap-4 overflow-hidden p-4 border-t',
