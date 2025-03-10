@@ -13,7 +13,7 @@ importers:
         version: 1.0.0-beta-3(@tiptap/core@2.4.0(@tiptap/pm@2.3.0))(prosemirror-model@1.21.0)(prosemirror-state@1.4.3)
       '@hookform/resolvers':
         specifier: 4.1.2
-        version: 4.1.2(react-hook-form@7.51.1(react@18.3.1))
+        version: 4.1.2(react-hook-form@7.53.0(react@18.3.1))
       '@internationalized/date':
         specifier: ^3.7.0
         version: 3.7.0
@@ -297,8 +297,8 @@ importers:
         specifier: ^14.2.3
         version: 14.2.3(react@18.3.1)
       react-hook-form:
-        specifier: ^7.51.1
-        version: 7.51.1(react@18.3.1)
+        specifier: 7.53.0
+        version: 7.53.0(react@18.3.1)
       react-hot-toast:
         specifier: ^2.4.1
         version: 2.4.1(csstype@3.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -8101,11 +8101,11 @@ packages:
       react: ^0.14.8 || ^15.0.1 || ^16.0.0 || ^17.0.1 || ^18.0.0
       react-dom: ^0.14.8 || ^15.0.1 || ^16.0.0 || ^17.0.1 || ^18.0.0
 
-  react-hook-form@7.51.1:
-    resolution: {integrity: sha512-ifnBjl+kW0ksINHd+8C/Gp6a4eZOdWyvRv0UBaByShwU8JbVx5hTcTWEcd5VdybvmPTATkVVXk9npXArHmo56w==}
-    engines: {node: '>=12.22.0'}
+  react-hook-form@7.53.0:
+    resolution: {integrity: sha512-M1n3HhqCww6S2hxLxciEXy2oISPnAzxY7gvwVPrtlczTM/1dDadXgUxDpHMrMTblDOcm/AXtXxHwZ3jpg1mqKQ==}
+    engines: {node: '>=18.0.0'}
     peerDependencies:
-      react: ^16.8.0 || ^17 || ^18
+      react: ^16.8.0 || ^17 || ^18 || ^19
 
   react-hot-toast@2.4.1:
     resolution: {integrity: sha512-j8z+cQbWIM5LY37pR6uZR6D4LfseplqnuAO4co4u8917hBUvXlEqyP1ZzqVLcqoyUesZZv/ImreoCeHVDpE5pQ==}
@@ -10766,10 +10766,10 @@ snapshots:
       prosemirror-model: 1.21.0
       prosemirror-state: 1.4.3
 
-  '@hookform/resolvers@4.1.2(react-hook-form@7.51.1(react@18.3.1))':
+  '@hookform/resolvers@4.1.2(react-hook-form@7.53.0(react@18.3.1))':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.51.1(react@18.3.1)
+      react-hook-form: 7.53.0(react@18.3.1)
 
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
@@ -18587,7 +18587,7 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       react-is: 18.1.0
 
-  react-hook-form@7.51.1(react@18.3.1):
+  react-hook-form@7.53.0(react@18.3.1):
     dependencies:
       react: 18.3.1
 
