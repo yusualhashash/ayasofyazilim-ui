@@ -434,7 +434,7 @@ function DropzoneTrigger(props: DropzoneTriggerProps) {
     maxFileCount = 1,
     maxSize = 1024 * 1024 * 2,
     isDisabled,
-    ...dropzoneProps
+    // ...dropzoneProps
   } = props;
   if (variant === 'button') {
     return (
@@ -446,7 +446,7 @@ function DropzoneTrigger(props: DropzoneTriggerProps) {
       >
         <div
           {...getRootProps()}
-          {...dropzoneProps}
+          // {...dropzoneProps}
           className={cn(
             'relative flex items-center gap-4 rounded-lg',
             classNames?.dropzone
@@ -466,10 +466,11 @@ function DropzoneTrigger(props: DropzoneTriggerProps) {
       </div>
     );
   }
-
+  console.log({ ...getRootProps() });
   return (
     <div
       {...getRootProps()}
+      // {...dropzoneProps}
       className={cn(
         'border-muted-foreground/25 hover:bg-muted/25 group relative grid h-52 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed px-5 py-2.5 text-center transition',
         'ring-offset-background focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
@@ -478,7 +479,6 @@ function DropzoneTrigger(props: DropzoneTriggerProps) {
         variant === 'dropzone' && 'col-span-full row-start-2',
         classNames?.dropzone
       )}
-      {...dropzoneProps}
     >
       <input {...getInputProps()} />
       {isDragActive ? (
