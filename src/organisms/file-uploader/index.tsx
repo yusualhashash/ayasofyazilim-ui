@@ -102,7 +102,6 @@ export type BaseFileUploaderProps = React.HTMLAttributes<HTMLDivElement> & {
    * @default false
    * @example noDrag
    */
-  noDrag?: boolean;
   label?: string;
   description?: string;
   classNames?: {
@@ -138,7 +137,6 @@ export function FileUploader(props: BaseFileUploaderProps) {
     disabled = false,
     classNames,
     showFileList = true,
-    noDrag = false,
     label,
     description,
     fileCardRenderer,
@@ -265,7 +263,7 @@ export function FileUploader(props: BaseFileUploaderProps) {
             maxFiles={maxFileCount}
             multiple={maxFileCount > 1 || multiple}
             disabled={isDisabled}
-            noDrag={noDrag}
+            noDrag={props.variant === 'button'}
           >
             {(dropzone) => (
               <DropzoneTrigger
@@ -432,7 +430,7 @@ function DropzoneTrigger(props: DropzoneTriggerProps) {
     variant,
     getRootProps,
     getInputProps,
-    isDragActive,
+    isDragActive = true,
     maxFileCount = 1,
     maxSize = 1024 * 1024 * 2,
     isDisabled,
@@ -505,7 +503,7 @@ function DropzoneTrigger(props: DropzoneTriggerProps) {
           </div>
           <div className="flex flex-col gap-px">
             <p className="text-muted-foreground font-medium">
-              Drag {`'n'`} drop files here, or click to select files
+              Drag{`'n'`} drop files here, or click to select files
             </p>
             <p className="text-muted-foreground/70 text-sm">
               You can upload
