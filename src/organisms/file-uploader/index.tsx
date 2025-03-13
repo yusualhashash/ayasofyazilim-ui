@@ -349,15 +349,25 @@ export interface FileCardProps {
   file: DefaultFileWithPath;
   onRemove?: () => void;
   progress?: number;
+  classNames?: {
+    container?: string;
+    removeButton?: string;
+  };
 }
 
 export function FileCard({
   file,
   progress,
   onRemove,
+  classNames,
 }: Omit<FileCardProps, 'index'>) {
   return (
-    <div className="bg-muted relative flex items-center gap-2.5 overflow-hidden rounded-md p-2">
+    <div
+      className={cn(
+        'bg-muted relative flex items-center gap-2.5 overflow-hidden rounded-md p-2',
+        classNames?.container
+      )}
+    >
       <div className="flex flex-1 gap-2.5">
         {isFileWithPreview(file) ? <FilePreview file={file} /> : null}
         <div className="flex w-full flex-col gap-2">
@@ -380,7 +390,7 @@ export function FileCard({
             type="button"
             variant="outline"
             size="icon"
-            className="size-7"
+            className={cn('size-7', classNames?.removeButton)}
             disabled={!!progress}
             onClick={onRemove}
           >
