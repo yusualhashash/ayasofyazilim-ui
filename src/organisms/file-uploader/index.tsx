@@ -1,14 +1,14 @@
 'use client';
 
 import { FileText, Folder, FolderOpen, Upload, X } from 'lucide-react';
-import Image from 'next/image';
 import * as React from 'react';
 import Dropzone, {
-  DropzoneState,
   FileWithPath as DefaultFileWithPath,
+  DropzoneState,
   type DropzoneProps,
   type FileRejection,
 } from 'react-dropzone';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   Collapsible,
@@ -406,14 +406,17 @@ export interface FilePreviewProps {
 export function FilePreview({ file }: FilePreviewProps) {
   if (file.type.startsWith('image/')) {
     return (
-      <Image
-        src={file.preview}
-        alt={file.name}
-        width={48}
-        height={48}
-        loading="lazy"
-        className="aspect-square shrink-0 rounded-md object-cover"
-      />
+      <Avatar className="rounded-md border">
+        <AvatarImage
+          className="rounded-md"
+          src={file.preview}
+          alt={file.name}
+          loading="lazy"
+        />
+        <AvatarFallback className="bg-white rounded-md text-xs">
+          {`.${file.name.split('.')[1]}`}
+        </AvatarFallback>
+      </Avatar>
     );
   }
 
