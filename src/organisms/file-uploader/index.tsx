@@ -5,6 +5,7 @@ import Image from 'next/image';
 import * as React from 'react';
 import Dropzone, {
   DropzoneState,
+  FileWithPath as DefaultFileWithPath,
   type DropzoneProps,
   type FileRejection,
 } from 'react-dropzone';
@@ -20,6 +21,7 @@ import { toast } from '@/components/ui/sonner';
 import { cn, formatBytes } from '@/lib/utils';
 import { useControllableState } from './hooks/use-controllable-state';
 
+export type FileWithPath = DefaultFileWithPath;
 export type BaseFileUploaderProps = React.HTMLAttributes<HTMLDivElement> & {
   /**
    * Value of the uploader.
@@ -27,7 +29,7 @@ export type BaseFileUploaderProps = React.HTMLAttributes<HTMLDivElement> & {
    * @default undefined
    * @example value={files}
    */
-  value?: File[];
+  value?: DefaultFileWithPath[];
 
   /**
    * Function to be called when the value changes.
@@ -35,7 +37,7 @@ export type BaseFileUploaderProps = React.HTMLAttributes<HTMLDivElement> & {
    * @default undefined
    * @example onValueChange={(files) => setFiles(files)}
    */
-  onValueChange?: (files: File[]) => void;
+  onValueChange?: (files: DefaultFileWithPath[]) => void;
 
   /**
    * Function to be called when files are uploaded.
@@ -108,7 +110,6 @@ export type BaseFileUploaderProps = React.HTMLAttributes<HTMLDivElement> & {
     container?: string;
     dropzoneContainer?: string;
     dropzone?: string;
-    children?: string;
   };
   showFileList?: boolean;
   fileCardRenderer?: (props: FileCardProps) => React.ReactNode;
@@ -291,11 +292,7 @@ export function FileUploader(props: BaseFileUploaderProps) {
               props.headerChildren}
           </div>
         </div>
-        {props.children && (
-          <div className={cn('p-4 border-t', classNames?.children)}>
-            {props.children}
-          </div>
-        )}
+        {props.children && props.children}
         <CollapsibleContent className="w-full p-0 h-max">
           <div
             className={cn(
@@ -317,16 +314,13 @@ export function FileUploader(props: BaseFileUploaderProps) {
                 >
                   {files?.map((file, index) => (
                     <React.Fragment
-                      key={
-                        file.name + file.lastModified + file.webkitRelativePath
-                      }
+                      key={file.name + file.lastModified + file.path}
                     >
                       {fileCardRenderer ? (
                         fileCardRenderer({
                           file,
                           index,
                           onRemove: () => onRemove(index),
-                          progress: progresses?.[file.name],
                         })
                       ) : (
                         <FileCard
@@ -348,9 +342,9 @@ export function FileUploader(props: BaseFileUploaderProps) {
 }
 
 export interface FileCardProps {
-  index?: number;
-  file: File;
-  onRemove: () => void;
+  index: number;
+  file: DefaultFileWithPath;
+  onRemove?: () => void;
   progress?: number;
 }
 
@@ -372,33 +366,38 @@ export function FileCard({
               {formatBytes(file.size)}
             </p>
           </div>
-          {progress ? <Progress value={progress} /> : null}
+          {progress ? (
+            <Progress value={progress} className="duration-[2s]" />
+          ) : null}
         </div>
       </div>
-      <div className="flex items-center gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          className="size-7"
-          onClick={onRemove}
-        >
-          <X className="size-4" aria-hidden="true" />
-          <span className="sr-only">Remove file</span>
-        </Button>
-      </div>
+      {onRemove && (
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="size-7"
+            disabled={!!progress}
+            onClick={onRemove}
+          >
+            <X className="size-4" aria-hidden="true" />
+            <span className="sr-only">Remove file</span>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
 
 export function isFileWithPreview(
-  file: File
-): file is File & { preview: string } {
+  file: FileWithPath
+): file is FileWithPath & { preview: string } {
   return 'preview' in file && typeof file.preview === 'string';
 }
 
 export interface FilePreviewProps {
-  file: File & { preview: string };
+  file: FileWithPath & { preview: string };
 }
 
 export function FilePreview({ file }: FilePreviewProps) {
@@ -466,7 +465,6 @@ function DropzoneTrigger(props: DropzoneTriggerProps) {
       </div>
     );
   }
-  console.log({ ...getRootProps() });
   return (
     <div
       {...getRootProps()}
