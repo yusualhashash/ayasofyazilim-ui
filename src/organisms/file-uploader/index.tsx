@@ -108,8 +108,12 @@ export type BaseFileUploaderProps = React.HTMLAttributes<HTMLDivElement> & {
   description?: string;
   classNames?: {
     container?: string;
+    collapsible?: string;
     dropzoneContainer?: string;
     dropzone?: string;
+    fileList?: string;
+    header?: string;
+    collapsibleContent?: string;
   };
   showFileList?: boolean;
   fileCardRenderer?: (props: FileCardProps) => React.ReactNode;
@@ -227,116 +231,115 @@ export function FileUploader(props: BaseFileUploaderProps) {
     <Collapsible
       onOpenChange={setIsOpen}
       open={isOpen}
-      className="transition-all"
+      className={cn(
+        'transition-all flex flex-col w-full border rounded-lg [&>h3]:w-full',
+        classNames?.collapsible
+      )}
     >
       <div
-        className={cn('flex flex-col w-full border rounded-lg [&>h3]:w-full')}
+        className={cn(
+          ' gap-4 p-4',
+          props.variant === 'button'
+            ? 'flex flex-col sm:flex-row'
+            : 'grid grid-cols-12',
+          classNames?.container
+        )}
+      >
+        <CollapsibleTrigger
+          className={cn(
+            'gap-4 group/trigger hover:no-underline',
+            !files?.length && 'opacity-50'
+          )}
+          asChild
+        >
+          <Button
+            variant="outline"
+            className="gap-2"
+            disabled={isDisabled || !files?.length}
+          >
+            <FolderOpen className="w-4 group-data-[state=open]/trigger:hidden" />
+            <Folder className="w-4 group-data-[state=closed]/trigger:hidden" />
+            Files
+          </Button>
+        </CollapsibleTrigger>
+        <Dropzone
+          onDrop={onDrop}
+          accept={accept}
+          maxSize={maxSize}
+          maxFiles={maxFileCount}
+          multiple={maxFileCount > 1 || multiple}
+          disabled={isDisabled}
+          noDrag={props.variant === 'button'}
+        >
+          {(dropzone) => (
+            <DropzoneTrigger {...dropzone} {...props} isDisabled={isDisabled} />
+          )}
+        </Dropzone>
+        <div className={cn('flex w-full', classNames?.header)}>
+          <div className="flex flex-col w-full text-nowrap justify-center">
+            {label && (
+              <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                {label}
+              </span>
+            )}
+            {description && (
+              <span className="text-muted-foreground text-sm">
+                {description}
+              </span>
+            )}
+          </div>
+          {props.variant === 'button' &&
+            props.headerChildren &&
+            props.headerChildren}
+        </div>
+      </div>
+      {props.children && props.children}
+      <CollapsibleContent
+        className={cn('w-full p-0 h-max', classNames?.collapsibleContent)}
       >
         <div
           className={cn(
-            ' gap-4 p-4',
-            props.variant === 'button'
-              ? 'flex flex-col sm:flex-row'
-              : 'grid grid-cols-12'
+            'group relative flex flex-col gap-4 overflow-hidden p-4 border-t',
+            files?.length && props.variant === 'button' && '',
+            classNames?.container
           )}
         >
-          <CollapsibleTrigger
-            className={cn(
-              'gap-4 group/trigger hover:no-underline',
-              !files?.length && 'opacity-50'
-            )}
-            asChild
-          >
-            <Button
-              variant="outline"
-              className="gap-2"
-              disabled={isDisabled || !files?.length}
-            >
-              <FolderOpen className="w-4 group-data-[state=open]/trigger:hidden" />
-              <Folder className="w-4 group-data-[state=closed]/trigger:hidden" />
-              Files
-            </Button>
-          </CollapsibleTrigger>
-          <Dropzone
-            onDrop={onDrop}
-            accept={accept}
-            maxSize={maxSize}
-            maxFiles={maxFileCount}
-            multiple={maxFileCount > 1 || multiple}
-            disabled={isDisabled}
-            noDrag={props.variant === 'button'}
-          >
-            {(dropzone) => (
-              <DropzoneTrigger
-                {...dropzone}
-                {...props}
-                isDisabled={isDisabled}
-              />
-            )}
-          </Dropzone>
-          <div className="flex w-full">
-            <div className="flex flex-col w-full text-nowrap justify-center">
-              {label && (
-                <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  {label}
-                </span>
-              )}
-              {description && (
-                <span className="text-muted-foreground text-sm">
-                  {description}
-                </span>
-              )}
-            </div>
-            {props.variant === 'button' &&
-              props.headerChildren &&
-              props.headerChildren}
-          </div>
+          {files?.length && showFileList !== false ? (
+            <ScrollArea className="h-fit w-full">
+              <div
+                className={cn(
+                  'grid max-h-48 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 flex-col gap-4',
+                  files.length === 1 && '!grid-cols-1',
+                  files.length === 2 && 'sm:!grid-cols-2',
+                  files.length === 3 && 'lg:!grid-cols-3',
+                  files.length === 4 && '2xl:!grid-cols-4',
+                  classNames?.fileList
+                )}
+              >
+                {files?.map((file, index) => (
+                  <React.Fragment
+                    key={file.name + file.lastModified + file.path}
+                  >
+                    {fileCardRenderer ? (
+                      fileCardRenderer({
+                        file,
+                        index,
+                        onRemove: () => onRemove(index),
+                      })
+                    ) : (
+                      <FileCard
+                        file={file}
+                        onRemove={() => onRemove(index)}
+                        progress={progresses?.[file.name]}
+                      />
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+            </ScrollArea>
+          ) : null}
         </div>
-        {props.children && props.children}
-        <CollapsibleContent className="w-full p-0 h-max">
-          <div
-            className={cn(
-              'group relative flex flex-col gap-4 overflow-hidden p-4 border-t',
-              files?.length && props.variant === 'button' && '',
-              classNames?.container
-            )}
-          >
-            {files?.length && showFileList !== false ? (
-              <ScrollArea className="h-fit w-full">
-                <div
-                  className={cn(
-                    'grid max-h-48 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 flex-col gap-4',
-                    files.length === 1 && '!grid-cols-1',
-                    files.length === 2 && 'sm:!grid-cols-2',
-                    files.length === 3 && 'lg:!grid-cols-3',
-                    files.length === 4 && '2xl:!grid-cols-4'
-                  )}
-                >
-                  {files?.map((file, index) => (
-                    <React.Fragment
-                      key={file.name + file.lastModified + file.path}
-                    >
-                      {fileCardRenderer ? (
-                        fileCardRenderer({
-                          file,
-                          index,
-                          onRemove: () => onRemove(index),
-                        })
-                      ) : (
-                        <FileCard
-                          file={file}
-                          onRemove={() => onRemove(index)}
-                          progress={progresses?.[file.name]}
-                        />
-                      )}
-                    </React.Fragment>
-                  ))}
-                </div>
-              </ScrollArea>
-            ) : null}
-          </div>
-        </CollapsibleContent>
-      </div>
+      </CollapsibleContent>
     </Collapsible>
   );
 }
