@@ -299,8 +299,9 @@ export function FileUploader(props: BaseFileUploaderProps) {
       >
         <div
           className={cn(
-            'group relative flex flex-col gap-4 overflow-hidden p-4 border-t',
+            'group relative flex flex-col gap-4 overflow-hidden',
             files?.length && props.variant === 'button' && '',
+            files?.length && files?.length > 0 && 'p-4 border-t',
             classNames?.container
           )}
         >
