@@ -104,8 +104,8 @@ export type BaseFileUploaderProps = React.HTMLAttributes<HTMLDivElement> & {
    * @default false
    * @example noDrag
    */
-  label?: string;
-  description?: string;
+  label?: string | React.ReactNode;
+  description?: string | React.ReactNode;
   classNames?: {
     container?: string;
     collapsible?: string;
