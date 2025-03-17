@@ -8,7 +8,7 @@ const variants = {
   default:
     'flex flex-row justify-between border-2 border-gray-300 gap-5 text-gray-700/80 flex-1',
   active:
-    'flex flex-row justify-between border-2 border-purple-400 gap-5 text-purple-700/80 hover:text-purple-700 flex-1',
+    'flex flex-row justify-between border-2 border-primary/80  gap-5 text-primary/80 hover:text-primary  flex-1',
 };
 
 interface ISelectTabsContentProps {

@@ -61,6 +61,7 @@ export function Combobox<T>(props: CustomComboboxProps<T>) {
   } = props;
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [open, setOpen] = useState(false);
+
   const fieldValue =
     (list?.find(
       (x: T) => x[props.selectIdentifier] === value?.[selectIdentifier]
@@ -189,13 +190,8 @@ function List<T>({
         <CommandGroup>
           {list?.map((item: T) => (
             <CommandItem
-              onSelect={(selectedValue) => {
-                onValueChange(
-                  list.find(
-                    (item: T) =>
-                      item[selectIdentifier]?.toString() === selectedValue
-                  )
-                );
+              onSelect={() => {
+                onValueChange(item);
                 setOpen(false);
               }}
               key={JSON.stringify(item[selectIdentifier])}
