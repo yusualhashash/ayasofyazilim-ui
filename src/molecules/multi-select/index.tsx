@@ -111,6 +111,9 @@ export interface MultiSelectProps
     label: string;
     /** The unique value associated with the option. */
     value: string;
+    /** Optional badge component to display alongside the option. */
+    children?: React.ReactNode;
+    disabled?: boolean;
   }[];
 
   /**
@@ -316,6 +319,9 @@ export const MultiSelect = React.forwardRef<
                   key="all"
                   onSelect={toggleAll}
                   className="cursor-pointer"
+                  disabled={
+                    options.filter((x) => x.disabled).length === options.length
+                  }
                 >
                   <div
                     className={cn(
@@ -336,6 +342,7 @@ export const MultiSelect = React.forwardRef<
                       key={option.value}
                       onSelect={() => toggleOption(option.value)}
                       className="cursor-pointer"
+                      disabled={option.disabled}
                     >
                       <div
                         className={cn(
@@ -351,6 +358,7 @@ export const MultiSelect = React.forwardRef<
                         <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
                       )}
                       <span>{option.label}</span>
+                      {option.children}
                     </CommandItem>
                   );
                 })}
@@ -363,6 +371,10 @@ export const MultiSelect = React.forwardRef<
                       <CommandItem
                         onSelect={handleClear}
                         className="flex-1 justify-center cursor-pointer"
+                        disabled={
+                          options.filter((x) => x.disabled).length ===
+                          options.length
+                        }
                       >
                         Clear
                       </CommandItem>
