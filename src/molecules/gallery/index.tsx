@@ -60,6 +60,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
                 className="mb-4 size-full rounded-lg object-contain cursor-pointer transition-transform hover:scale-[1.02]"
                 src={image.imageUrl || '/placeholder.svg'}
                 alt={image.alt}
+                loading="lazy"
               />
             </Button>
             <div className="absolute top-1 right-1">
