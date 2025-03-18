@@ -77,7 +77,6 @@ export default function TipTapEditor({
       editorId,
       content ? JSON.stringify(content) : ''
     );
-    console.log(result);
     setIsButtonsDisabled(false);
     if (result === 'OK') {
       setDefaultContent(content);
