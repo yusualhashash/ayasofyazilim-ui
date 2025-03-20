@@ -28,8 +28,8 @@
   },
   "types": "./dist/index.d.ts",
   "exports": {
-    "./hooks/*": "./src/hooks/*.tsx",
     "./atoms/*": "./@/components/ui/*.tsx",
+    "./hooks/*": "./src/hooks/*.ts",
     "./molecules/*/types": "./src/molecules/*/types/index.ts",
     "./molecules/*": "./src/molecules/*/index.tsx",
     "./molecules/**/*": "./src/molecules/**/*/index.tsx",
