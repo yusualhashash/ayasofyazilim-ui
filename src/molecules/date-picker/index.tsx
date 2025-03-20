@@ -61,7 +61,17 @@ export function DatePicker({
           )
         );
       } else {
-        onChange(new Date(dateValue.year, dateValue.month - 1, dateValue.day));
+        onChange(
+          new Date(
+            dateValue.year,
+            dateValue.month - 1,
+            dateValue.day,
+            0,
+            0,
+            0,
+            -offset
+          )
+        );
       }
     }
   }, [dateValue, timeValue]);

@@ -1,5 +1,3 @@
-'use client';
-
 import { GenericObjectType } from '@rjsf/utils';
 import { PhoneNumberUtil } from 'google-libphonenumber';
 import { Locale } from 'date-fns';
