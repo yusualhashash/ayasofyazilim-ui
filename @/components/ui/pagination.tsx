@@ -8,6 +8,7 @@ import {
 
 import { cn } from '../../lib/utils';
 import { ButtonProps, buttonVariants } from './button';
+import Link from 'next/link';
 
 const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
   <nav
@@ -42,7 +43,7 @@ PaginationItem.displayName = 'PaginationItem';
 type PaginationLinkProps = {
   isActive?: boolean;
 } & Pick<ButtonProps, 'size'> &
-  React.ComponentProps<'a'>;
+  React.ComponentProps<typeof Link>;
 
 const PaginationLink = ({
   className,
@@ -50,7 +51,7 @@ const PaginationLink = ({
   size = 'icon',
   ...props
 }: PaginationLinkProps) => (
-  <a
+  <Link
     aria-current={isActive ? 'page' : undefined}
     className={cn(
       buttonVariants({
