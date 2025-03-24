@@ -9,6 +9,7 @@ export type FileTypeForFileCard = {
   fileDescription?: string | null;
   fileName: string;
   fileType: string;
+  onDownloadClick?: () => void;
 };
 export type TabConfig = {
   value: string;
@@ -47,6 +48,9 @@ function FileList({ files }: { files: FileTypeForFileCard[] }) {
                 className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
                 size="icon"
                 variant="ghost"
+                onClick={() => {
+                  if (file.onDownloadClick) file.onDownloadClick();
+                }}
               >
                 <Download />
                 <span className="sr-only">İndir</span>
