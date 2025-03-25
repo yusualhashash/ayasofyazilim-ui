@@ -12,10 +12,12 @@ const phoneUtil = PhoneNumberUtil.getInstance();
 export const CustomPhoneField = function <T>(
   props: WidgetProps<T, any, FormContext<T>>
 ) {
+  const { value, onChange, name, className, id, formContext } = props;
   const defaultCountryCode =
+    formContext?.locale ||
     (typeof window !== 'undefined' && localStorage.getItem('countryCode2')) ||
     'en';
-  const { value, onChange, name, className, id, formContext } = props;
+
   const handlePhoneChange = (val: string) => {
     let raiseError: ErrorSchema<T> | undefined;
     try {
@@ -51,7 +53,7 @@ export const CustomPhoneField = function <T>(
     <PhoneInput
       name={name}
       defaultCountry={defaultCountryCode}
-      value={value}
+      value={value || ''}
       onChange={handlePhoneChange}
       inputClassName={cn('flex-1', className)}
       countrySelectorStyleProps={{ flagClassName: 'rounded-md pl-0.5' }}
