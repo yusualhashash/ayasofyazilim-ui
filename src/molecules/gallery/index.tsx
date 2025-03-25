@@ -45,15 +45,15 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
     }
   };
   return (
-    <section id="photos" className="p-5">
-      <div className="columns-2 gap-4 sm:columns-3 md:columns-5">
+    <section id="photos" className="md:p-5 p-0">
+      <div className="columns-2 md:gap-4 sm:columns-3 lg:columns-5">
         {images.map((image, index) => (
           <BlurFade key={image.imageUrl} delay={0.25 + index * 0.05} inView>
             <Button
               variant="link"
               onClick={() => openLightbox(index)}
               aria-label={`View image: ${image.alt}`}
-              className="h-auto"
+              className="h-auto px-0"
               asChild
             >
               <img
@@ -63,7 +63,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
                 loading="lazy"
               />
             </Button>
-            <div className="absolute top-1 right-1">
+            <div className="absolute top-0 right-0">
               {image?.thumbnailContent}
             </div>
           </BlurFade>
