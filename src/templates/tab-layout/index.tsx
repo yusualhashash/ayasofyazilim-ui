@@ -152,8 +152,8 @@ export function TabLayout({
 
   const searchParams = `?${useSearchParams().toString()}`;
   const active =
-    findActiveTab(tabList, path) ||
     findActiveTab(tabList, path + searchParams) ||
+    findActiveTab(tabList, path) ||
     tabList[0].href;
 
   return (

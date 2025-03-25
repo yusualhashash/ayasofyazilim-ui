@@ -24,6 +24,8 @@ export interface ITiptapEditorProps {
   editorId?: string;
   minWordCount?: number;
   onSaveFunction?: (editorId: string, editorContent: string) => Promise<string>;
+  onValueChange?: (editorContent: string) => void;
+  isSaveVisible?: boolean;
   onWordCountChanged?: (wordCount: number) => void;
   editorClassName?: string;
   mode?: string;
@@ -36,6 +38,8 @@ export default function TipTapEditor({
   editOnStart,
   minWordCount = 10,
   onSaveFunction,
+  onValueChange,
+  isSaveVisible = true,
   onWordCountChanged,
   editorClassName,
   mode,
@@ -68,6 +72,12 @@ export default function TipTapEditor({
     }
   }, [wordCount]);
 
+  useEffect(() => {
+    if (content && onValueChange) {
+      onValueChange(JSON.stringify(content));
+    }
+  }, [content]);
+
   async function onSave() {
     if (!onSaveFunction || !editorId) return;
 
@@ -90,6 +100,7 @@ export default function TipTapEditor({
     setContent(editorContent);
     setEditable(!editable);
   }
+
   return (
     <div className="relative h-full overflow-hidden">
       {canEditable && !isButtonsDisabled && (
@@ -104,15 +115,17 @@ export default function TipTapEditor({
               >
                 <X />
               </button>
-              <button
-                disabled={isSaveDisabled}
-                type="button"
-                onClick={onSave}
-                className="btn btn-ghost btn-circle opacity-40 hover:opacity-100 disabled:opacity-10"
-                aria-label="Save"
-              >
-                <SaveIcon />
-              </button>
+              {isSaveVisible && (
+                <button
+                  disabled={isSaveDisabled}
+                  type="button"
+                  onClick={onSave}
+                  className="btn btn-ghost btn-circle opacity-40 hover:opacity-100 disabled:opacity-10"
+                  aria-label="Save"
+                >
+                  <SaveIcon />
+                </button>
+              )}
             </div>
           ) : (
             <button

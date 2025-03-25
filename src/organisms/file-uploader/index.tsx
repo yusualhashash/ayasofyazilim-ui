@@ -349,6 +349,7 @@ export interface FileCardProps {
   index: number;
   file: DefaultFileWithPath;
   onRemove?: () => void;
+  disabled?: boolean;
   progress?: number;
   classNames?: {
     container?: string;
@@ -360,6 +361,7 @@ export function FileCard({
   file,
   progress,
   onRemove,
+  disabled,
   classNames,
 }: Omit<FileCardProps, 'index'>) {
   return (
@@ -392,7 +394,7 @@ export function FileCard({
             variant="outline"
             size="icon"
             className={cn('size-7', classNames?.removeButton)}
-            disabled={!!progress}
+            disabled={!!progress || disabled}
             onClick={onRemove}
           >
             <X className="size-4" aria-hidden="true" />
