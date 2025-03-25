@@ -45,6 +45,7 @@ export interface SchemaFormProps<T>
   useDefaultSubmit?: boolean;
   withScrollArea?: boolean;
   formData?: T | undefined;
+  locale?: string;
 }
 
 export type FilterType<T> = CommonFilterType<T> &
