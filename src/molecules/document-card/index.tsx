@@ -9,6 +9,9 @@ export type FileTypeForFileCard = {
   fileDescription?: string | null;
   fileName: string;
   fileType: string;
+  fileTypeNamespace?: string | null;
+  mimeType?: string | null;
+
   onDownloadClick?: () => void;
 };
 export type TabConfig = {
@@ -42,23 +45,15 @@ function FileList({ files }: { files: FileTypeForFileCard[] }) {
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <h4 className="text-sm font-medium">
-                {file.fileDescription || 'Açıklama yok'}
+                {file.fileTypeNamespace || 'Açıklama yok'}
               </h4>
-              <Button
-                className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
-                size="icon"
-                variant="ghost"
-                onClick={() => {
-                  if (file.onDownloadClick) file.onDownloadClick();
-                }}
-              >
-                <Download />
-                <span className="sr-only">İndir</span>
-              </Button>
             </div>
-            <p className="text-muted-foreground line-clamp-2 text-sm">
-              {file.fileName}
-            </p>
+            {file.fileDescription && (
+              <p className="text-muted-foreground line-clamp-2 text-sm">
+                {file.fileDescription}
+              </p>
+            )}
+
             <div className="mt-1 flex items-center gap-2">
               <span className="bg-muted-foreground inline-flex h-1.5 w-1.5 rounded-full" />
               <span className="text-muted-foreground text-xs uppercase">
@@ -66,6 +61,17 @@ function FileList({ files }: { files: FileTypeForFileCard[] }) {
               </span>
             </div>
           </div>
+          <Button
+            className="h-8 w-8"
+            size="icon"
+            variant="ghost"
+            onClick={() => {
+              if (file.onDownloadClick) file.onDownloadClick();
+            }}
+          >
+            <Download />
+            <span className="sr-only">İndir</span>
+          </Button>
         </div>
       ))}
     </div>
