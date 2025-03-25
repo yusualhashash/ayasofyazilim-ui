@@ -33,6 +33,7 @@ import {
   EmailInputWidget,
   PasswordInputWidget,
 } from './widgets';
+import { AJV_TR } from './utils/langugage';
 
 /**
  * SchemaForm component that renders a form based on the provided schema and options.
@@ -71,11 +72,12 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
     useDefaultSubmit = true,
     useDependency = false,
     defaultSubmitClassName,
+    locale = 'en',
   } = props; // Start with the provided schema
   const Wrapper = withScrollArea ? ScrollArea : Fragment;
   let uiSchema = {
     'ui:config': {
-      locale: 'en',
+      locale,
     },
   }; // Initialize the UI schema
   let { schema } = props;
@@ -112,11 +114,14 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
             'extraProperties',
           ]) as RJSFSchema
         } // Cast schema to RJSFSchema type
-        validator={customizeValidator({
-          ajvOptionsOverrides: {
-            removeAdditional: true,
+        validator={customizeValidator(
+          {
+            ajvOptionsOverrides: {
+              removeAdditional: true,
+            },
           },
-        })} // Custom validator
+          locale === 'tr' ? AJV_TR : undefined
+        )} // Custom validator
         fields={{ ...Default.fields, ...props.fields }} // Merge custom fields
         widgets={{ ...Default.widgets, ...props.widgets }} // Merge custom widgets
         templates={{ ...Default.templates, ...props.templates }} // Merge custom templates
