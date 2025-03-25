@@ -2,7 +2,6 @@
 
 import { ErrorSchema, WidgetProps } from '@rjsf/utils';
 import { PhoneNumberUtil } from 'google-libphonenumber';
-import { useState } from 'react';
 import { PhoneInput } from 'react-international-phone';
 import { cn } from '@/lib/utils';
 import 'react-international-phone/style.css';
@@ -13,14 +12,11 @@ const phoneUtil = PhoneNumberUtil.getInstance();
 export const CustomPhoneField = function <T>(
   props: WidgetProps<T, any, FormContext<T>>
 ) {
-  const { id, formContext } = props;
   const defaultCountryCode =
     (typeof window !== 'undefined' && localStorage.getItem('countryCode2')) ||
-    'us';
-  const { value = '', onChange, name, className } = props;
-  const [inputValue, setInputValue] = useState(value || '');
+    'en';
+  const { value, onChange, name, className, id, formContext } = props;
   const handlePhoneChange = (val: string) => {
-    setInputValue(val);
     let raiseError: ErrorSchema<T> | undefined;
     try {
       const parsedNumber = phoneUtil.parseAndKeepRawInput(
@@ -46,15 +42,16 @@ export const CustomPhoneField = function <T>(
           ],
         ],
       };
+    } finally {
+      onChange(val, raiseError, id);
     }
-    onChange(value, raiseError, id);
   };
 
   return (
     <PhoneInput
       name={name}
       defaultCountry={defaultCountryCode}
-      value={inputValue}
+      value={value}
       onChange={handlePhoneChange}
       inputClassName={cn('flex-1', className)}
       countrySelectorStyleProps={{ flagClassName: 'rounded-md pl-0.5' }}
