@@ -11,6 +11,7 @@ export type FileTypeForFileCard = {
   fileType: string;
   fileTypeNamespace?: string | null;
   mimeType?: string | null;
+  fileTypeName?: string | null;
 
   onDownloadClick?: () => void;
 };
@@ -45,7 +46,7 @@ function FileList({ files }: { files: FileTypeForFileCard[] }) {
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <h4 className="text-sm font-medium">
-                {file.fileTypeNamespace || 'Açıklama yok'}
+                {file.fileTypeName || 'Açıklama yok'}
               </h4>
             </div>
             {file.fileDescription && (
