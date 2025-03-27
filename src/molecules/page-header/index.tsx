@@ -51,7 +51,7 @@ export default function PageHeader({
     );
   }
   return (
-    <div className="mb-4 flex items-center gap-4 px-2">
+    <div className="mb-4 flex items-center gap-4 px-2 text-center mx-auto">
       {hasReferer && LinkElement ? (
         <Button
           variant="outline"
@@ -72,8 +72,8 @@ export default function PageHeader({
       ) : null}
 
       <div>
-        <h1 className="text-2xl font-medium">{title}</h1>
-        <p className="text-sm text-neutral-500">{description}</p>
+        <h1 className="text-3xl font-bold">{title}</h1>
+        <p className="text-base text-neutral-500">{description}</p>
       </div>
     </div>
   );
