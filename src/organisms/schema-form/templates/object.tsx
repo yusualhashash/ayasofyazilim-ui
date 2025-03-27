@@ -5,7 +5,7 @@ import { fieldOptionsByDependency } from '../utils/dependency';
 import { FieldLabel } from '../custom/label';
 
 export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
-  const { uiSchema, title, required, disabled } = props;
+  const { uiSchema, title, required, disabled, description } = props;
   const dependencyOptions = fieldOptionsByDependency(
     uiSchema,
     props.formContext
@@ -31,6 +31,9 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
           required={fieldOptions.required}
           className="col-span-full"
         />
+      )}
+      {description && (
+        <p className={cn('text-sm text-muted-foreground')}>{description}</p>
       )}
       {props.properties.map((element) => (
         <Fragment key={element.name}>{element.content}</Fragment>

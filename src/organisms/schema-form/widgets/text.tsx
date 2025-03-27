@@ -32,7 +32,7 @@ export const CustomTextInput = (props: WidgetProps) => {
           onChange(event.target.value);
         }
       }}
-      defaultValue={value || props.defaultValue}
+      defaultValue={value ?? props.defaultValue}
       readOnly={props.readOnly}
       disabled={fieldOptions.disabled}
     />
