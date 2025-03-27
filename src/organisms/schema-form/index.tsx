@@ -14,6 +14,7 @@ import {
   ErrorListTemplate,
   FieldTemplate,
   ObjectFieldTemplate,
+  DescriptionFieldTemplate,
 } from './templates';
 import { FormContext, SchemaFormProps } from './types';
 import {
@@ -63,6 +64,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       FieldErrorTemplate,
       FieldTemplate,
       ObjectFieldTemplate,
+      DescriptionFieldTemplate,
     },
   };
   const {
@@ -71,6 +73,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
     withScrollArea = true,
     useDefaultSubmit = true,
     useDependency = false,
+    disableValidation = false,
     defaultSubmitClassName,
     locale = 'en',
   } = props; // Start with the provided schema
@@ -122,6 +125,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
           },
           locale === 'tr' ? AJV_TR : undefined
         )} // Custom validator
+        noValidate={disableValidation}
         fields={{ ...Default.fields, ...props.fields }} // Merge custom fields
         widgets={{ ...Default.widgets, ...props.widgets }} // Merge custom widgets
         templates={{ ...Default.templates, ...props.templates }} // Merge custom templates
