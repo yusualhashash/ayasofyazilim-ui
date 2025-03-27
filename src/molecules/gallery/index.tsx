@@ -15,9 +15,63 @@ export type GalleryItem = {
   id: string;
   imageUrl: string;
   alt: string;
+  type?: 'image' | 'video';
   thumbnailContent?: React.ReactNode;
   dialogContent?: React.ReactNode;
 };
+
+// Helper component to render either image or video based on type
+const MediaElement = ({
+  item,
+  onClick,
+  className,
+}: {
+  item: GalleryItem;
+  onClick?: () => void;
+  className?: string;
+}) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick?.();
+    }
+  };
+
+  if (item.type === 'video') {
+    return (
+      <div
+        className={`relative ${className || ''}`}
+        onClick={onClick}
+        onKeyDown={handleKeyDown}
+        role="button"
+        tabIndex={0}
+        aria-label={`Play video: ${item.alt}`}
+      >
+        <video
+          className="w-full h-full object-contain rounded-lg"
+          src={item.imageUrl}
+          poster="/placeholder.svg"
+        >
+          <track kind="captions" src="" label="English captions" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="p-3 rounded-full bg-black/50 text-white">▶️</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      className={className || 'w-full h-full object-contain rounded-lg'}
+      src={item.imageUrl || '/placeholder.svg'}
+      alt={item.alt}
+      loading="lazy"
+    />
+  );
+};
+
 export default function Gallery({ images }: { images: GalleryItem[] }) {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const selectedImage = images?.[currentIndex];
@@ -52,16 +106,17 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
             <Button
               variant="link"
               onClick={() => openLightbox(index)}
-              aria-label={`View image: ${image.alt}`}
+              aria-label={`View media: ${image.alt}`}
               className="h-auto px-0"
               asChild
             >
-              <img
-                className="mb-4 size-full rounded-lg object-contain cursor-pointer transition-transform hover:scale-[1.02]"
-                src={image.imageUrl || '/placeholder.svg'}
-                alt={image.alt}
-                loading="lazy"
-              />
+              <div className="cursor-pointer transition-transform hover:scale-[1.02] mb-4 w-full">
+                <MediaElement
+                  item={image}
+                  className="mb-0 size-full rounded-lg object-contain"
+                  onClick={() => openLightbox(index)}
+                />
+              </div>
             </Button>
             <div className="absolute top-0 right-0">
               {image?.thumbnailContent}
@@ -83,12 +138,13 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
             <X className="h-6 w-6" />
             <span className="sr-only">Close</span>
           </DialogClose>
+
           <Button
             variant="ghost"
             size="icon"
             className="absolute left-4 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-black/50 text-white hover:text-white hover:bg-black/70 transition-colors"
             onClick={navigateToPrevious}
-            aria-label="Previous image"
+            aria-label="Previous media"
           >
             <ChevronLeft className="h-6 w-6" />
           </Button>
@@ -98,19 +154,32 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
             size="icon"
             className="absolute right-4 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-black/50 text-white hover:text-white hover:bg-black/70 transition-colors"
             onClick={navigateToNext}
-            aria-label="Next image"
+            aria-label="Next media"
           >
             <ChevronRight className="h-6 w-6" />
           </Button>
+
           {selectedImage && (
             <>
               <div className="flex items-center justify-center">
-                <div className="relative max-w-full max-h-[85vh] ">
-                  <img
-                    src={selectedImage?.imageUrl || '/placeholder.svg'}
-                    alt="Enlarged view"
-                    className="max-w-full max-h-[85vh] object-contain rounded-lg"
-                  />
+                <div className="relative max-w-full max-h-[85vh]">
+                  {selectedImage.type === 'video' ? (
+                    <video
+                      src={selectedImage.imageUrl || '/placeholder.svg'}
+                      className="max-w-full max-h-[85vh] object-contain rounded-lg"
+                      controls
+                      autoPlay
+                    >
+                      <track kind="captions" src="" label="English captions" />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    <img
+                      src={selectedImage.imageUrl || '/placeholder.svg'}
+                      alt="Enlarged view"
+                      className="max-w-full max-h-[85vh] object-contain rounded-lg"
+                    />
+                  )}
                   <div className="absolute top-1 right-1">
                     {selectedImage?.thumbnailContent}
                   </div>
