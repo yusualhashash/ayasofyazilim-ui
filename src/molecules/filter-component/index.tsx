@@ -1,48 +1,69 @@
 'use client';
 
-import AsyncSelect from '@repo/ayasofyazilim-ui/molecules/async-select';
-import { MultiSelect } from '@repo/ayasofyazilim-ui/molecules/multi-select';
-import { Dispatch, SetStateAction, useState, useTransition } from 'react';
 import { FilterIcon } from 'lucide-react';
+import { Dispatch, SetStateAction, useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
+import AsyncSelectField from './fields/async-select';
+import DateField from './fields/date';
+import MultiSelectField from './fields/multi-select';
 
 export type FilterComponentSearchItem = { id: string; name: string };
-type DateSelectType = {
+export type DateSelectType = {
   title: string;
   onChange: Dispatch<SetStateAction<string>>;
   value: string;
   options: string[];
+  order?: number;
 };
 
-type MultiSelectType = {
+export type MultiSelectType = {
   title: string;
   value: string[];
   options: { label: string; value: string }[];
   onChange: Dispatch<SetStateAction<string[]>>;
+  order?: number;
 };
-type AsyncSelectType = {
+export type AsyncSelectType = {
   title: string;
   fetchAction: (search: string) => Promise<FilterComponentSearchItem[]>;
   onChange: Dispatch<SetStateAction<FilterComponentSearchItem[]>>;
   value: FilterComponentSearchItem[];
+  multiple?: boolean;
+  order?: number;
 };
+export type CustomFieldType = { order?: number; component: JSX.Element };
+
+function isAsyncSelectType(
+  filter: DateSelectType | MultiSelectType | AsyncSelectType | CustomFieldType
+): filter is AsyncSelectType {
+  return (filter as AsyncSelectType).fetchAction !== undefined;
+}
+
+function isMultiSelectType(
+  filter: DateSelectType | MultiSelectType | AsyncSelectType | CustomFieldType
+): filter is MultiSelectType {
+  return (
+    (filter as MultiSelectType).options !== undefined &&
+    Array.isArray((filter as MultiSelectType).value)
+  );
+}
+
+function isDateSelectType(
+  filter: DateSelectType | MultiSelectType | AsyncSelectType | CustomFieldType
+): filter is DateSelectType {
+  return (
+    (filter as DateSelectType).options !== undefined &&
+    typeof (filter as DateSelectType).value === 'string'
+  );
+}
+
 export default function FilterComponent({
   dateSelect,
   multiSelect,
@@ -53,6 +74,8 @@ export default function FilterComponent({
   applyFilterText = 'Apply',
   className,
   defaultOpen = true,
+  customField,
+  disabled = false,
 }: {
   dateSelect: DateSelectType[];
   multiSelect: MultiSelectType[];
@@ -63,7 +86,16 @@ export default function FilterComponent({
   searchText?: string;
   className?: string;
   defaultOpen?: boolean;
+  disabled?: boolean;
+  customField?: CustomFieldType[];
 }) {
+  const fields = [
+    ...dateSelect,
+    ...multiSelect,
+    ...asyncSelect,
+    ...(customField || []),
+  ].sort((a, b) => (a.order || 0) - (b.order || 0));
+
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(defaultOpen);
   function handleSubmit() {
@@ -88,69 +120,37 @@ export default function FilterComponent({
         <Card className="shadow-none">
           <CardHeader>{filtersText}</CardHeader>
           <CardContent className="flex flex-col gap-2.5">
-            {dateSelect.map((filter) => (
-              <div className="grid items-center gap-1.5" key={filter.title}>
-                <Label htmlFor="refund-point">{filter.title}</Label>
-                <Select
-                  onValueChange={filter.onChange}
-                  value={filter.value}
-                  disabled={isPending}
-                >
-                  <SelectTrigger className="min-h-10">
-                    <SelectValue placeholder="Select a date" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>{filter.title}</SelectLabel>
-                      {filter.options.map((range) => (
-                        <SelectItem key={range} value={range}>
-                          {range}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                    <Button
-                      className="w-full px-2"
-                      variant="secondary"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        filter.onChange('');
-                      }}
-                    >
-                      Clear
-                    </Button>
-                  </SelectContent>
-                </Select>
-              </div>
-            ))}
-
-            {multiSelect.map((filter) => (
-              <div className="grid items-center gap-1.5" key={filter.title}>
-                <Label htmlFor="refund-point">{filter.title}</Label>
-                <MultiSelect
-                  onValueChange={filter.onChange}
-                  options={filter.options}
-                  defaultValue={filter.value}
-                  disabled={isPending}
-                />
-              </div>
-            ))}
-
-            {asyncSelect.map((filter) => (
-              <div className="grid items-center gap-1.5" key={filter.title}>
-                <Label htmlFor="refund-point">{filter.title}</Label>
-                <AsyncSelect
-                  fetchAction={filter.fetchAction}
-                  onChange={filter.onChange}
-                  value={filter.value}
-                  disabled={isPending}
-                  searchText={searchText}
-                />
-              </div>
-            ))}
+            {fields.map((filter) => {
+              if (isAsyncSelectType(filter)) {
+                return (
+                  <AsyncSelectField
+                    filter={filter}
+                    isPending={isPending || disabled}
+                    searchText={searchText}
+                  />
+                );
+              }
+              if (isMultiSelectType(filter)) {
+                return (
+                  <MultiSelectField
+                    filter={filter}
+                    isPending={isPending || disabled}
+                  />
+                );
+              }
+              if (isDateSelectType(filter)) {
+                return (
+                  <DateField
+                    filter={filter}
+                    isPending={isPending || disabled}
+                  />
+                );
+              }
+              return filter.component;
+            })}
 
             <Button
-              disabled={isPending}
+              disabled={isPending || disabled}
               onClick={() => handleSubmit()}
               variant="default"
             >
