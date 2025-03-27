@@ -28,11 +28,13 @@ function CommandGroupItem({
   title,
   onChange,
   value,
+  multiple,
 }: {
   title: string;
   items: SearchItem[];
   value: SearchItem[];
   onChange: (value: SearchItem[]) => void;
+  multiple: boolean;
 }) {
   return (
     <CommandGroup heading={title}>
@@ -43,7 +45,10 @@ function CommandGroupItem({
             if (value.find((i) => i.id === currentItem.id)) {
               return onChange(value.filter((i) => i.id !== currentItem.id));
             }
-            return onChange([...value, currentItem]);
+            if (multiple) {
+              return onChange([...value, currentItem]);
+            }
+            return onChange([currentItem]);
           }}
           value={currentItem.name}
         >
@@ -67,6 +72,7 @@ type AsyncSelectType = {
   searchText?: string;
   noResultText?: string;
   disabled?: boolean;
+  multiple?: boolean;
 };
 
 export function AsyncSelectBase({
@@ -79,6 +85,7 @@ export function AsyncSelectBase({
   searchText = 'Search',
   noResultText = 'No result',
   disabled = false,
+  multiple = true,
 }: AsyncSelectType) {
   const [loading, setLoading] = useState(false);
   const [searchInput, setSearchInput] = useState('');
@@ -143,6 +150,7 @@ export function AsyncSelectBase({
             value={value}
             title="Selected"
             onChange={(value) => handleOnChange(value)}
+            multiple={multiple}
           />
         )}
 
@@ -154,6 +162,7 @@ export function AsyncSelectBase({
               value={value}
               title="Suggestions"
               onChange={(value) => handleOnChange(value)}
+              multiple={multiple}
             />
           )}
 
@@ -163,6 +172,7 @@ export function AsyncSelectBase({
             value={value}
             title={resultText}
             onChange={(value) => handleOnChange(value)}
+            multiple={multiple}
           />
         )}
       </CommandList>
