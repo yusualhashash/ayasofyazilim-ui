@@ -3,8 +3,51 @@
 import { ArrowLeft } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
+import { cva } from 'class-variance-authority';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+
+// Define variants
+const pageHeaderVariants = cva(
+  'mb-4 flex items-center gap-4 px-2', // Base classes
+  {
+    variants: {
+      align: {
+        left: '',
+        center: 'text-center mx-auto',
+        right: 'text-right ml-auto',
+      },
+    },
+    defaultVariants: {
+      align: 'left',
+    },
+  }
+);
+
+const titleVariants = cva('', {
+  variants: {
+    size: {
+      large: 'text-3xl font-bold',
+      small: 'text-2xl font-medium',
+    },
+  },
+  defaultVariants: {
+    size: 'small',
+  },
+});
+
+const descriptionVariants = cva('text-neutral-500', {
+  variants: {
+    size: {
+      large: 'text-base',
+      small: 'text-sm',
+    },
+  },
+  defaultVariants: {
+    size: 'small',
+  },
+});
 
 interface IPageBackButtonProps {
   LinkElement: any;
@@ -12,13 +55,18 @@ interface IPageBackButtonProps {
   href: string;
   isLoading?: boolean;
   title?: string;
+  size?: 'large' | 'small';
+  align?: 'left' | 'center' | 'right';
 }
+
 interface IPageHeaderProps {
   LinkElement?: undefined;
   description?: string;
   href?: undefined;
   isLoading?: boolean;
   title?: string;
+  size?: 'large' | 'small';
+  align?: 'left' | 'center' | 'right';
 }
 
 export default function PageHeader({
@@ -27,6 +75,8 @@ export default function PageHeader({
   isLoading,
   LinkElement,
   href,
+  size = 'small',
+  align = 'left',
 }: IPageHeaderProps | IPageBackButtonProps) {
   const hasReferer = useMemo(
     () => typeof window !== 'undefined' && !!document.referrer,
@@ -37,9 +87,10 @@ export default function PageHeader({
   );
   const router = useRouter();
   const pathname = usePathname();
+
   if (isLoading) {
     return (
-      <div className="mb-4 flex items-center gap-4 px-2">
+      <div className={cn(pageHeaderVariants({ align }))}>
         {LinkElement && pathname !== href && (
           <Skeleton className="h-12 w-12 " />
         )}
@@ -50,8 +101,9 @@ export default function PageHeader({
       </div>
     );
   }
+
   return (
-    <div className="mb-4 flex items-center gap-4 px-2">
+    <div className={cn(pageHeaderVariants({ align }))}>
       {hasReferer && LinkElement ? (
         <Button
           variant="outline"
@@ -72,8 +124,8 @@ export default function PageHeader({
       ) : null}
 
       <div>
-        <h1 className="text-2xl font-medium">{title}</h1>
-        <p className="text-sm text-neutral-500">{description}</p>
+        <h1 className={cn(titleVariants({ size }))}>{title}</h1>
+        <p className={cn(descriptionVariants({ size }))}>{description}</p>
       </div>
     </div>
   );
