@@ -1,7 +1,7 @@
 'use client';
 
 import { CheckIcon, ChevronDown, XCircle, XIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -62,7 +62,7 @@ function CommandGroupItem({
   );
 }
 
-type AsyncSelectType = {
+export type AsyncSelectType = {
   suggestions?: SearchItem[];
   data?: SearchItem[];
   value: SearchItem[];
@@ -72,7 +72,11 @@ type AsyncSelectType = {
   searchText?: string;
   noResultText?: string;
   disabled?: boolean;
+  closeOnSelect?: boolean;
   multiple?: boolean;
+  classNames?: {
+    trigger?: string;
+  };
 };
 
 export function AsyncSelectBase({
@@ -86,7 +90,11 @@ export function AsyncSelectBase({
   noResultText = 'No result',
   disabled = false,
   multiple = true,
-}: AsyncSelectType) {
+  closeOnSelect = false,
+  setIsPopoverOpen,
+}: Omit<AsyncSelectType, 'classNames'> & {
+  setIsPopoverOpen: Dispatch<SetStateAction<boolean>>;
+}) {
   const [loading, setLoading] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const searchValue = useDebounce(searchInput, 500);
@@ -149,7 +157,10 @@ export function AsyncSelectBase({
             items={value}
             value={value}
             title="Selected"
-            onChange={(value) => handleOnChange(value)}
+            onChange={(value) => {
+              handleOnChange(value);
+              if (closeOnSelect) setIsPopoverOpen(false);
+            }}
             multiple={multiple}
           />
         )}
@@ -161,7 +172,10 @@ export function AsyncSelectBase({
               items={showableSuggestions}
               value={value}
               title="Suggestions"
-              onChange={(value) => handleOnChange(value)}
+              onChange={(value) => {
+                handleOnChange(value);
+                if (closeOnSelect) setIsPopoverOpen(false);
+              }}
               multiple={multiple}
             />
           )}
@@ -171,7 +185,10 @@ export function AsyncSelectBase({
             items={showableItems}
             value={value}
             title={resultText}
-            onChange={(value) => handleOnChange(value)}
+            onChange={(value) => {
+              handleOnChange(value);
+              if (closeOnSelect) setIsPopoverOpen(false);
+            }}
             multiple={multiple}
           />
         )}
@@ -188,7 +205,8 @@ export default function AsyncSelect(props: AsyncSelectType) {
           type="button"
           onClick={() => setIsPopoverOpen(true)}
           className={cn(
-            'flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit'
+            'flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit',
+            props.classNames?.trigger
           )}
         >
           {props.value.length > 0 ? (
@@ -249,7 +267,7 @@ export default function AsyncSelect(props: AsyncSelectType) {
         align="start"
         onEscapeKeyDown={() => setIsPopoverOpen(false)}
       >
-        <AsyncSelectBase {...props} />
+        <AsyncSelectBase {...props} setIsPopoverOpen={setIsPopoverOpen} />
       </PopoverContent>
     </Popover>
   );

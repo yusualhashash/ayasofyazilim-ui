@@ -44,7 +44,7 @@ export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
     <Accordion
       type="single"
       collapsible
-      className={cn('w-full group', uiSchema?.['ui:className'])}
+      className={cn('w-full group', uiSchema?.className?.accordion)}
       defaultValue={title}
     >
       <AccordionItem
@@ -57,7 +57,8 @@ export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
             'flex gap-4 min-h-[54px] overflow-hidden items-center bg-white py-2 px-4 rounded-md border relative group-has-[div>div>div>*]:rounded-b-none hover:no-underline hover:[&>span]:underline hover:bg-zinc-50',
             items.length === 0 && '[&>svg]:hidden pr-2',
             disabled &&
-              'cursor-default pointer-events-none hover:[&>span]:no-underline text-muted-foreground opacity-50'
+              'cursor-default pointer-events-none hover:[&>span]:no-underline text-muted-foreground opacity-50',
+            uiSchema?.className?.accordionTrigger
           )}
         >
           {displayName && (
@@ -73,7 +74,8 @@ export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
               variant="secondary"
               className={cn(
                 'ml-2 z-10 !no-underline',
-                disabled && 'pointer-events-none'
+                disabled && 'pointer-events-none',
+                uiSchema?.className?.accordionAddButton
               )}
               onClick={(ev) => {
                 if (disabled) return;
@@ -92,19 +94,27 @@ export const AccordionArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
         </AccordionTrigger>
         <AccordionContent
           className={cn(
-            'flex flex-col gap-4 has-[*]:border p-0 has-[*]:p-4 has-[*]:border-t-0 rounded-b-md'
+            'flex flex-col gap-4 has-[*]:border p-0 has-[*]:p-4 has-[*]:border-t-0 rounded-b-md',
+            uiSchema?.className?.accordionContent
           )}
         >
           {items &&
-            items.map((item, index) => (
-              <div
-                className="flex relative rounded-md border [&>fieldset]:border-none"
-                key={item.key}
-              >
-                {item.children}
-                <ArrayToolBar {...item} itemIndex={index} />
-              </div>
-            ))}
+            items.map((item, index) => {
+              const { className: itemClassName, uiSchema: itemUiSchema } = item;
+              return (
+                <div
+                  className={cn(
+                    'flex relative rounded-md border [&>div]:border-none',
+                    itemClassName,
+                    itemUiSchema?.['ui:className']
+                  )}
+                  key={item.key}
+                >
+                  {item.children}
+                  <ArrayToolBar {...item} itemIndex={index} />
+                </div>
+              );
+            })}
         </AccordionContent>
       </AccordionItem>
     </Accordion>
