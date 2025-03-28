@@ -76,6 +76,7 @@ export default function FilterComponent({
   defaultOpen = true,
   customField,
   disabled = false,
+  isCollapsible = true,
 }: {
   dateSelect: DateSelectType[];
   multiSelect: MultiSelectType[];
@@ -88,6 +89,7 @@ export default function FilterComponent({
   defaultOpen?: boolean;
   disabled?: boolean;
   customField?: CustomFieldType[];
+  isCollapsible?: boolean;
 }) {
   const fields = [
     ...dateSelect,
@@ -110,15 +112,26 @@ export default function FilterComponent({
       onOpenChange={setIsOpen}
       className={cn('w-full space-y-2', className)}
     >
-      <CollapsibleTrigger asChild>
-        <Button variant="outline" size="icon">
-          <FilterIcon className="h-4 w-4" />
-          <span className="sr-only">Filters</span>
-        </Button>
-      </CollapsibleTrigger>
+      {isCollapsible && !isOpen && (
+        <CollapsibleTrigger asChild>
+          <Button variant="outline" size="icon">
+            <FilterIcon className="h-4 w-4" />
+            <span className="sr-only">Filters</span>
+          </Button>
+        </CollapsibleTrigger>
+      )}
       <CollapsibleContent className="space-y-2">
         <Card className="shadow-none">
-          <CardHeader>{filtersText}</CardHeader>
+          <CardHeader className="flex flex-row font-bold text-xl items-center justify-between">
+            {filtersText}
+            <CollapsibleTrigger asChild>
+              <Button className="h-7 p-1" variant="outline" size="icon">
+                <FilterIcon className="h-4 w-4" />
+                <span className="sr-only ">Filters</span>
+              </Button>
+            </CollapsibleTrigger>
+          </CardHeader>
+
           <CardContent className="flex flex-col gap-2.5">
             {fields.map((filter) => {
               if (isAsyncSelectType(filter)) {
