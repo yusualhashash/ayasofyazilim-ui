@@ -20,8 +20,8 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
     <div
       className={cn(
         'flex flex-col gap-2 flex-1 w-full',
-        uiSchema?.['ui:className'],
-        title && 'border p-4 rounded-md bg-white'
+        title && 'border p-4 rounded-md bg-white',
+        uiSchema?.['ui:className']
       )}
     >
       {title && uiSchema?.displayLabel !== false && (

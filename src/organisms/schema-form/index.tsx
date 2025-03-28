@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import { ScrollBar } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import ScrollArea from '../../molecules/scroll-area';
-import { AsyncSelect, FieldErrorTemplate } from './fields';
+import { FieldErrorTemplate } from './fields';
 import {
   AccordionArrayFieldTemplate,
   ErrorListTemplate,
@@ -50,7 +50,6 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       CheckboxWidget: CustomCheckbox,
       combobox: Combobox,
       SelectWidget: CustomSelect,
-      'async-select': AsyncSelect,
       TextWidget: CustomTextInput,
       TextareaWidget: CustomTextareaInput,
       DateTimeWidget: CustomDate,
