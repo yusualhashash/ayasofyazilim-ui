@@ -30,12 +30,11 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
           id={title}
           label={title}
           required={fieldOptions.required}
+          description={description}
           className="col-span-full"
         />
       )}
-      {description && description.length > 0 && (
-        <p className={cn('text-sm text-muted-foreground')}>{description}</p>
-      )}
+
       {props.properties.map((element) => (
         <Fragment key={element.name}>{element.content}</Fragment>
       ))}
