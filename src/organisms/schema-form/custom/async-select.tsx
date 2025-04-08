@@ -22,7 +22,14 @@ export function AsyncSelectWidget(
       return null;
     }
     return (
-      <AsyncSelectCore {...props} value={value || []} onChange={onChange} />
+      <AsyncSelectCore
+        {...props}
+        classNames={{
+          trigger: 'h-10 hover:bg-white bg-white shadow-sm',
+        }}
+        value={value || []}
+        onChange={onChange}
+      />
     );
   }
   return Widget;

@@ -28,7 +28,7 @@ export const CustomSwitch = (props: WidgetProps) => {
   if (fieldOptions.hidden) return null;
 
   return (
-    <div className="flex items-center gap-2 h-9">
+    <div className="flex items-center gap-2 h-10">
       <Switch
         id={id}
         className={className}

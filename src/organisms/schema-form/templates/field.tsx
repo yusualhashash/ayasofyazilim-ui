@@ -10,7 +10,7 @@ export function FieldTemplate(props: FieldTemplateProps) {
     style,
     label,
     required,
-    description,
+    rawDescription,
     errors,
     children,
     uiSchema,
@@ -33,15 +33,24 @@ export function FieldTemplate(props: FieldTemplateProps) {
   if (fieldOptions.hidden) return children;
   return (
     <div
-      className={cn(uiSchema?.['ui:className'], classNames, 'w-full')}
+      className={cn(
+        uiSchema?.['ui:className'],
+        classNames,
+        'w-full grid gap-1.5 h-fit'
+      )}
       style={style}
     >
       {displayLabel && schema.type !== 'boolean' && (
-        <FieldLabel id={id} label={label} required={fieldOptions.required} />
+        <FieldLabel
+          id={id}
+          label={label}
+          required={fieldOptions.required}
+          description={rawDescription}
+        />
       )}
-      {description}
       {/* TODO : Add description field */}
       {children}
+
       {errors}
       {/* <p className="text-xs">{help}</p> */}
       {/* TODO : Add help field */}

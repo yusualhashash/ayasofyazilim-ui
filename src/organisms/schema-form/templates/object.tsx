@@ -19,7 +19,7 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
   return (
     <div
       className={cn(
-        'flex flex-col gap-2 flex-1 w-full',
+        'flex flex-col gap-3 flex-1 w-full',
         title && 'border p-4 rounded-md bg-white',
         uiSchema?.['ui:className']
       )}
@@ -29,12 +29,11 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
           id={title}
           label={title}
           required={fieldOptions.required}
+          description={description}
           className="col-span-full"
         />
       )}
-      {description && (
-        <p className={cn('text-sm text-muted-foreground')}>{description}</p>
-      )}
+
       {props.properties.map((element) => (
         <Fragment key={element.name}>{element.content}</Fragment>
       ))}

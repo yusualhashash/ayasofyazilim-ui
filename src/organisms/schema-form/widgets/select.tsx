@@ -7,6 +7,7 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { fieldOptionsByDependency } from '../utils/dependency';
+import { cn } from '@/lib/utils';
 
 export const CustomSelect = (props: WidgetProps) => {
   const {
@@ -44,7 +45,10 @@ export const CustomSelect = (props: WidgetProps) => {
       }}
     >
       <SelectTrigger
-        className={hasValue ? 'text-black ' : 'text-muted-foreground'}
+        className={cn(
+          'h-10',
+          hasValue ? 'text-black ' : 'text-muted-foreground'
+        )}
         disabled={fieldOptions.disabled}
       >
         <SelectValue

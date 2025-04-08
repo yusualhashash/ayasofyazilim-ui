@@ -1,6 +1,7 @@
 import { Input } from '@/components/ui/input';
 import { fieldOptionsByDependency } from '../utils/dependency';
 import { WidgetProps } from '../types';
+import { cn } from '@/lib/utils';
 
 export const CustomTextInput = (props: WidgetProps) => {
   const { uiSchema, required, className, id, disabled, onChange, value } =
@@ -23,7 +24,7 @@ export const CustomTextInput = (props: WidgetProps) => {
     <Input
       type={uiOptions?.inputType || 'text'}
       id={id}
-      className={className}
+      className={cn('h-10', className)}
       required={fieldOptions.required}
       onChange={(event) => {
         if (event.target.value === '') {
