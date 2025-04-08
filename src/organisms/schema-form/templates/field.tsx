@@ -31,7 +31,6 @@ export function FieldTemplate(props: FieldTemplateProps) {
     ...dependencyOptions,
   };
   if (fieldOptions.hidden) return children;
-  console.log(id, props, rawDescription);
   return (
     <div
       className={cn(

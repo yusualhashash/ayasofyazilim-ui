@@ -15,7 +15,6 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
     required,
     ...dependencyOptions,
   };
-  console.log(description, description?.length);
   if (fieldOptions.hidden) return null;
   return (
     <div
