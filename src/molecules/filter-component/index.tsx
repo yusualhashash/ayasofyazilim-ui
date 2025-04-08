@@ -1,7 +1,13 @@
 'use client';
 
 import { FilterIcon } from 'lucide-react';
-import { Dispatch, SetStateAction, useState, useTransition } from 'react';
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useState,
+  useTransition,
+} from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
@@ -73,10 +79,12 @@ export default function FilterComponent({
   searchText = 'Search',
   applyFilterText = 'Apply',
   className,
+  cardClassName,
   defaultOpen = true,
   customField,
   disabled = false,
   isCollapsible = true,
+  filterGuidanceContent,
 }: {
   dateSelect: DateSelectType[];
   multiSelect: MultiSelectType[];
@@ -86,10 +94,12 @@ export default function FilterComponent({
   applyFilterText?: string;
   searchText?: string;
   className?: string;
+  cardClassName?: string;
   defaultOpen?: boolean;
   disabled?: boolean;
   customField?: CustomFieldType[];
   isCollapsible?: boolean;
+  filterGuidanceContent?: ReactNode;
 }) {
   const fields = [
     ...dateSelect,
@@ -121,7 +131,13 @@ export default function FilterComponent({
         </CollapsibleTrigger>
       )}
       <CollapsibleContent className="space-y-2">
-        <Card className="shadow-none">
+        <Card
+          className={cn(
+            'shadow-none',
+            !filterGuidanceContent && 'mx-auto w-1/2',
+            cardClassName
+          )}
+        >
           <CardHeader className="flex flex-row font-bold text-xl items-center justify-between">
             {filtersText}
             <CollapsibleTrigger asChild>
@@ -132,43 +148,56 @@ export default function FilterComponent({
             </CollapsibleTrigger>
           </CardHeader>
 
-          <CardContent className="flex flex-col gap-2.5">
-            {fields.map((filter) => {
-              if (isAsyncSelectType(filter)) {
-                return (
-                  <AsyncSelectField
-                    filter={filter}
-                    isPending={isPending || disabled}
-                    searchText={searchText}
-                  />
-                );
-              }
-              if (isMultiSelectType(filter)) {
-                return (
-                  <MultiSelectField
-                    filter={filter}
-                    isPending={isPending || disabled}
-                  />
-                );
-              }
-              if (isDateSelectType(filter)) {
-                return (
-                  <DateField
-                    filter={filter}
-                    isPending={isPending || disabled}
-                  />
-                );
-              }
-              return filter.component;
-            })}
+          <CardContent className="flex flex-row gap-3 items-start">
+            {filterGuidanceContent && (
+              <div className="w-1/2 text-sm text-muted-foreground">
+                {filterGuidanceContent}
+              </div>
+            )}
 
-            <Button
-              disabled={isPending || disabled}
-              onClick={() => handleSubmit()}
-              variant="default"
+            <div
+              className={cn(
+                'flex flex-col gap-4',
+                filterGuidanceContent ? 'w-1/2' : 'w-full'
+              )}
             >
-              {applyFilterText}
-            </Button>
+              {fields.map((filter) => {
+                if (isAsyncSelectType(filter)) {
+                  return (
+                    <AsyncSelectField
+                      filter={filter}
+                      isPending={isPending || disabled}
+                      searchText={searchText}
+                    />
+                  );
+                }
+                if (isMultiSelectType(filter)) {
+                  return (
+                    <MultiSelectField
+                      filter={filter}
+                      isPending={isPending || disabled}
+                    />
+                  );
+                }
+                if (isDateSelectType(filter)) {
+                  return (
+                    <DateField
+                      filter={filter}
+                      isPending={isPending || disabled}
+                    />
+                  );
+                }
+                return filter.component;
+              })}
+
+              <Button
+                disabled={isPending || disabled}
+                onClick={() => handleSubmit()}
+                variant="default"
+              >
+                {applyFilterText}
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </CollapsibleContent>
