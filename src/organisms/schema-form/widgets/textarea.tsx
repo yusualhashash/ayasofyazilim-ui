@@ -1,6 +1,7 @@
 import { WidgetProps } from '@rjsf/utils';
 import { Textarea } from '@/components/ui/textarea';
 import { fieldOptionsByDependency } from '../utils/dependency';
+import { cn } from '@/lib/utils';
 
 export const CustomTextareaInput = (props: WidgetProps) => {
   const { required, className, id, uiSchema, disabled, onChange, value } =
@@ -21,7 +22,7 @@ export const CustomTextareaInput = (props: WidgetProps) => {
   return (
     <Textarea
       id={id}
-      className={className}
+      className={cn('min-h-10', className)}
       required={required}
       onChange={(event) => {
         if (event.target.value === '') {

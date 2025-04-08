@@ -1,6 +1,7 @@
 import { WidgetProps } from '@rjsf/utils';
 import { Input } from '@/components/ui/input';
 import { fieldOptionsByDependency } from '../utils/dependency';
+import { cn } from '@/lib/utils';
 
 export const EmailInputWidget = (props: WidgetProps) => {
   const {
@@ -31,7 +32,7 @@ export const EmailInputWidget = (props: WidgetProps) => {
     <Input
       type="email"
       id={id}
-      className={className}
+      className={cn('h-10', className)}
       required={required}
       onChange={(event) => {
         if (event.target.value === '') {

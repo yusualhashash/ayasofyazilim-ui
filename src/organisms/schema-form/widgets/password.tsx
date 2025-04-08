@@ -1,6 +1,7 @@
 import { WidgetProps } from '@rjsf/utils';
 import { PasswordInput } from '../../../molecules/password-input';
 import { fieldOptionsByDependency } from '../utils/dependency';
+import { cn } from '@/lib/utils';
 
 export const PasswordInputWidget = (props: WidgetProps) => {
   const {
@@ -30,7 +31,7 @@ export const PasswordInputWidget = (props: WidgetProps) => {
   return (
     <PasswordInput
       id={id}
-      className={className}
+      className={cn('h-10', className)}
       required={required}
       onChange={(event) => {
         if (event.target.value === '') {

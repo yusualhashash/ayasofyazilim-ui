@@ -25,6 +25,9 @@ export const CustomDate = (props: WidgetProps) => {
     <DatePicker
       defaultValue={initialDate}
       disabled={fieldOptions.disabled}
+      classNames={{
+        dateInput: 'h-10 shadow-sm',
+      }}
       onChange={(selectedDate) => {
         if (selectedDate) {
           onChange(selectedDate.toISOString());

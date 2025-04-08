@@ -15,11 +15,12 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
     required,
     ...dependencyOptions,
   };
+  console.log(description, description?.length);
   if (fieldOptions.hidden) return null;
   return (
     <div
       className={cn(
-        'flex flex-col gap-2 flex-1 w-full',
+        'flex flex-col gap-3 flex-1 w-full',
         title && 'border p-4 rounded-md bg-white',
         uiSchema?.['ui:className']
       )}
@@ -32,7 +33,7 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
           className="col-span-full"
         />
       )}
-      {description && (
+      {description && description.length > 0 && (
         <p className={cn('text-sm text-muted-foreground')}>{description}</p>
       )}
       {props.properties.map((element) => (
