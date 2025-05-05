@@ -2,6 +2,7 @@ import { CaretSortIcon } from '@radix-ui/react-icons';
 import { WidgetProps } from '@rjsf/utils';
 import { CheckIcon } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -19,7 +20,6 @@ import {
 } from '@/components/ui/popover';
 import { useMediaQuery } from '@/components/ui/useMediaQuery';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
 import { fieldOptionsByDependency } from '../utils/dependency';
 
 type BadgeOptions = { className?: string; showValue?: boolean; label?: string };
@@ -228,6 +228,7 @@ export function CustomComboboxWidget<T>({
   selectLabel,
   selectIdentifier,
   list,
+  onChange,
   disabledItems,
   badges,
 }: {
@@ -239,14 +240,23 @@ export function CustomComboboxWidget<T>({
   selectIdentifier: keyof T;
   selectLabel: keyof T;
   list: T[];
+  onChange?: (value: T | null | undefined) => void;
   disabledItems?: T[keyof T][];
   badges?: CustomComboboxProps<T>['badges'];
 }) {
   function Widget(props: WidgetProps) {
+    const { uiSchema } = props;
+    const uiList = uiSchema?.['ui:optionList'];
     return (
       <CustomCombobox<T>
         {...props}
-        list={list}
+        list={uiList || list}
+        onChange={(value) => {
+          props.onChange(value);
+          if (onChange) {
+            onChange(list.find((i) => i[selectIdentifier] === value));
+          }
+        }}
         searchPlaceholder={languageData['Select.Placeholder']}
         searchResultLabel={languageData['Select.ResultLabel']}
         emptyValue={languageData['Select.EmptyValue']}
