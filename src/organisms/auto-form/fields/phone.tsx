@@ -18,7 +18,7 @@ export default function AutoFormPhone({
 }: AutoFormInputComponentProps) {
   const defaultCountryCode =
     (typeof window !== 'undefined' && localStorage.getItem('countryCode2')) ||
-    'us';
+    'gb';
   const { showLabel: _showLabel } = fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
   if (fieldProps.isLoading)
