@@ -12,4 +12,4 @@ export * from './phone';
 export * from './password';
 export * from './email';
 export * from './multi-select';
-export * from '../custom/async-select';
+// export * from '../custom/async-select';
