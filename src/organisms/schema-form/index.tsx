@@ -131,7 +131,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
         uiSchema={uiSchema} // Set the generated UI schema
         onChange={(e) => {
           if (props.onChange) props.onChange(e); // Call the onChange prop if provided
-          setFormData(e.formData);
+          if (useDependency) setFormData(e.formData);
         }}
         onSubmit={(data, event) => {
           if (props.onSubmit) props.onSubmit(data, event); // Call the onSubmit prop if provided
