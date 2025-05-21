@@ -3,19 +3,26 @@ import { Fragment } from 'react/jsx-runtime';
 import { cn } from '@/lib/utils';
 import { fieldOptionsByDependency } from '../utils/dependency';
 import { FieldLabel } from '../custom/label';
+import { TableArrayObjectFieldTemplate } from './table-array';
 
 export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
-  const { uiSchema, title, required, disabled, description } = props;
-  const dependencyOptions = fieldOptionsByDependency(
-    uiSchema,
-    props.formContext
-  );
+  const { uiSchema, title, required, disabled, description, formContext } =
+    props;
+  const dependencyOptions = fieldOptionsByDependency(uiSchema, formContext);
   const fieldOptions = {
     disabled,
     required,
     ...dependencyOptions,
   };
   if (fieldOptions.hidden) return null;
+  // This is not an valid implementation, but a workaround to display array objects as table.
+  const isArrayField = formContext.arrayFields.some((field: string) => {
+    const regex = new RegExp(`^${field}(-\\d+)?$`);
+    return regex.test(props.title);
+  });
+  if (isArrayField) {
+    return <TableArrayObjectFieldTemplate {...props} />;
+  }
   return (
     <div
       className={cn(

@@ -47,6 +47,7 @@ export interface SchemaFormProps<T>
   formData?: T | undefined;
   locale?: string;
   disableValidation?: boolean;
+  useTableForArrayItems?: boolean;
 }
 
 export type FilterType<T> = CommonFilterType<T> &

@@ -11,17 +11,20 @@ import ScrollArea from '../../molecules/scroll-area';
 import { FieldErrorTemplate } from './fields';
 import {
   AccordionArrayFieldTemplate,
+  DescriptionFieldTemplate,
   ErrorListTemplate,
   FieldTemplate,
   ObjectFieldTemplate,
-  DescriptionFieldTemplate,
+  TableArrayFieldTemplate,
 } from './templates';
 import { FormContext, SchemaFormProps } from './types';
 import {
   createSchemaWithFilters,
+  getArrayFieldKeys,
   mergeUISchemaObjects,
   removeFieldsfromGenericSchema,
 } from './utils';
+import { AJV_TR } from './utils/langugage';
 import {
   Combobox,
   CustomCheckbox,
@@ -34,7 +37,6 @@ import {
   EmailInputWidget,
   PasswordInputWidget,
 } from './widgets';
-import { AJV_TR } from './utils/langugage';
 
 /**
  * SchemaForm component that renders a form based on the provided schema and options.
@@ -44,6 +46,7 @@ import { AJV_TR } from './utils/langugage';
  * @returns {JSX.Element} - The rendered form component.
  */
 export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
+  const arrayFields = getArrayFieldKeys(props.schema);
   const Default: ThemeProps<T, any, FormContext<T>> = {
     widgets: {
       switch: CustomSwitch,
@@ -58,7 +61,10 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       phone: CustomPhoneField,
     },
     templates: {
-      ArrayFieldTemplate: AccordionArrayFieldTemplate,
+      ArrayFieldTemplate:
+        props.useTableForArrayItems && arrayFields.length > 0
+          ? TableArrayFieldTemplate
+          : AccordionArrayFieldTemplate,
       ErrorListTemplate,
       FieldErrorTemplate,
       FieldTemplate,
@@ -105,6 +111,8 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
         formContext={{
           ...uiSchema['ui:config'],
           formData: useDependency ? formData : undefined,
+          useTableForArrayItems: props.useTableForArrayItems,
+          arrayFields,
         }}
         focusOnFirstError
         showErrorList={props.showErrorList || false}
