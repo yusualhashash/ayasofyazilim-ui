@@ -12,7 +12,7 @@ export const TableArrayObjectFieldTemplate = (
         Object.keys(props.idSchema).map((item) => {
           if (item === '$id' || item !== element.name) return null;
           return (
-            <TableCell className="[&>div>label]:hidden [&>div>ul]:hidden p-0 [&>div>*]:bg-transparent [&>div>*:hover]:bg-transparent [&>div>*]:ring-inset [&>div>*]:border-0 [&>div>*]:border-b [&>div>*]:border-r [&>div>*]:shadow-none [&>div>*]:rounded-none [&>div>*]:text-xs">
+            <TableCell className="[&>div_label]:hidden [&>div.field-boolean>div]:justify-center [&>div>ul]:hidden p-0 [&>div>*]:bg-transparent [&>div>*:hover]:bg-transparent [&>div>*]:ring-inset [&>div>*]:border-0 [&>div>*]:border-b [&>div>*]:border-r [&>div>*]:shadow-none [&>div>*]:rounded-none [&>div>*]:text-xs">
               {element.content}
             </TableCell>
           );

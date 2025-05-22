@@ -3,10 +3,13 @@ import { CircleXIcon, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as Table from '@/components/ui/table';
 import { fieldOptionsByDependency } from '../../utils/dependency';
+import { FieldLabel } from '../../custom/label';
+import { cn } from '@/lib/utils';
 
 export const TableArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
-  const { items, required, canAdd, onAddClick, uiSchema, disabled } = props;
-  // const displayName = uiSchema?.['ui:title'] || title;
+  const { items, required, canAdd, title, onAddClick, uiSchema, disabled } =
+    props;
+  const displayName = uiSchema?.['ui:title'] || title;
   const addable = uiSchema?.['ui:options']?.addable || canAdd;
   const dependencyOptions = fieldOptionsByDependency(
     uiSchema,
@@ -19,7 +22,16 @@ export const TableArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
   };
   if (fieldOptions.hidden) return null;
   return (
-    <Table.Table className="col-span-full">
+    <Table.Table
+      className={cn('col-span-full table-auto', uiSchema?.className?.table)}
+    >
+      <Table.TableCaption className="caption-top">
+        <FieldLabel
+          label={displayName}
+          required={required}
+          id={props.idSchema?.$id}
+        />
+      </Table.TableCaption>
       <Table.TableHeader>
         <Table.TableRow className="border-x border-t bg-gray-100">
           {props.idSchema &&
