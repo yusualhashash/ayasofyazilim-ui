@@ -55,12 +55,12 @@ export const TableArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
                 </Table.TableHead>
               );
             })}
-          <Table.TableHead className="text-nowrap text-xs p-0">
+          <Table.TableHead className="text-nowrap text-xs p-0 w-1">
             {addable && (
               <Button
                 variant="outline"
                 size="icon"
-                className="bg-transparent rounded-none h-10 border-0 text-black"
+                className="bg-transparent rounded-none size-10 border-0 text-black"
                 onClick={onAddClick}
               >
                 <PlusCircle className="h-4 w-4" />
@@ -75,11 +75,11 @@ export const TableArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
             <Table.TableRow className="border-0 border-x" key={item.key}>
               {item.children}
               {item.hasRemove && (
-                <Table.TableCell className="p-0">
+                <Table.TableCell className="p-0 w-1">
                   <Button
                     variant="outline"
                     size="icon"
-                    className="text-destructive rounded-none h-10 border-0 border-b"
+                    className="text-destructive rounded-none size-10 border-0 border-b"
                     onClick={item.onDropIndexClick(item.index)}
                   >
                     <CircleXIcon className="size-4" />
