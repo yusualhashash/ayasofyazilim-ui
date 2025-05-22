@@ -23,7 +23,14 @@ export const TableArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
   if (fieldOptions.hidden) return null;
   return (
     <Table.Table
-      className={cn('col-span-full table-auto', uiSchema?.className?.table)}
+      wrapperClassName={cn(
+        uiSchema?.className?.table?.wrapper,
+        uiSchema?.['ui:className']
+      )}
+      className={cn(
+        'col-span-full table-auto',
+        uiSchema?.className?.table.container
+      )}
     >
       <Table.TableCaption className="caption-top">
         <FieldLabel
