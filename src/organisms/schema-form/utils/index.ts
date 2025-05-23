@@ -734,3 +734,32 @@ export function findFieldInGenericSchema(
   }
   return inputSchema;
 }
+
+export function getArrayFieldKeys(schema: GenericObjectType): string[] {
+  const keys: string[] = [];
+
+  function traverse(node: GenericObjectType) {
+    if (node.type === 'object') {
+      for (const [key, value] of Object.entries(node.properties)) {
+        if (
+          typeof value === 'object' &&
+          value !== null &&
+          'type' in value &&
+          (value as GenericObjectType).type === 'array'
+        ) {
+          keys.push(key);
+          traverse((value as GenericObjectType).items); // array içinde object olabilir
+        } else if (
+          typeof value === 'object' &&
+          value !== null &&
+          'type' in value &&
+          (value as GenericObjectType).type === 'object'
+        ) {
+          traverse(value as GenericObjectType);
+        }
+      }
+    }
+  }
+  traverse(schema);
+  return keys;
+}
