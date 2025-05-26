@@ -56,6 +56,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       TextWidget: CustomTextInput,
       TextareaWidget: CustomTextareaInput,
       DateTimeWidget: CustomDate,
+      DateWidget: CustomDate,
       password: PasswordInputWidget,
       email: EmailInputWidget,
       phone: CustomPhoneField,
