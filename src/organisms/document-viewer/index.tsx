@@ -1,3 +1,5 @@
+'use client';
+
 import DocViewer, { DocRenderer } from 'react-doc-viewer';
 import { cn } from '@/lib/utils';
 import CustomImageRenderer from './renderers/image';
