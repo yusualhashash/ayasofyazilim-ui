@@ -204,9 +204,8 @@ export default function ImageCanvas({
   const handleMouseLeave = useCallback(() => {
     setIsDragging(false);
   }, []);
-
   const handleWheel = useCallback(
-    (e: React.WheelEvent<HTMLCanvasElement>) => {
+    (e: WheelEvent) => {
       e.preventDefault();
 
       // Calculate new zoom level
@@ -229,7 +228,17 @@ export default function ImageCanvas({
       }
     },
     [currentZoom, minZoom, maxZoom, onZoomChange]
-  );
+  ); // Add non-passive wheel event listener
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return undefined;
+
+    canvas.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      canvas.removeEventListener('wheel', handleWheel);
+    };
+  }, [handleWheel]);
 
   return (
     <div className={cn(`relative w-full h-full`, classNames?.container)}>
@@ -244,7 +253,7 @@ export default function ImageCanvas({
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
-        onWheel={handleWheel}
+        // onWheel handler removed and replaced with addEventListener above
       />
     </div>
   );
