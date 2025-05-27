@@ -30,7 +30,11 @@ export const CustomDate = (props: WidgetProps) => {
       }}
       onChange={(selectedDate) => {
         if (selectedDate) {
-          onChange(selectedDate.toISOString());
+          if (props.schema.format === 'date') {
+            onChange(selectedDate.toISOString().split('T').at(0));
+          } else {
+            onChange(selectedDate.toISOString());
+          }
         }
       }}
     />
