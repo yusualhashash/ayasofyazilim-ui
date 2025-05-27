@@ -739,7 +739,7 @@ export function getArrayFieldKeys(schema: GenericObjectType): string[] {
   const keys: string[] = [];
 
   function traverse(node: GenericObjectType) {
-    if (node.type === 'object') {
+    if (node.type === 'object' && node.properties) {
       for (const [key, value] of Object.entries(node.properties)) {
         if (
           typeof value === 'object' &&
