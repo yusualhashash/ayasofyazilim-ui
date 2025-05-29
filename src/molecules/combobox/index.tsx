@@ -41,6 +41,9 @@ export type ComboboxProps<T> = {
       label?: string;
       icon?: string;
     };
+    list?: {
+      label?: string;
+    };
     error?: string;
     required?: string;
   };
@@ -223,7 +226,7 @@ function List<T>({
               {item[selectIdentifier] === value && (
                 <CheckIcon className={cn('ml-auto h-4 w-4')} />
               )}
-              <span className={cn(classNames?.trigger?.label)}>
+              <span className={cn(classNames?.list?.label)}>
                 {item[selectLabel] as string}
               </span>
               {badges && (
