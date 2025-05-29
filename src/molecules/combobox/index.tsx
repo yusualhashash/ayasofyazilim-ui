@@ -36,15 +36,19 @@ export type ComboboxProps<T> = {
   classNames?: {
     container?: string;
     label?: string;
-    trigger?: string;
+    trigger?: {
+      button?: string;
+      label?: string;
+      icon?: string;
+    };
     error?: string;
     required?: string;
   };
   label?: string;
   list: Array<T> | null | undefined;
-  onValueChange:
-    | Dispatch<SetStateAction<T | null | undefined>>
-    | ((value: T | null | undefined) => void);
+  onValueChange: (
+    value: T | null | undefined
+  ) => void | Dispatch<SetStateAction<T | null | undefined>>;
   required?: boolean;
   searchPlaceholder?: string;
   searchResultLabel?: string;
@@ -87,14 +91,19 @@ export function Combobox<T>(props: ComboboxProps<T>) {
           className={cn(
             'text-muted-foreground w-full justify-between font-normal',
             value && 'text-black',
-            classNames?.trigger
+            classNames?.trigger?.button
           )}
         >
-          {fieldValue}
-          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <span className={cn(classNames?.trigger?.label)}>{fieldValue}</span>
+          <CaretSortIcon
+            className={cn(
+              'ml-2 h-4 w-4 shrink-0 opacity-50',
+              classNames?.trigger?.icon
+            )}
+          />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0 w-full min-w-screen max-w-screen">
+      <PopoverContent className="p-0 w-full !min-w-screen max-w-screen">
         <List {...props} setOpen={setOpen} />
       </PopoverContent>
     </Popover>
@@ -110,11 +119,16 @@ export function Combobox<T>(props: ComboboxProps<T>) {
           className={cn(
             'text-muted-foreground w-full justify-between font-normal',
             value && 'text-black',
-            classNames?.trigger
+            classNames?.trigger?.button
           )}
         >
-          {fieldValue}
-          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <span className={cn(classNames?.trigger?.label)}>{fieldValue}</span>
+          <CaretSortIcon
+            className={cn(
+              'ml-2 h-4 w-4 shrink-0 opacity-50',
+              classNames?.trigger?.icon
+            )}
+          />
         </Button>
       </DrawerTrigger>
       <DrawerContent>
@@ -169,6 +183,7 @@ function List<T>({
     value,
     onValueChange,
     id,
+    classNames,
     badges,
   } = props;
 
@@ -208,7 +223,9 @@ function List<T>({
               {item[selectIdentifier] === value && (
                 <CheckIcon className={cn('ml-auto h-4 w-4')} />
               )}
-              {item[selectLabel] as string}
+              <span className={cn(classNames?.trigger?.label)}>
+                {item[selectLabel] as string}
+              </span>
               {badges && (
                 <div className="ml-auto">
                   {Object.keys(badges).map((badgeKey) => {
