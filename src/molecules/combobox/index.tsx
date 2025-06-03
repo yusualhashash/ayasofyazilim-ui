@@ -2,7 +2,7 @@
 
 import { CaretSortIcon } from '@radix-ui/react-icons';
 import { CheckIcon } from 'lucide-react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -21,8 +21,14 @@ import {
 import { useMediaQuery } from '@/components/ui/useMediaQuery';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 
-type CustomComboboxProps<T> = {
+export type ComboboxBadgeOptions<T> = {
+  className?: string;
+  label: (item: T) => React.ReactNode;
+};
+
+export type ComboboxProps<T> = {
   id?: string;
   disabled?: boolean;
   emptyValue?: string;
@@ -30,24 +36,32 @@ type CustomComboboxProps<T> = {
   classNames?: {
     container?: string;
     label?: string;
-    trigger?: string;
+    trigger?: {
+      button?: string;
+      label?: string;
+      icon?: string;
+    };
+    list?: {
+      label?: string;
+    };
     error?: string;
     required?: string;
   };
   label?: string;
   list: Array<T> | null | undefined;
-  onValueChange:
-    | Dispatch<SetStateAction<T | null | undefined>>
-    | ((value: T | null | undefined) => void);
+  onValueChange: (
+    value: T | null | undefined
+  ) => void | Dispatch<SetStateAction<T | null | undefined>>;
   required?: boolean;
   searchPlaceholder?: string;
   searchResultLabel?: string;
   selectIdentifier: keyof T;
   selectLabel: keyof T;
   value?: T | null | undefined;
+  badges?: Partial<Record<keyof T, ComboboxBadgeOptions<T>>>;
 };
 
-export function Combobox<T>(props: CustomComboboxProps<T>) {
+export function Combobox<T>(props: ComboboxProps<T>) {
   const {
     label,
     list,
@@ -80,14 +94,19 @@ export function Combobox<T>(props: CustomComboboxProps<T>) {
           className={cn(
             'text-muted-foreground w-full justify-between font-normal',
             value && 'text-black',
-            classNames?.trigger
+            classNames?.trigger?.button
           )}
         >
-          {fieldValue}
-          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <span className={cn(classNames?.trigger?.label)}>{fieldValue}</span>
+          <CaretSortIcon
+            className={cn(
+              'ml-2 h-4 w-4 shrink-0 opacity-50',
+              classNames?.trigger?.icon
+            )}
+          />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0 w-full min-w-screen max-w-screen">
+      <PopoverContent className="p-0 w-full !min-w-screen max-w-screen">
         <List {...props} setOpen={setOpen} />
       </PopoverContent>
     </Popover>
@@ -103,11 +122,16 @@ export function Combobox<T>(props: CustomComboboxProps<T>) {
           className={cn(
             'text-muted-foreground w-full justify-between font-normal',
             value && 'text-black',
-            classNames?.trigger
+            classNames?.trigger?.button
           )}
         >
-          {fieldValue}
-          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <span className={cn(classNames?.trigger?.label)}>{fieldValue}</span>
+          <CaretSortIcon
+            className={cn(
+              'ml-2 h-4 w-4 shrink-0 opacity-50',
+              classNames?.trigger?.icon
+            )}
+          />
         </Button>
       </DrawerTrigger>
       <DrawerContent>
@@ -150,7 +174,7 @@ export function Combobox<T>(props: CustomComboboxProps<T>) {
 function List<T>({
   setOpen,
   ...props
-}: CustomComboboxProps<T> & {
+}: ComboboxProps<T> & {
   setOpen: (open: boolean) => void;
 }) {
   const {
@@ -162,6 +186,8 @@ function List<T>({
     value,
     onValueChange,
     id,
+    classNames,
+    badges,
   } = props;
 
   return (
@@ -197,9 +223,28 @@ function List<T>({
               key={JSON.stringify(item[selectIdentifier])}
               value={item[selectIdentifier] as string}
             >
-              {item[selectLabel] as string}
               {item[selectIdentifier] === value && (
                 <CheckIcon className={cn('ml-auto h-4 w-4')} />
+              )}
+              <span className={cn(classNames?.list?.label)}>
+                {item[selectLabel] as string}
+              </span>
+              {badges && (
+                <div className="ml-auto">
+                  {Object.keys(badges).map((badgeKey) => {
+                    const badgeOptions = badges[badgeKey as keyof T];
+                    if (!badgeOptions) return null;
+                    return (
+                      <Badge
+                        key={badgeKey}
+                        variant="outline"
+                        className={cn('ml-2', badgeOptions.className)}
+                      >
+                        {badgeOptions.label(item)}
+                      </Badge>
+                    );
+                  })}
+                </div>
               )}
             </CommandItem>
           ))}
