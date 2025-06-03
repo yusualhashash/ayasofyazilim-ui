@@ -102,6 +102,7 @@ export function TanstackTableActionDialogs<TData>({
           cancelText={tableAction.cancelText}
           onConfirm={tableAction.onConfirm}
           onCancel={tableAction.onCancel}
+          dialogClassNames={tableAction.dialogClassNames}
         />
       )}
       {tableAction?.type === 'schemaform-dialog' && (

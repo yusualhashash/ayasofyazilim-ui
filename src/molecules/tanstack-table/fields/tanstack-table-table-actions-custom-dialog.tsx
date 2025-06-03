@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { TanstackTableActionsCustomDialog } from '../types';
+import { cn } from '@/lib/utils';
 
 type TanstackTableCustomDialogProps = {
   setDialogOpen: () => void;
@@ -25,6 +26,7 @@ export function TanstackTableTableCustomDialog({
   cancelText,
   content,
   setDialogOpen,
+  dialogClassNames,
 }: TanstackTableCustomDialogProps) {
   const [isDeletePending, startDeleteTransition] = React.useTransition();
 
@@ -43,13 +45,15 @@ export function TanstackTableTableCustomDialog({
 
   return (
     <Dialog open onOpenChange={setDialogOpen}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+      <DialogContent className={dialogClassNames?.content}>
+        <DialogHeader className={dialogClassNames?.header}>
+          <DialogTitle className={dialogClassNames?.title}>{title}</DialogTitle>
         </DialogHeader>
         {content}
         {(confirmationText || cancelText) && (
-          <DialogFooter className="gap-2 sm:space-x-0">
+          <DialogFooter
+            className={cn('gap-2 sm:space-x-0', dialogClassNames?.footer)}
+          >
             {cancelText && (
               <DialogClose asChild>
                 <Button variant="outline" onClick={handleOnCancelClick}>

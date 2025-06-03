@@ -265,6 +265,12 @@ export type TanstackTableActionsSchemaFormDialog = Omit<
 export type TanstackTableActionsCustomDialog = TanstackTableActionsDialog & {
   content: JSX.Element;
   type: 'custom-dialog';
+  dialogClassNames?: {
+    content?: string;
+    header?: string;
+    title?: string;
+    footer?: string;
+  };
 };
 export type TanstackTableTableActionsType = {
   actionLocation: 'table';
