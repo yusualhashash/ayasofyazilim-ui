@@ -1,6 +1,7 @@
 'use client';
-import { useTheme } from 'next-themes';
-import { Toaster as Sonner, toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { CopyIcon } from 'lucide-react';
+import { ExternalToast, Toaster as Sonner, toast as toastCore } from 'sonner';
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
@@ -26,5 +27,29 @@ const Toaster = ({ ...props }: ToasterProps) => {
     />
   );
 };
-
-export { Toaster, toast };
+const toast = {
+  ...toastCore,
+  error: (message: string | React.ReactNode, data?: ExternalToast) => {
+    toastCore.error(message, {
+      action: (
+        <Button
+          size="icon"
+          variant={'ghost'}
+          className="ml-auto"
+          onClick={() => {
+            try {
+              navigator.clipboard.writeText(message as string);
+            } catch (error) {
+              toast.error('Failed to copy to clipboard');
+            }
+          }}
+        >
+          <CopyIcon className="size-4" />
+          <span className="sr-only">Copy</span>
+        </Button>
+      ),
+      ...data,
+    });
+  },
+};
+export { toast, Toaster };
