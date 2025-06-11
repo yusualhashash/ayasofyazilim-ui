@@ -104,7 +104,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
   const [formData, setFormData] = useState<T | undefined>(props.formData);
   const handleChange = useCallback(
     (e: IChangeEvent<T, any, FormContext<T>>) => {
-      if (props.onChange) props.onChange(e); // Call the onChange prop if provided
+      if (props.onChange) props.onChange({ ...e, formData }); // Call the onChange prop if provided
       if (useDependency) setFormData(e.formData);
     },
     [formData]
