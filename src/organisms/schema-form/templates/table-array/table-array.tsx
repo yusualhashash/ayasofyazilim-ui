@@ -32,7 +32,7 @@ export const TableArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
         uiSchema?.className?.table.container
       )}
     >
-      <Table.TableCaption className="caption-top">
+      <Table.TableCaption className="caption-top mb-2">
         <FieldLabel
           label={displayName}
           required={required}
@@ -50,7 +50,7 @@ export const TableArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
                   key={item}
                 >
                   <div className="flex h-10 items-center justify-center w-full border-r">
-                    {item}
+                    {uiSchema?.items?.[item]?.['ui:title'] || item}
                   </div>
                 </Table.TableHead>
               );
