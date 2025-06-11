@@ -20,7 +20,7 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
     const regex = new RegExp(`^${field}(-\\d+)?$`);
     return regex.test(props.title);
   });
-  if (isArrayField) {
+  if (isArrayField && formContext.useTableForArrayItems) {
     return <TableArrayObjectFieldTemplate {...props} />;
   }
   return (
