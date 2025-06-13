@@ -1,9 +1,9 @@
 'use client';
 
-import Form, { IChangeEvent, ThemeProps } from '@rjsf/core';
+import Form, { ThemeProps } from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
 import { customizeValidator } from '@rjsf/validator-ajv8';
-import { Fragment, useCallback, useState } from 'react';
+import { Fragment, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ScrollBar } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
@@ -102,14 +102,6 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
     uiSchema = mergeUISchemaObjects(uiSchema, props.uiSchema);
   }
   const [formData, setFormData] = useState<T | undefined>(props.formData);
-  const handleChange = useCallback(
-    (e: IChangeEvent<T, any, FormContext<T>>) => {
-      if (props.onChange)
-        props.onChange({ ...e, formData: e.formData || formData }); // Call the onChange prop if provided
-      if (useDependency) setFormData(e.formData);
-    },
-    [formData]
-  );
   return (
     <Wrapper
       {...(withScrollArea && { className: 'h-full [&>div>div]:!block' })}
@@ -146,7 +138,12 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
         widgets={{ ...Default.widgets, ...props.widgets }} // Merge custom widgets
         templates={{ ...Default.templates, ...props.templates }} // Merge custom templates
         uiSchema={uiSchema} // Set the generated UI schema
-        onChange={handleChange} // Handle form data changes
+        onChange={(e) => {
+          if (props.onChange) {
+            props.onChange({ ...e, formData: e.formData || formData }); // Call the onChange prop if provided
+          }
+          if (useDependency) setFormData(e.formData);
+        }} // Handle form data changes
         onSubmit={(data, event) => {
           if (props.onSubmit) props.onSubmit(data, event); // Call the onSubmit prop if provided
         }}
