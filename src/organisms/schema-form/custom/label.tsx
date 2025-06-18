@@ -27,7 +27,7 @@ export function FieldLabel({
       htmlFor={id}
       className={cn('flex items-center text-slate-600', className)}
     >
-      {label}
+      {toTitleCaseFromSnakeCase(label)}
       {required ? <Asterisk className="size-3 text-destructive mb-1" /> : null}
       {description && description.length > 0 && (
         <TooltipProvider>
@@ -41,4 +41,11 @@ export function FieldLabel({
       )}
     </Label>
   );
+}
+
+function toTitleCaseFromSnakeCase(input: string): string {
+  return input
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }

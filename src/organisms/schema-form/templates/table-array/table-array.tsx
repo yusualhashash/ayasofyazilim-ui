@@ -50,7 +50,10 @@ export const TableArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
                   key={item}
                 >
                   <div className="flex h-10 items-center justify-center w-full border-r">
-                    {uiSchema?.items?.[item]?.['ui:title'] || item}
+                    <FieldLabel
+                      label={uiSchema?.items?.[item]?.['ui:title'] || item}
+                      id={props.idSchema.$id}
+                    />
                   </div>
                 </Table.TableHead>
               );
