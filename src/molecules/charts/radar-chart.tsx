@@ -18,11 +18,11 @@ import {
 } from '@/components/ui/chart';
 import { cn } from '@/lib/utils';
 import { ChartCard, CardClassNames } from './chart-card';
+import { ChartData } from '.';
 
-export interface RadarChartProps {
-  data: any[];
+export type RadarChartProps = {
+  data: ChartData;
   config: ChartConfig;
-  radarKeys: string[];
   polarKey: string;
   title?: React.ReactNode;
   description?: React.ReactNode;
@@ -41,12 +41,11 @@ export interface RadarChartProps {
     };
     card?: CardClassNames;
   };
-}
+};
 
 export function RadarChart({
   data,
   config,
-  radarKeys,
   polarKey,
   title,
   description,
@@ -83,13 +82,13 @@ export function RadarChart({
           />
           <PolarAngleAxis dataKey={polarKey} />
           <PolarGrid radialLines={!linesOnly} />
-          {radarKeys.map((key, idx) => (
+          {Object.keys(config).map((key, idx) => (
             <Radar
               key={key}
               dataKey={key}
-              fill={config[key]?.color || `var(--color-${key})`}
+              fill={config[key]?.color || `var(--color-${idx})`}
               fillOpacity={linesOnly ? 0 : idx === 0 ? 0.6 : 0.4}
-              stroke={config[key]?.color || `var(--color-${key})`}
+              stroke={config[key]?.color || `var(--color-${idx})`}
               strokeWidth={linesOnly ? 2 : 1}
             />
           ))}

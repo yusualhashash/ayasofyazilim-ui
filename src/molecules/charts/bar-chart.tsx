@@ -9,6 +9,7 @@ import {
   YAxis,
 } from 'recharts';
 import {
+  ChartConfig,
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
@@ -17,19 +18,9 @@ import {
 } from '@/components/ui/chart';
 import { cn } from '@/lib/utils';
 import { CardClassNames, ChartCard } from './chart-card';
+import { ChartData } from '.';
 
-type ChartData = Array<{
-  [key: string]: number | string;
-}>;
-
-type ChartConfig = {
-  [key: string]: {
-    label: string;
-    color: string;
-  };
-};
-
-export interface BarChartProps {
+export type BarChartProps = {
   data: ChartData;
   config: ChartConfig;
   xAxisKey: string;
@@ -51,7 +42,7 @@ export interface BarChartProps {
     };
     card?: CardClassNames;
   };
-}
+};
 
 export function BarChart({
   data,

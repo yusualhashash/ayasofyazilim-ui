@@ -9,15 +9,16 @@ import {
 import { CardClassNames, ChartCard } from './chart-card';
 import { cn } from '@/lib/utils';
 
+export type PieChartData = Record<
+  string,
+  {
+    value: number;
+    label: string;
+    color?: string;
+  }
+>;
 export interface PieChartProps {
-  data: Record<
-    string,
-    {
-      value: number;
-      label: string;
-      color?: string;
-    }
-  >;
+  data: PieChartData;
   title?: React.ReactNode;
   description?: React.ReactNode;
   period?: React.ReactNode;
@@ -25,9 +26,11 @@ export interface PieChartProps {
   trendIcon?: React.ReactNode;
   footer?: React.ReactNode;
   totalLabel?: string;
-  type?: 'donut' | 'pie';
+  chartStyle: 'donut' | 'pie';
   innerRadius?: number;
   strokeWidth?: number;
+  valuePrefix?: string;
+  valueSuffix?: string;
   classNames?: {
     chart?: {
       container?: string;
@@ -48,10 +51,12 @@ export function PieChart({
   trendIcon,
   footer,
   totalLabel,
-  type = 'donut',
+  chartStyle,
   classNames,
   innerRadius,
   strokeWidth,
+  valuePrefix,
+  valueSuffix,
 }: PieChartProps) {
   const totalCount = useMemo(
     () => Object.values(data).reduce((acc, curr) => acc + curr.value, 0),
@@ -77,7 +82,7 @@ export function PieChart({
             y={viewBox.cy}
             className="fill-foreground text-3xl font-bold"
           >
-            {totalCount.toLocaleString()}
+            {valuePrefix} {totalCount.toLocaleString()} {valueSuffix}
           </tspan>
           <tspan
             x={viewBox.cx}
@@ -122,8 +127,10 @@ export function PieChart({
             }))}
             dataKey="value"
             nameKey="key"
-            innerRadius={innerRadius || (type === 'donut' ? 60 : 0)}
-            strokeWidth={strokeWidth || (type === 'donut' ? 0 : undefined)}
+            innerRadius={innerRadius || (chartStyle === 'donut' ? 60 : 0)}
+            strokeWidth={
+              strokeWidth || (chartStyle === 'donut' ? 0 : undefined)
+            }
           >
             <Label content={renderLabelContent} />
           </Pie>
