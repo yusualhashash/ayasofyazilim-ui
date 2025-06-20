@@ -33,7 +33,7 @@ type ChartConfig = {
   };
 };
 
-type AreaChartProps = {
+export type AreaChartProps = {
   data: ChartData;
   config: ChartConfig;
   title?: ReactNode;
