@@ -117,7 +117,13 @@ export function PieChart({
         <RechartsPieChart>
           <ChartTooltip
             cursor={false}
-            content={<ChartTooltipContent hideLabel />}
+            content={
+              <ChartTooltipContent
+                hideLabel
+                valuePrefix={valuePrefix}
+                valueSuffix={valueSuffix}
+              />
+            }
           />
           <Pie
             data={Object.entries(data).map(([key, value]) => ({
