@@ -52,6 +52,8 @@ export type AreaChartProps = {
     };
     card?: CardClassNames;
   };
+  valuePrefix?: string;
+  valueSuffix?: string;
 };
 
 export function AreaChart({
@@ -66,6 +68,8 @@ export function AreaChart({
   showLegend,
   xAxisTickFormatter = (value) => value,
   classNames,
+  valuePrefix,
+  valueSuffix,
 }: AreaChartProps) {
   return (
     <ChartCard
@@ -97,7 +101,13 @@ export function AreaChart({
           />
           <ChartTooltip
             cursor={false}
-            content={<ChartTooltipContent indicator="line" />}
+            content={
+              <ChartTooltipContent
+                indicator="line"
+                valuePrefix={valuePrefix}
+                valueSuffix={valueSuffix}
+              />
+            }
           />
           {Object.keys(config).map((key) => (
             <Area

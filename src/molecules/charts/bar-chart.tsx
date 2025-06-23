@@ -34,6 +34,8 @@ export type BarChartProps = {
   trendIcon?: React.ReactNode;
   xAxisTickFormatter?: (value: any) => string;
   yAxisTickFormatter?: (value: any) => string;
+  valuePrefix?: string;
+  valueSuffix?: string;
   classNames?: {
     chart?: {
       container?: string;
@@ -59,6 +61,8 @@ export function BarChart({
   yAxisTickFormatter = (value) => value,
   classNames,
   showLegend,
+  valuePrefix,
+  valueSuffix,
 }: BarChartProps) {
   return (
     <ChartCard
@@ -113,7 +117,11 @@ export function BarChart({
           <ChartTooltip
             cursor={false}
             content={
-              <ChartTooltipContent hideLabel={layout === 'horizontal'} />
+              <ChartTooltipContent
+                hideLabel={layout === 'horizontal'}
+                valuePrefix={valuePrefix}
+                valueSuffix={valueSuffix}
+              />
             }
           />
           {Object.keys(config).map((key) => (

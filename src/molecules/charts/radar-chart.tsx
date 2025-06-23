@@ -32,6 +32,8 @@ export type RadarChartProps = {
   trendIcon?: React.ReactNode;
   showLegend?: boolean;
   linesOnly?: boolean;
+  valuePrefix?: string;
+  valueSuffix?: string;
   classNames?: {
     chart?: {
       container?: string;
@@ -56,6 +58,8 @@ export function RadarChart({
   showLegend = true,
   linesOnly = false,
   classNames,
+  valuePrefix,
+  valueSuffix,
 }: RadarChartProps) {
   return (
     <ChartCard
@@ -78,7 +82,13 @@ export function RadarChart({
         >
           <ChartTooltip
             cursor={false}
-            content={<ChartTooltipContent indicator="line" />}
+            content={
+              <ChartTooltipContent
+                indicator="line"
+                valuePrefix={valuePrefix}
+                valueSuffix={valueSuffix}
+              />
+            }
           />
           <PolarAngleAxis dataKey={polarKey} />
           <PolarGrid radialLines={!linesOnly} />
