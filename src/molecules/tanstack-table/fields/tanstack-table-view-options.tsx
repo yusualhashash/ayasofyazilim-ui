@@ -27,11 +27,9 @@ interface TanstackTableViewOptionsProps<TData> {
 function TablePrimaryActionButton<TData>({
   table,
   action,
-  isMultipleActionProvided,
   setRowAction,
 }: {
   action: TanstackTableTableActionsType;
-  isMultipleActionProvided: boolean;
   setRowAction: (actions: TanstackTableTableActionsType) => void;
   table: Table<TData>;
 }) {
@@ -40,7 +38,6 @@ function TablePrimaryActionButton<TData>({
       variant="outline"
       size="sm"
       type="button"
-      className={isMultipleActionProvided ? 'rounded-r-none ml-2' : 'ml-2'}
       onClick={() => handleActionOnClick(table, action, setRowAction)}
     >
       {action?.icon && <action.icon className="mr-2 h-4 w-4" />}
@@ -77,7 +74,8 @@ export function TanstackTableViewOptions<TData>(
     editable,
   } = props;
   const primaryAction = tableActions?.[0];
-  const otherActions = tableActions?.slice(1);
+  const secondaryAction = tableActions?.[1];
+  const otherActions = tableActions?.slice(2);
   const selectedRowCount = Object.keys(table.getState().rowSelection).length;
 
   return (
@@ -104,48 +102,54 @@ export function TanstackTableViewOptions<TData>(
 
       {editable && null}
 
-      {primaryAction && otherActions && (
-        <>
+      <div className="space-x-2">
+        {primaryAction && (
           <TablePrimaryActionButton
             table={table}
             action={primaryAction}
-            isMultipleActionProvided={otherActions?.length > 0}
             setRowAction={setRowAction}
           />
-          {otherActions.length > 0 && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  size="sm"
-                  type="button"
-                  variant="outline"
-                  className="rounded-l-none border-l-0 px-2"
-                >
-                  <ChevronDownIcon className="size-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[160px]">
-                {otherActions?.map((action) => (
-                  <DropdownMenuItem key={action.cta}>
-                    <Button
-                      variant="ghost"
-                      type="button"
-                      size="sm"
-                      className="justify-start w-full"
-                      onClick={() =>
-                        handleActionOnClick(table, action, setRowAction)
-                      }
-                    >
-                      {action.icon && <action.icon className="w-4 h-4" />}
-                      <span className="ml-2">{action.cta}</span>
-                    </Button>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        </>
-      )}
+        )}
+        {secondaryAction && (
+          <TablePrimaryActionButton
+            table={table}
+            action={secondaryAction}
+            setRowAction={setRowAction}
+          />
+        )}
+        {otherActions && otherActions.length > 0 && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                size="sm"
+                type="button"
+                variant="outline"
+                className="px-2"
+              >
+                <ChevronDownIcon className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[160px]">
+              {otherActions?.map((action) => (
+                <DropdownMenuItem key={action.cta}>
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    size="sm"
+                    className="justify-start w-full"
+                    onClick={() =>
+                      handleActionOnClick(table, action, setRowAction)
+                    }
+                  >
+                    {action.icon && <action.icon className="w-4 h-4" />}
+                    <span className="ml-2">{action.cta}</span>
+                  </Button>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </div>
     </>
   );
 }
