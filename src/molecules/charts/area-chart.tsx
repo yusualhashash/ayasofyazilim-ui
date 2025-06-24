@@ -5,6 +5,7 @@ import {
   CartesianGrid,
   AreaChart as RechartsAreaChart,
   XAxis,
+  YAxis,
 } from 'recharts';
 
 import { ReactNode } from 'react';
@@ -92,13 +93,15 @@ export function AreaChart({
           margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
         >
           <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="label"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={0}
-            tickFormatter={xAxisTickFormatter}
-          />
+          <>
+            <XAxis
+              dataKey="label"
+              tickMargin={2}
+              minTickGap={2}
+              tickFormatter={xAxisTickFormatter}
+            />
+            <YAxis />
+          </>
           <ChartTooltip
             cursor={false}
             content={
