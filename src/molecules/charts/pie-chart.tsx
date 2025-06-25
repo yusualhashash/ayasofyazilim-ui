@@ -129,7 +129,9 @@ export function PieChart({
             data={Object.entries(data).map(([key, value]) => ({
               key,
               ...value,
-              fill: value.color,
+              fill:
+                value.color ||
+                `var(--chart-${Object.keys(data).indexOf(key) + 1})`,
             }))}
             className="fixed"
             dataKey="value"
