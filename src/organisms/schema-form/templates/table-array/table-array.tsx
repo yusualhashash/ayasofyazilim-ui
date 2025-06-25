@@ -1,5 +1,5 @@
 import { ArrayFieldTemplateProps } from '@rjsf/utils';
-import { CircleXIcon, PlusCircle } from 'lucide-react';
+import { CircleXIcon, Copy, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as Table from '@/components/ui/table';
 import { fieldOptionsByDependency } from '../../utils/dependency';
@@ -60,14 +60,16 @@ export const TableArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
             })}
           <Table.TableHead className="text-nowrap text-xs p-0 w-1">
             {addable && (
-              <Button
-                variant="outline"
-                size="icon"
-                className="bg-transparent rounded-none size-10 border-0 text-black"
-                onClick={onAddClick}
-              >
-                <PlusCircle className="h-4 w-4" />
-              </Button>
+              <div className="flex justify-end">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="bg-transparent rounded-none size-10 border-0 text-black"
+                  onClick={onAddClick}
+                >
+                  <PlusCircle className="h-4 w-4" />
+                </Button>
+              </div>
             )}
           </Table.TableHead>
         </Table.TableRow>
@@ -77,16 +79,28 @@ export const TableArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
           items.map((item) => (
             <Table.TableRow className="border-0 border-x" key={item.key}>
               {item.children}
-              {item.hasRemove && (
+              {(item.hasRemove || item.hasCopy) && (
                 <Table.TableCell className="p-0 w-1">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="text-destructive rounded-none size-10 border-0 border-b"
-                    onClick={item.onDropIndexClick(item.index)}
-                  >
-                    <CircleXIcon className="size-4" />
-                  </Button>
+                  <div className="flex bg-border gap-px">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="text-destructive rounded-none size-10 border-0 border-b"
+                      onClick={item.onDropIndexClick(item.index)}
+                    >
+                      <CircleXIcon className="size-4" />
+                    </Button>
+                    {item.hasCopy && (
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="rounded-none size-10 border-0 border-b"
+                        onClick={item.onCopyIndexClick(item.index)}
+                      >
+                        <Copy className="size-4" />
+                      </Button>
+                    )}
+                  </div>
                 </Table.TableCell>
               )}
             </Table.TableRow>
