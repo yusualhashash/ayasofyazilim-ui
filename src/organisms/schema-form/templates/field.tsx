@@ -34,9 +34,9 @@ export function FieldTemplate(props: FieldTemplateProps) {
   return (
     <div
       className={cn(
+        'w-full grid gap-1.5 h-fit',
         uiSchema?.['ui:className'],
-        classNames,
-        'w-full grid gap-1.5 h-fit'
+        classNames
       )}
       style={style}
     >
