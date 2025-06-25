@@ -43,9 +43,12 @@ export function FieldLabel({
   );
 }
 
-function toTitleCaseFromSnakeCase(input: string): string {
+function toTitleCaseFromSnakeCase(input: string | undefined | null): string {
+  if (!input || typeof input !== 'string') return ''; // Handle null, undefined, or non-string inputs
   return input
-    .split('_')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .replace(/([a-z])([A-Z])/g, '$1 $2') // Handle camelCase
+    .replace(/[-_]/g, ' ') // Replace underscores and hyphens with spaces
+    .split(/\s+/) // Split by spaces
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
     .join(' ');
 }
