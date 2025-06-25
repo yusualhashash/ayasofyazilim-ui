@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 import { Label, LabelProps, Pie, PieChart as RechartsPieChart } from 'recharts';
 import {
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
@@ -31,6 +33,7 @@ export interface PieChartProps {
   strokeWidth?: number;
   valuePrefix?: string;
   valueSuffix?: string;
+  showLegend?: boolean;
   classNames?: {
     chart?: {
       container?: string;
@@ -57,6 +60,7 @@ export function PieChart({
   strokeWidth,
   valuePrefix,
   valueSuffix,
+  showLegend = true,
 }: PieChartProps) {
   const totalCount = useMemo(
     () => Object.values(data).reduce((acc, curr) => acc + curr.value, 0),
@@ -109,17 +113,13 @@ export function PieChart({
     >
       <ChartContainer
         config={data}
-        className={cn(
-          'mx-auto aspect-square max-h-[250px]',
-          classNames?.chart?.container
-        )}
+        className={cn('max-h-[300px]', classNames?.chart?.container)}
       >
-        <RechartsPieChart>
+        <RechartsPieChart className={cn('relative', classNames?.chart?.pie)}>
           <ChartTooltip
             cursor={false}
             content={
               <ChartTooltipContent
-                hideLabel
                 valuePrefix={valuePrefix}
                 valueSuffix={valueSuffix}
               />
@@ -131,6 +131,7 @@ export function PieChart({
               ...value,
               fill: value.color,
             }))}
+            className="fixed"
             dataKey="value"
             nameKey="key"
             innerRadius={innerRadius || (chartStyle === 'donut' ? 60 : 0)}
@@ -140,6 +141,18 @@ export function PieChart({
           >
             <Label content={renderLabelContent} />
           </Pie>
+          {showLegend && (
+            <ChartLegend
+              wrapperStyle={{
+                width: '100%',
+                height: 0,
+                bottom: 0,
+              }}
+              content={
+                <ChartLegendContent className="flex-col absolute size-full inset-0 items-start justify-end w-full text-nowrap gap-1 p-0" />
+              }
+            />
+          )}
         </RechartsPieChart>
       </ChartContainer>
     </ChartCard>
