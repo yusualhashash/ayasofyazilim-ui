@@ -1,7 +1,7 @@
 /*! tscanify-browser v1.0.0 | Based on jscanify v1.4.0 | (c) ColonelParrot and other contributors | MIT License */
 
-import {Point, HighlightOptions, CornerPoints} from "./types";
-import cv, {Mat, MatVector, Size, Rect} from "opencv-ts";
+import cv, { Mat } from 'opencv-ts';
+import { CornerPoints, HighlightOptions, Point } from './types';
 
 /**
  * Calculates distance between two points.
@@ -21,30 +21,23 @@ export class TScanifyBrowser {
    * @param callback Function to call when OpenCV is initialized
    */
   loadOpenCV(callback: (opencv: typeof cv) => void): void {
-    console.log("TScanifyBrowser: Checking OpenCV status");
-
     // First check if global cv is available (browser-loaded version)
     if ((window as any).cv && (window as any).cv.Mat) {
-      console.log("TScanifyBrowser: Using globally loaded OpenCV");
       callback((window as any).cv);
       return;
     }
 
     // Next, check if the imported cv is available
     if (cv && (cv as any).Mat) {
-      console.log("TScanifyBrowser: Using imported OpenCV from opencv-ts");
       callback(cv);
       return;
     }
-
-    console.log("TScanifyBrowser: OpenCV not immediately available, waiting...");
 
     // Wait for opencv to be ready (check both global and imported)
     const checkInterval = setInterval(() => {
       // First priority: global cv
       if ((window as any).cv && (window as any).cv.Mat) {
         clearInterval(checkInterval);
-        console.log("TScanifyBrowser: Global OpenCV now available");
         callback((window as any).cv);
         return;
       }
@@ -52,7 +45,6 @@ export class TScanifyBrowser {
       // Second priority: imported cv
       if (cv && (cv as any).Mat) {
         clearInterval(checkInterval);
-        console.log("TScanifyBrowser: Imported OpenCV now available");
         callback(cv);
         return;
       }
@@ -61,16 +53,12 @@ export class TScanifyBrowser {
     // Set timeout to avoid infinite waiting
     setTimeout(() => {
       clearInterval(checkInterval);
-      console.error("TScanifyBrowser: OpenCV initialization timed out");
       // Try to load it dynamically as a last resort
       this.loadOpenCVDynamically()
         .then((loadedCv) => {
-          console.log("TScanifyBrowser: Dynamically loaded OpenCV");
           callback(loadedCv);
         })
-        .catch((err) => {
-          console.error("TScanifyBrowser: Failed to load OpenCV dynamically", err);
-        });
+        .catch((err) => {});
     }, 8000); // 8 seconds timeout
   }
 
@@ -86,10 +74,10 @@ export class TScanifyBrowser {
       }
 
       // Try to load OpenCV.js dynamically
-      const script = document.createElement("script");
-      script.setAttribute("async", "true");
-      script.setAttribute("type", "text/javascript");
-      script.setAttribute("src", "https://docs.opencv.org/4.5.5/opencv.js");
+      const script = document.createElement('script');
+      script.setAttribute('async', 'true');
+      script.setAttribute('type', 'text/javascript');
+      script.setAttribute('src', 'https://docs.opencv.org/4.5.5/opencv.js');
 
       script.onload = () => {
         // Check if OpenCV is available
@@ -103,12 +91,12 @@ export class TScanifyBrowser {
         // Timeout after 5 seconds
         setTimeout(() => {
           clearInterval(checkInterval);
-          reject(new Error("OpenCV dynamic load timed out"));
+          reject(new Error('OpenCV dynamic load timed out'));
         }, 5000);
       };
 
       script.onerror = () => {
-        reject(new Error("Failed to load OpenCV.js dynamically"));
+        reject(new Error('Failed to load OpenCV.js dynamically'));
       };
 
       document.body.appendChild(script);
@@ -122,7 +110,7 @@ export class TScanifyBrowser {
    * @returns Canvas object
    */
   createCanvas(width: number, height: number): HTMLCanvasElement {
-    const canvas = document.createElement("canvas");
+    const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
     return canvas;
@@ -134,8 +122,8 @@ export class TScanifyBrowser {
    * @returns OpenCV Mat
    */
   imageToMat(image: HTMLImageElement | HTMLCanvasElement): Mat {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d")!;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d')!;
 
     // Set canvas dimensions to match input
     canvas.width = image.width as number;
@@ -158,9 +146,13 @@ export class TScanifyBrowser {
    * @param maxHeight Maximum height
    * @returns Resized image as Canvas
    */
-  resizeImage(image: HTMLImageElement | HTMLCanvasElement, maxWidth = 500, maxHeight = 500): HTMLCanvasElement {
+  resizeImage(
+    image: HTMLImageElement | HTMLCanvasElement,
+    maxWidth = 500,
+    maxHeight = 500
+  ): HTMLCanvasElement {
     const canvas = this.createCanvas(1, 1);
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext('2d')!;
 
     const originalWidth = image.width as number;
     const originalHeight = image.height as number;
@@ -211,7 +203,13 @@ export class TScanifyBrowser {
       // Find contours
       const contours = new cv.MatVector();
       const hierarchy = new cv.Mat();
-      cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+      cv.findContours(
+        edges,
+        contours,
+        hierarchy,
+        cv.RETR_EXTERNAL,
+        cv.CHAIN_APPROX_SIMPLE
+      );
 
       // Find largest contour
       let maxArea = 0;
@@ -293,7 +291,6 @@ export class TScanifyBrowser {
 
       return corners;
     } catch (error) {
-      console.error("Error detecting document corners:", error);
       return null;
     }
   }
@@ -306,7 +303,12 @@ export class TScanifyBrowser {
    * @param height Output height
    * @returns Transformed Mat
    */
-  warpPerspective(src: Mat, corners: CornerPoints, width: number, height: number): Mat {
+  warpPerspective(
+    src: Mat,
+    corners: CornerPoints,
+    width: number,
+    height: number
+  ): Mat {
     try {
       // Create matrices for source and destination points
       const srcPoints = cv.matFromArray(4, 1, cv.CV_32FC2, [
@@ -320,14 +322,31 @@ export class TScanifyBrowser {
         corners.bottomLeftCorner.y,
       ]);
 
-      const dstPoints = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, width, 0, width, height, 0, height]);
+      const dstPoints = cv.matFromArray(4, 1, cv.CV_32FC2, [
+        0,
+        0,
+        width,
+        0,
+        width,
+        height,
+        0,
+        height,
+      ]);
 
       // Get perspective transform matrix
       const M = cv.getPerspectiveTransform(srcPoints, dstPoints);
 
       // Apply perspective transform
       const dst = new cv.Mat();
-      cv.warpPerspective(src, dst, M, new cv.Size(width, height), cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar());
+      cv.warpPerspective(
+        src,
+        dst,
+        M,
+        new cv.Size(width, height),
+        cv.INTER_LINEAR,
+        cv.BORDER_CONSTANT,
+        new cv.Scalar()
+      );
 
       // Clean up
       srcPoints.delete();
@@ -336,7 +355,6 @@ export class TScanifyBrowser {
 
       return dst;
     } catch (error) {
-      console.error("Error performing perspective transform:", error);
       throw error;
     }
   }
@@ -351,16 +369,19 @@ export class TScanifyBrowser {
   highlightCorners(
     image: HTMLImageElement | HTMLCanvasElement,
     corners: CornerPoints,
-    options: HighlightOptions = {},
+    options: HighlightOptions = {}
   ): HTMLCanvasElement {
     // Use our own default options since the HighlightOptions interface only has color and thickness
     const thickness = options.thickness || 2;
-    const color = options.color || "#3cba54";
+    const color = options.color || '#3cba54';
     const pointRadius = 3;
-    const pointColor = "#db3236";
+    const pointColor = '#db3236';
 
-    const canvas = this.createCanvas(image.width as number, image.height as number);
-    const ctx = canvas.getContext("2d")!;
+    const canvas = this.createCanvas(
+      image.width as number,
+      image.height as number
+    );
+    const ctx = canvas.getContext('2d')!;
 
     // Draw the original image
     ctx.drawImage(image, 0, 0);
@@ -430,12 +451,12 @@ export class TScanifyBrowser {
       // Calculate output dimensions
       const width = Math.max(
         distance(corners.topRightCorner, corners.topLeftCorner),
-        distance(corners.bottomRightCorner, corners.bottomLeftCorner),
+        distance(corners.bottomRightCorner, corners.bottomLeftCorner)
       );
 
       const height = Math.max(
         distance(corners.topLeftCorner, corners.bottomLeftCorner),
-        distance(corners.topRightCorner, corners.bottomRightCorner),
+        distance(corners.topRightCorner, corners.bottomRightCorner)
       );
 
       // Apply perspective transform
@@ -443,9 +464,13 @@ export class TScanifyBrowser {
 
       // Convert Mat to Canvas
       const processed = this.createCanvas(width, height);
-      const ctx = processed.getContext("2d")!;
+      const ctx = processed.getContext('2d')!;
 
-      const imgData = new ImageData(new Uint8ClampedArray(warped.data), warped.cols, warped.rows);
+      const imgData = new ImageData(
+        new Uint8ClampedArray(warped.data),
+        warped.cols,
+        warped.rows
+      );
 
       ctx.putImageData(imgData, 0, 0);
 
@@ -459,7 +484,6 @@ export class TScanifyBrowser {
         processed,
       };
     } catch (error) {
-      console.error("Error processing document image:", error);
       throw error;
     }
   }
@@ -471,7 +495,11 @@ export class TScanifyBrowser {
    * @param quality Image quality for JPEG (0-1)
    * @returns Data URL string
    */
-  canvasToDataURL(canvas: HTMLCanvasElement, type = "image/png", quality = 0.9): string {
+  canvasToDataURL(
+    canvas: HTMLCanvasElement,
+    type = 'image/png',
+    quality = 0.9
+  ): string {
     return canvas.toDataURL(type, quality);
   }
 
@@ -484,7 +512,8 @@ export class TScanifyBrowser {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => resolve(img);
-      img.onerror = () => reject(new Error("Failed to load image from data URL"));
+      img.onerror = () =>
+        reject(new Error('Failed to load image from data URL'));
       img.src = dataURL;
     });
   }
