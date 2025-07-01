@@ -1,58 +1,201 @@
+/**
+ * Webcam Component - Core Features
+ *
+ * Three main functionalities:
+ * 1) Record Video - with interface controls, auto-start, max duration
+ * 2) Capture Photo - with interface controls, quality settings
+ * 3) Auto-capture Photo - with interface controls, intervals, quality
+ *
+ * Features:
+ * - Customizable placeholder overlay
+ * - Comprehensive feedback functions
+ * - Camera switching support
+ * - Internationalization support
+ */
+
 'use client';
 
+import { Camera, Pause, Play, RefreshCw, Square, Video } from 'lucide-react';
 import * as React from 'react';
-import { RefreshCw } from 'lucide-react';
-import { useCallback, useRef, useState, useTransition, useEffect } from 'react';
-import Webcam from 'react-webcam';
-import * as Avatar from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import * as Dialog from '@/components/ui/dialog';
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
+import WebcamCore from 'react-webcam';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
-export function WebcamCapture({
-  handleImage,
-  type,
-  placeholder,
-  allowCameraSwitch = false,
-  capturedImage,
-  classNames,
-  languageData,
-  onVideoReady,
-  webcamRef: externalWebcamRef,
-}: {
-  type: 'document' | 'selfie';
-  handleImage: (imageSrc: string | null) => void;
-  allowCameraSwitch?: boolean;
-  placeholder?: React.ReactElement;
-  capturedImage?: string | null;
+// Types
+export interface VideoDimensions {
+  width: number;
+  height: number;
+}
+
+// Core Feature Interfaces
+export interface VideoRecordingConfig {
+  hasInterface: boolean; // Show video recording UI controls
+  autoStart?: boolean; // Auto-start recording when camera ready
+  maxVideoDuration?: number; // Max duration in seconds (default: 60)
+  quality?: 'low' | 'medium' | 'high'; // Video quality
+  mimeType?: string; // Video MIME type (default: 'video/webm')
+}
+
+export interface PhotoCaptureConfig {
+  hasInterface: boolean; // Show photo capture UI controls
+  quality?: number; // JPEG quality 0-1 (default: 0.95)
+}
+
+export interface AutoCaptureConfig {
+  hasInterface: boolean; // Show auto-capture UI controls
+  captureInterval: number; // Interval in seconds
+  startOnReady?: boolean; // Auto-start when camera ready (only on initial load)
+  quality?: number; // JPEG quality 0-1 (default: 0.95)
+  stopOnCapture?: boolean; // Stop auto capture after first successful capture
+}
+
+// Feedback Functions
+export interface WebcamCallbacks {
+  onWebcamReady?: (dimensions: VideoDimensions) => void;
+  onVideoStart?: () => void;
+  onVideoEnd?: (videoBlob: Blob, duration: number) => void;
+  onPhotoCaptured?: (imageData: string) => void;
+  onAutoPhotoCaptured?: (imageData: string) => void;
+  onAutoCaptureStart?: () => void;
+  beforeStartAutoCapture?: () => void;
+  onAutoCaptureStop?: () => void;
+  onError?: (error: string) => void;
+}
+
+// Main Props Interface
+export interface WebcamProps {
+  // Core Features (at least one must be enabled)
+  videoRecording?: VideoRecordingConfig;
+  photoCapture?: PhotoCaptureConfig;
+  autoCapture?: AutoCaptureConfig;
+
+  // Camera Settings
+  defaultCamera?: 'front' | 'back'; // Default camera (front='user', back='environment')
+  allowCameraSwitch?: boolean; // Allow camera switching
+
+  // UI Customization
+  placeholder?: React.ReactElement; // Overlay that covers camera area
+  showCapturedImage?: boolean; // Show last captured image preview
+  capturedImage?: string | null; // Current captured image for preview
+
+  // Feedback Functions
+  callbacks?: WebcamCallbacks;
+
+  // Labels for Translation
+  labels?: {
+    // Video Recording
+    startRecording?: string;
+    stopRecording?: string;
+    recording?: string;
+
+    // Photo Capture
+    capturePhoto?: string;
+
+    // Auto Capture
+    startAutoCapture?: string;
+    stopAutoCapture?: string;
+    autoCapturing?: string;
+
+    // General
+    switchCamera?: string;
+    cameraReady?: string;
+    cameraError?: string;
+  };
+
+  // Styling
   classNames?: {
+    container?: string;
+    webcam?: string;
     placeholder?: string;
+    controls?: string;
+    previewImage?: string;
   };
-  languageData: {
-    ['Webcam.CapturedPhoto']: string;
-    ['Webcam.SwitchCamera']: string;
-    ['Webcam.Capture']: string;
+
+  // Technical Settings
+  webcamRef?: React.RefObject<WebcamCore>;
+  videoCheckInterval?: number; // default: 500ms
+  maxRetryCount?: number; // default: 10
+}
+
+export type WebcamCaptureProps = WebcamProps;
+
+// Legacy aliases for backward compatibility
+export type WebcamAutoCapture = WebcamProps;
+export type WebcamManualCapture = WebcamProps;
+
+export function Webcam(props: WebcamProps) {
+  const {
+    videoRecording,
+    photoCapture,
+    autoCapture,
+    defaultCamera = 'front',
+    allowCameraSwitch = false,
+    placeholder,
+    showCapturedImage = false,
+    capturedImage,
+    callbacks,
+    labels = {},
+    classNames,
+    webcamRef: externalWebcamRef,
+    videoCheckInterval = 500,
+    maxRetryCount = 10,
+  } = props;
+
+  // Validation: At least one feature must be enabled
+  if (!videoRecording && !photoCapture && !autoCapture) {
+    throw new Error(
+      'WebcamComponent: At least one core feature (videoRecording, photoCapture, or autoCapture) must be enabled'
+    );
+  }
+
+  // Default labels
+  const defaultLabels = {
+    startRecording: 'Start Recording',
+    stopRecording: 'Stop Recording',
+    recording: 'Recording...',
+    capturePhoto: 'Capture Photo',
+    startAutoCapture: 'Start Auto Capture',
+    stopAutoCapture: 'Stop Auto Capture',
+    autoCapturing: 'Auto Capturing...',
+    switchCamera: 'Switch Camera',
+    cameraReady: 'Camera Ready',
+    cameraError: 'Camera Error',
+    ...labels,
   };
-  onVideoReady?: (dimensions: { width: number; height: number }) => void;
-  webcamRef?: React.RefObject<Webcam>;
-}) {
+
+  // State
   const [isPending, startTransition] = useTransition();
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>(
-    type === 'selfie' ? 'user' : 'environment'
+    defaultCamera === 'front' ? 'user' : 'environment'
   );
-  const [image, setImage] = useState<string | null>(capturedImage || null);
-  const [isVideoReady, setIsVideoReady] = useState(false);
-  const [videoDimensions, setVideoDimensions] = useState({
+  const [isWebcamReady, setIsWebcamReady] = useState(false);
+  const [videoDimensions, setVideoDimensions] = useState<VideoDimensions>({
     width: 0,
     height: 0,
   });
-  const internalWebcamRef = useRef<Webcam>(null);
-  const webcamRef = externalWebcamRef || internalWebcamRef;
-  type Timeout = ReturnType<typeof setTimeout>;
-  const videoCheckIntervalRef = useRef<Timeout | null>(null);
-  const retryCountRef = useRef(0);
 
-  // Cleanup function for intervals
+  // Video Recording State
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingDuration, setRecordingDuration] = useState(0);
+
+  // Auto Capture State
+  const [isAutoCapturing, setIsAutoCapturing] = useState(false);
+
+  // Auto capture state to track if it has been initially started
+  const [hasAutoStarted, setHasAutoStarted] = useState(false);
+
+  // Refs
+  const internalWebcamRef = useRef<WebcamCore>(null);
+  const webcamRef = externalWebcamRef || internalWebcamRef;
+  const videoCheckIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const autoCapturIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const retryCountRef = useRef(0);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordedChunksRef = useRef<Blob[]>([]);
+
+  // Cleanup utilities
   const clearVideoCheckInterval = useCallback(() => {
     if (videoCheckIntervalRef.current) {
       clearInterval(videoCheckIntervalRef.current);
@@ -60,233 +203,498 @@ export function WebcamCapture({
     }
   }, []);
 
-  // Check if video is ready and has valid dimensions
-  const checkVideoReady = useCallback(() => {
-    if (!webcamRef.current?.video) return false;
+  const clearAutoCapture = useCallback(() => {
+    if (autoCapturIntervalRef.current) {
+      clearInterval(autoCapturIntervalRef.current);
+      autoCapturIntervalRef.current = null;
+    }
+  }, []);
 
-    const { video } = webcamRef.current;
+  const clearRecordingInterval = useCallback(() => {
+    if (recordingIntervalRef.current) {
+      clearInterval(recordingIntervalRef.current);
+      recordingIntervalRef.current = null;
+    }
+  }, []);
+
+  // Video Recording Functions
+  const startVideoRecording = useCallback(() => {
+    if (!webcamRef.current?.stream || isRecording || !videoRecording) return;
+
+    try {
+      const { stream } = webcamRef.current;
+      const mimeType = videoRecording.mimeType || 'video/webm';
+
+      const mediaRecorder = new MediaRecorder(stream, { mimeType });
+      recordedChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordedChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunksRef.current, { type: mimeType });
+        const duration = recordingDuration;
+
+        callbacks?.onVideoEnd?.(blob, duration);
+        setIsRecording(false);
+        setRecordingDuration(0);
+        clearRecordingInterval();
+      };
+
+      mediaRecorderRef.current = mediaRecorder;
+      mediaRecorder.start();
+
+      const startTime = Date.now();
+      setIsRecording(true);
+      setRecordingDuration(0);
+
+      // Start duration tracking
+      recordingIntervalRef.current = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        setRecordingDuration(elapsed);
+
+        // Auto-stop if max duration reached
+        if (
+          videoRecording.maxVideoDuration &&
+          elapsed >= videoRecording.maxVideoDuration
+        ) {
+          stopVideoRecording();
+        }
+      }, 1000);
+
+      callbacks?.onVideoStart?.();
+    } catch (error) {
+      callbacks?.onError?.(`Failed to start video recording: ${error}`);
+    }
+  }, [
+    webcamRef,
+    isRecording,
+    videoRecording,
+    callbacks,
+    recordingDuration,
+    clearRecordingInterval,
+  ]);
+
+  const stopVideoRecording = useCallback(() => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current = null;
+    }
+  }, [isRecording]);
+
+  // Photo Capture Functions
+  const captureHighQualityPhoto = useCallback((): string | null => {
+    const video = webcamRef.current?.video;
+    if (!video) return null;
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const quality = photoCapture?.quality || 0.95;
+    return canvas.toDataURL('image/jpeg', quality);
+  }, [webcamRef, photoCapture]);
+
+  const capturePhoto = useCallback(() => {
+    if (!photoCapture) return;
+
+    const imageData = captureHighQualityPhoto();
+    if (imageData) {
+      callbacks?.onPhotoCaptured?.(imageData);
+    }
+  }, [photoCapture, captureHighQualityPhoto, callbacks]);
+
+  const stopAutoCapture = useCallback(() => {
+    setIsAutoCapturing(false);
+    callbacks?.onAutoCaptureStop?.();
+    clearAutoCapture();
+  }, [clearAutoCapture, callbacks]);
+
+  // Auto Capture Functions
+  const captureAutoPhoto = useCallback(() => {
+    if (!autoCapture) return;
+
+    const video = webcamRef.current?.video;
+    if (!video) return;
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const quality = autoCapture.quality || 0.95;
+    const imageData = canvas.toDataURL('image/jpeg', quality);
+
+    if (imageData) {
+      callbacks?.onAutoPhotoCaptured?.(imageData);
+
+      // Stop auto capture if stopOnCapture is enabled
+      if (autoCapture.stopOnCapture) {
+        stopAutoCapture();
+      }
+    }
+  }, [webcamRef, autoCapture, callbacks, stopAutoCapture]);
+
+  const startAutoCapture = useCallback(
+    (isManual = false) => {
+      if (!autoCapture || !isWebcamReady || isAutoCapturing) return;
+
+      // If it's automatic start (startOnReady) and already started, don't start again
+      if (!isManual && autoCapture.startOnReady && hasAutoStarted) return;
+
+      setIsAutoCapturing(true);
+      callbacks?.onAutoCaptureStart?.();
+
+      // Set hasAutoStarted flag only for automatic starts
+      if (!isManual && autoCapture.startOnReady) {
+        setHasAutoStarted(true);
+      }
+
+      autoCapturIntervalRef.current = setInterval(() => {
+        if (webcamRef.current && isWebcamReady) {
+          captureAutoPhoto();
+        }
+      }, autoCapture.captureInterval * 1000);
+    },
+    [
+      autoCapture,
+      isWebcamReady,
+      isAutoCapturing,
+      captureAutoPhoto,
+      webcamRef,
+      callbacks,
+      hasAutoStarted,
+    ]
+  );
+
+  // Camera Management
+  const switchCamera = useCallback(() => {
+    const newFacingMode = facingMode === 'user' ? 'environment' : 'user';
+    setFacingMode(newFacingMode);
+    setIsWebcamReady(false);
+    setHasAutoStarted(false); // Reset auto-start flag for new camera
+    stopAutoCapture();
+  }, [facingMode, stopAutoCapture]);
+
+  // Video Readiness Check
+  const checkVideoReady = useCallback(() => {
+    const video = webcamRef.current?.video;
+    if (!video) return false;
+
     const isReady =
       video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0;
 
     if (isReady) {
-      // Update video dimensions when ready
-      const newDimensions = {
+      const newDimensions: VideoDimensions = {
         width: video.videoWidth,
         height: video.videoHeight,
       };
       setVideoDimensions(newDimensions);
-
-      // Notify parent component if callback provided
-      if (onVideoReady) {
-        onVideoReady(newDimensions);
-      }
+      callbacks?.onWebcamReady?.(newDimensions);
     }
 
     return isReady;
-  }, [webcamRef, onVideoReady]);
+  }, [webcamRef, callbacks]);
 
-  // Handle video initialization with continuous checking
+  // Video Initialization
   const handleUserMedia = useCallback(() => {
-    // Clear any existing interval
     clearVideoCheckInterval();
     retryCountRef.current = 0;
 
-    // Start checking video readiness
     videoCheckIntervalRef.current = setInterval(() => {
       if (checkVideoReady()) {
-        setIsVideoReady(true);
+        setIsWebcamReady(true);
         clearVideoCheckInterval();
+
+        // Auto-start features if enabled
+        if (videoRecording?.autoStart) {
+          startVideoRecording();
+        }
+
+        if (autoCapture?.startOnReady && !hasAutoStarted) {
+          setTimeout(() => {
+            startAutoCapture(false); // Automatic start
+          }, 100);
+        }
       } else {
         retryCountRef.current++;
 
-        // If we've tried too many times, let's refresh the component
-        if (retryCountRef.current > 10) {
+        if (retryCountRef.current > maxRetryCount) {
           clearVideoCheckInterval();
+          callbacks?.onError?.(
+            'Failed to initialize camera after maximum retries'
+          );
 
+          // Force reinitialize camera
           const currentFacingMode = facingMode;
-          setFacingMode('user'); // Tür zaten tanımlıysa burada ekstra casting gerekmez
-
-          setTimeout(() => {
-            setFacingMode(currentFacingMode);
-          }, 100);
+          setFacingMode('user');
+          setTimeout(() => setFacingMode(currentFacingMode), 100);
         }
       }
-    }, 500);
+    }, videoCheckInterval);
 
-    return () => {
-      clearVideoCheckInterval();
-    };
-  }, [clearVideoCheckInterval, checkVideoReady, facingMode]);
+    return clearVideoCheckInterval;
+  }, [
+    clearVideoCheckInterval,
+    checkVideoReady,
+    videoRecording,
+    autoCapture,
+    startVideoRecording,
+    startAutoCapture,
+    maxRetryCount,
+    videoCheckInterval,
+    facingMode,
+    callbacks,
+  ]);
 
-  // Clean up intervals on unmount
+  // Manual capture function
+  const handleCapturePhoto = useCallback(() => {
+    startTransition(() => {
+      capturePhoto();
+    });
+  }, [capturePhoto, startTransition]);
+
+  // Manual auto capture start function for button
+  const handleStartAutoCapture = useCallback(() => {
+    if (callbacks?.beforeStartAutoCapture) callbacks.beforeStartAutoCapture();
+    startAutoCapture(true); // Manual start
+  }, [startAutoCapture, callbacks]);
+
+  // Effects
   useEffect(
     () => () => {
       clearVideoCheckInterval();
+      stopAutoCapture();
+      clearAutoCapture();
+      clearRecordingInterval();
     },
-    [clearVideoCheckInterval]
+    [
+      clearVideoCheckInterval,
+      stopAutoCapture,
+      clearAutoCapture,
+      clearRecordingInterval,
+    ]
   );
 
-  // Track video element size changes
   useEffect(() => {
-    if (!webcamRef.current?.video || !isVideoReady) return;
+    if (
+      autoCapture?.startOnReady &&
+      isWebcamReady &&
+      !isAutoCapturing &&
+      !hasAutoStarted
+    ) {
+      startAutoCapture(false); // Automatic start
+    }
+  }, [
+    autoCapture,
+    isWebcamReady,
+    isAutoCapturing,
+    hasAutoStarted,
+    startAutoCapture,
+  ]);
 
-    const videoElement = webcamRef.current.video;
+  // Render functions
+  const renderVideoRecordingControls = () => {
+    if (!videoRecording?.hasInterface) return null;
 
-    // Set up resize observer to update dimensions when video size changes
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const { width, height } = entry.contentRect;
+    return (
+      <div className="flex flex-col items-center space-y-2">
+        {isRecording ? (
+          <>
+            <Button
+              className="size-12 rounded-full border-2 border-red-500 bg-red-500 p-0 text-white"
+              onClick={stopVideoRecording}
+            >
+              <Square className="size-4" />
+            </Button>
+            <div className="flex items-center space-x-2 text-white">
+              <div className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
+              <span className="text-xs">
+                {defaultLabels.recording} {Math.floor(recordingDuration / 60)}:
+                {String(recordingDuration % 60).padStart(2, '0')}
+              </span>
+            </div>
+          </>
+        ) : (
+          <Button
+            className="size-12 rounded-full border-2 border-white bg-white/10 p-0 text-white"
+            disabled={!isWebcamReady}
+            onClick={startVideoRecording}
+          >
+            <Video className="size-4" />
+          </Button>
+        )}
+      </div>
+    );
+  };
 
-        // Only update if we have valid dimensions
-        if (width > 0 && height > 0) {
-          setVideoDimensions({
-            width: videoElement.videoWidth,
-            height: videoElement.videoHeight,
-          });
-        }
-      }
-    });
+  const renderPhotoCaptureControls = () => {
+    if (!photoCapture?.hasInterface) return null;
 
-    resizeObserver.observe(videoElement);
-    resizeObserver.disconnect();
-  }, [webcamRef, isVideoReady]);
+    return (
+      <Button
+        className="size-12 rounded-full border-2 border-white bg-white/10 p-0 text-white transition-all hover:bg-white hover:ring-4"
+        disabled={isPending || !isWebcamReady}
+        onClick={handleCapturePhoto}
+      >
+        <Camera className="size-4" />
+        <span className="sr-only">{defaultLabels.capturePhoto}</span>
+      </Button>
+    );
+  };
 
-  // Use the built-in getScreenshot method instead of canvas-based capture
-  const captureImageSafely = useCallback(
-    () =>
-      new Promise<string | null>((resolve) => {
-        if (!webcamRef.current) {
-          resolve(null);
-        }
+  const renderAutoCaptureControls = () => {
+    if (!autoCapture?.hasInterface) return null;
 
-        // If video is not ready yet, wait for it
-        if (!isVideoReady) {
-          // Set a timeout in case the video never becomes ready
-          const timeout = setTimeout(() => {
-            resolve(null);
-          }, 5000);
+    return (
+      <div className="flex flex-col items-center space-y-2">
+        {isAutoCapturing ? (
+          <>
+            <Button
+              className="size-12 rounded-full border-2  p-0 text-white"
+              variant="ghost"
+              onClick={stopAutoCapture}
+            >
+              <Pause className="size-4" />
+            </Button>
+            <div className="flex items-center space-x-2 text-white">
+              <div className="h-2 w-2 animate-pulse rounded-full bg-green-500" />
+              <span className="text-xs">{defaultLabels.autoCapturing}</span>
+            </div>
+          </>
+        ) : (
+          <Button
+            className="size-12 rounded-full border-2 p-0 text-white"
+            variant="ghost"
+            disabled={!isWebcamReady}
+            onClick={handleStartAutoCapture}
+          >
+            <Play className="size-4" />
+            <span className="sr-only">{defaultLabels.startAutoCapture}</span>
+          </Button>
+        )}
+      </div>
+    );
+  };
 
-          const checkIntervalId = setInterval(() => {
-            if (checkVideoReady()) {
-              clearTimeout(timeout);
-              clearInterval(checkIntervalId);
+  const renderCameraSwitchButton = () => {
+    if (!allowCameraSwitch) return null;
 
-              // Try to get screenshot after video is ready
-              const screenshot = webcamRef.current?.getScreenshot();
-              resolve(screenshot || null);
-            }
-          }, 200);
-        }
+    return (
+      <Button
+        className="size-8 rounded-full bg-white/10 p-0 text-white"
+        onClick={switchCamera}
+        variant="ghost"
+      >
+        <RefreshCw className="size-4" />
+        <span className="sr-only">{defaultLabels.switchCamera}</span>
+      </Button>
+    );
+  };
 
-        // Video is already ready, capture directly
-        const screenshot = webcamRef.current?.getScreenshot();
-        resolve(screenshot || null);
-      }),
-    [webcamRef, isVideoReady, checkVideoReady]
-  );
+  const renderCapturedImagePreview = () => {
+    if (!showCapturedImage || !capturedImage) return null;
 
-  // Replace the original capture function with our safer version
-  const capture = useCallback(() => {
-    startTransition(async () => {
-      const imageSrc = await captureImageSafely();
+    return (
+      <div className={cn('captured size-10', classNames?.previewImage)}>
+        <img
+          src={capturedImage}
+          alt="Captured"
+          className="size-10 rounded-md object-cover"
+        />
+      </div>
+    );
+  };
 
-      if (imageSrc) {
-        handleImage(imageSrc);
-        setImage(imageSrc);
-      }
-    });
-  }, [captureImageSafely, handleImage]);
+  const renderControls = () => {
+    const controls = [];
 
-  // Create a ref for the webcam container
-  const webcamContainerRef = useRef<HTMLDivElement>(null);
+    if (videoRecording?.hasInterface) {
+      controls.push(renderVideoRecordingControls());
+    }
 
-  // Create a ref for the webcam container
+    if (photoCapture?.hasInterface) {
+      controls.push(renderPhotoCaptureControls());
+    }
+
+    if (autoCapture?.hasInterface) {
+      controls.push(renderAutoCaptureControls());
+    }
+
+    return controls.filter(Boolean);
+  };
+
   return (
-    <div className="webcam-container grid overflow-hidden rounded-md bg-black">
-      <div className="webcam relative p-2">
-        <div ref={webcamContainerRef} className="relative">
-          <Webcam
+    <div
+      className={cn(
+        'webcam-container overflow-hidden rounded-md bg-black',
+        classNames?.container
+      )}
+    >
+      <div className={cn('webcam relative p-2', classNames?.webcam)}>
+        <div className="relative">
+          <WebcamCore
             audio={false}
-            className={cn('background-transparent h-auto w-full rounded-md')}
-            mirrored={type === 'selfie'}
+            className="background-transparent h-auto w-full rounded-md"
+            mirrored={defaultCamera === 'front'}
             onUserMedia={handleUserMedia}
             ref={webcamRef}
             screenshotFormat="image/jpeg"
             screenshotQuality={1}
             videoConstraints={{
               facingMode,
-              width: 1080,
-              height: 1080,
+              width: { ideal: 1920, min: 1280 },
+              height: { ideal: 1920, min: 1280 },
+              frameRate: { ideal: 30, min: 15 },
+              aspectRatio: 1.0,
             }}
           />
-          {placeholder && isVideoReady && (
+
+          {placeholder && isWebcamReady && (
             <div
               className={cn('absolute z-[3]', classNames?.placeholder)}
               style={{
                 position: 'absolute',
-                top: '0',
-                left: '0',
-                width: `${webcamRef.current?.video?.clientWidth || 0}px`,
-                height: `${webcamRef.current?.video?.clientHeight || 0}px`,
-                pointerEvents: 'auto', // Enable pointer events on the overlay
+                top: 0,
+                left: 0,
+                width: webcamRef.current?.video?.clientWidth || 0,
+                height: webcamRef.current?.video?.clientHeight || 0,
+                pointerEvents: 'auto',
               }}
             >
-              {React.cloneElement(placeholder as React.ReactElement, {
-                videoDimensions,
-              })}
+              {React.cloneElement(placeholder, { videoDimensions })}
             </div>
           )}
         </div>
       </div>
-      <div className="actions grid grid-cols-3 items-center justify-center p-2 pt-0">
-        <div className="captured size-10">
-          <Dialog.Dialog>
-            <Dialog.DialogTrigger>
-              <Avatar.Avatar className="rounded-md">
-                <Avatar.AvatarImage
-                  className="rounded-md object-cover"
-                  src={image || ''}
-                />
-                <Avatar.AvatarFallback className="rounded-md bg-white/10" />
-              </Avatar.Avatar>
-            </Dialog.DialogTrigger>
-            <Dialog.DialogContent className="w-max justify-center">
-              <img
-                alt={languageData['Webcam.CapturedPhoto']}
-                className="rounded-md"
-                src={image || ''}
-              />
-            </Dialog.DialogContent>
-          </Dialog.Dialog>
-        </div>
-        <div className="capture flex justify-center">
-          <Button
-            className="size-16 rounded-full border-4 border-white bg-white/10 p-0 text-white transition-all hover:bg-white hover:ring-4"
-            disabled={isPending || !isVideoReady}
-            onClick={capture}
-          >
-            <span className="sr-only">{languageData['Webcam.Capture']}</span>
-          </Button>
-        </div>
-        <div className="switch flex justify-end">
-          {allowCameraSwitch ? (
-            <Button
-              className="size-8 rounded-full bg-white/10 p-0 text-white"
-              onClick={() => {
-                setFacingMode((prev) =>
-                  prev === 'user' ? 'environment' : 'user'
-                );
-                // Reset video ready state when switching cameras
-                setIsVideoReady(false);
-              }}
-              variant="ghost"
-            >
-              <RefreshCw className="size-4" />
-              <span className="sr-only">
-                {languageData['Webcam.SwitchCamera']}
-              </span>
-            </Button>
-          ) : null}
+
+      <div
+        className={cn(
+          'actions flex items-center justify-between p-2 pt-0',
+          classNames?.controls
+        )}
+      >
+        {renderCapturedImagePreview()}
+
+        <div className="flex items-center space-x-4">
+          {renderControls()}
+          {renderCameraSwitchButton()}
         </div>
       </div>
     </div>
