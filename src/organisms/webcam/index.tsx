@@ -514,7 +514,10 @@ export function Webcam(props: WebcamProps) {
     if (!videoRecording?.hasInterface) return null;
 
     return (
-      <div className="flex flex-col items-center space-y-2">
+      <div
+        className="flex flex-col items-center space-y-2"
+        key="video-recording-controls"
+      >
         {isRecording ? (
           <>
             <Button
@@ -549,6 +552,7 @@ export function Webcam(props: WebcamProps) {
 
     return (
       <Button
+        key="photo-capture-controls"
         className="size-12 rounded-full border-2 border-white bg-white/10 p-0 text-white transition-all hover:bg-white hover:ring-4"
         disabled={isPending || !isWebcamReady}
         onClick={handleCapturePhoto}
@@ -563,7 +567,10 @@ export function Webcam(props: WebcamProps) {
     if (!autoCapture?.hasInterface) return null;
 
     return (
-      <div className="flex flex-col items-center space-y-2">
+      <div
+        className="flex flex-col items-center space-y-2"
+        key="auto-capture-controls"
+      >
         {isAutoCapturing ? (
           <>
             <Button
@@ -598,6 +605,7 @@ export function Webcam(props: WebcamProps) {
 
     return (
       <Button
+        key="camera-switch-button"
         className="size-8 rounded-full bg-white/10 p-0 text-white"
         onClick={switchCamera}
         variant="ghost"
