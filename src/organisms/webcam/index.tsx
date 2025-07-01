@@ -392,6 +392,18 @@ export function Webcam(props: WebcamProps) {
     stopAutoCapture();
   }, [facingMode, stopAutoCapture]);
 
+  // Add device detection for better browser compatibility
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile device on component mount
+  useEffect(() => {
+    const checkIsMobile = () =>
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
+    setIsMobile(checkIsMobile());
+  }, []);
+
   // Video Readiness Check
   const checkVideoReady = useCallback(() => {
     const video = webcamRef.current?.video;
@@ -441,7 +453,7 @@ export function Webcam(props: WebcamProps) {
             'Failed to initialize camera after maximum retries'
           );
 
-          // Force reinitialize camera
+          // Try with default constraints as a fallback
           const currentFacingMode = facingMode;
           setFacingMode('user');
           setTimeout(() => setFacingMode(currentFacingMode), 100);
@@ -462,6 +474,17 @@ export function Webcam(props: WebcamProps) {
     facingMode,
     callbacks,
   ]);
+
+  // Handle camera initialization errors
+  const handleUserMediaError = useCallback(
+    (error: string | DOMException) => {
+      callbacks?.onError?.(
+        typeof error === 'string' ? error : `Camera error: ${error.message}`
+      );
+      setIsWebcamReady(false);
+    },
+    [callbacks]
+  );
 
   // Manual capture function
   const handleCapturePhoto = useCallback(() => {
@@ -660,17 +683,18 @@ export function Webcam(props: WebcamProps) {
           <WebcamCore
             audio={false}
             className="background-transparent h-auto w-full rounded-md"
-            mirrored={defaultCamera === 'front'}
+            mirrored={facingMode === 'user'}
             onUserMedia={handleUserMedia}
+            onUserMediaError={handleUserMediaError}
             ref={webcamRef}
             screenshotFormat="image/jpeg"
             screenshotQuality={1}
             videoConstraints={{
               facingMode,
-              width: { ideal: 1920, min: 1280 },
-              height: { ideal: 1920, min: 1280 },
+              width: { ideal: 1920, min: 640 },
+              height: { ideal: 1920, min: 640 },
               frameRate: { ideal: 30, min: 15 },
-              aspectRatio: 1.0,
+              aspectRatio: isMobile ? 1.0 : 4 / 3,
             }}
           />
 
