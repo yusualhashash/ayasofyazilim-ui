@@ -33,7 +33,9 @@ export const CornerHandle = memo<CornerHandleProps>(
           touchAction: 'none',
         }}
         onPointerDown={(e) => onDragStart(cornerKey, e)}
-      />
+      >
+        <span className="sr-only">{`Drag ${cornerKey} corner`}</span>
+      </div>
     );
   }
 );
