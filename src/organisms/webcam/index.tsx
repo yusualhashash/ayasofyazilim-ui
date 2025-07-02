@@ -116,6 +116,8 @@ export interface WebcamProps {
   webcamRef?: React.RefObject<WebcamCore>;
   videoCheckInterval?: number; // default: 500ms
   maxRetryCount?: number; // default: 10
+  interfaceLocation?: 'static' | 'absolute'; // Location of controls (default: 'bottom')
+  showBorder?: boolean; // Show border around webcam area (default: true)
 }
 
 export type WebcamCaptureProps = WebcamProps;
@@ -140,6 +142,7 @@ export function Webcam(props: WebcamProps) {
     webcamRef: externalWebcamRef,
     videoCheckInterval = 500,
     maxRetryCount = 10,
+    showBorder = true,
   } = props;
 
   // Validation: At least one feature must be enabled
@@ -668,11 +671,17 @@ export function Webcam(props: WebcamProps) {
   return (
     <div
       className={cn(
-        'webcam-container overflow-hidden rounded-md bg-black',
+        'webcam-container overflow-hidden rounded-md bg-black relative',
         classNames?.container
       )}
     >
-      <div className={cn('webcam relative p-2', classNames?.webcam)}>
+      <div
+        className={cn(
+          'webcam relative',
+          showBorder && 'p-2',
+          classNames?.webcam
+        )}
+      >
         <div className="relative">
           <WebcamCore
             audio={false}
@@ -694,15 +703,10 @@ export function Webcam(props: WebcamProps) {
 
           {placeholder && isWebcamReady && (
             <div
-              className={cn('absolute z-[3]', classNames?.placeholder)}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: webcamRef.current?.video?.clientWidth || 0,
-                height: webcamRef.current?.video?.clientHeight || 0,
-                pointerEvents: 'auto',
-              }}
+              className={cn(
+                'absolute w-full h-full inset-0 z-[3]',
+                classNames?.placeholder
+              )}
             >
               {placeholder}
             </div>
@@ -713,7 +717,10 @@ export function Webcam(props: WebcamProps) {
       <div
         className={cn(
           'actions flex items-center justify-between p-2 pt-0',
-          classNames?.controls
+          classNames?.controls,
+          props.interfaceLocation === 'absolute'
+            ? 'absolute bottom-0 left-0 p-4 z-10'
+            : ''
         )}
       >
         {renderCapturedImagePreview()}

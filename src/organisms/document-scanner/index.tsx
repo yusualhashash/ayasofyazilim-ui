@@ -64,6 +64,10 @@ export function DocumentScanner({
   // Custom components
   customControls,
   customOverlay,
+
+  // Webcam interface
+  interfaceLocation = 'absolute',
+  showBorder = true,
 }: DocumentScannerProps) {
   const [webCamKey, setWebCamKey] = useState(() => Date.now().toString());
   const [status, setStatus] = useState<ScannerStatus>('scanning');
@@ -238,6 +242,8 @@ export function DocumentScanner({
         autoCapture={webcamAutoCapture}
         allowCameraSwitch={allowCameraSwitch}
         placeholder={webcamPlaceholder}
+        interfaceLocation={interfaceLocation}
+        showBorder={showBorder}
       />
       {customControls && <div className="mt-4">{customControls}</div>}
     </div>

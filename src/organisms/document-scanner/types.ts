@@ -1,4 +1,5 @@
 import { ReactNode, PointerEvent } from 'react';
+import { WebcamProps } from '../webcam';
 
 // Core types
 export interface DocumentCorners {
@@ -102,6 +103,10 @@ export interface DocumentScannerProps {
   // Custom components
   customControls?: ReactNode;
   customOverlay?: ReactNode;
+
+  // Webcam interface
+  interfaceLocation: WebcamProps['interfaceLocation'];
+  showBorder: WebcamProps['showBorder'];
 }
 
 // Corner adjustment types
