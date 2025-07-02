@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { perspectiveCorrection } from '../utils/perspective-correction';
-import { DocumentCorners } from '../types';
+import { DocumentCorners, Dimensions } from '../types';
 
 export interface UsePerspectiveCropProps {
-  videoDimensions: { width: number; height: number };
+  videoDimensions: Dimensions;
   imageQuality: number;
   handleImageCrop: (croppedImageBase64: string) => void;
   handleError: (error: string) => void;
