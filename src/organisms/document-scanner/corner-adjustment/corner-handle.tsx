@@ -17,6 +17,8 @@ export const CornerHandle = memo<CornerHandleProps>(
 
     return (
       <div
+        role="button"
+        tabIndex={0}
         className={cn(
           'block border rounded-full min-w-[20px] min-h-[20px] absolute cursor-grab active:cursor-grabbing select-none',
           isDragging ? 'bg-blue-500/80 scale-125' : cornerColor,
