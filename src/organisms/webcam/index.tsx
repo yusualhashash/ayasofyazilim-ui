@@ -170,11 +170,6 @@ export function Webcam(props: WebcamProps) {
     defaultCamera === 'front' ? 'user' : 'environment'
   );
   const [isWebcamReady, setIsWebcamReady] = useState(false);
-  const [videoDimensions, setVideoDimensions] = useState<VideoDimensions>({
-    width: 0,
-    height: 0,
-  });
-
   // Video Recording State
   const [isRecording, setIsRecording] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
@@ -417,7 +412,6 @@ export function Webcam(props: WebcamProps) {
         width: video.videoWidth,
         height: video.videoHeight,
       };
-      setVideoDimensions(newDimensions);
       callbacks?.onWebcamReady?.(newDimensions);
     }
 
@@ -710,7 +704,7 @@ export function Webcam(props: WebcamProps) {
                 pointerEvents: 'auto',
               }}
             >
-              {React.cloneElement(placeholder, { videoDimensions })}
+              {placeholder}
             </div>
           )}
         </div>
