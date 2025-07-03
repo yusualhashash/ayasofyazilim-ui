@@ -78,7 +78,7 @@ export interface WebcamProps {
   placeholder?: React.ReactElement; // Overlay that covers camera area
   showCapturedImage?: boolean; // Show last captured image preview
   capturedImage?: string | null; // Current captured image for preview
-
+  forceHideInterface?: boolean; // Force hide interface controls (useful for manual capture mode)
   // Feedback Functions
   callbacks?: WebcamCallbacks;
 
@@ -142,7 +142,9 @@ export function Webcam(props: WebcamProps) {
     webcamRef: externalWebcamRef,
     videoCheckInterval = 500,
     maxRetryCount = 10,
-    showBorder = true,
+    showBorder = false,
+    forceHideInterface = false,
+    interfaceLocation = 'static',
   } = props;
 
   // Validation: At least one feature must be enabled
@@ -531,7 +533,7 @@ export function Webcam(props: WebcamProps) {
 
   // Render functions
   const renderVideoRecordingControls = () => {
-    if (!videoRecording?.hasInterface) return null;
+    if (!videoRecording?.hasInterface || forceHideInterface) return null;
 
     return (
       <div
@@ -568,7 +570,7 @@ export function Webcam(props: WebcamProps) {
   };
 
   const renderPhotoCaptureControls = () => {
-    if (!photoCapture?.hasInterface) return null;
+    if (!photoCapture?.hasInterface || forceHideInterface) return null;
 
     return (
       <Button
@@ -584,7 +586,7 @@ export function Webcam(props: WebcamProps) {
   };
 
   const renderAutoCaptureControls = () => {
-    if (!autoCapture?.hasInterface) return null;
+    if (!autoCapture?.hasInterface || forceHideInterface) return null;
 
     return (
       <div
@@ -621,7 +623,7 @@ export function Webcam(props: WebcamProps) {
   };
 
   const renderCameraSwitchButton = () => {
-    if (!allowCameraSwitch) return null;
+    if (!allowCameraSwitch || forceHideInterface) return null;
 
     return (
       <Button
@@ -653,15 +655,15 @@ export function Webcam(props: WebcamProps) {
   const renderControls = () => {
     const controls = [];
 
-    if (videoRecording?.hasInterface) {
+    if (videoRecording?.hasInterface || forceHideInterface) {
       controls.push(renderVideoRecordingControls());
     }
 
-    if (photoCapture?.hasInterface) {
+    if (photoCapture?.hasInterface || forceHideInterface) {
       controls.push(renderPhotoCaptureControls());
     }
 
-    if (autoCapture?.hasInterface) {
+    if (autoCapture?.hasInterface || forceHideInterface) {
       controls.push(renderAutoCaptureControls());
     }
 
@@ -718,7 +720,7 @@ export function Webcam(props: WebcamProps) {
         className={cn(
           'actions flex items-center justify-between p-2 pt-0',
           classNames?.controls,
-          props.interfaceLocation === 'absolute'
+          interfaceLocation === 'absolute'
             ? 'absolute bottom-0 left-0 p-4 z-10'
             : ''
         )}

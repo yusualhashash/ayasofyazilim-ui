@@ -55,7 +55,7 @@ export function DocumentScanner({
 
   // Magnifier settings
   showMagnifier = true,
-  magnifierSize = 100,
+  magnifierSize = 60,
   zoomLevel = 2,
 
   // Advanced settings
@@ -226,6 +226,10 @@ export function DocumentScanner({
     zoomLevel,
     onStatusChange,
   ]);
+
+  const isInCornerAdjustmentMode =
+    (detectedCorners && capturedImage && allowCornerAdjustment) || false;
+
   return (
     <div
       className={cn(
@@ -244,6 +248,7 @@ export function DocumentScanner({
         placeholder={webcamPlaceholder}
         interfaceLocation={interfaceLocation}
         showBorder={showBorder}
+        forceHideInterface={isInCornerAdjustmentMode}
       />
       {customControls && <div className="mt-4">{customControls}</div>}
     </div>

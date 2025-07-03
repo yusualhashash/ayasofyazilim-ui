@@ -70,7 +70,6 @@ export const CornerAdjustment = memo<CornerAdjustmentProps>(
           className="h-auto w-full object-contain absolute top-0 left-0 opacity-50"
           draggable={false}
         />
-
         {/* Clipped image */}
         <img
           src={capturedImage}
@@ -108,14 +107,16 @@ export const CornerAdjustment = memo<CornerAdjustmentProps>(
         ))}
 
         {/* Action buttons */}
-        <ActionButtons
-          allowCrop={allowCrop}
-          allowRetry={allowRetry}
-          cropButtonText={cropButtonText}
-          retryButtonText={retryButtonText}
-          onCrop={onCrop}
-          onRetry={onRetry}
-        />
+        {!dragState.isDragging && (
+          <ActionButtons
+            allowCrop={allowCrop}
+            allowRetry={allowRetry}
+            cropButtonText={cropButtonText}
+            retryButtonText={retryButtonText}
+            onCrop={onCrop}
+            onRetry={onRetry}
+          />
+        )}
       </div>
     );
   }

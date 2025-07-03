@@ -22,13 +22,14 @@ export function useCornerDrag(
         ?.getBoundingClientRect();
 
       if (containerRect) {
-        setDragState({
+        const newDragState = {
           isDragging: cornerKey,
           offset: {
             x: event.clientX - rect.left - rect.width / 2,
             y: event.clientY - rect.top - rect.height / 2,
           },
-        });
+        };
+        setDragState(newDragState);
       }
     },
     []
@@ -36,10 +37,12 @@ export function useCornerDrag(
 
   const handleCornerDrag = useCallback(
     (event: PointerEvent) => {
-      const containerRect = event.currentTarget.getBoundingClientRect();
-      if (!dragState.isDragging || !detectedCorners) return;
+      if (!dragState.isDragging || !detectedCorners) {
+        return;
+      }
 
       event.preventDefault();
+      const containerRect = event.currentTarget.getBoundingClientRect();
 
       // Calculate new position relative to container
       const newX =
