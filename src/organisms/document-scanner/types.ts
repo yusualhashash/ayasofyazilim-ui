@@ -105,8 +105,8 @@ export interface DocumentScannerProps {
   customOverlay?: ReactNode;
 
   // Webcam interface
-  interfaceLocation: WebcamProps['interfaceLocation'];
-  showBorder: WebcamProps['showBorder'];
+  interfaceLocation?: WebcamProps['interfaceLocation'];
+  showBorder?: WebcamProps['showBorder'];
 }
 
 // Corner adjustment types
