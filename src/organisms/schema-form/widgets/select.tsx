@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/select';
 import { fieldOptionsByDependency } from '../utils/dependency';
 import { cn } from '@/lib/utils';
+import { beautifyLabel } from '../custom/label';
 
 export const CustomSelect = (props: WidgetProps) => {
   const {
@@ -55,7 +56,7 @@ export const CustomSelect = (props: WidgetProps) => {
           placeholder={
             _value ||
             props?.uiSchema?.['ui:placeholder'] ||
-            `Please select an ${label.toLocaleLowerCase()}`
+            `Please select an ${beautifyLabel(label)}`
           }
         />
       </SelectTrigger>
