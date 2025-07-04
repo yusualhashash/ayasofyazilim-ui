@@ -1,16 +1,19 @@
 import { useCallback, useMemo, useState } from 'react';
+import { Loader } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Webcam } from '../webcam';
-import { AdjustableCorners } from './adjustable-corners';
 import {
   DEFAULT_CAPTURE_INTERVAL,
   DEFAULT_IMAGE_QUALITY,
   DEFAULT_MAX_DOCUMENT_SIZE,
   DEFAULT_MIN_DOCUMENT_SIZE,
-  DEFAULT_VIDEO_DIMENSIONS,
 } from './consts';
-import { scanDocument } from './lib';
-import { DocumentCorners, DocumentScannerProps } from './types';
+import { CornerAdjustment } from './corner-adjustment';
+import { useDocumentCapture } from './hooks/use-document-capture';
+import { useDocumentScanner } from './hooks/use-document-scanner';
+import { usePerspectiveCrop } from './hooks/use-perspective-crop';
+import { DocumentScannerProps, ScannerStatus } from './types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function DocumentScanner({
   // Core callbacks
@@ -32,28 +35,16 @@ export function DocumentScanner({
   allowRetry = true,
   allowCornerAdjustment = true,
   allowCameraSwitch = true,
-  // UI visibility
-  showMagnifier = true,
-  showCornersLabels = true,
-  showBorders = true,
+  showWebcamControls = false,
 
-  // Text customization
+  // UI Text customization
   cropButtonText = 'Crop',
   retryButtonText = 'Scan Again',
-  // Accessibility and UX
-  // Corner adjustment
-  cornerSmoothingFactor = 0.3,
-  proximityThreshold = 80,
-  cornerTouchAreaSize = 70,
-
-  // Magnifier settings
-  magnifierSize = 180,
-  magnifierZoom = 2.5,
-  magnifierColor = 'border-blue-500',
 
   // Visual styling
-  borderColor = 'border-green-500',
   cornerColor = 'bg-white/80',
+  cornerTouchAreaSize = 20,
+
   // Detection settings
   minDocumentSize = DEFAULT_MIN_DOCUMENT_SIZE,
   maxDocumentSize = DEFAULT_MAX_DOCUMENT_SIZE,
@@ -61,117 +52,109 @@ export function DocumentScanner({
 
   // Image processing
   imageQuality = DEFAULT_IMAGE_QUALITY,
+
+  // Magnifier settings
+  showMagnifier = true,
+  magnifierSize = 60,
+  zoomLevel = 2,
+
   // Advanced settings
   customDetectionAlgorithm,
 
+  // Custom components
   customControls,
   customOverlay,
+
+  // Webcam interface
+  interfaceLocation = 'absolute',
+  showBorder = true,
 }: DocumentScannerProps) {
-  // Webcam ref for programmatic control
-  // Available methods: retryAutoCapture(), startAutoCapture(), stopAutoCapture()
+  const [webCamKey, setWebCamKey] = useState(() => Date.now().toString());
+  const [status, setStatus] = useState<ScannerStatus>('scanning');
 
-  const [videoDimensions, setVideoDimensions] = useState(
-    DEFAULT_VIDEO_DIMENSIONS
-  );
-  const [detectedCorners, setDetectedCorners] = useState<
-    DocumentCorners | undefined
-  >();
-  const [capturedImage, setCapturedImage] = useState<string | null>(null);
-
-  const handleVideoReady = useCallback(
-    (dimensions: { width: number; height: number }) => {
-      setVideoDimensions(dimensions);
-      onStatusChange?.('scanning');
-      onCameraReady?.(dimensions);
-    },
-    [onStatusChange, onCameraReady]
-  );
-
-  const handleCornersChange = (newCorners: DocumentCorners) => {
-    setDetectedCorners(newCorners);
-    onCornersChanged?.(newCorners);
-  };
-
-  const handleError = (error: string) => {
-    onStatusChange?.('error');
-    onError?.(error);
-  };
-
-  const handleImageCrop = (croppedImageBase64: string) => {
-    onStatusChange?.('cropped');
-    onDocumentCropped?.(croppedImageBase64);
-  };
-
-  const handleCapture = useCallback(
-    (capturedImageBase64: string | null) => {
-      if (!capturedImageBase64) return;
-
-      setCapturedImage(capturedImageBase64);
-      onImageCapture?.(capturedImageBase64);
-      onScanAttempt?.();
-
-      // Use custom detection algorithm if provided
-      if (customDetectionAlgorithm) {
-        customDetectionAlgorithm(capturedImageBase64, videoDimensions)
-          .then((corners) => {
-            if (corners) {
-              setDetectedCorners(corners);
-              onStatusChange?.('detected');
-              onDocumentDetected?.(corners, capturedImageBase64);
-            } else {
-              handleError('Document not detected by custom algorithm');
-            }
-          })
-          .catch((error) => {
-            const errorMessage = error?.message || 'Custom detection failed';
-            handleError(errorMessage);
-          });
-      } else {
-        scanDocument(
-          capturedImageBase64,
-          videoDimensions,
-          (corners) => {
-            setDetectedCorners(corners);
-            onStatusChange?.('detected');
-            onDocumentDetected?.(corners, capturedImageBase64);
-          },
-          (error) => {
-            handleError(error);
-          },
-          {
-            minDocumentSize,
-            maxDocumentSize,
-            detectionConfidence,
-          }
-        );
-      }
-    },
-    [
-      onImageCapture,
-      onScanAttempt,
-      customDetectionAlgorithm,
-      videoDimensions,
-      onStatusChange,
+  // Combine callbacks for hooks
+  const callbacks = useMemo(
+    () => ({
+      onDocumentCropped,
       onDocumentDetected,
-      handleError,
-      minDocumentSize,
-      maxDocumentSize,
-      detectionConfidence,
+      onCornersChanged,
+      onError,
+      onStatusChange: (newStatus: ScannerStatus) => {
+        setStatus(newStatus);
+        onStatusChange?.(newStatus);
+      },
+      onCameraReady,
+      onScanAttempt,
+      onImageCapture,
+    }),
+    [
+      onDocumentCropped,
+      onDocumentDetected,
+      onCornersChanged,
+      onError,
+      onStatusChange,
+      onCameraReady,
+      onScanAttempt,
+      onImageCapture,
     ]
   );
 
-  const handleRetry = useCallback(() => {
-    setDetectedCorners(undefined);
-    setCapturedImage(null);
-    onStatusChange?.('scanning');
-  }, []);
+  // Detection settings
+  const detectionSettings = useMemo(
+    () => ({
+      minDocumentSize,
+      maxDocumentSize,
+      detectionConfidence,
+    }),
+    [minDocumentSize, maxDocumentSize, detectionConfidence]
+  );
 
+  // Main document scanner state
+  const {
+    videoDimensions,
+    detectedCorners,
+    capturedImage,
+    handleVideoReady,
+    handleCornersChange,
+    handleError,
+    handleImageCrop,
+    handleRetry: originalHandleRetry,
+    setCapturedImage,
+    setDetectedCorners,
+  } = useDocumentScanner(callbacks);
+
+  // Enhanced retry handler that resets webcam
+  const handleRetry = useCallback(() => {
+    originalHandleRetry();
+    setWebCamKey(Date.now().toString());
+  }, [originalHandleRetry]);
+
+  // Document capture logic
+  const handleCapture = useDocumentCapture({
+    videoDimensions,
+    callbacks,
+    customDetectionAlgorithm,
+    detectionSettings,
+    setCapturedImage,
+    setDetectedCorners,
+    handleError,
+  });
+
+  // Perspective cropping logic
+  const handleCrop = usePerspectiveCrop({
+    videoDimensions,
+    imageQuality,
+    handleImageCrop,
+    handleError,
+  });
+
+  // Webcam configuration
   const webcamCallbacks = useMemo(
     () => ({
       onWebcamReady: handleVideoReady,
       onAutoPhotoCaptured: handleCapture,
     }),
-    [handleVideoReady, handleCapture, onStatusChange]
+    [handleVideoReady, handleCapture]
   );
 
   const webcamClassNames = useMemo(
@@ -184,65 +167,68 @@ export function DocumentScanner({
   const webcamAutoCapture = useMemo(
     () => ({
       captureInterval,
-      hasInterface: true,
+      hasInterface: showWebcamControls,
       startOnReady: true,
       quality: imageQuality,
       stopOnCapture: true,
     }),
-    [captureInterval, imageQuality]
+    [captureInterval, imageQuality, showWebcamControls]
   );
 
   const webcamPlaceholder = useMemo(() => {
-    if (detectedCorners && allowCornerAdjustment) {
+    if (status === 'scanning') {
       return (
-        <AdjustableCorners
-          corners={detectedCorners}
-          onCornersChange={handleCornersChange}
-          onImageCrop={handleImageCrop}
-          onRetry={handleRetry}
+        <Skeleton className="w-full h-full bg-white/50 flex items-center justify-center">
+          <Loader className="size-4 animate-spin" />
+        </Skeleton>
+      );
+    }
+    if (detectedCorners && capturedImage && allowCornerAdjustment) {
+      return (
+        <CornerAdjustment
+          capturedImage={capturedImage}
+          detectedCorners={detectedCorners}
           videoDimensions={videoDimensions}
-          image={capturedImage || undefined}
+          onCornersChange={handleCornersChange}
+          onCrop={() => handleCrop(capturedImage, detectedCorners)}
+          onRetry={handleRetry}
+          cornerColor={cornerColor}
+          cornerTouchAreaSize={cornerTouchAreaSize}
           allowCrop={allowCrop}
           allowRetry={allowRetry}
-          allowCornerAdjustment={allowCornerAdjustment}
-          showCornersLabels={showCornersLabels}
-          showBorders={showBorders}
           cropButtonText={cropButtonText}
           retryButtonText={retryButtonText}
-          cornerSmoothingFactor={cornerSmoothingFactor}
-          proximityThreshold={proximityThreshold}
-          cornerTouchAreaSize={cornerTouchAreaSize}
-          borderColor={borderColor}
-          customControls={customControls}
+          showMagnifier={showMagnifier}
+          magnifierSize={magnifierSize}
+          zoomLevel={zoomLevel}
         />
       );
     }
+
     return undefined;
   }, [
+    status,
     detectedCorners,
     allowCornerAdjustment,
-    handleCornersChange,
-    handleImageCrop,
-    handleRetry,
     videoDimensions,
     capturedImage,
+    cornerTouchAreaSize,
+    cornerColor,
+    handleCornersChange,
+    handleCrop,
+    handleRetry,
     allowCrop,
     allowRetry,
-    showMagnifier,
-    showCornersLabels,
-    showBorders,
     cropButtonText,
     retryButtonText,
-    cornerSmoothingFactor,
-    proximityThreshold,
+    showMagnifier,
     magnifierSize,
-    magnifierZoom,
-    cornerTouchAreaSize,
-    borderColor,
-    cornerColor,
-    magnifierColor,
-    customControls,
+    zoomLevel,
+    onStatusChange,
   ]);
+
+  const isInCornerAdjustmentMode =
+    (detectedCorners && capturedImage && allowCornerAdjustment) || false;
 
   return (
     <div
@@ -253,12 +239,16 @@ export function DocumentScanner({
     >
       {customOverlay}
       <Webcam
+        key={webCamKey}
         classNames={webcamClassNames}
         callbacks={webcamCallbacks}
         defaultCamera="back"
         autoCapture={webcamAutoCapture}
         allowCameraSwitch={allowCameraSwitch}
         placeholder={webcamPlaceholder}
+        interfaceLocation={interfaceLocation}
+        showBorder={showBorder}
+        forceHideInterface={isInCornerAdjustmentMode}
       />
       {customControls && <div className="mt-4">{customControls}</div>}
     </div>

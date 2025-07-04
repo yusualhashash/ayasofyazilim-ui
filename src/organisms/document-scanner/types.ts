@@ -1,89 +1,85 @@
-import { ReactNode, ComponentType } from 'react';
+import { ReactNode, PointerEvent } from 'react';
+import { WebcamProps } from '../webcam';
 
-export interface Corner {
+// Core types
+export interface DocumentCorners {
+  topLeftCorner: { x: number; y: number };
+  topRightCorner: { x: number; y: number };
+  bottomRightCorner: { x: number; y: number };
+  bottomLeftCorner: { x: number; y: number };
+}
+
+export interface Dimensions {
+  width: number;
+  height: number;
+}
+
+export interface Position {
   x: number;
   y: number;
 }
 
-export interface DocumentCorners {
-  topLeftCorner: Corner;
-  topRightCorner: Corner;
-  bottomRightCorner: Corner;
-  bottomLeftCorner: Corner;
+// Callback types
+export interface DocumentScannerCallbacks {
+  onDocumentCropped?: (croppedImage: string) => void;
+  onDocumentDetected?: (
+    corners: DocumentCorners,
+    capturedImage: string
+  ) => void;
+  onCornersChanged?: (corners: DocumentCorners) => void;
+  onError?: (error: string) => void;
+  onStatusChange?: (status: ScannerStatus) => void;
+  onCameraReady?: (dimensions: Dimensions) => void;
+  onScanAttempt?: () => void;
+  onImageCapture?: (image: string) => void;
 }
 
-export type ScanningStatus =
+export type ScannerStatus =
   | 'scanning'
   | 'detected'
   | 'cropped'
-  | 'idle'
-  | 'error';
+  | 'error'
+  | 'processing';
 
+export interface DetectionSettings {
+  minDocumentSize: number;
+  maxDocumentSize: number;
+  detectionConfidence: number;
+}
+
+// Main component props
 export interface DocumentScannerProps {
   // Core callbacks
-  onDocumentCropped?: (croppedImageBase64: string) => void;
-  onDocumentDetected?: (corners: DocumentCorners, image: string) => void;
+  onDocumentCropped?: (croppedImage: string) => void;
+  onDocumentDetected?: (
+    corners: DocumentCorners,
+    capturedImage: string
+  ) => void;
   onCornersChanged?: (corners: DocumentCorners) => void;
   onError?: (error: string) => void;
-  onStatusChange?: (status: ScanningStatus) => void;
-  onCameraReady?: (dimensions: { width: number; height: number }) => void;
+  onStatusChange?: (status: ScannerStatus) => void;
+  onCameraReady?: (dimensions: Dimensions) => void;
   onScanAttempt?: () => void;
-  onImageCapture?: (imageBase64: string) => void;
-  onAutoCaptureStart?: () => void;
-  onAutoCaptureStop?: () => void;
+  onImageCapture?: (image: string) => void;
 
   // Basic configuration
   className?: string;
-  //   autoScan?: boolean;
   captureInterval?: number;
-  showPreview?: boolean;
 
   // Feature toggles
   allowCrop?: boolean;
+  allowRetry?: boolean;
   allowCornerAdjustment?: boolean;
   allowCameraSwitch?: boolean;
-  allowRetry?: boolean;
-  allowDownload?: boolean;
-  allowManualCapture?: boolean;
+  showWebcamControls?: boolean;
 
-  // UI visibility
-  showMagnifier?: boolean;
-  showCornersLabels?: boolean;
-  showBorders?: boolean;
-  showStatusMessages?: boolean;
-  showControls?: boolean;
-  showCaptureButton?: boolean;
-
-  // Text customization
+  // UI Text customization
   cropButtonText?: string;
   retryButtonText?: string;
-  downloadButtonText?: string;
-  captureButtonText?: string;
-  confirmButtonText?: string;
-  scanningMessage?: string;
-  detectedMessage?: string;
-  croppedMessage?: string;
-  errorMessage?: string;
-
-  // Accessibility and UX
-  enableSoundFeedback?: boolean;
-  preventBodyScroll?: boolean;
-
-  // Corner adjustment
-  cornerSmoothingFactor?: number;
-  proximityThreshold?: number;
-  cornerTouchAreaSize?: number;
-
-  // Magnifier settings
-  magnifierSize?: number;
-  magnifierZoom?: number;
-  magnifierColor?: string;
 
   // Visual styling
-  borderColor?: string;
   cornerColor?: string;
-  overlayOpacity?: number;
-  cornerLabelColor?: string;
+  cornerTouchAreaSize?: number;
 
   // Detection settings
   minDocumentSize?: number;
@@ -92,28 +88,118 @@ export interface DocumentScannerProps {
 
   // Image processing
   imageQuality?: number;
-  imageFormat?: 'jpeg' | 'png' | 'webp';
-  outputWidth?: number;
-  outputHeight?: number;
+
+  // Magnifier settings
+  showMagnifier?: boolean;
+  magnifierSize?: number;
+  zoomLevel?: number;
 
   // Advanced settings
-  enableDebugMode?: boolean;
-  debugOverlayColor?: string;
   customDetectionAlgorithm?: (
-    imageBase64: string,
-    dimensions: { width: number; height: number }
+    image: string,
+    dimensions: Dimensions
   ) => Promise<DocumentCorners | null>;
-
-  // Webcam configuration
-  webcamFacingMode?: 'user' | 'environment';
-  webcamResolution?: { width: number; height: number };
 
   // Custom components
   customControls?: ReactNode;
   customOverlay?: ReactNode;
-  customErrorComponent?: ComponentType<{
-    error: string;
-    onRetry: () => void;
-  }>;
-  customLoadingComponent?: ComponentType;
+
+  // Webcam interface
+  interfaceLocation?: WebcamProps['interfaceLocation'];
+  showBorder?: WebcamProps['showBorder'];
+}
+
+// Corner adjustment types
+export interface CornerAdjustmentProps {
+  capturedImage: string;
+  detectedCorners: DocumentCorners;
+  videoDimensions: Dimensions;
+  onCornersChange: (corners: DocumentCorners) => void;
+  onCrop: () => void;
+  onRetry: () => void;
+
+  // Styling props
+  cornerColor?: string;
+  cornerTouchAreaSize?: number;
+
+  // Feature toggles
+  allowCrop?: boolean;
+  allowRetry?: boolean;
+
+  // Text customization
+  cropButtonText?: string;
+  retryButtonText?: string;
+
+  // Magnifier settings
+  showMagnifier?: boolean;
+  magnifierSize?: number;
+  zoomLevel?: number;
+}
+
+export interface DragState {
+  isDragging: string | null;
+  offset: Position;
+}
+
+export interface CornerHandleProps {
+  cornerKey: string;
+  corner: Position;
+  videoDimensions: Dimensions;
+  isDragging: boolean;
+  cornerColor: string;
+  cornerTouchAreaSize: number;
+  onDragStart: (cornerKey: string, event: PointerEvent) => void;
+}
+
+export interface ActionButtonsProps {
+  allowCrop: boolean;
+  allowRetry: boolean;
+  cropButtonText: string;
+  retryButtonText: string;
+  onCrop: () => void;
+  onRetry: () => void;
+}
+
+export interface ZoomMagnifierProps {
+  capturedImage: string;
+  detectedCorners: DocumentCorners;
+  videoDimensions: Dimensions;
+  containerDimensions: Dimensions;
+  draggedCorner: string | null;
+  zoomLevel?: number;
+  magnifierSize?: number;
+}
+
+// Hook types
+export interface UseDocumentScannerReturn {
+  videoDimensions: Dimensions;
+  detectedCorners: DocumentCorners | undefined;
+  capturedImage: string | null;
+  handleVideoReady: (dimensions: Dimensions) => void;
+  handleCornersChange: (newCorners: DocumentCorners) => void;
+  handleError: (error: string) => void;
+  handleImageCrop: (croppedImageBase64: string) => void;
+  handleRetry: () => void;
+  setCapturedImage: (image: string | null) => void;
+  setDetectedCorners: (corners: DocumentCorners | undefined) => void;
+}
+
+export interface UseDocumentCaptureProps {
+  videoDimensions: Dimensions;
+  callbacks: DocumentScannerCallbacks;
+  customDetectionAlgorithm?: (
+    image: string,
+    dimensions: Dimensions
+  ) => Promise<DocumentCorners | null>;
+  detectionSettings: DetectionSettings;
+  setCapturedImage: (image: string | null) => void;
+  setDetectedCorners: (corners: DocumentCorners | undefined) => void;
+  handleError: (error: string) => void;
+}
+
+export interface UsePerspectiveCropProps {
+  videoDimensions: Dimensions;
+  imageQuality: number;
+  handleImageCrop: (croppedImageBase64: string) => void;
+  handleError: (error: string) => void;
 }
