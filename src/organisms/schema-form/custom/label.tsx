@@ -27,7 +27,7 @@ export function FieldLabel({
       htmlFor={id}
       className={cn('flex items-center text-slate-600', className)}
     >
-      {toTitleCaseFromSnakeCase(label)}
+      {beautifyLabel(label)}
       {required ? <Asterisk className="size-3 text-destructive mb-1" /> : null}
       {description && description.length > 0 && (
         <TooltipProvider>
@@ -43,7 +43,7 @@ export function FieldLabel({
   );
 }
 
-function toTitleCaseFromSnakeCase(input: string | undefined | null): string {
+export function beautifyLabel(input: string | undefined | null): string {
   if (!input || typeof input !== 'string') return ''; // Handle null, undefined, or non-string inputs
   return input
     .replace(/([a-z])([A-Z])/g, '$1 $2') // Handle camelCase

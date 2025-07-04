@@ -37,6 +37,7 @@ import {
   EmailInputWidget,
   PasswordInputWidget,
 } from './widgets';
+import { StringArrayItem } from './custom/string-array';
 
 /**
  * SchemaForm component that renders a form based on the provided schema and options.
@@ -60,6 +61,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       password: PasswordInputWidget,
       email: EmailInputWidget,
       phone: CustomPhoneField,
+      StringArray: StringArrayItem,
     },
     templates: {
       ArrayFieldTemplate:
