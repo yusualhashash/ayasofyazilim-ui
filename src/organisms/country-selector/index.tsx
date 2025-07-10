@@ -211,7 +211,7 @@ export const lang = {
     },
   ],
 };
-type CountryItem = {
+export type CountryItem = {
   concurrencyStamp?: string;
   creationTime?: string;
   creatorId?: string | null;
@@ -239,7 +239,7 @@ type CountrySelectorProps = {
   tooltipText?: string;
 };
 
-function CountrySelector({
+export function CountrySelector({
   searchText,
   searchEmptyValue,
   defaultValue,
@@ -365,5 +365,3 @@ const SelectedCountry = ({
     {/* </div> */}
   </div>
 );
-
-export { CountryItem, CountrySelector };
