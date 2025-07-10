@@ -1,9 +1,8 @@
-// @ts-nocheck
-
 'use client';
 
 import * as React from 'react';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -236,6 +235,7 @@ type CountrySelectorProps = {
   searchEmptyValue?: string;
   searchText?: string;
   showLabel?: boolean;
+  showFlag?: boolean;
   tooltipText?: string;
 };
 
@@ -245,6 +245,7 @@ function CountrySelector({
   defaultValue,
   menuAlign = 'end',
   showLabel = false,
+  showFlag = false,
   countries = [],
   onValueChange,
 }: CountrySelectorProps) {
@@ -271,6 +272,7 @@ function CountrySelector({
               {...countries.find(
                 (country) => country.cultureName?.toLowerCase() === value
               )}
+              showFlag={showFlag}
               showLabel={showLabel}
             />
           ) : (
@@ -278,6 +280,7 @@ function CountrySelector({
               {...countries.find(
                 (country) => country.cultureName?.toLowerCase() === defaultValue
               )}
+              showFlag={showFlag}
               showLabel={showLabel}
             />
           )}
@@ -326,24 +329,40 @@ function CountrySelector({
 
 type SelectedCountryProps = Partial<CountryItem> & {
   showLabel?: boolean;
+  showFlag?: boolean;
 };
 const SelectedCountry = ({
   displayName,
   flagIcon = '',
   direction,
   showLabel = true,
+  showFlag,
 }: SelectedCountryProps) => (
   <div
-    className={`${direction === 'rtl' ?? 'flex-row-reverse'} rtl:flex-row-reverse flex w-full justify-between gap-2 overflow-hidden items-center`}
+    className={`${direction === 'rtl' && 'flex-row-reverse'} rtl:flex-row-reverse flex w-full justify-between gap-2 overflow-hidden items-center`}
   >
     {showLabel && <span className="text-xs text-black">{displayName}</span>}
-    <div className="w-6 h-6">
-      <img
-        className="w-6 h-6 object-cover rounded-full"
-        src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/1x1/${flagIcon}.svg`}
-        alt={displayName || ''}
-      />
+    <div>
+      {showFlag && (
+        <img
+          src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/1x1/${flagIcon}.svg`}
+          alt={displayName || ''}
+          className="w-6 h-6 object-cover rounded-full"
+        />
+      )}
+      {!showFlag && (
+        <Badge className="text-xs py-0 px-1">
+          {flagIcon?.toUpperCase() || 'N/A'}
+        </Badge>
+      )}
     </div>
+    {/* <div className="w-6 h-6"> */}
+    {/* {showFlag  ?<img */}
+    {/* className="w-6 h-6 object-cover rounded-full" */}
+    {/* src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/1x1/${flagIcon}.svg`} */}
+    {/* alt={displayName || ''} */}
+    {/* />: <} */}
+    {/* </div> */}
   </div>
 );
 
