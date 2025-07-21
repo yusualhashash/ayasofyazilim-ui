@@ -10,7 +10,7 @@ export const TableArrayObjectFieldTemplate = (
       return (
         <TableCell
           key={element.name}
-          className="[&>div_label]:hidden [&>div.field-string_.date-input]:rounded-none [&>div.field-string_.date-input]:border-none [&>div.field-boolean>div]:justify-center [&>div>ul]:hidden p-0 [&>div>*]:bg-transparent [&>div>*:hover]:bg-transparent [&>div>*]:ring-inset [&>div>*]:border-0 [&>div>*]:border-b [&>div>*]:border-r [&>div>*]:shadow-none [&>div>*]:rounded-none [&>div>*]:text-xs"
+          className="[&>div_label]:hidden border-l [&_*]:shadow-none [&_*]:border-0 p-0 [&_input]:rounded-none [&_div]:bg-transparent [&_input]:bg-transparent [&_button[role=combobox]]:!bg-transparent [&_button[role=combobox]]:!rounded-none  [&_ul]:hidden [&_div.field-boolean]:justify-center"
         >
           {element.content}
         </TableCell>

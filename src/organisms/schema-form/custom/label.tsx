@@ -28,7 +28,7 @@ export function FieldLabel({
       className={cn('flex items-center text-slate-600', className)}
     >
       {beautifyLabel(label)}
-      {required ? <Asterisk className="size-3 text-destructive mb-1" /> : null}
+      {required ? <Asterisk className="size-3 text-destructive" /> : null}
       {description && description.length > 0 && (
         <TooltipProvider>
           <Tooltip>

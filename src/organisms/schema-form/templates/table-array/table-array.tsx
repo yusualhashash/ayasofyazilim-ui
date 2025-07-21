@@ -74,18 +74,21 @@ export const TableArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
           </Table.TableHead>
         </Table.TableRow>
       </Table.TableHeader>
-      <Table.TableBody className="[&_tr:last-child]:border-x">
+      <Table.TableBody className="[&_tr:last-child]:border [&_tr:last-child]:border-t-0">
         {items &&
           items.map((item) => (
-            <Table.TableRow className="border-0 border-x" key={item.key}>
+            <Table.TableRow
+              className="border-0 border-x border-b"
+              key={item.key}
+            >
               {item.children}
               {(item.hasRemove || item.hasCopy) && (
                 <Table.TableCell className="p-0 w-1">
-                  <div className="flex bg-border gap-px">
+                  <div className="flex bg-border gap-px border-l">
                     <Button
                       variant="outline"
                       size="icon"
-                      className="text-destructive rounded-none size-10 border-0 border-b"
+                      className="text-destructive rounded-none size-10 border-0"
                       onClick={item.onDropIndexClick(item.index)}
                     >
                       <CircleXIcon className="size-4" />
@@ -94,7 +97,7 @@ export const TableArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
                       <Button
                         variant="outline"
                         size="icon"
-                        className="rounded-none size-10 border-0 border-b"
+                        className="rounded-none size-10 border-0"
                         onClick={item.onCopyIndexClick(item.index)}
                       >
                         <Copy className="size-4" />
