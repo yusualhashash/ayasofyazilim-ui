@@ -58,6 +58,8 @@ export default function TanstackTable<TData, TValue>({
   excludeColumns,
   onTableDataChange,
   filters,
+  title,
+  showPagination = true,
 }: TanstackTablePropsType<TData, TValue>) {
   const commonProps = {
     pinColumns,
@@ -68,6 +70,7 @@ export default function TanstackTable<TData, TValue>({
     selectedRowAction,
     excludeColumns,
     expandedRowComponent,
+    title,
   };
   if (editable) {
     return (
@@ -88,6 +91,7 @@ export default function TanstackTable<TData, TValue>({
       editable={false}
       filters={filters}
       fillerColumn={fillerColumn}
+      showPagination={showPagination}
     />
   );
 }
@@ -113,6 +117,8 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
     pagination,
     filters,
     meta,
+    showPagination,
+    title,
   } = props;
   const [sorting, setSorting] = useState<SortingState>([]);
   const [colVisibility, setColumnVisibility] = useState<VisibilityState>(
@@ -132,7 +138,7 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
     (TanstackTableRowActionsType<TData> & { row: TData }) | null
   >(null);
   const [tableAction, setTableAction] =
-    useState<TanstackTableTableActionsType | null>(null);
+    useState<TanstackTableTableActionsType<TData> | null>(null);
 
   const tableColumns = useMemo(() => {
     const _columns = [...columns].filter(
@@ -191,10 +197,10 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
     rowCount,
     meta,
   });
-
   return (
-    <div className="flex flex-col gap-2 size-full">
+    <div className="flex flex-col gap-2 size-full min-h-max">
       <TanstackTableToolbar<TData>
+        title={title}
         table={table}
         filters={filters}
         selectedRowAction={selectedRowAction}
@@ -212,7 +218,7 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
           expandedRowComponent={expandedRowComponent}
         />
       </div>
-      {pagination && (
+      {pagination && showPagination && (
         <TanstackTablePagination table={table} pagination={pagination} />
       )}
       <TanstackTableActionDialogs

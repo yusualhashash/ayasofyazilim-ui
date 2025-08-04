@@ -12,16 +12,10 @@ import { TanstackTableActionsSchemaFormDialog } from '../types';
 type TanstackTableSchemaFormDialogProps = {
   setDialogOpen: () => void;
 } & TanstackTableActionsSchemaFormDialog;
-export function TanstackTableTableSchemaFormDialog({
-  title,
-  submitText,
-  onSubmit,
-  schema,
-  filter,
-  widgets,
-  setDialogOpen,
-  uiSchema,
-}: TanstackTableSchemaFormDialogProps) {
+export function TanstackTableTableSchemaFormDialog(
+  props: TanstackTableSchemaFormDialogProps
+) {
+  const { title, setDialogOpen, onSubmit } = props;
   return (
     <Dialog open onOpenChange={setDialogOpen}>
       <DialogContent>
@@ -29,16 +23,11 @@ export function TanstackTableTableSchemaFormDialog({
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         <SchemaForm
-          schema={schema}
-          uiSchema={uiSchema}
+          {...props}
           onSubmit={(data) => {
             onSubmit(data.formData);
             setDialogOpen();
           }}
-          submitText={submitText}
-          filter={filter}
-          withScrollArea={false}
-          widgets={widgets}
         />
       </DialogContent>
     </Dialog>
