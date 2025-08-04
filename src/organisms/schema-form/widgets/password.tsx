@@ -43,6 +43,9 @@ export const PasswordInputWidget = (props: WidgetProps) => {
       defaultValue={value || defaultValue}
       readOnly={readOnly}
       disabled={fieldOptions.disabled}
+      autoComplete={uiSchema?.['ui:autocomplete']}
+      showGenerator={uiSchema?.['ui:showGenerator']}
+      passwordLength={uiSchema?.['ui:passwordLength'] || 10}
     />
   );
 };

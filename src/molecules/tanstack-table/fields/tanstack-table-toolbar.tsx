@@ -11,18 +11,21 @@ import { TanstackTableDateFilter } from './tanstack-table-filter-date';
 import { TanstackTableFacetedFilter } from './tanstack-table-filter-faceted';
 import { TanstackTableTextFilter } from './tanstack-table-filter-text';
 import { TanstackTableViewOptions } from './tanstack-table-view-options';
+import { Label } from '@/components/ui/label';
 
 interface TanstackTableToolbarProps<TData> {
+  title?: string;
   editable?: boolean;
   filters?: TanstackTableFiltersType;
   selectedRowAction?: TanstackTableSelectedRowActionType<TData>;
-  setTableAction: (actions: TanstackTableTableActionsType) => void;
+  setTableAction: (actions: TanstackTableTableActionsType<TData>) => void;
   table: Table<TData>;
-  tableActions?: TanstackTableTableActionsType[];
+  tableActions?: TanstackTableTableActionsType<TData>[];
   tableData: TData[];
 }
 
 export const TanstackTableToolbar = <TData,>({
+  title,
   table,
   filters,
   tableData,
@@ -64,7 +67,12 @@ export const TanstackTableToolbar = <TData,>({
   }
   return (
     <div className="flex w-full items-center justify-between p-px">
-      <div className="flex flex-1 flex-wrap items-center gap-x-2">
+      <div className="flex flex-1 h-full flex-wrap items-center gap-x-2">
+        {title && (
+          <Label className="mt-auto text-slate-600" asChild>
+            <p>{title}</p>
+          </Label>
+        )}
         {filters?.textFilters &&
           filters.textFilters.map((accessorKey) => (
             <TanstackTableTextFilter

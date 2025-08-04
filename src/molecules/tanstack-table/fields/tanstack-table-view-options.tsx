@@ -18,9 +18,9 @@ import {
 interface TanstackTableViewOptionsProps<TData> {
   editable?: boolean;
   selectedRowAction?: TanstackTableSelectedRowActionType<TData>;
-  setTableAction: (actions: TanstackTableTableActionsType) => void;
+  setTableAction: (actions: TanstackTableTableActionsType<TData>) => void;
   table: Table<TData>;
-  tableActions?: TanstackTableTableActionsType[];
+  tableActions?: TanstackTableTableActionsType<TData>[];
   tableData: TData[];
 }
 
@@ -29,8 +29,8 @@ function TablePrimaryActionButton<TData>({
   action,
   setRowAction,
 }: {
-  action: TanstackTableTableActionsType;
-  setRowAction: (actions: TanstackTableTableActionsType) => void;
+  action: TanstackTableTableActionsType<TData>;
+  setRowAction: (actions: TanstackTableTableActionsType<TData>) => void;
   table: Table<TData>;
 }) {
   return (
@@ -47,8 +47,8 @@ function TablePrimaryActionButton<TData>({
 }
 function handleActionOnClick<TData>(
   table: Table<TData>,
-  action: TanstackTableTableActionsType,
-  setRowAction: (actions: TanstackTableTableActionsType) => void
+  action: TanstackTableTableActionsType<TData>,
+  setRowAction: (actions: TanstackTableTableActionsType<TData>) => void
 ) {
   if (action.type === 'simple') {
     action.onClick();
@@ -73,15 +73,31 @@ export function TanstackTableViewOptions<TData>(
     tableData,
     editable,
   } = props;
-  const primaryAction = tableActions?.[0];
-  const secondaryAction = tableActions?.[1];
-  const otherActions = tableActions?.slice(2);
+
+  // Filter actions based on condition, keeping backward compatibility
+  const filteredActions =
+    tableActions?.filter(
+      (action) => !action.condition || action.condition(tableData)
+    ) ?? [];
+
+  const primaryAction = filteredActions[0];
+  const secondaryAction = filteredActions[1];
+  const otherActions = filteredActions.slice(2);
   const selectedRowCount = Object.keys(table.getState().rowSelection).length;
 
   return (
     <>
       {selectedRowAction && selectedRowCount > 0 && (
-        <div className={primaryAction && otherActions && 'mr-2'}>
+        <div
+          className={
+            primaryAction &&
+            ((primaryAction.condition &&
+              primaryAction.condition?.(tableData)) ||
+              true) &&
+            otherActions &&
+            'mr-2'
+          }
+        >
           <Button
             variant="outline"
             size="sm"

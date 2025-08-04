@@ -1,7 +1,7 @@
 import { CaretSortIcon } from '@radix-ui/react-icons';
 import { WidgetProps } from '@rjsf/utils';
 import { CheckIcon } from 'lucide-react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -34,6 +34,7 @@ type CustomComboboxProps<T> = {
   selectLabel: keyof T;
   disabledItems?: T[keyof T][];
   badges?: Partial<Record<keyof T, BadgeOptions>>;
+  autoSelectFirst?: boolean;
 } & WidgetProps;
 
 export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
@@ -48,10 +49,14 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
     emptyValue = 'Please select',
     onChange,
     required,
+    autoSelectFirst = false,
   } = props;
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [open, setOpen] = useState(false);
-  const fieldValue = value || defaultValue;
+  const fieldValue =
+    value ||
+    defaultValue ||
+    (autoSelectFirst ? list?.[0]?.[selectIdentifier] : undefined);
   const fieldValueDisplayName = list?.find(
     (x) => x[selectIdentifier] === fieldValue
   )?.[selectLabel];
@@ -86,7 +91,7 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
               'disabled:pointer-events-auto hover:bg-background hover:text-muted-foreground'
           )}
         >
-          <span className=" overflow-hidden text-ellipsis has-[role=dialog]:max-w-xs">
+          <span className="overflow-hidden text-ellipsis has-[role=dialog]:max-w-xs">
             {fieldValueDisplayName
               ? fieldValueDisplayName.toString()
               : emptyValue}
@@ -231,6 +236,7 @@ export function CustomComboboxWidget<T>({
   onChange,
   disabledItems,
   badges,
+  autoSelectFirst = false,
 }: {
   languageData: {
     'Select.Placeholder': string;
@@ -243,10 +249,16 @@ export function CustomComboboxWidget<T>({
   onChange?: (value: T | null | undefined) => void;
   disabledItems?: T[keyof T][];
   badges?: CustomComboboxProps<T>['badges'];
+  autoSelectFirst?: boolean;
 }) {
   function Widget(props: WidgetProps) {
     const { uiSchema } = props;
     const uiList = uiSchema?.['ui:optionList'];
+    useEffect(() => {
+      if (autoSelectFirst) {
+        props.onChange(list[0]?.[selectIdentifier]);
+      }
+    }, []);
     return (
       <CustomCombobox<T>
         {...props}
@@ -257,6 +269,7 @@ export function CustomComboboxWidget<T>({
             onChange(list.find((i) => i[selectIdentifier] === value));
           }
         }}
+        autoSelectFirst={autoSelectFirst}
         searchPlaceholder={languageData['Select.Placeholder']}
         searchResultLabel={languageData['Select.ResultLabel']}
         emptyValue={languageData['Select.EmptyValue']}

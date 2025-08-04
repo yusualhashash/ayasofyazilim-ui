@@ -32,7 +32,7 @@ export function getCommonPinningStyles<TData>({
     opacity: isPinned ? 0.97 : 1,
     width: fillerColumn === column.id ? '100%' : column.getSize(),
     position: isPinned ? 'sticky' : 'relative',
-    background: isPinned ? 'hsl(var(--background))' : 'hsl(var(--background))',
+    background: isPinned ? 'hsl(var(--background))' : '',
     zIndex: isPinned ? 1 : 0,
     textWrap: 'nowrap',
   };

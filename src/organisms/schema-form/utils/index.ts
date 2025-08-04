@@ -553,7 +553,7 @@ export function uiSchemaFromSchema({
       );
     }
     Object.assign(uiSchema[name], {
-      'ui:title': resources[constantKey],
+      'ui:title': resources[constantKey] || beautifyLabel(name),
       items,
     });
   }
@@ -562,7 +562,7 @@ export function uiSchemaFromSchema({
     const getResourceValue = (name: string) =>
       resources[`${constantKey}.${name}`] || undefined;
     const uiSchemaItem = {
-      'ui:title': resources[constantKey],
+      'ui:title': resources[constantKey] || beautifyLabel(name),
       'ui:placeholder': getResourceValue('ui:placeholder'),
     };
     // enum varsa
@@ -762,4 +762,14 @@ export function getArrayFieldKeys(schema: GenericObjectType): string[] {
   }
   traverse(schema);
   return keys;
+}
+
+export function beautifyLabel(input: string | undefined | null): string {
+  if (!input || typeof input !== 'string') return ''; // Handle null, undefined, or non-string inputs
+  return input
+    .replace(/([a-z])([A-Z])/g, '$1 $2') // Handle camelCase
+    .replace(/[-_]/g, ' ') // Replace underscores and hyphens with spaces
+    .split(/\s+/) // Split by spaces
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
+    .join(' ');
 }

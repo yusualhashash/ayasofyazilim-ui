@@ -27,7 +27,7 @@ export function FieldLabel({
       htmlFor={id}
       className={cn('flex items-center text-slate-600', className)}
     >
-      {beautifyLabel(label)}
+      {label}
       {required ? <Asterisk className="size-3 text-destructive" /> : null}
       {description && description.length > 0 && (
         <TooltipProvider>
@@ -41,14 +41,4 @@ export function FieldLabel({
       )}
     </Label>
   );
-}
-
-export function beautifyLabel(input: string | undefined | null): string {
-  if (!input || typeof input !== 'string') return ''; // Handle null, undefined, or non-string inputs
-  return input
-    .replace(/([a-z])([A-Z])/g, '$1 $2') // Handle camelCase
-    .replace(/[-_]/g, ' ') // Replace underscores and hyphens with spaces
-    .split(/\s+/) // Split by spaces
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
-    .join(' ');
 }

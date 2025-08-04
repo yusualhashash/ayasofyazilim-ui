@@ -28,9 +28,9 @@ export function TanstackTableActionDialogs<TData>({
     >
   >;
   setTableAction: Dispatch<
-    React.SetStateAction<TanstackTableTableActionsType | null>
+    React.SetStateAction<TanstackTableTableActionsType<TData> | null>
   >;
-  tableAction: TanstackTableTableActionsType | null;
+  tableAction: TanstackTableTableActionsType<TData> | null;
 }) {
   useEffect(() => {
     if (rowAction?.type === 'simple') {
@@ -106,16 +106,9 @@ export function TanstackTableActionDialogs<TData>({
         />
       )}
       {tableAction?.type === 'schemaform-dialog' && (
-        <TanstackTableTableSchemaFormDialog
+        <TanstackTableTableSchemaFormDialog<TData>
           setDialogOpen={() => setTableAction(null)}
-          title={tableAction.title}
-          type="schemaform-dialog"
-          schema={tableAction.schema}
-          submitText={tableAction.submitText}
-          onSubmit={tableAction.onSubmit}
-          uiSchema={tableAction.uiSchema}
-          filter={tableAction.filter}
-          widgets={tableAction.widgets}
+          {...tableAction}
         />
       )}
     </>

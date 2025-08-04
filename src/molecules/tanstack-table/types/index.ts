@@ -7,9 +7,9 @@ import {
 } from '@tanstack/react-table';
 import { ComponentType } from 'react';
 import { z } from 'zod';
-import { SchemaFormProps } from '../../../organisms/schema-form/types';
 import { FieldConfig } from '../../../organisms/auto-form';
 import { ZodObjectOrWrapped } from '../../../organisms/auto-form/utils';
+import { SchemaFormProps } from '../../../organisms/schema-form/types';
 
 export type NonEditableTanstackTableProps<TData> = {
   rowCount: number;
@@ -24,6 +24,7 @@ export type EditableTanstackTableProps<TData> = {
   meta?: TableMeta<TData>;
 };
 export type TanstackBaseProps<TData, TValue> = {
+  title?: string;
   columns: ColumnDef<TData, TValue>[];
   columnOrder?: (keyof TData)[];
   data: TData[];
@@ -37,8 +38,9 @@ export type TanstackBaseProps<TData, TValue> = {
   rowActions?: TanstackTableRowActionsType<TData>[];
   rowCount?: number;
   selectedRowAction?: TanstackTableSelectedRowActionType<TData>;
-  tableActions?: TanstackTableTableActionsType[];
+  tableActions?: TanstackTableTableActionsType<TData>[] | undefined;
   excludeColumns?: (keyof TData)[];
+  showPagination?: boolean;
   expandedRowComponent?: (
     row: TData,
     toggleExpanded: () => void
@@ -53,6 +55,7 @@ export type TanstackBaseProps<TData, TValue> = {
   meta?: TableMeta<TData>;
 };
 export type TanstackTablePropsType<TData, TValue> = {
+  title?: string;
   data: TData[];
   columns: ColumnDef<TData, TValue>[];
   fillerColumn?: keyof TData;
@@ -67,8 +70,9 @@ export type TanstackTablePropsType<TData, TValue> = {
   excludeColumns?: (keyof TData)[];
   rowActions?: TanstackTableRowActionsType<TData>[] | undefined;
   selectedRowAction?: TanstackTableSelectedRowActionType<TData> | undefined;
-  tableActions?: TanstackTableTableActionsType[] | undefined;
+  tableActions?: TanstackTableTableActionsType<TData>[] | undefined;
   filters?: TanstackTableFiltersType | undefined;
+  showPagination?: boolean;
   expandedRowComponent?:
     | ((row: TData, toggleExpanded: () => void) => JSX.Element)
     | undefined;
@@ -253,7 +257,7 @@ export type TanstackTableActionsAutoformDialog = Omit<
   type: 'autoform-dialog';
   values?: Partial<z.infer<ZodObjectOrWrapped>>;
 };
-export type TanstackTableActionsSchemaFormDialog = Omit<
+export type TanstackTableActionsSchemaFormDialog<TData> = Omit<
   TanstackTableActionsDialog,
   'cancelText' | 'onCancel' | 'confirmationText' | 'onConfirm'
 > & {
@@ -261,7 +265,7 @@ export type TanstackTableActionsSchemaFormDialog = Omit<
   onSubmit: (values: any | undefined) => void;
   submitText: string;
   type: 'schemaform-dialog';
-} & SchemaFormProps<undefined>;
+} & SchemaFormProps<TData>;
 export type TanstackTableActionsCustomDialog = TanstackTableActionsDialog & {
   content: JSX.Element;
   type: 'custom-dialog';
@@ -272,17 +276,20 @@ export type TanstackTableActionsCustomDialog = TanstackTableActionsDialog & {
     footer?: string;
   };
 };
-export type TanstackTableTableActionsType = {
+
+export type TanstackTableTableActionsType<TData = any> = {
   actionLocation: 'table';
   cta: string;
   icon?: ComponentType<{ className?: string }>;
+  condition?: (data: TData[]) => boolean;
 } & (
   | TanstackTableActionsSimple
   | TanstackTableActionsCustomDialog
   | TanstackTableActionsAutoformDialog
-  | TanstackTableActionsSchemaFormDialog
   | TanstackTableCreateRowAction
+  | TanstackTableActionsSchemaFormDialog<TData>
 );
+
 export type TanstackTableSelectedRowActionType<TData> = {
   actionLocation: 'table';
   cta: string;

@@ -39,7 +39,7 @@ export default function ConfirmDialog(props: ConfirmDialogProps) {
   const { closeAfterConfirm, onConfirm, ...confirmButtonProps } =
     confirmProps || {};
   return (
-    <Dialog open={loading ? true : open} onOpenChange={setOpen}>
+    <Dialog open={open && loading ? true : open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {isWithTrigger ? (
           <Button
