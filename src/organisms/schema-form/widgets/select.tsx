@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/select';
 import { fieldOptionsByDependency } from '../utils/dependency';
 import { cn } from '@/lib/utils';
-import { beautifyLabel } from '../custom/label';
+import { beautifyLabel } from '../utils';
 
 export const CustomSelect = (props: WidgetProps) => {
   const {

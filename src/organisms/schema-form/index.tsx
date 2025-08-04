@@ -30,6 +30,7 @@ import {
   CustomCheckbox,
   CustomDate,
   CustomPhoneField,
+  CustomPhoneField2,
   CustomSelect,
   CustomSwitch,
   CustomTextareaInput,
@@ -61,6 +62,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       password: PasswordInputWidget,
       email: EmailInputWidget,
       phone: CustomPhoneField,
+      'phone-2': CustomPhoneField2,
       StringArray: StringArrayItem,
     },
     templates: {

@@ -2,7 +2,8 @@
 
 import { ErrorSchema, WidgetProps } from '@rjsf/utils';
 import { PhoneNumberUtil } from 'google-libphonenumber';
-import { PhoneInput } from 'react-international-phone';
+import { PhoneInput as RIP } from 'react-international-phone';
+import { PhoneInput } from '../../../molecules/phone-input';
 import { cn } from '@/lib/utils';
 import 'react-international-phone/style.css';
 import { FormContext } from '../types';
@@ -50,7 +51,7 @@ export const CustomPhoneField = function <T>(
   };
 
   return (
-    <PhoneInput
+    <RIP
       name={name}
       defaultCountry={defaultCountryCode}
       value={value || ''}
@@ -64,4 +65,20 @@ export const CustomPhoneField = function <T>(
 const errorMessage = {
   tr: 'Lütfen geçerli bir telefon numarası giriniz.',
   en: 'Please enter a valid phone number.',
+};
+
+export const CustomPhoneField2 = function <T>(
+  props: WidgetProps<T, any, FormContext<T>>
+) {
+  const { value, onChange, placeholder, name, className, id } = props;
+  return (
+    <PhoneInput
+      id={id}
+      name={name}
+      value={value || ''}
+      placeholder={placeholder}
+      className={className}
+      onChange={onChange}
+    />
+  );
 };

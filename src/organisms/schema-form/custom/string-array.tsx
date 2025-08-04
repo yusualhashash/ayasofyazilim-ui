@@ -2,8 +2,9 @@ import { WidgetProps } from '@rjsf/utils';
 import { Tag, TagInput } from 'emblor';
 import { useEffect, useState } from 'react';
 import { fieldOptionsByDependency } from '../utils/dependency';
-import { beautifyLabel, FieldLabel } from './label';
+import { FieldLabel } from './label';
 import { cn } from '@/lib/utils';
+import { beautifyLabel } from '../utils';
 
 export function StringArrayItem(props: WidgetProps) {
   const {

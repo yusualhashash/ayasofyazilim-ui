@@ -36,6 +36,7 @@ export const CustomTextInput = (props: WidgetProps) => {
       defaultValue={value ?? props.defaultValue}
       readOnly={props.readOnly}
       disabled={fieldOptions.disabled}
+      autoComplete={uiSchema?.['ui:autocomplete']}
     />
   );
 };
