@@ -9,11 +9,11 @@ import {
 import { SchemaForm } from '../../../organisms/schema-form';
 import { TanstackTableActionsSchemaFormDialog } from '../types';
 
-type TanstackTableSchemaFormDialogProps = {
+type TanstackTableSchemaFormDialogProps<TData> = {
   setDialogOpen: () => void;
-} & TanstackTableActionsSchemaFormDialog;
-export function TanstackTableTableSchemaFormDialog(
-  props: TanstackTableSchemaFormDialogProps
+} & TanstackTableActionsSchemaFormDialog<TData>;
+export function TanstackTableTableSchemaFormDialog<TData>(
+  props: TanstackTableSchemaFormDialogProps<TData>
 ) {
   const { title, setDialogOpen, onSubmit } = props;
   return (

@@ -106,7 +106,7 @@ export function TanstackTableActionDialogs<TData>({
         />
       )}
       {tableAction?.type === 'schemaform-dialog' && (
-        <TanstackTableTableSchemaFormDialog
+        <TanstackTableTableSchemaFormDialog<TData>
           setDialogOpen={() => setTableAction(null)}
           {...tableAction}
         />
