@@ -152,7 +152,7 @@ export type TanstackTableColumnIcon = {
 };
 export type TanstackTableColumCell<TData> = {
   conditions?: TanstackTableCellCondition[];
-  content: (row: TData) => JSX.Element;
+  content: (row: TData) => JSX.Element | string;
   showHeader?: boolean;
 };
 export type TanstackTableRowActionsDeleteRow = {
