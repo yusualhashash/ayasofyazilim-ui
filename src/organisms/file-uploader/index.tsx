@@ -383,7 +383,7 @@ export function FileCard({
             </p>
           </div>
           {progress ? (
-            <Progress value={progress} className="duration-[2s]" />
+            <Progress value={progress} className="duration-1000" />
           ) : null}
         </div>
       </div>
