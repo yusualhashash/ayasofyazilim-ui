@@ -80,7 +80,7 @@ function applyFieldDependencies(
 
   for (const [fieldPath, fieldDeps] of Object.entries(dependencies)) {
     const fieldValues = getFieldValues(schema, fieldPath);
-    if (fieldValues.length === 0) {
+    if (fieldValues.length > 0) {
       const parentPath = fieldPath.split('.').slice(0, -1).join('.');
       const parentSchema = parentPath
         ? getNestedProperty(schema, parentPath)
