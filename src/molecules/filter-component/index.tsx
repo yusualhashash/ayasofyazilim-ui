@@ -23,9 +23,13 @@ import MultiSelectField from './fields/multi-select';
 export type FilterComponentSearchItem = { id: string; name: string };
 export type DateSelectType = {
   title: string;
+  placeholder?: string;
   onChange: Dispatch<SetStateAction<string>>;
   value: string;
-  options: string[];
+  options: {
+    label: string;
+    value: string;
+  }[];
   order?: number;
 };
 
@@ -35,6 +39,8 @@ export type MultiSelectType = {
   options: { label: string; value: string }[];
   onChange: Dispatch<SetStateAction<string[]>>;
   order?: number;
+  placeholder?: string;
+  selectAllLabel?: string;
 };
 export type AsyncSelectType = {
   title: string;
@@ -115,16 +121,16 @@ export default function FilterComponent({
       onSubmit();
     });
   }
-
+  console.log(isCollapsible);
   return (
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
       className={cn('w-full space-y-2', className)}
     >
-      {isCollapsible && !isOpen && (
+      {isCollapsible && (
         <CollapsibleTrigger asChild>
-          <Button variant="outline" size="icon">
+          <Button variant="outline" size="icon" disabled={!isCollapsible}>
             <FilterIcon className="h-4 w-4" />
             <span className="sr-only">Filters</span>
           </Button>
@@ -140,14 +146,7 @@ export default function FilterComponent({
         >
           <CardHeader className="flex flex-row font-bold text-xl items-center justify-between">
             {filtersText}
-            <CollapsibleTrigger asChild>
-              <Button className="h-7 p-1" variant="outline" size="icon">
-                <FilterIcon className="h-4 w-4" />
-                <span className="sr-only ">Filters</span>
-              </Button>
-            </CollapsibleTrigger>
           </CardHeader>
-
           <CardContent className="flex flex-row gap-3 items-start">
             {filterGuidanceContent && (
               <div className="w-1/2 text-sm text-muted-foreground">

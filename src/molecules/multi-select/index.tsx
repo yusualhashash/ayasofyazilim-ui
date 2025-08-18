@@ -123,6 +123,12 @@ export interface MultiSelectProps
   placeholder?: string;
 
   /**
+   * selectAllLabel text to be displayed for select all option.
+   * Optional, defaults to "Select all".
+   */
+  selectAllLabel?: string;
+
+  /**
    * If true, the multi-select component will be disabled.
    * Optional, defaults to false.
    */
@@ -140,6 +146,7 @@ export const MultiSelect = React.forwardRef<
       variant,
       defaultValue = [],
       placeholder = 'Select options',
+      selectAllLabel = 'Select all',
       animation = 0,
       maxCount = 3,
       modalPopover = false,
@@ -342,7 +349,7 @@ export const MultiSelect = React.forwardRef<
                   >
                     <CheckIcon className="h-4 w-4" />
                   </div>
-                  <span>(Select All)</span>
+                  <span>({selectAllLabel})</span>
                 </CommandItem>
                 {options.map((option) => {
                   const isSelected = selectedValues.includes(option.value);
