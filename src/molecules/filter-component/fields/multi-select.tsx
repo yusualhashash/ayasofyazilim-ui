@@ -20,6 +20,8 @@ function MultiSelectField({
         options={filter.options}
         defaultValue={filter.value}
         disabled={isPending}
+        placeholder={filter.placeholder}
+        selectAllLabel={filter.selectAllLabel}
       />
     </div>
   );

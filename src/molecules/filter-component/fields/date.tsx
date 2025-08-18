@@ -29,14 +29,14 @@ function DateField({
         disabled={isPending}
       >
         <SelectTrigger className="min-h-10">
-          <SelectValue placeholder="Select a date" />
+          <SelectValue placeholder={filter.placeholder || 'Select a date'} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>{filter.title}</SelectLabel>
-            {filter.options.map((range) => (
-              <SelectItem key={range} value={range}>
-                {range}
+            {filter.options.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
               </SelectItem>
             ))}
           </SelectGroup>
