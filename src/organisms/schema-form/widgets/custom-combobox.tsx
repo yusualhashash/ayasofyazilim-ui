@@ -1,7 +1,13 @@
 import { CaretSortIcon } from '@radix-ui/react-icons';
 import { WidgetProps } from '@rjsf/utils';
 import { CheckIcon } from 'lucide-react';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -35,6 +41,7 @@ type CustomComboboxProps<T> = {
   disabledItems?: T[keyof T][];
   badges?: Partial<Record<keyof T, BadgeOptions>>;
   autoSelectFirst?: boolean;
+  customItemRenderer?: (values: T) => ReactNode | undefined | string;
 } & WidgetProps;
 
 export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
@@ -151,9 +158,9 @@ function List<T>({
     searchResultLabel,
     onValueChange,
     badges,
+    customItemRenderer,
   } = props;
   const uiOptions = uiSchema?.['ui:options'];
-
   return (
     <Command
       filter={(value, search) => {
@@ -200,25 +207,31 @@ function List<T>({
               {item[selectIdentifier] === value && (
                 <CheckIcon className={cn('mr-2 h-4 w-4')} />
               )}
-              {item[selectLabel] as string}
-              {badges && (
-                <div className="ml-auto">
-                  {Object.keys(badges).map((badgeKey) => {
-                    const badgeOptions = badges[badgeKey as keyof T];
-                    if (!badgeOptions) return null;
-                    return (
-                      <Badge
-                        key={badgeKey}
-                        variant="outline"
-                        className={cn('ml-2', badgeOptions.className)}
-                      >
-                        {badgeOptions.showValue !== false &&
-                          (item[badgeKey as keyof T] as string)}
-                        {badgeOptions.label && badgeOptions.label}
-                      </Badge>
-                    );
-                  })}
-                </div>
+              {customItemRenderer ? (
+                customItemRenderer(item)
+              ) : (
+                <>
+                  {item[selectLabel] as string}
+                  {badges && (
+                    <div className="ml-auto">
+                      {Object.keys(badges).map((badgeKey) => {
+                        const badgeOptions = badges[badgeKey as keyof T];
+                        if (!badgeOptions) return null;
+                        return (
+                          <Badge
+                            key={badgeKey}
+                            variant="outline"
+                            className={cn('ml-2', badgeOptions.className)}
+                          >
+                            {badgeOptions.showValue !== false &&
+                              (item[badgeKey as keyof T] as string)}
+                            {badgeOptions.label && badgeOptions.label}
+                          </Badge>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
               )}
             </CommandItem>
           ))}
@@ -237,6 +250,7 @@ export function CustomComboboxWidget<T>({
   disabledItems,
   badges,
   autoSelectFirst = false,
+  customItemRenderer,
 }: {
   languageData: {
     'Select.Placeholder': string;
@@ -250,6 +264,7 @@ export function CustomComboboxWidget<T>({
   disabledItems?: T[keyof T][];
   badges?: CustomComboboxProps<T>['badges'];
   autoSelectFirst?: boolean;
+  customItemRenderer?: CustomComboboxProps<T>['customItemRenderer'];
 }) {
   function Widget(props: WidgetProps) {
     const { uiSchema } = props;
@@ -269,6 +284,7 @@ export function CustomComboboxWidget<T>({
             onChange(list.find((i) => i[selectIdentifier] === value));
           }
         }}
+        customItemRenderer={customItemRenderer}
         autoSelectFirst={autoSelectFirst}
         searchPlaceholder={languageData['Select.Placeholder']}
         searchResultLabel={languageData['Select.ResultLabel']}
