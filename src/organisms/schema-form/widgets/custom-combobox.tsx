@@ -1,13 +1,7 @@
 import { CaretSortIcon } from '@radix-ui/react-icons';
 import { WidgetProps } from '@rjsf/utils';
 import { CheckIcon } from 'lucide-react';
-import {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useEffect,
-  useState,
-} from 'react';
+import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -40,7 +34,6 @@ type CustomComboboxProps<T> = {
   selectLabel: keyof T;
   disabledItems?: T[keyof T][];
   badges?: Partial<Record<keyof T, BadgeOptions>>;
-  autoSelectFirst?: boolean;
   customItemRenderer?: (values: T) => ReactNode | undefined | string;
 } & WidgetProps;
 
@@ -56,14 +49,10 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
     emptyValue = 'Please select',
     onChange,
     required,
-    autoSelectFirst = false,
   } = props;
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [open, setOpen] = useState(false);
-  const fieldValue =
-    value ||
-    defaultValue ||
-    (autoSelectFirst ? list?.[0]?.[selectIdentifier] : undefined);
+  const fieldValue = value || defaultValue;
   const fieldValueDisplayName = list?.find(
     (x) => x[selectIdentifier] === fieldValue
   )?.[selectLabel];
@@ -249,7 +238,6 @@ export function CustomComboboxWidget<T>({
   onChange,
   disabledItems,
   badges,
-  autoSelectFirst = false,
   customItemRenderer,
 }: {
   languageData: {
@@ -263,17 +251,11 @@ export function CustomComboboxWidget<T>({
   onChange?: (value: T | null | undefined) => void;
   disabledItems?: T[keyof T][];
   badges?: CustomComboboxProps<T>['badges'];
-  autoSelectFirst?: boolean;
   customItemRenderer?: CustomComboboxProps<T>['customItemRenderer'];
 }) {
   function Widget(props: WidgetProps) {
     const { uiSchema } = props;
     const uiList = uiSchema?.['ui:optionList'];
-    useEffect(() => {
-      if (autoSelectFirst) {
-        props.onChange(list[0]?.[selectIdentifier]);
-      }
-    }, []);
     return (
       <CustomCombobox<T>
         {...props}
@@ -285,7 +267,6 @@ export function CustomComboboxWidget<T>({
           }
         }}
         customItemRenderer={customItemRenderer}
-        autoSelectFirst={autoSelectFirst}
         searchPlaceholder={languageData['Select.Placeholder']}
         searchResultLabel={languageData['Select.ResultLabel']}
         emptyValue={languageData['Select.EmptyValue']}
