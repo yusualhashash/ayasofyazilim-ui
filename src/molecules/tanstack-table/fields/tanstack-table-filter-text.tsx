@@ -17,15 +17,17 @@ interface TanstackTableTextFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;
   onFilter: (accessorKey: string, selectedValues: string) => void;
   params: URLSearchParams;
+  title?: string;
 }
 
 export function TanstackTableTextFilter<TData, TValue>({
   column,
+  title: _title,
   accessorKey,
   params,
   onFilter,
 }: TanstackTableTextFilterProps<TData, TValue>) {
-  const title = column?.columnDef?.meta?.toString() || accessorKey;
+  const title = _title || column?.columnDef?.meta?.toString() || accessorKey;
   const [searchInput, setSearchInput] = useState('');
   const filterValue = useDebounce(searchInput || '', 500);
 
