@@ -127,6 +127,7 @@ export type TanstackTableFiltersType = {
     }
   >;
   textFilters?: string[];
+  filterTitles?: Record<string, string>;
 };
 
 export type TanstackTableColumnLink = {

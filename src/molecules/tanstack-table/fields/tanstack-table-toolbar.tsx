@@ -76,6 +76,7 @@ export const TanstackTableToolbar = <TData,>({
         {filters?.textFilters &&
           filters.textFilters.map((accessorKey) => (
             <TanstackTableTextFilter
+              title={filters?.filterTitles?.[accessorKey]}
               key={accessorKey}
               column={
                 columnNames.includes(accessorKey)
