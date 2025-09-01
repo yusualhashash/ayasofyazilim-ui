@@ -1,4 +1,5 @@
 import { WidgetProps } from '@rjsf/utils';
+import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { fieldOptionsByDependency } from '../utils/dependency';
 import { cn } from '@/lib/utils';
@@ -7,7 +8,6 @@ import { EmailInput } from '../../../molecules/email-input/email';
 export const EmailInputWidget = (props: WidgetProps) => {
   const {
     uiSchema,
-    id,
     className,
     onChange,
     value,
@@ -29,24 +29,20 @@ export const EmailInputWidget = (props: WidgetProps) => {
     onChange(undefined);
     return null;
   }
+  const [email, setEmail] = useState(value || '');
   return (
     <EmailInput
-      id={id}
-      className={cn('', className)}
-      required={required}
-      onChange={(value) => {
-        if (value === '') {
-          onChange(undefined);
-        } else {
-          onChange(value);
-        }
+      id="validation-email"
+      value={email}
+      onValueChange={(val) => {
+        setEmail(val);
+        onChange(val);
       }}
-      defaultValue={value || defaultValue}
-      value={value}
-      baseList={uiSchema?.['ui:baseList'] ?? []}
+      defaultValue={defaultValue}
       readOnly={readOnly}
-      disabled={fieldOptions.disabled}
-      autoComplete={uiSchema?.['ui:autocomplete'] ?? 'off'}
+      placeholder="Try typing 'john@gmail.com'"
+      className={cn('w-full', className)}
+      suggestions={uiSchema?.['ui:baseList'] ?? []}
     />
   );
 };
