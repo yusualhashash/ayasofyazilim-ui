@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import domains from './domains.json';
 
 interface EmailInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
@@ -12,16 +13,6 @@ interface EmailInputProps
   suggestions?: string[];
   onValueChange?: (value: string) => void;
 }
-
-const defaultSuggestions = [
-  'gmail.com',
-  'yahoo.com',
-  'outlook.com',
-  'hotmail.com',
-  'icloud.com',
-  'test.com',
-  'example.com',
-];
 
 const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
   (
@@ -37,7 +28,7 @@ const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
     ref
   ) => {
     const allSuggestions = React.useMemo(() => {
-      const combined = [...defaultSuggestions, ...suggestions];
+      const combined = [...domains, ...suggestions];
       return combined.filter((item, index) => combined.indexOf(item) === index);
     }, [suggestions]);
 
