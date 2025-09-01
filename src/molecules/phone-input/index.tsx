@@ -6,6 +6,7 @@ import PhoneInputWithCountrySelect, {
   Country,
   FlagProps,
   getCountryCallingCode,
+  parsePhoneNumber,
 } from 'react-phone-number-input';
 import flags from 'react-phone-number-input/flags';
 
@@ -19,15 +20,20 @@ export function PhoneInput({
   defaultValue,
   value: initialValue,
   onChange,
+  disabled,
   className,
 }: {
   id?: string;
   name?: string;
   placeholder?: string;
-  className?: string;
-  value?: string;
   defaultValue?: string | undefined;
-  onChange?: (value: string | undefined) => void;
+  value?: string;
+  onChange?: (values: {
+    value: string | undefined;
+    parsed: ReturnType<typeof parsePhoneNumber>;
+  }) => void;
+  disabled?: boolean;
+  className?: string;
 }) {
   const [value, setValue] = useState(initialValue || defaultValue || '');
   return (
@@ -38,13 +44,17 @@ export function PhoneInput({
       countrySelectComponent={CountrySelect}
       inputComponent={_PhoneInput}
       id={id}
+      disabled={disabled}
       name={name}
       placeholder={placeholder}
       value={value}
       onChange={(newValue) => {
         setValue(newValue ?? '');
         if (onChange) {
-          onChange(newValue ?? undefined);
+          onChange({
+            value: newValue ?? undefined,
+            parsed: parsePhoneNumber(newValue || ''),
+          });
         }
       }}
     />

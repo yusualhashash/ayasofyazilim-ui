@@ -1,364 +1,225 @@
-import React, {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import {
-  Command,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import domains from './domains.json';
-import { EmailProps, Maybe } from './types';
-import { cleanValue, getEmailData, getHonestValue } from './utils';
+'use client';
 
-/**
- * Controlled email input component using shadcn combobox.
- *
- * Read the documentation at: https://github.com/smastrom/react-email-autocomplete.
- */
-export const Email = forwardRef<HTMLInputElement, EmailProps>(
+import * as React from 'react';
+import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import domains from './domains.json';
+
+interface EmailInputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+  label?: string;
+  suggestions?: string[];
+  onValueChange?: (value: string) => void;
+}
+
+const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
   (
     {
-      /* Core - Required */
-      onChange: setEmail,
-      value: _email,
-      baseList: _baseList,
-      /* Core - Optional */
-      refineList = [],
-      maxResults: _maxResults = 10,
-      minChars: _minChars = 2,
       className,
-      classNames = {
-        wrapper: 'refineWrapper',
-        dropdown: 'refineDropdown',
-        input: 'refineInput',
-        suggestion: 'refineSuggestion',
-        domain: 'refineDomain',
-      },
-      onSelect = () => {},
-      children,
-      /* User events */
-      onFocus: userOnFocus,
-      onBlur: userOnBlur,
-      onInput: userOnInput,
-      onKeyDown: userOnKeyDown = () => {},
-      /* ARIA */
-      autoComplete,
-      /* HTML */
-      ...inputAttrs
-    }: EmailProps,
-    externalRef
+      label,
+      suggestions = [],
+      onValueChange,
+      disabled,
+      required,
+      ...props
+    },
+    ref
   ) => {
-    /* User settings */
-    const _externalRef = externalRef;
-    const isRefineMode = refineList?.length > 0;
-    const maxResults = getHonestValue(_maxResults, 8, 6);
-    const minChars = getHonestValue(_minChars, 8, 2);
-    const baseList = _baseList.slice(0, maxResults);
+    const allSuggestions = React.useMemo(() => {
+      const combined = [...domains, ...suggestions];
+      return combined.filter((item, index) => combined.indexOf(item) === index);
+    }, [suggestions]);
 
-    /* Refs */
-    const isTouched = useRef(false);
-    const inputRef = useRef<Maybe<HTMLInputElement>>(null);
+    const [value, setValue] = React.useState(props.value?.toString() || '');
+    const [open, setOpen] = React.useState(false);
+    const [filteredSuggestions, setFilteredSuggestions] = React.useState<
+      string[]
+    >([]);
+    const [selectedIndex, setSelectedIndex] = React.useState(-1);
 
-    /* State */
-    const [open, setOpen] = useState(false);
-    const [suggestions, setSuggestions] = useState<string[]>(baseList);
+    const inputRef = React.useRef<HTMLInputElement>(null);
+    const containerRef = React.useRef<HTMLDivElement>(null);
 
-    /* Reactive helpers */
-    const email = typeof _email !== 'string' ? '' : cleanValue(_email);
-    const [username] = email.split('@');
+    React.useImperativeHandle(ref, () => inputRef.current!);
 
-    const isOpen =
-      isTouched.current &&
-      suggestions.length > 0 &&
-      username.length >= minChars;
+    const updateSuggestions = React.useCallback(
+      (inputValue: string) => {
+        const atIndex = inputValue.lastIndexOf('@');
 
-    /* Callbacks */
-    const clearResults = useCallback(() => {
-      setSuggestions([]);
-      setOpen(false);
-    }, []);
-
-    /* Effects */
-    useEffect(() => {
-      // Only auto-open if we have suggestions and user has typed enough
-      if (isOpen && !open) {
-        setOpen(true);
-      }
-    }, [isOpen, open]);
-
-    useEffect(() => {
-      function handleClickOutside(event: MouseEvent) {
-        const target = event.target as Node;
-        const popoverContent = document.querySelector(
-          '[data-radix-popper-content-wrapper]'
-        );
-        const inputElement = inputRef.current;
-
-        // Don't close if clicking on input or popover content
-        if (
-          inputElement?.contains(target) ||
-          popoverContent?.contains(target)
-        ) {
+        if (atIndex === -1) {
+          setOpen(false);
+          setFilteredSuggestions([]);
+          setSelectedIndex(-1);
           return;
         }
 
-        // Close if clicking outside
-        if (open) {
-          clearResults();
+        const beforeAt = inputValue.substring(0, atIndex + 1);
+        const afterAt = inputValue.substring(atIndex + 1);
+
+        if (afterAt.length === 0) {
+          const topSuggestions = allSuggestions
+            .slice(0, 5)
+            .map((domain) => beforeAt + domain);
+          setFilteredSuggestions(topSuggestions);
+          setOpen(true);
+          setSelectedIndex(-1);
+        } else {
+          const filtered = allSuggestions
+            .filter((domain) =>
+              domain.toLowerCase().startsWith(afterAt.toLowerCase())
+            )
+            .map((domain) => beforeAt + domain);
+
+          if (filtered.length > 0) {
+            setFilteredSuggestions(filtered);
+            setOpen(true);
+            setSelectedIndex(-1);
+          } else {
+            setOpen(false);
+            setFilteredSuggestions([]);
+            setSelectedIndex(-1);
+          }
         }
+      },
+      [allSuggestions]
+    );
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
+      setValue(newValue);
+      onValueChange?.(newValue);
+      updateSuggestions(newValue);
+    };
+
+    const applySuggestion = (suggestion: string) => {
+      setValue(suggestion);
+      onValueChange?.(suggestion);
+      setOpen(false);
+      setSelectedIndex(-1);
+      inputRef.current?.focus();
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (!open || filteredSuggestions.length === 0) {
+        if (e.key === 'Escape') {
+          setOpen(false);
+        }
+        return;
       }
 
-      function handleWindowBlur() {
-        if (open) {
-          clearResults();
-        }
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          setSelectedIndex((prev) =>
+            prev < filteredSuggestions.length - 1 ? prev + 1 : 0
+          );
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setSelectedIndex((prev) =>
+            prev > 0 ? prev - 1 : filteredSuggestions.length - 1
+          );
+          break;
+        case 'Enter':
+          e.preventDefault();
+          if (
+            selectedIndex >= 0 &&
+            selectedIndex < filteredSuggestions.length
+          ) {
+            applySuggestion(filteredSuggestions[selectedIndex]);
+          }
+          break;
+        case 'Escape':
+          setOpen(false);
+          setSelectedIndex(-1);
+          break;
+        default:
+          setOpen(false);
+          break;
       }
+    };
+
+    React.useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (
+          containerRef.current &&
+          !containerRef.current.contains(event.target as Node)
+        ) {
+          setOpen(false);
+          setSelectedIndex(-1);
+        }
+      };
 
       document.addEventListener('mousedown', handleClickOutside);
-      window.addEventListener('blur', handleWindowBlur);
-
-      return () => {
+      return () =>
         document.removeEventListener('mousedown', handleClickOutside);
-        window.removeEventListener('blur', handleWindowBlur);
-      };
-    }, [open, clearResults]);
+    }, []);
 
-    /* Value handlers */
-    function handleEmailChange(value: string) {
-      isTouched.current = true;
-
-      const cleanEmail = cleanValue(value);
-      const {
-        hasUsername,
-        hasAt,
-        hasDomain,
-        domain: _domain,
-      } = getEmailData(cleanEmail, minChars);
-
-      if (hasUsername) {
-        if (!isRefineMode) {
-          if (hasAt) clearResults();
-          else setSuggestions(baseList);
-        } else if (hasDomain) {
-          const _suggestions = refineList
-            .filter((_suggestion) => _suggestion.startsWith(_domain))
-            .slice(0, maxResults);
-          if (_suggestions.length > 0) {
-            if (_suggestions[0] === _domain) clearResults();
-            else setSuggestions(_suggestions);
-          } else {
-            clearResults();
-          }
-        } else {
-          setSuggestions(baseList);
-        }
+    React.useEffect(() => {
+      if (props.value !== undefined) {
+        setValue(props.value.toString());
       }
-
-      setEmail(cleanEmail);
-    }
-
-    function handleSelect(domain: string) {
-      const selectedEmail = `${username}@${domain}`;
-      const cleanEmail = cleanValue(selectedEmail);
-
-      setEmail(cleanEmail);
-      onSelect({
-        value: cleanEmail,
-        keyboard: false,
-        position: suggestions.indexOf(domain) + 1,
-      });
-      clearResults();
-    }
-
-    /* Props */
-    function mergeRefs(inputElement: HTMLInputElement) {
-      inputRef.current = inputElement;
-      if (externalRef) {
-        (
-          _externalRef as React.MutableRefObject<Maybe<HTMLInputElement>>
-        ).current = inputElement;
-      }
-    }
+    }, [props.value]);
 
     return (
-      <div className={cn('relative', className, classNames?.wrapper)}>
-        <Popover
-          open={open}
-          onOpenChange={() => {
-            /* Prevent auto-close */
-          }}
-        >
-          <PopoverTrigger asChild>
-            <div className="relative">
-              <input
-                {...inputAttrs}
-                ref={mergeRefs}
-                value={email}
-                onChange={(e) => handleEmailChange(e.target.value)}
-                className={cn(
-                  'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-                  classNames?.input
-                )}
-                type="email"
-                autoComplete={autoComplete}
-                aria-controls="email-suggestions"
-                role="combobox"
-                aria-expanded={open}
-                onClick={(e) => {
-                  e.preventDefault();
-                  // Open dropdown if we have suggestions and user has typed enough
-                  if (isOpen && !open) {
-                    setOpen(true);
-                  }
-                }}
-                onFocus={(e) => {
-                  // Open dropdown if we have suggestions and user has typed enough
-                  if (isOpen && !open) {
-                    setOpen(true);
-                  }
-                  userOnFocus?.(e);
-                }}
-                onBlur={(e) => {
-                  // Don't close immediately on blur - let click handler manage it
-                  userOnBlur?.(e);
-                }}
-                onInput={userOnInput}
-                onKeyDown={(e) => {
-                  if (e.key === 'Escape') {
-                    clearResults();
-                    e.preventDefault();
-                  }
-                  if (e.key === 'Tab') {
-                    clearResults();
-                  }
-                  userOnKeyDown(e);
-                }}
-              />
+      <div className="w-full" ref={containerRef}>
+        {label && (
+          <Label
+            className={cn(
+              'mb-2 block',
+              required &&
+                "after:content-['*'] after:ml-0.5 after:text-destructive"
+            )}
+          >
+            {label}
+          </Label>
+        )}
+
+        <div className="relative">
+          <Input
+            type="email"
+            className={className}
+            ref={inputRef}
+            value={value}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            disabled={disabled}
+            required={required}
+            {...props}
+          />
+
+          {open && filteredSuggestions.length > 0 && (
+            <div className="absolute top-full left-0 right-0 z-[999] mt-1 bg-popover border border-border rounded-md shadow-md">
+              <div className="p-1 flex flex-col">
+                {filteredSuggestions.map((suggestion, index) => (
+                  <Button
+                    variant="ghost"
+                    key={suggestion}
+                    className={cn(
+                      'w-full justify-start text-left px-2 py-1.5 text-sm cursor-pointer rounded-sm transition-colors',
+                      'hover:bg-accent hover:text-accent-foreground',
+                      index === selectedIndex &&
+                        'bg-accent text-accent-foreground'
+                    )}
+                    onClick={() => applySuggestion(suggestion)}
+                  >
+                    <span>{suggestion.split('@')[0]}</span>
+                    <span className="text-primary font-semibold">
+                      @{suggestion.split('@')[1]}
+                    </span>
+                  </Button>
+                ))}
+              </div>
             </div>
-          </PopoverTrigger>
-          {open && suggestions.length > 0 && (
-            <PopoverContent
-              className={cn('w-full p-0', classNames?.dropdown)}
-              align="start"
-              side="bottom"
-              sideOffset={4}
-              onOpenAutoFocus={(e) => {
-                // Prevent auto-focus on popover content to keep input focused
-                e.preventDefault();
-              }}
-            >
-              <Command>
-                <CommandList>
-                  <CommandGroup>
-                    {suggestions.map((domain) => (
-                      <CommandItem
-                        key={domain}
-                        value={domain}
-                        onSelect={(selectedValue) => {
-                          handleSelect(selectedValue);
-                        }}
-                        onMouseDown={(e) => {
-                          // Prevent input blur when clicking on items
-                          e.preventDefault();
-                        }}
-                        className={cn('cursor-pointer', classNames?.suggestion)}
-                      >
-                        <span
-                          className={cn(
-                            'max-w-full text-ellipsis overflow-hidden',
-                            classNames?.username
-                          )}
-                        >
-                          {username}
-                        </span>
-                        <span
-                          className={cn(
-                            'text-primary font-semibold',
-                            classNames?.domain
-                          )}
-                        >
-                          @{domain}
-                        </span>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
           )}
-        </Popover>
-        {children}
+        </div>
       </div>
     );
   }
 );
 
-Email.displayName = 'Email';
+EmailInput.displayName = 'EmailInput';
 
-export function EmailInput({
-  baseList,
-  defaultValue,
-  onChange,
-  className,
-  autoComplete,
-  maxResults = 10,
-  ...props
-}: {
-  baseList?: string[];
-  defaultValue?: string;
-  autoComplete?: string;
-  onChange?: (value: string) => void;
-  className?: string;
-  maxResults?: number;
-} & Omit<EmailProps, 'baseList' | 'defaultValue' | 'onChange'>) {
-  const _baseList = [
-    ...(baseList || []),
-    ...[
-      'gmail.com',
-      'outlook.com',
-      'hotmail.com',
-      'icloud.com',
-      'yahoo.com',
-      'yandex.com',
-    ],
-  ];
-
-  const [email, setEmail] = useState<string>(defaultValue || '');
-
-  useEffect(() => {
-    if (onChange) {
-      onChange(email);
-    }
-  }, [email, onChange]);
-
-  return (
-    <Email
-      maxResults={maxResults || 10}
-      onChange={setEmail}
-      baseList={_baseList}
-      autoComplete={autoComplete}
-      classNames={{
-        wrapper: 'relative',
-        input: className,
-        domain: 'text-primary font-semibold',
-        username: 'max-w-full text-ellipsis overflow-hidden',
-        suggestion: '',
-        dropdown: '',
-      }}
-      refineList={domains}
-      {...props}
-      value={email}
-    />
-  );
-}
+export { EmailInput };

@@ -568,21 +568,9 @@ export function uiSchemaFromSchema({
     };
     // enum varsa
     if (Object.keys(object).includes('enum')) {
-      const fieldRelatedKeys = Object.keys(resources).filter((key) =>
-        key.includes(constantKey)
+      const labels = object.enum.map(
+        (key: string) => getResourceValue(key) || key
       );
-      const valuesToExclude = [
-        'ui:placeholder',
-        'emptyValue',
-        'searchPlaceholder',
-        'searchResultLabel',
-      ];
-      const enumKeys = fieldRelatedKeys.filter(
-        (key) =>
-          key !== constantKey &&
-          !valuesToExclude.some((value) => key.includes(value))
-      );
-      const labels = enumKeys.map((key) => resources[key]);
       Object.assign(uiSchemaItem, {
         'ui:enumNames': labels,
         'ui:options': {

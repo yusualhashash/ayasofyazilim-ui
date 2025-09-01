@@ -263,10 +263,10 @@ export type TanstackTableActionsSchemaFormDialog<TData> = Omit<
   'cancelText' | 'onCancel' | 'confirmationText' | 'onConfirm'
 > & {
   className?: { autoform: string; submit: string };
-  onSubmit: (values: any | undefined) => void;
+  onSubmit: (values: TData | undefined) => void;
   submitText: string;
   type: 'schemaform-dialog';
-} & SchemaFormProps<TData>;
+} & Omit<SchemaFormProps<TData>, 'onSubmit'>;
 export type TanstackTableActionsCustomDialog = TanstackTableActionsDialog & {
   content: JSX.Element;
   type: 'custom-dialog';
