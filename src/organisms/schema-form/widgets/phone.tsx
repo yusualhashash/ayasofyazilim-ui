@@ -67,7 +67,7 @@ const errorMessage = {
   en: 'Please enter a valid phone number.',
 };
 
-export const CustomPhoneField2 = function <T>(
+export const CustomPhoneFieldWithParse = function <T>(
   props: WidgetProps<T, any, FormContext<T>>
 ) {
   const { value, onChange, placeholder, name, className, id } = props;
@@ -79,6 +79,24 @@ export const CustomPhoneField2 = function <T>(
       placeholder={placeholder}
       className={className}
       onChange={onChange}
+    />
+  );
+};
+
+export const CustomPhoneFieldWithValue = function <T>(
+  props: WidgetProps<T, any, FormContext<T>>
+) {
+  const { value, onChange, placeholder, name, className, id } = props;
+  return (
+    <PhoneInput
+      id={id}
+      name={name}
+      value={value || ''}
+      placeholder={placeholder}
+      className={className}
+      onChange={(values) => {
+        onChange(values.value);
+      }}
     />
   );
 };
