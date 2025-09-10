@@ -60,6 +60,7 @@ export const Combobox = (props: WidgetProps) => {
         <Button
           disabled={fieldOptions.disabled}
           type="button"
+          data-testid={props.id}
           variant="outline"
           role="combobox"
           className={cn(
@@ -87,6 +88,7 @@ export const Combobox = (props: WidgetProps) => {
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Button
+          data-testid={props.id}
           disabled={fieldOptions.disabled}
           type="button"
           variant="outline"
@@ -136,6 +138,7 @@ function List<T>({
       }}
     >
       <CommandInput
+        data-testid={`${props.id}_search`}
         placeholder={(uiOptions?.searchPlaceholder as string) || 'Search...'}
         className="h-9"
       />
@@ -144,8 +147,9 @@ function List<T>({
           {(uiOptions?.searchResultLabel as string) || '0 search result.'}
         </CommandEmpty>
         <CommandGroup>
-          {options.enumOptions?.map((enumOption) => (
+          {options.enumOptions?.map((enumOption, index) => (
             <CommandItem
+              data-testid={`${props.id}_${index}`}
               onSelect={() => {
                 props.onChange(
                   uiOptions?.allowEmpty !== false

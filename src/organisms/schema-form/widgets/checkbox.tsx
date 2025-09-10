@@ -30,6 +30,7 @@ export const CustomCheckbox = (props: WidgetProps) => {
     <div className="flex items-center gap-2 h-10">
       <Checkbox
         id={id}
+        data-testid={id}
         className={className}
         onCheckedChange={() => {
           onChange(!value);

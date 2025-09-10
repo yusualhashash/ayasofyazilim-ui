@@ -24,6 +24,7 @@ export const CustomTextInput = (props: WidgetProps) => {
     <Input
       type={uiOptions?.inputType || 'text'}
       id={id}
+      data-testid={id}
       className={cn('h-10', className)}
       required={fieldOptions.required}
       onChange={(event) => {

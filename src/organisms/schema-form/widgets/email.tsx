@@ -32,7 +32,7 @@ export const EmailInputWidget = (props: WidgetProps) => {
   const [email, setEmail] = useState(value || '');
   return (
     <EmailInput
-      id="validation-email"
+      id={props.id}
       value={email}
       onValueChange={(val) => {
         setEmail(val);
@@ -40,7 +40,7 @@ export const EmailInputWidget = (props: WidgetProps) => {
       }}
       defaultValue={defaultValue}
       readOnly={readOnly}
-      placeholder="Try typing 'john@gmail.com'"
+      placeholder={props.placeholder || "Try typing 'john@gmail.com'"}
       className={cn('w-full', className)}
       suggestions={uiSchema?.['ui:baseList'] ?? []}
     />

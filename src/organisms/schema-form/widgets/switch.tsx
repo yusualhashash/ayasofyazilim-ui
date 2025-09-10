@@ -31,6 +31,7 @@ export const CustomSwitch = (props: WidgetProps) => {
     <div className="flex items-center gap-2 h-10">
       <Switch
         id={id}
+        data-testid={id}
         className={className}
         onCheckedChange={() => {
           onChange(!value);

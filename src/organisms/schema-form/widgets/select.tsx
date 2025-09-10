@@ -46,6 +46,8 @@ export const CustomSelect = (props: WidgetProps) => {
       }}
     >
       <SelectTrigger
+        id={props.id}
+        data-testid={props.id}
         className={cn(
           'h-10',
           hasValue ? 'text-black ' : 'text-muted-foreground'
@@ -60,9 +62,10 @@ export const CustomSelect = (props: WidgetProps) => {
           }
         />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent id={`${props.id}_content`}>
         {options.enumOptions?.map((enumOption) => (
           <SelectItem
+            data-testid={`${props.id}_${enumOption.value}`}
             key={JSON.stringify(enumOption.value)}
             value={enumOption.value.toString()}
           >

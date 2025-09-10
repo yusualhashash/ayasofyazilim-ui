@@ -231,6 +231,7 @@ export const MultiSelect = React.forwardRef<
           <Button
             ref={ref}
             {...props}
+            data-testid={props.id}
             type="button"
             disabled={disabled}
             onClick={handleTogglePopover}
@@ -325,6 +326,7 @@ export const MultiSelect = React.forwardRef<
         >
           <Command>
             <CommandInput
+              data-testid={`${props.id}_search`}
               placeholder="Search..."
               onKeyDown={handleInputKeyDown}
             />
@@ -332,6 +334,7 @@ export const MultiSelect = React.forwardRef<
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup>
                 <CommandItem
+                  data-testid={`${props.id}_select_all`}
                   key="all"
                   onSelect={toggleAll}
                   className="cursor-pointer"
@@ -355,6 +358,7 @@ export const MultiSelect = React.forwardRef<
                   const isSelected = selectedValues.includes(option.value);
                   return (
                     <CommandItem
+                      data-testid={`${props.id}_${option.value}`}
                       key={option.value}
                       onSelect={() => toggleOption(option.value)}
                       className="cursor-pointer"
@@ -385,6 +389,7 @@ export const MultiSelect = React.forwardRef<
                   {selectedValues.length > 0 && (
                     <>
                       <CommandItem
+                        data-testid={`${props.id}_clear`}
                         onSelect={handleClear}
                         className="flex-1 justify-center cursor-pointer"
                         disabled={
@@ -401,6 +406,7 @@ export const MultiSelect = React.forwardRef<
                     </>
                   )}
                   <CommandItem
+                    data-testid={`${props.id}_close`}
                     onSelect={() => setIsPopoverOpen(false)}
                     className="flex-1 justify-center cursor-pointer max-w-full"
                   >

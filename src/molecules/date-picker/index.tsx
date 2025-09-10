@@ -27,6 +27,7 @@ import {
 const offset = new Date().getTimezoneOffset() * 60 * 1000;
 
 export function DatePicker({
+  id,
   label,
   classNames,
   onChange,
@@ -35,6 +36,7 @@ export function DatePicker({
   useTime = false,
   showIcon = true,
 }: {
+  id: string;
   label?: string;
   disabled?: boolean;
   classNames?: {
@@ -106,7 +108,11 @@ export function DatePicker({
             classNames?.dateInput
           )}
         >
-          <DateInput unstyled className="peer-focus:ring" />
+          <DateInput
+            unstyled
+            className="peer-focus:ring"
+            data-testid={`${id}_calendar_input_1`}
+          />
           {useTime && (
             <>
               <Separator orientation="vertical" />
@@ -118,7 +124,11 @@ export function DatePicker({
                   }
                 }}
               >
-                <DateInput unstyled className="peer-focus:ring" />
+                <DateInput
+                  unstyled
+                  className="peer-focus:ring"
+                  data-testid={`${id}_calendar_input_2`}
+                />
               </TimeField>
             </>
           )}
@@ -130,7 +140,10 @@ export function DatePicker({
         >
           <PopoverTrigger asChild>
             {showIcon && (
-              <Button className="z-10 -me-px -ms-9 flex w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus-visible:outline-none data-[focus-visible]:outline data-[focus-visible]:outline-2 data-[focus-visible]:outline-ring/70 border-none">
+              <Button
+                data-testid={`${id}_calendar_icon`}
+                className="z-10 -me-px -ms-9 flex w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus-visible:outline-none data-[focus-visible]:outline data-[focus-visible]:outline-2 data-[focus-visible]:outline-ring/70 border-none"
+              >
                 <CalendarIcon size={16} strokeWidth={2} />
               </Button>
             )}
@@ -150,6 +163,7 @@ export function DatePicker({
 }
 
 export function DateRangePicker({
+  id,
   label,
   classNames,
   onChange,
@@ -157,6 +171,7 @@ export function DateRangePicker({
   disabled = false,
   showIcon = true,
 }: {
+  id: string;
   label?: string;
   disabled?: boolean;
   classNames?: {
@@ -224,14 +239,27 @@ export function DateRangePicker({
             classNames?.dateInput
           )}
         >
-          <DateInput unstyled className="peer-focus:ring" slot="start" />
+          <DateInput
+            unstyled
+            className="peer-focus:ring"
+            slot="start"
+            data-testid={`${id}_calendar_input_2`}
+          />
           <Separator orientation="vertical" />
-          <DateInput unstyled className="peer-focus:ring" slot="end" />
+          <DateInput
+            unstyled
+            className="peer-focus:ring"
+            slot="end"
+            data-testid={`${id}_calendar_input_2`}
+          />
         </Group>
         <Popover>
           <PopoverTrigger asChild>
             {showIcon && (
-              <Button className="z-10 -me-px -ms-9 flex w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus-visible:outline-none data-[focus-visible]:outline data-[focus-visible]:outline-2 data-[focus-visible]:outline-ring/70 border-none">
+              <Button
+                data-testid={`${id}_calendar_icon`}
+                className="z-10 -me-px -ms-9 flex w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus-visible:outline-none data-[focus-visible]:outline data-[focus-visible]:outline-2 data-[focus-visible]:outline-ring/70 border-none"
+              >
                 <CalendarIcon size={16} strokeWidth={2} />
               </Button>
             )}

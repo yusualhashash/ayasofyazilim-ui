@@ -160,6 +160,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
             submit={props.submitText || 'Submit'}
             className={defaultSubmitClassName}
             disabled={props.disabled}
+            id={props.id || 'schema_form'}
           />
         )}
       </Form>
@@ -172,10 +173,12 @@ export const SchemaFormSubmit = ({
   submit,
   className,
   disabled,
+  id,
 }: {
   className?: string;
   disabled?: boolean;
   submit: string;
+  id: string;
 }) => (
   <div
     className={cn(
@@ -183,7 +186,7 @@ export const SchemaFormSubmit = ({
       className
     )}
   >
-    <Button type="submit" disabled={disabled}>
+    <Button type="submit" disabled={disabled} data-testid={`${id}_submit`}>
       {submit}
     </Button>
   </div>

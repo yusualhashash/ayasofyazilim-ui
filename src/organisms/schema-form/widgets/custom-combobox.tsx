@@ -77,6 +77,8 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
         className={cn(disabled && 'cursor-not-allowed')}
       >
         <Button
+          id={props.id}
+          data-testid={props.id}
           type="button"
           variant="outline"
           role="combobox"
@@ -105,6 +107,7 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Button
+          data-testid={props.id}
           type="button"
           disabled={fieldOptions.disabled}
           variant="outline"
@@ -167,14 +170,16 @@ function List<T>({
       }}
     >
       <CommandInput
+        data-testid={`${props.id}_search`}
         placeholder={searchPlaceholder || 'Search...'}
         className="h-9"
       />
       <CommandList className="w-full min-w-full max-w-full">
         <CommandEmpty>{searchResultLabel || '0 search result.'}</CommandEmpty>
         <CommandGroup>
-          {list?.map((item: T) => (
+          {list?.map((item: T, index) => (
             <CommandItem
+              data-testid={`${props.id}_${index}`}
               disabled={props.disabledItems?.includes(item[selectIdentifier])}
               onSelect={() => {
                 onChange(

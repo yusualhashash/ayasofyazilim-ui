@@ -22,6 +22,7 @@ export const CustomTextareaInput = (props: WidgetProps) => {
   return (
     <Textarea
       id={id}
+      data-testid={id}
       className={cn('min-h-10', className)}
       required={required}
       onChange={(event) => {
