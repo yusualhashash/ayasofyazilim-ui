@@ -25,12 +25,14 @@ type SearchItem = { id: string; name: string };
 
 function CommandGroupItem({
   items,
+  id,
   title,
   onChange,
   value,
   multiple,
 }: {
   title: string;
+  id: string;
   items: SearchItem[];
   value: SearchItem[];
   onChange: (value: SearchItem[]) => void;
@@ -38,8 +40,9 @@ function CommandGroupItem({
 }) {
   return (
     <CommandGroup heading={title}>
-      {items?.map((currentItem) => (
+      {items?.map((currentItem, index) => (
         <CommandItem
+          id={`${id}_${index}`}
           key={currentItem.id}
           onSelect={() => {
             if (value.find((i) => i.id === currentItem.id)) {
@@ -74,6 +77,7 @@ export type AsyncSelectType = {
   disabled?: boolean;
   closeOnSelect?: boolean;
   multiple?: boolean;
+  id: string;
   classNames?: {
     trigger?: string;
   };
@@ -91,6 +95,7 @@ export function AsyncSelectBase({
   disabled = false,
   multiple = true,
   closeOnSelect = false,
+  id,
   setIsPopoverOpen,
 }: Omit<AsyncSelectType, 'classNames'> & {
   setIsPopoverOpen: Dispatch<SetStateAction<boolean>>;
@@ -136,6 +141,8 @@ export function AsyncSelectBase({
   return (
     <Cmd className="border" aria-disabled={disabled}>
       <CommandInput
+        id={`${id}_input`}
+        data-testid={`${id}_input`}
         placeholder={searchText}
         onValueChange={(search) => onSearch(search)}
         disabled={disabled}
@@ -155,6 +162,7 @@ export function AsyncSelectBase({
         {value.length > 0 && (
           <CommandGroupItem
             items={value}
+            id={`${id}_selected`}
             value={value}
             title="Selected"
             onChange={(value) => {
@@ -169,6 +177,7 @@ export function AsyncSelectBase({
           searchValue.length === 0 &&
           showableSuggestions?.length > 0 && (
             <CommandGroupItem
+              id={`${id}_item`}
               items={showableSuggestions}
               value={value}
               title="Suggestions"
@@ -182,6 +191,7 @@ export function AsyncSelectBase({
 
         {!loading && showableItems.length > 0 && (
           <CommandGroupItem
+            id={`${id}_item`}
             items={showableItems}
             value={value}
             title={resultText}
@@ -202,6 +212,8 @@ export default function AsyncSelect(props: AsyncSelectType) {
     <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
       <PopoverTrigger asChild className="w-full">
         <Button
+          id={props.id}
+          data-testid={props.id}
           type="button"
           onClick={() => setIsPopoverOpen(true)}
           className={cn(

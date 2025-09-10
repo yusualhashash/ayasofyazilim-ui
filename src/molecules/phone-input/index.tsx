@@ -23,7 +23,7 @@ export function PhoneInput({
   disabled,
   className,
 }: {
-  id?: string;
+  id: string;
   name?: string;
   placeholder?: string;
   defaultValue?: string | undefined;
@@ -41,9 +41,10 @@ export function PhoneInput({
       className={cn('flex rounded-md shadow-xs', className)}
       international
       flagComponent={FlagComponent}
-      countrySelectComponent={CountrySelect}
+      countrySelectComponent={(props) => CountrySelect({ ...props, id })}
       inputComponent={_PhoneInput}
       id={id}
+      data-testid={id}
       disabled={disabled}
       name={name}
       placeholder={placeholder}
@@ -67,6 +68,7 @@ const _PhoneInput = React.forwardRef<
   React.ComponentProps<'input'>
 >(({ className, ...props }, ref) => (
   <Input
+    data-testid={`${props.id}_input`}
     data-slot="phone-input"
     className={cn(
       '-ms-px rounded-s-none shadow-none focus-visible:z-10',
@@ -80,19 +82,22 @@ const _PhoneInput = React.forwardRef<
 _PhoneInput.displayName = '_PhoneInput';
 
 type CountrySelectProps = {
+  id: string;
   disabled?: boolean;
   value: Country;
-  onChange: (value: Country) => void;
+  onChange?: (value: Country) => void;
   options: { label: string; value: Country | undefined }[];
 };
 
 const CountrySelect = ({
+  id,
   disabled,
   value,
   onChange,
   options,
 }: CountrySelectProps) => {
   const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    if (!onChange) return;
     onChange(event.target.value as Country);
   };
 
@@ -107,17 +112,23 @@ const CountrySelect = ({
       <select
         disabled={disabled}
         value={value}
+        id={`${id}_select`}
+        data-testid={`${id}_select`}
         onChange={handleSelect}
         className="absolute inset-0 text-sm opacity-0"
         aria-label="Select country"
       >
-        <option key="default" value="">
+        <option key="default" value="" data-testid={`${id}_default`}>
           Select a country
         </option>
         {options
           .filter((x) => x.value)
           .map((option, i) => (
-            <option key={option.value ?? `empty-${i}`} value={option.value}>
+            <option
+              key={option.value ?? `empty-${i}`}
+              value={option.value}
+              data-testid={`${id}_${option.value}`}
+            >
               {option.label}{' '}
               {option.value && `+${getCountryCallingCode(option.value)}`}
             </option>

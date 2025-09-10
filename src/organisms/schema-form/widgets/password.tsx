@@ -31,6 +31,7 @@ export const PasswordInputWidget = (props: WidgetProps) => {
   return (
     <PasswordInput
       id={id}
+      data-testid={id}
       className={cn('h-10', className)}
       required={required}
       onChange={(event) => {

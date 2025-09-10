@@ -23,6 +23,7 @@ export const CustomDate = (props: WidgetProps) => {
       : undefined;
   return (
     <DatePicker
+      id={props.id}
       defaultValue={initialDate}
       disabled={fieldOptions.disabled}
       classNames={{

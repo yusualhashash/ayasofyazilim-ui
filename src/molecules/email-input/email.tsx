@@ -17,6 +17,7 @@ interface EmailInputProps
 const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
   (
     {
+      id,
       className,
       label,
       suggestions = [],
@@ -180,6 +181,8 @@ const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
         <div className="relative">
           <Input
             type="email"
+            id={id}
+            data-testid={id}
             className={className}
             ref={inputRef}
             value={value}
@@ -196,6 +199,7 @@ const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
                 {filteredSuggestions.map((suggestion, index) => (
                   <Button
                     variant="ghost"
+                    data-testid={`${id}_suggestion_${index}`}
                     key={suggestion}
                     className={cn(
                       'w-full justify-start text-left px-2 py-1.5 text-sm cursor-pointer rounded-sm transition-colors',
