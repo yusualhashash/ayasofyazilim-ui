@@ -22,15 +22,22 @@ export * from './utils';
 export * from './fields';
 
 export const AutoFormSubmit = ({
+  id,
   children,
   className,
   disabled,
 }: {
+  id?: string;
   children?: ReactNode;
   className?: string;
   disabled?: boolean;
 }) => (
-  <Button type="submit" disabled={disabled} className={className}>
+  <Button
+    data-testid={id}
+    type="submit"
+    disabled={disabled}
+    className={className}
+  >
     {children ?? 'Submit'}
   </Button>
 );

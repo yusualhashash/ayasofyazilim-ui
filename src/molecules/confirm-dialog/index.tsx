@@ -25,7 +25,7 @@ export type ConfirmDialogProps = {
   title: string | JSX.Element;
 } & (WithTriggerConfirmDialogProps | WithoutTriggerConfirmDialogProps);
 type WithTriggerConfirmDialogProps = {
-  triggerProps: ButtonProps;
+  triggerProps: ButtonProps & { 'data-testid'?: string };
   type: 'with-trigger';
 };
 type WithoutTriggerConfirmDialogProps = {

@@ -44,6 +44,7 @@ import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
  */
 
 type CustomComboboxProps<T> = {
+  id?: string;
   childrenProps: AutoFormInputComponentProps;
   disabled?: boolean;
   emptyValue?: string;
@@ -87,6 +88,7 @@ export function CustomCombobox<T>({ ...props }: CustomComboboxProps<T>) {
       <PopoverTrigger asChild>
         <FormControl>
           <Button
+            data-testid={`${props.id}_trigger`}
             type="button"
             variant="outline"
             role="combobox"
@@ -181,14 +183,16 @@ function List<T>({
       }}
     >
       <CommandInput
+        data-testid={`${props.id}_search`}
         placeholder={searchPlaceholder || 'Search...'}
         className="h-9"
       />
       <CommandList>
         <CommandEmpty>{searchResultLabel || '0 search result.'}</CommandEmpty>
         <CommandGroup>
-          {list?.map((item: T) => (
+          {list?.map((item: T, index) => (
             <CommandItem
+              data-testid={`${props.id}_item_${index}`}
               key={item[selectIdentifier]?.toString()}
               value={item[selectIdentifier]?.toString()}
               onSelect={() => {
