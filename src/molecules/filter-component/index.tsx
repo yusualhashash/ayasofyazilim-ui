@@ -23,6 +23,7 @@ import MultiSelectField from './fields/multi-select';
 export type FilterComponentSearchItem = { id: string; name: string };
 export type DateSelectType = {
   title: string;
+  id: string;
   placeholder?: string;
   onChange: Dispatch<SetStateAction<string>>;
   value: string;
@@ -41,8 +42,10 @@ export type MultiSelectType = {
   order?: number;
   placeholder?: string;
   selectAllLabel?: string;
+  id: string;
 };
 export type AsyncSelectType = {
+  id: string;
   title: string;
   fetchAction: (search: string) => Promise<FilterComponentSearchItem[]>;
   onChange: Dispatch<SetStateAction<FilterComponentSearchItem[]>>;

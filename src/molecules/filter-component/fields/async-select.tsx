@@ -17,6 +17,7 @@ function AsyncSelectField({
     <div className="grid items-center gap-1.5" key={filter.title}>
       <Label htmlFor="refund-point">{filter.title}</Label>
       <AsyncSelect
+        id={filter.id}
         fetchAction={filter.fetchAction}
         onChange={filter.onChange}
         value={filter.value}

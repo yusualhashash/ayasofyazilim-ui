@@ -175,6 +175,7 @@ export function tanstackTableEditableColumnsByRowData<T>(
             return (
               <div className="text-center">
                 <DatePicker
+                  id={`${accessorKey}_date`}
                   defaultValue={
                     date instanceof Date && !Number.isNaN(date.getTime())
                       ? date

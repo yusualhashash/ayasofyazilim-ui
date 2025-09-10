@@ -144,6 +144,7 @@ export function TanstackTableDateFilter<TData, TValue>({
       <PopoverContent className="p-0 w-full min-w-fit" align="start">
         {dateItem?.endAccessorKey ? (
           <DateRangePicker
+            id={dateItem.startAccessorKey}
             classNames={{
               dateInput: 'border-0 border-b rounded-none',
             }}
@@ -154,6 +155,7 @@ export function TanstackTableDateFilter<TData, TValue>({
           />
         ) : (
           <DatePicker
+            id={dateItem.endAccessorKey || ''}
             onChange={(_date) => {
               setDate(_date);
             }}
