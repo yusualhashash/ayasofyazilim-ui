@@ -1,13 +1,22 @@
 'use client';
 
-import Form, { ThemeProps } from '@rjsf/core';
+import Form from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
 import { customizeValidator } from '@rjsf/validator-ajv8';
-import { Fragment, useState } from 'react';
+import {
+  memo,
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { cn } from '@/lib/utils';
 import { ScrollBar } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import ScrollArea from '../../molecules/scroll-area';
+import { StringArrayItem } from './custom/string-array';
 import { FieldErrorTemplate } from './fields';
 import {
   AccordionArrayFieldTemplate,
@@ -39,7 +48,6 @@ import {
   EmailInputWidget,
   PasswordInputWidget,
 } from './widgets';
-import { StringArrayItem } from './custom/string-array';
 
 /**
  * SchemaForm component that renders a form based on the provided schema and options.
@@ -49,9 +57,57 @@ import { StringArrayItem } from './custom/string-array';
  * @returns {JSX.Element} - The rendered form component.
  */
 export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
-  const arrayFields = getArrayFieldKeys(props.schema);
-  const Default: ThemeProps<T, any, FormContext<T>> = {
-    widgets: {
+  const {
+    filter,
+    children,
+    withScrollArea = true,
+    useDefaultSubmit = true,
+    useDependency = false,
+    disableValidation = false,
+    defaultSubmitClassName,
+    locale = 'en',
+    schema: originalSchema,
+    uiSchema: propsUiSchema,
+    onChange,
+    onSubmit,
+    widgets: customWidgets,
+    fields: customFields,
+    templates: customTemplates,
+    useTableForArrayItems,
+    showErrorList = false,
+    className,
+    disabled,
+    submitText,
+    id = 'schema_form',
+    formData: propsFormData,
+    ...restProps
+  } = props;
+
+  // Keep track of the current form data for submission
+  const currentFormDataRef = useRef<T | undefined>(propsFormData);
+
+  // Internal state only used when useDependency is true
+  const [internalFormData, setInternalFormData] = useState<T | undefined>(
+    propsFormData
+  );
+
+  // Update refs and internal state when props change
+  useEffect(() => {
+    currentFormDataRef.current = propsFormData;
+    if (useDependency) {
+      setInternalFormData(propsFormData);
+    }
+  }, [propsFormData, useDependency]);
+
+  // Memoize array fields calculation
+  const arrayFields = useMemo(
+    () => getArrayFieldKeys(originalSchema),
+    [originalSchema]
+  );
+
+  // Memoize default widgets, fields, and templates
+  const defaultWidgets = useMemo(
+    () => ({
       switch: CustomSwitch,
       CheckboxWidget: CustomCheckbox,
       combobox: Combobox,
@@ -66,10 +122,14 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       'phone-with-parse': CustomPhoneFieldWithParse,
       'phone-with-value': CustomPhoneFieldWithValue,
       StringArray: StringArrayItem,
-    },
-    templates: {
+    }),
+    []
+  );
+
+  const defaultTemplates = useMemo(
+    () => ({
       ArrayFieldTemplate:
-        props.useTableForArrayItems && arrayFields.length > 0
+        useTableForArrayItems && arrayFields.length > 0
           ? TableArrayFieldTemplate
           : AccordionArrayFieldTemplate,
       ErrorListTemplate,
@@ -77,90 +137,177 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       FieldTemplate,
       ObjectFieldTemplate,
       DescriptionFieldTemplate,
+    }),
+    [useTableForArrayItems, arrayFields.length]
+  );
+
+  // Memoize merged widgets, fields, and templates
+  const mergedWidgets = useMemo(
+    () => ({
+      ...defaultWidgets,
+      ...customWidgets,
+    }),
+    [defaultWidgets, customWidgets]
+  );
+
+  const mergedFields = useMemo(
+    () => ({
+      ...customFields,
+    }),
+    [customFields]
+  );
+
+  const mergedTemplates = useMemo(
+    () => ({
+      ...defaultTemplates,
+      ...customTemplates,
+    }),
+    [defaultTemplates, customTemplates]
+  );
+
+  // Memoize schema processing
+  const processedSchema = useMemo(() => {
+    let schema = originalSchema;
+    if (filter) {
+      schema = createSchemaWithFilters({
+        filter,
+        schema,
+      });
+    }
+    return removeFieldsfromGenericSchema(schema, [
+      'extraProperties',
+    ]) as RJSFSchema;
+  }, [originalSchema, filter]);
+
+  // Memoize UI schema processing
+  const processedUiSchema = useMemo(() => {
+    let uiSchema = {
+      'ui:config': {
+        locale,
+      },
+    };
+
+    if (propsUiSchema) {
+      // @ts-expect-error
+      uiSchema = mergeUISchemaObjects(uiSchema, propsUiSchema);
+    }
+
+    return uiSchema;
+  }, [locale, propsUiSchema]);
+
+  // Memoize form context
+  const formContext = useMemo(
+    () => ({
+      ...processedUiSchema['ui:config'],
+      formData: useDependency
+        ? useDependency
+          ? internalFormData
+          : propsFormData
+        : undefined,
+      useTableForArrayItems,
+      arrayFields,
+    }),
+    [
+      processedUiSchema,
+      useDependency,
+      internalFormData,
+      propsFormData,
+      useTableForArrayItems,
+      arrayFields,
+    ]
+  );
+
+  // Memoize validator
+
+  // Determine which formData to use for the form
+  const formDataToUse = useMemo(
+    () => (useDependency ? internalFormData : propsFormData),
+    [useDependency, internalFormData, propsFormData]
+  );
+
+  // Memoize wrapper component
+  const Wrapper = useMemo(
+    () => (withScrollArea ? ScrollArea : Fragment),
+    [withScrollArea]
+  );
+
+  // Memoize wrapper props
+  const wrapperProps = useMemo(
+    () => (withScrollArea ? { className: 'h-full [&>div>div]:!block' } : {}),
+    [withScrollArea]
+  );
+
+  // Optimized change handler
+  const handleChange = useCallback(
+    (e: any) => {
+      // Always update the ref with the latest data
+      currentFormDataRef.current = e.formData;
+
+      if (onChange) {
+        onChange({ ...e, formData: e.formData });
+      }
+
+      // Only update internal state if using dependency
+      if (useDependency) {
+        setInternalFormData(e.formData);
+      }
     },
-  };
-  const {
-    filter,
-    children,
-    withScrollArea = true,
-    useDefaultSubmit = true,
-    useDependency = false,
-    disableValidation = false,
-    defaultSubmitClassName,
-    locale = 'en',
-  } = props; // Start with the provided schema
-  const Wrapper = withScrollArea ? ScrollArea : Fragment;
-  let uiSchema = {
-    'ui:config': {
-      locale,
+    [onChange, useDependency]
+  );
+
+  // Optimized submit handler
+  const handleSubmit = useCallback(
+    (data: any, event: any) => {
+      // Use the most recent form data for submission
+      const latestData = {
+        ...data,
+        formData: currentFormDataRef.current,
+      };
+
+      if (onSubmit) {
+        onSubmit(latestData, event);
+      }
     },
-  }; // Initialize the UI schema
-  let { schema } = props;
-  if (filter) {
-    schema = createSchemaWithFilters({
-      filter,
-      schema,
-    });
-  }
-  // Merge any additional UI schema provided via props
-  if (props.uiSchema) {
-    // @ts-expect-error
-    uiSchema = mergeUISchemaObjects(uiSchema, props.uiSchema);
-  }
-  const [formData, setFormData] = useState<T | undefined>(props.formData);
+    [onSubmit]
+  );
+
+  // Memoize form className
+  const formClassName = useMemo(
+    () => cn('p-px', withScrollArea && 'pr-4', className),
+    [withScrollArea, className]
+  );
+
   return (
-    <Wrapper
-      {...(withScrollArea && { className: 'h-full [&>div>div]:!block' })}
-    >
+    <Wrapper {...wrapperProps}>
       <Form<T, any, FormContext<T>>
         noHtml5Validate
         liveValidate
-        formContext={{
-          ...uiSchema['ui:config'],
-          formData: useDependency ? formData : undefined,
-          useTableForArrayItems: props.useTableForArrayItems,
-          arrayFields,
-        }}
+        formContext={formContext}
         focusOnFirstError
-        showErrorList={props.showErrorList || false}
-        {...props}
-        className={cn('p-px', withScrollArea && 'pr-4', props.className)}
-        formData={formData}
-        schema={
-          removeFieldsfromGenericSchema(schema, [
-            'extraProperties',
-          ]) as RJSFSchema
-        } // Cast schema to RJSFSchema type
+        showErrorList={showErrorList}
+        {...restProps}
+        className={formClassName}
+        formData={formDataToUse}
+        schema={processedSchema}
         validator={customizeValidator(
-          {
-            ajvOptionsOverrides: {
-              removeAdditional: true,
-            },
-          },
+          { ajvOptionsOverrides: { removeAdditional: true } },
           locale === 'tr' ? AJV_TR : undefined
-        )} // Custom validator
+        )}
         noValidate={disableValidation}
-        fields={{ ...Default.fields, ...props.fields }} // Merge custom fields
-        widgets={{ ...Default.widgets, ...props.widgets }} // Merge custom widgets
-        templates={{ ...Default.templates, ...props.templates }} // Merge custom templates
-        uiSchema={uiSchema} // Set the generated UI schema
-        onChange={(e) => {
-          if (props.onChange) {
-            props.onChange({ ...e, formData: e.formData || formData }); // Call the onChange prop if provided
-          }
-          if (useDependency) setFormData(e.formData);
-        }} // Handle form data changes
-        onSubmit={(data, event) => {
-          if (props.onSubmit) props.onSubmit(data, event); // Call the onSubmit prop if provided
-        }}
+        fields={mergedFields}
+        widgets={mergedWidgets}
+        templates={mergedTemplates}
+        uiSchema={processedUiSchema}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
       >
         {children}
         {useDefaultSubmit && (
           <SchemaFormSubmit
-            submit={props.submitText || 'Submit'}
+            submit={submitText || 'Submit'}
             className={defaultSubmitClassName}
-            disabled={props.disabled}
-            id={props.id || 'schema_form'}
+            disabled={disabled}
+            id={id}
           />
         )}
       </Form>
@@ -169,25 +316,33 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
   );
 }
 
-export const SchemaFormSubmit = ({
-  submit,
-  className,
-  disabled,
-  id,
-}: {
-  className?: string;
-  disabled?: boolean;
-  submit: string;
-  id: string;
-}) => (
-  <div
-    className={cn(
-      'py-4 sticky bottom-0 bg-white flex justify-end z-50',
-      className
-    )}
-  >
-    <Button type="submit" disabled={disabled} data-testid={`${id}_submit`}>
-      {submit}
-    </Button>
-  </div>
+// Memoize the submit component to prevent unnecessary re-renders
+export const SchemaFormSubmit = memo(
+  ({
+    submit,
+    className,
+    disabled,
+    id,
+  }: {
+    className?: string;
+    disabled?: boolean;
+    submit: string;
+    id: string;
+  }) => {
+    const submitClassName = useMemo(
+      () =>
+        cn('py-4 sticky bottom-0 bg-white flex justify-end z-50', className),
+      [className]
+    );
+
+    return (
+      <div className={submitClassName}>
+        <Button type="submit" disabled={disabled} data-testid={`${id}_submit`}>
+          {submit}
+        </Button>
+      </div>
+    );
+  }
 );
+
+SchemaFormSubmit.displayName = 'SchemaFormSubmit';
