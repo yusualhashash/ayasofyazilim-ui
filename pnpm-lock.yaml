@@ -11,6 +11,12 @@ importers:
       '@gocapsule/column-extension':
         specifier: ^1.0.0-beta-3
         version: 1.0.0-beta-3(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(prosemirror-model@1.25.0)(prosemirror-state@1.4.3)
+      '@headless-tree/core':
+        specifier: ^1.4.0
+        version: 1.4.0
+      '@headless-tree/react':
+        specifier: ^1.4.0
+        version: 1.4.0(@headless-tree/core@1.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@hookform/resolvers':
         specifier: 4.1.2
         version: 4.1.2(react-hook-form@7.53.0(react@18.3.1))
@@ -1565,6 +1571,16 @@ packages:
       '@tiptap/core': ^2.0.0-beta.1
       prosemirror-model: ^1.0.0
       prosemirror-state: ^1.0.0
+
+  '@headless-tree/core@1.4.0':
+    resolution: {integrity: sha512-xBDYr9WJb7CuWuWzAAHfCfYfYUdCknsHa6OkdsLqeOc4JuwYuSlQ+TcDjeeImmgF6hVSAbeBBubOwotk5pmiMw==}
+
+  '@headless-tree/react@1.4.0':
+    resolution: {integrity: sha512-B62Ku6E3u0JPrz2Sm3cKqTCRMltmhgo5mgkuOvfYbrVILsDSZ6ct2yX56/1GQlipPkVF3mEhlwiIVKNOQKWnqA==}
+    peerDependencies:
+      '@headless-tree/core': '*'
+      react: '*'
+      react-dom: '*'
 
   '@hookform/resolvers@4.1.2':
     resolution: {integrity: sha512-wl6H9c9wLOZMJAqGLEVKzbCkxJuV+BYuLFZFCQtCwMe0b3qQk4kUBd/ZAj13SwcSqcx86rCgSCyngQfmA6DOWg==}
@@ -11245,6 +11261,14 @@ snapshots:
       '@tiptap/core': 2.11.5(@tiptap/pm@2.11.5)
       prosemirror-model: 1.25.0
       prosemirror-state: 1.4.3
+
+  '@headless-tree/core@1.4.0': {}
+
+  '@headless-tree/react@1.4.0(@headless-tree/core@1.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@headless-tree/core': 1.4.0
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   '@hookform/resolvers@4.1.2(react-hook-form@7.53.0(react@18.3.1))':
     dependencies:
