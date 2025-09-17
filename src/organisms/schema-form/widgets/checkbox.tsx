@@ -14,12 +14,13 @@ export const CustomCheckbox = (props: WidgetProps) => {
     disabled,
     name,
     label,
-    required,
   } = props;
   const dependencyOptions = fieldOptionsByDependency(
     uiSchema,
     props.formContext
   );
+
+  const required = uiSchema?.['ui:required'] || props.required;
   const fieldOptions = {
     disabled,
     required,
@@ -38,6 +39,7 @@ export const CustomCheckbox = (props: WidgetProps) => {
         checked={value}
         defaultValue={value || defaultValue}
         name={name}
+        required={fieldOptions.required}
         disabled={fieldOptions.disabled}
       />
       <FieldLabel id={id} label={label} required={fieldOptions.required} />

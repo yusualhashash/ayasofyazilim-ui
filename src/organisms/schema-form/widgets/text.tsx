@@ -4,13 +4,13 @@ import { WidgetProps } from '../types';
 import { cn } from '@/lib/utils';
 
 export const CustomTextInput = (props: WidgetProps) => {
-  const { uiSchema, required, className, id, disabled, onChange, value } =
-    props;
+  const { uiSchema, className, id, disabled, onChange, value } = props;
   const uiOptions = uiSchema?.['ui:options'];
   const dependencyOptions = fieldOptionsByDependency(
     uiSchema,
     props.formContext
   );
+  const required = uiSchema?.['ui:required'] || props.required;
   const fieldOptions = {
     disabled,
     required,

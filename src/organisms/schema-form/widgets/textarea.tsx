@@ -4,12 +4,12 @@ import { fieldOptionsByDependency } from '../utils/dependency';
 import { cn } from '@/lib/utils';
 
 export const CustomTextareaInput = (props: WidgetProps) => {
-  const { required, className, id, uiSchema, disabled, onChange, value } =
-    props;
+  const { className, id, uiSchema, disabled, onChange, value } = props;
   const dependencyOptions = fieldOptionsByDependency(
     uiSchema,
     props.formContext
   );
+  const required = uiSchema?.['ui:required'] || props.required;
   const fieldOptions = {
     disabled,
     required,
@@ -24,7 +24,7 @@ export const CustomTextareaInput = (props: WidgetProps) => {
       id={id}
       data-testid={id}
       className={cn('min-h-10', className)}
-      required={required}
+      required={fieldOptions.required}
       onChange={(event) => {
         if (event.target.value === '') {
           onChange(undefined);

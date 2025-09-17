@@ -9,7 +9,6 @@ export function FieldTemplate(props: FieldTemplateProps) {
     classNames,
     style,
     label,
-    required,
     rawDescription,
     errors,
     children,
@@ -25,12 +24,14 @@ export function FieldTemplate(props: FieldTemplateProps) {
     uiSchema,
     props.formContext
   );
+  const required = uiSchema?.['ui:required'] || props.required;
   const fieldOptions = {
     disabled,
     required,
     ...dependencyOptions,
   };
-  if (fieldOptions.hidden) return children;
+  if (fieldOptions.hidden || uiSchema?.['ui:widget'] === 'hidden')
+    return children;
   return (
     <div
       className={cn(

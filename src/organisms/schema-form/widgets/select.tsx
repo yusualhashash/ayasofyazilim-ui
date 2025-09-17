@@ -11,22 +11,15 @@ import { cn } from '@/lib/utils';
 import { beautifyLabel } from '../utils';
 
 export const CustomSelect = (props: WidgetProps) => {
-  const {
-    label,
-    options,
-    onChange,
-    value,
-    defaultValue,
-    disabled,
-    uiSchema,
-    required,
-  } = props;
+  const { label, options, onChange, value, defaultValue, disabled, uiSchema } =
+    props;
   const _value = value?.toString() || defaultValue?.toString();
 
   const dependencyOptions = fieldOptionsByDependency(
     uiSchema,
     props.formContext
   );
+  const required = uiSchema?.['ui:required'] || props.required;
   const fieldOptions = {
     disabled,
     required,

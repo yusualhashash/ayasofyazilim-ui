@@ -3,11 +3,12 @@ import { WidgetProps } from '../types';
 import { fieldOptionsByDependency } from '../utils/dependency';
 
 export const CustomDate = (props: WidgetProps) => {
-  const { value, onChange, disabled, uiSchema, required } = props;
+  const { value, onChange, disabled, uiSchema } = props;
   const dependencyOptions = fieldOptionsByDependency(
     uiSchema,
     props.formContext
   );
+  const required = uiSchema?.['ui:required'] || props.required;
   const fieldOptions = {
     disabled,
     required,

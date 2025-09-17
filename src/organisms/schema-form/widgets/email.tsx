@@ -14,12 +14,12 @@ export const EmailInputWidget = (props: WidgetProps) => {
     defaultValue,
     disabled,
     readOnly,
-    required,
   } = props;
   const dependencyOptions = fieldOptionsByDependency(
     uiSchema,
     props.formContext
   );
+  const required = uiSchema?.['ui:required'] || props.required;
   const fieldOptions = {
     disabled,
     required,

@@ -19,7 +19,6 @@ export function CustomMultiSelect(
     onChange,
     id,
     label,
-    required,
     classNames,
     displayLabel,
     disabled,
@@ -37,6 +36,7 @@ export function CustomMultiSelect(
     uiSchema,
     props.formContext
   );
+  const required = uiSchema?.['ui:required'] || props.required;
   const fieldOptions = {
     disabled,
     required,

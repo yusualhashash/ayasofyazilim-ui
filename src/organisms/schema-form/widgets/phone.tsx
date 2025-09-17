@@ -3,9 +3,9 @@
 import { ErrorSchema, WidgetProps } from '@rjsf/utils';
 import { PhoneNumberUtil } from 'google-libphonenumber';
 import { PhoneInput as RIP } from 'react-international-phone';
-import { PhoneInput } from '../../../molecules/phone-input';
 import { cn } from '@/lib/utils';
 import 'react-international-phone/style.css';
+import { PhoneInput } from '../../../molecules/phone-input';
 import { FormContext } from '../types';
 
 const phoneUtil = PhoneNumberUtil.getInstance();
@@ -70,30 +70,20 @@ const errorMessage = {
 export const CustomPhoneFieldWithParse = function <T>(
   props: WidgetProps<T, any, FormContext<T>>
 ) {
-  const { value, onChange, placeholder, name, className, id } = props;
-  return (
-    <PhoneInput
-      id={id}
-      name={name}
-      value={value || ''}
-      placeholder={placeholder}
-      className={className}
-      onChange={onChange}
-    />
-  );
+  const required = props.required || props.uiSchema?.['ui:required'];
+  return <PhoneInput {...props} required={required} defaultValue={undefined} />;
 };
 
 export const CustomPhoneFieldWithValue = function <T>(
   props: WidgetProps<T, any, FormContext<T>>
 ) {
-  const { value, onChange, placeholder, name, className, id } = props;
+  const { onChange, uiSchema } = props;
+  const required = uiSchema?.['ui:required'] || props.required;
   return (
     <PhoneInput
-      id={id}
-      name={name}
-      value={value || ''}
-      placeholder={placeholder}
-      className={className}
+      {...props}
+      required={required}
+      defaultValue={undefined}
       onChange={(values) => {
         onChange(values.value);
       }}

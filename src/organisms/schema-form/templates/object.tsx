@@ -6,9 +6,9 @@ import { FieldLabel } from '../custom/label';
 import { TableArrayObjectFieldTemplate } from './table-array';
 
 export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
-  const { uiSchema, title, required, disabled, description, formContext } =
-    props;
+  const { uiSchema, title, disabled, description, formContext } = props;
   const dependencyOptions = fieldOptionsByDependency(uiSchema, formContext);
+  const required = uiSchema?.['ui:required'] || props.required;
   const fieldOptions = {
     disabled,
     required,
