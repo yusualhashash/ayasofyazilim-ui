@@ -30,7 +30,8 @@ export function FieldTemplate(props: FieldTemplateProps) {
     required,
     ...dependencyOptions,
   };
-  if (fieldOptions.hidden) return children;
+  if (fieldOptions.hidden || uiSchema?.['ui:widget'] === 'hidden')
+    return children;
   return (
     <div
       className={cn(
