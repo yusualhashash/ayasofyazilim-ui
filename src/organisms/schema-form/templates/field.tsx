@@ -9,7 +9,6 @@ export function FieldTemplate(props: FieldTemplateProps) {
     classNames,
     style,
     label,
-    required,
     rawDescription,
     errors,
     children,
@@ -25,6 +24,7 @@ export function FieldTemplate(props: FieldTemplateProps) {
     uiSchema,
     props.formContext
   );
+  const required = uiSchema?.['ui:required'] || props.required;
   const fieldOptions = {
     disabled,
     required,

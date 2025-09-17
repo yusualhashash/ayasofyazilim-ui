@@ -49,6 +49,7 @@ import {
   PasswordInputWidget,
 } from './widgets';
 
+export { FieldLabel } from './custom/label';
 /**
  * SchemaForm component that renders a form based on the provided schema and options.
  * Extends the Form component from @rjsf/core.

@@ -22,16 +22,8 @@ import { cn } from '@/lib/utils';
 import { fieldOptionsByDependency } from '../utils/dependency';
 
 export const Combobox = (props: WidgetProps) => {
-  const {
-    label,
-    value,
-    defaultValue,
-    disabled,
-    uiSchema,
-    options,
-    required,
-    onChange,
-  } = props;
+  const { label, value, defaultValue, disabled, uiSchema, options, onChange } =
+    props;
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [open, setOpen] = useState(false);
 
@@ -45,6 +37,7 @@ export const Combobox = (props: WidgetProps) => {
     uiSchema,
     props.formContext
   );
+  const required = uiSchema?.['ui:required'] || props.required;
   const fieldOptions = {
     disabled,
     required,
