@@ -14,12 +14,12 @@ export const CustomSwitch = (props: WidgetProps) => {
     defaultValue,
     disabled,
     uiSchema,
-    required,
   } = props;
   const dependencyOptions = fieldOptionsByDependency(
     uiSchema,
     props.formContext
   );
+  const required = uiSchema?.['ui:required'] || props.required;
   const fieldOptions = {
     disabled,
     required,
@@ -40,6 +40,7 @@ export const CustomSwitch = (props: WidgetProps) => {
         defaultValue={value || defaultValue}
         name={name}
         disabled={fieldOptions.disabled}
+        required={fieldOptions.required}
       />
       <FieldLabel id={id} required={fieldOptions.required} label={label} />
     </div>

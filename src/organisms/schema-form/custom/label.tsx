@@ -24,6 +24,7 @@ export function FieldLabel({
   if (!label) return null;
   return (
     <Label
+      data-testid={`${id}_label`}
       htmlFor={id}
       className={cn('flex items-center text-slate-600', className)}
     >

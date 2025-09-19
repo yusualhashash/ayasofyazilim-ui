@@ -21,6 +21,7 @@ export function PhoneInput({
   value: initialValue,
   onChange,
   disabled,
+  required,
   className,
 }: {
   id: string;
@@ -34,6 +35,7 @@ export function PhoneInput({
   }) => void;
   disabled?: boolean;
   className?: string;
+  required?: boolean;
 }) {
   const [value, setValue] = useState(initialValue || defaultValue || '');
   return (
@@ -44,6 +46,7 @@ export function PhoneInput({
       countrySelectComponent={(props) => CountrySelect({ ...props, id })}
       inputComponent={_PhoneInput}
       id={id}
+      required={required}
       data-testid={id}
       disabled={disabled}
       name={name}

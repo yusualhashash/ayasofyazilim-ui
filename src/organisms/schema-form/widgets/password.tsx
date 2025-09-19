@@ -12,13 +12,13 @@ export const PasswordInputWidget = (props: WidgetProps) => {
     value,
     defaultValue,
     disabled,
-    required,
     readOnly,
   } = props;
   const dependencyOptions = fieldOptionsByDependency(
     uiSchema,
     props.formContext
   );
+  const required = uiSchema?.['ui:required'] || props.required;
   const fieldOptions = {
     disabled,
     required,

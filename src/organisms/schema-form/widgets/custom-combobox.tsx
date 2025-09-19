@@ -48,7 +48,6 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
     disabled,
     emptyValue = 'Please select',
     onChange,
-    required,
   } = props;
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [open, setOpen] = useState(false);
@@ -60,6 +59,7 @@ export function CustomCombobox<T>(props: CustomComboboxProps<T>) {
     uiSchema,
     props.formContext
   );
+  const required = uiSchema?.['ui:required'] || props.required;
   const fieldOptions = {
     disabled,
     required,
