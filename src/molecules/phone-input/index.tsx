@@ -1,7 +1,7 @@
 'use client';
 
 import { ChevronDownIcon, PhoneIcon } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import PhoneInputWithCountrySelect, {
   Country,
   FlagProps,
@@ -38,11 +38,16 @@ export function PhoneInput({
   required?: boolean;
 }) {
   const [value, setValue] = useState(initialValue || defaultValue || '');
+  const defaultCountry = useMemo(
+    () => localStorage.getItem('countryCode2')?.toUpperCase() as Country,
+    []
+  );
   return (
     <PhoneInputWithCountrySelect
       className={cn('flex rounded-md shadow-xs', className)}
       international
       flagComponent={FlagComponent}
+      defaultCountry={defaultCountry}
       countrySelectComponent={(props) => CountrySelect({ ...props, id })}
       inputComponent={_PhoneInput}
       id={id}
@@ -103,7 +108,6 @@ const CountrySelect = ({
     if (!onChange) return;
     onChange(event.target.value as Country);
   };
-
   return (
     <div className="border-input bg-background text-muted-foreground focus-within:border-ring focus-within:ring-ring/50 hover:bg-accent hover:text-foreground has-aria-invalid:border-destructive/60 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 relative inline-flex items-center self-stretch rounded-s-md border py-2 ps-3 pe-2 transition-[color,box-shadow] outline-none focus-within:z-10 focus-within:ring-[3px] has-disabled:pointer-events-none has-disabled:opacity-50">
       <div className="inline-flex items-center gap-1" aria-hidden="true">
