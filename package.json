@@ -28,7 +28,7 @@
   },
   "types": "./dist/index.d.ts",
   "exports": {
-    "./atoms/*": "./@/components/ui/*.tsx",
+    "./atoms/*":[ "./@/components/ui/*.tsx","./@/components/aria/*.tsx","./@/components/aria/*/index.tsx"],
     "./hooks/*": "./src/hooks/*.ts",
     "./molecules/*/types": "./src/molecules/*/types/index.ts",
     "./molecules/*": "./src/molecules/*/index.tsx",
