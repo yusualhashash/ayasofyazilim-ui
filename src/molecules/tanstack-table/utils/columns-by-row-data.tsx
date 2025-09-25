@@ -143,6 +143,7 @@ export function createCell<T>(props: {
         <button
           type="button"
           onClick={row.getToggleExpandedHandler()}
+          data-testid={`expand-row-${accessorKey.toString()}`}
           className={cn(
             'font-medium text-blue-700 flex items-center gap-2 cursor-pointer',
             containerClassName
