@@ -124,7 +124,6 @@ export default function FilterComponent({
       onSubmit();
     });
   }
-  console.log(isCollapsible);
   return (
     <Collapsible
       open={isOpen}
@@ -167,6 +166,7 @@ export default function FilterComponent({
                 if (isAsyncSelectType(filter)) {
                   return (
                     <AsyncSelectField
+                      key={filter.id}
                       filter={filter}
                       isPending={isPending || disabled}
                       searchText={searchText}
@@ -176,6 +176,7 @@ export default function FilterComponent({
                 if (isMultiSelectType(filter)) {
                   return (
                     <MultiSelectField
+                      key={filter.id}
                       filter={filter}
                       isPending={isPending || disabled}
                     />
@@ -184,6 +185,7 @@ export default function FilterComponent({
                 if (isDateSelectType(filter)) {
                   return (
                     <DateField
+                      key={filter.id}
                       filter={filter}
                       isPending={isPending || disabled}
                     />
