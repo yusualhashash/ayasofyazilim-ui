@@ -184,7 +184,9 @@ export type TanstackTableRowActionsCustomDialog<TData> =
   TanstackTableRowDialog<TData> & {
     cancelText?: string;
     confirmationText?: string;
-    content: JSX.Element | ((row: TData) => JSX.Element);
+    content:
+      | JSX.Element
+      | ((row: TData, closeDialog?: () => void) => JSX.Element);
     type: 'custom-dialog';
   };
 export type TanstackTableRowActionsConfirmationDialog<TData> =
@@ -268,7 +270,7 @@ export type TanstackTableActionsSchemaFormDialog<TData> = Omit<
   type: 'schemaform-dialog';
 } & Omit<SchemaFormProps<TData>, 'onSubmit'>;
 export type TanstackTableActionsCustomDialog = TanstackTableActionsDialog & {
-  content: JSX.Element;
+  content: JSX.Element | ((closeDialog?: () => void) => JSX.Element);
   type: 'custom-dialog';
   dialogClassNames?: {
     content?: string;
