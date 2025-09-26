@@ -329,6 +329,7 @@ export type TanstackTableCreateColumnsByRowId<T> = {
   selectableRows?: boolean;
   onSelectedRowChange?: (selectedRows: T[]) => void;
   disabledRowIds?: string[];
+  localization: { locale: string; timeZone: string; lang: string };
 };
 
 export type TanstacktableEditableColumnsByRowId<T> = {

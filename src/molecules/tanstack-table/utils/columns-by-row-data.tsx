@@ -2,6 +2,12 @@
 
 import { ColumnDef, Row } from '@tanstack/react-table';
 import Link from 'next/link';
+import { Info } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
@@ -30,6 +36,7 @@ export function createCell<T>(props: {
   format?: string;
   custom?: TanstackTableColumCell<T>;
   config?: TanstackTableConfig;
+  localization: { locale: string; timeZone: string };
 }) {
   const {
     accessorKey,
@@ -43,22 +50,55 @@ export function createCell<T>(props: {
     custom,
     config,
     faceted,
+    localization,
   } = props;
 
   let content: JSX.Element | string | null =
     row.getValue(accessorKey.toString())?.toString() || '';
   if (format) {
-    if (format === 'date' || format === 'date-time')
-      content = content
-        ? new Date(content).toLocaleDateString(
-            config?.locale,
-            config?.dateOptions || {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric',
-            }
-          )
-        : '';
+    if (format === 'date' || format === 'date-time') {
+      const dateOptions = {
+        ...(config?.dateOptions || {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          hour: format === 'date-time' ? '2-digit' : undefined,
+          minute: format === 'date-time' ? '2-digit' : undefined,
+          hour12: false,
+        }),
+      };
+      const date = new Date(content);
+      const tenantDateString = date.toLocaleDateString(localization.locale, {
+        ...dateOptions,
+        timeZone: localization.timeZone,
+      });
+      content = content ? (
+        <Tooltip>
+          <TooltipTrigger className="flex items-center gap-2 underline decoration-dotted underline-offset-2">
+            <Info className="w-4 h-4" /> {tenantDateString}
+          </TooltipTrigger>
+          <TooltipContent className="bg-gray-100 text-gray-900 border border-gray-300 z-[100]">
+            <p className="flex justify-between">
+              <span className="font-semibold mr-2">UTC:</span>
+              {date.toLocaleDateString(localization.locale, {
+                ...dateOptions,
+                timeZone: 'UTC',
+              })}
+            </p>
+            <p className="flex justify-between">
+              <span className="font-semibold mr-2">Tenant:</span>
+              {tenantDateString}
+            </p>
+            <p className="flex justify-between">
+              <span className="font-semibold mr-2">You:</span>
+              {date.toLocaleDateString(localization.locale, dateOptions)}
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      ) : (
+        ''
+      );
+    }
   }
 
   if (icon) {
@@ -197,6 +237,7 @@ export function tanstackTableCreateColumnsByRowData<T>(
     icons,
     expandRowTrigger,
     custom,
+    localization,
     onSelectedRowChange,
   } = params;
   const columns: ColumnDef<T>[] = [];
@@ -296,6 +337,7 @@ export function tanstackTableCreateColumnsByRowData<T>(
             format,
             custom: custom?.[accessorKey],
             config,
+            localization,
           }),
       };
       if (faceted?.[accessorKey]) {
