@@ -30,6 +30,9 @@ export function TanstackTableTableCustomDialog({
 }: TanstackTableCustomDialogProps) {
   const [isDeletePending, startDeleteTransition] = React.useTransition();
 
+  const jsxContent =
+    typeof content === 'function' ? content(setDialogOpen) : content;
+
   const handleOnConfirmClick = () => {
     startDeleteTransition(() => {
       onConfirm?.();
@@ -49,7 +52,7 @@ export function TanstackTableTableCustomDialog({
         <DialogHeader className={dialogClassNames?.header}>
           <DialogTitle className={dialogClassNames?.title}>{title}</DialogTitle>
         </DialogHeader>
-        {content}
+        {jsxContent}
         {(confirmationText || cancelText) && (
           <DialogFooter
             className={cn('gap-2 sm:space-x-0', dialogClassNames?.footer)}
