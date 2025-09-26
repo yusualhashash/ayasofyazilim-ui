@@ -38,6 +38,7 @@ export function tanstackTableEditableColumnsByRowData<T>(
     custom,
     expandRowTrigger,
     icons,
+    localization,
   } = params;
   const columns: ColumnDef<T>[] = [];
 
@@ -70,6 +71,7 @@ export function tanstackTableEditableColumnsByRowData<T>(
               format: rows[accessorKey].format,
               custom: custom?.[_accesorKey],
               config,
+              localization,
             });
           }
           const initialValue = (getValue() as string)?.toString() || '';
