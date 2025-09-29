@@ -113,30 +113,31 @@ export function AsyncSelectBase({
   );
 
   function onSearch(search: string) {
-    if (search.length === 0) {
-      setSearchInput('');
-      setItems([]);
-      setLoading(false);
-      return;
-    }
+    setSearchInput(search);
     setLoading(true);
     setItems([]);
-    setSearchInput(search);
   }
   function handleOnChange(value: SearchItem[]) {
     if (disabled) return;
-
     onChange(value);
   }
 
   useEffect(() => {
-    if (!searchValue || searchValue !== searchInput) return;
+    if (searchValue === '' && searchInput === '') {
+      setLoading(true);
+      fetchAction('').then((res) => {
+        setItems(res);
+        setLoading(false);
+      });
+      return;
+    }
+    if (searchValue !== searchInput) return;
 
     fetchAction(searchValue).then((res) => {
       setItems(res);
       setLoading(false);
     });
-  }, [searchValue]);
+  }, [searchValue, searchInput, fetchAction]);
 
   return (
     <Cmd className="border" aria-disabled={disabled}>
