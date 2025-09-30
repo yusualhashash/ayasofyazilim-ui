@@ -89,7 +89,7 @@ export function BarChart({
           {layout === 'horizontal' ? (
             <>
               {Object.keys(config).map((key) => (
-                <XAxis type="number" dataKey={key} />
+                <XAxis type="number" dataKey={key} key={key} />
               ))}
 
               <YAxis
