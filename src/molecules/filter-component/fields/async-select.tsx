@@ -23,6 +23,7 @@ function AsyncSelectField({
         value={filter.value}
         disabled={isPending}
         multiple={filter.multiple}
+        closeOnSelect={!filter.multiple}
         searchText={searchText}
       />
     </div>
