@@ -162,7 +162,7 @@ export default function FilterComponent({
                 filterGuidanceContent ? 'w-1/2' : 'w-full'
               )}
             >
-              {fields.map((filter) => {
+              {fields.map((filter, index) => {
                 if (isAsyncSelectType(filter)) {
                   return (
                     <AsyncSelectField
@@ -191,7 +191,9 @@ export default function FilterComponent({
                     />
                   );
                 }
-                return filter.component;
+                return (
+                  <div key={`c${index.toString()}`}>{filter.component}</div>
+                );
               })}
 
               <Button
