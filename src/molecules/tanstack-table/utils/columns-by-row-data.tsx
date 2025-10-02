@@ -2,16 +2,11 @@
 
 import { ColumnDef, Row } from '@tanstack/react-table';
 import Link from 'next/link';
-import { Info } from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 import { tanstackTableCreateTitleWithLanguageData, testConditions } from '.';
+import DateTooltip, { Localization } from '../../date-tooltip';
 import { TanstackTableColumnHeader } from '../fields';
 import {
   TanstackTableColumCell,
@@ -36,7 +31,7 @@ export function createCell<T>(props: {
   format?: string;
   custom?: TanstackTableColumCell<T>;
   config?: TanstackTableConfig;
-  localization: { locale: string; timeZone: string };
+  localization: Localization;
 }) {
   const {
     accessorKey,
@@ -57,44 +52,12 @@ export function createCell<T>(props: {
     row.getValue(accessorKey.toString())?.toString() || '';
   if (format) {
     if (format === 'date' || format === 'date-time') {
-      const dateOptions = {
-        ...(config?.dateOptions || {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-          hour: format === 'date-time' ? '2-digit' : undefined,
-          minute: format === 'date-time' ? '2-digit' : undefined,
-          hour12: false,
-        }),
-      };
-      const date = new Date(content);
-      const tenantDateString = date.toLocaleDateString(localization.locale, {
-        ...dateOptions,
-        timeZone: localization.timeZone,
-      });
       content = content ? (
-        <Tooltip>
-          <TooltipTrigger className="flex items-center gap-2 underline decoration-dotted underline-offset-2">
-            <Info className="w-4 h-4" /> {tenantDateString}
-          </TooltipTrigger>
-          <TooltipContent className="bg-gray-100 text-gray-900 border border-gray-300 z-[100]">
-            <p className="flex justify-between">
-              <span className="font-semibold mr-2">UTC:</span>
-              {date.toLocaleDateString(localization.locale, {
-                ...dateOptions,
-                timeZone: 'UTC',
-              })}
-            </p>
-            <p className="flex justify-between">
-              <span className="font-semibold mr-2">Tenant:</span>
-              {tenantDateString}
-            </p>
-            <p className="flex justify-between">
-              <span className="font-semibold mr-2">You:</span>
-              {date.toLocaleDateString(localization.locale, dateOptions)}
-            </p>
-          </TooltipContent>
-        </Tooltip>
+        <DateTooltip
+          date={content}
+          dateOptions={config?.dateOptions}
+          localization={localization}
+        />
       ) : (
         ''
       );
