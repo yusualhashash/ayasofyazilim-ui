@@ -286,6 +286,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
         formContext={formContext}
         focusOnFirstError
         showErrorList={showErrorList}
+        disabled={disabled}
         {...restProps}
         className={formClassName}
         formData={formDataToUse}
