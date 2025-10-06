@@ -68,17 +68,9 @@ export function DatePicker({
           )
         );
       } else {
-        onChange(
-          new Date(
-            dateValue.year,
-            dateValue.month - 1,
-            dateValue.day,
-            0,
-            0,
-            0,
-            -offset
-          )
-        );
+        const timeZone = localStorage.getItem('tenantTimeZone') || 'UTC';
+
+        onChange(dateValue.toDate(timeZone));
       }
     }
   }, [dateValue, timeValue]);
