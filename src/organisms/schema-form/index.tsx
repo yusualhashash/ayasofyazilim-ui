@@ -263,7 +263,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       // Use the most recent form data for submission
       const latestData = {
         ...data,
-        formData: currentFormDataRef.current,
+        formData: data.formData,
       };
 
       if (onSubmit) {
