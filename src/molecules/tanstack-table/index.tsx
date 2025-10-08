@@ -224,7 +224,6 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
           resizeable={resizeable}
           table={table}
           columns={tableColumns}
-          fillerColumn={fillerColumn}
           editable={editable}
           expandedRowComponent={expandedRowComponent}
         />
