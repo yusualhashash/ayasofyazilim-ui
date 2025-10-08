@@ -59,6 +59,7 @@ export default function TanstackTable<TData, TValue>({
   onTableDataChange,
   filters,
   title,
+  resizeable = true,
   showPagination = true,
 }: TanstackTablePropsType<TData, TValue>) {
   const commonProps = {
@@ -71,6 +72,7 @@ export default function TanstackTable<TData, TValue>({
     excludeColumns,
     expandedRowComponent,
     title,
+    resizeable,
   };
   if (editable) {
     return (
@@ -119,6 +121,7 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
     meta,
     showPagination,
     title,
+    resizeable,
   } = props;
   const [sorting, setSorting] = useState<SortingState>([]);
   const [colVisibility, setColumnVisibility] = useState<VisibilityState>(
@@ -126,6 +129,7 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
       ? Object.fromEntries(
           columns.map((col) => [
             col.id || '',
+
             columnVisibility?.columns.includes(
               (col.id || '') as keyof TData
             ) ===
@@ -152,7 +156,10 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
           CellWithActions(table, row, rowActions, setRowAction),
       });
     }
-    return _columns;
+    return _columns.map((col) => ({
+      ...col,
+      minSize: fillerColumn === col.id ? 600 : undefined,
+    }));
   }, [columns, rowActions]);
 
   const getRowId = useCallback(
@@ -165,6 +172,8 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
     data,
     columns: tableColumns,
     getRowId,
+    columnResizeMode: 'onChange',
+    columnResizeDirection: 'ltr',
     state: {
       sorting,
       columnVisibility: colVisibility,
@@ -183,6 +192,7 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
       },
     },
     enableRowSelection: true,
+    enableColumnResizing: true,
     enableColumnPinning: true,
     manualPagination: true,
     getRowCanExpand: () => !!expandedRowComponent,
@@ -211,6 +221,7 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
       />
       <div className="rounded-md border overflow-auto">
         <TanstackTablePlainTable
+          resizeable={resizeable}
           table={table}
           columns={tableColumns}
           fillerColumn={fillerColumn}
