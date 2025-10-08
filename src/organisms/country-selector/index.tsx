@@ -249,8 +249,8 @@ export function CountrySelector({
   showLabel = false,
   showFlag = false,
   countries = [],
-  className,
   onValueChange,
+  className,
 }: CountrySelectorProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState<string>('');
@@ -262,14 +262,13 @@ export function CountrySelector({
   }
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <Button
-          asChild
           role="combobox"
           variant="ghost"
           aria-expanded={open}
           className={cn(
-            'justify-between border-none bg-transparent px-2 gap-2 rtl:flex-row-reverse min-h-8 bg-red-300',
+            'justify-between border-none bg-transparent px-2 gap-2 rtl:flex-row-reverse min-h-8',
             className
           )}
         >
