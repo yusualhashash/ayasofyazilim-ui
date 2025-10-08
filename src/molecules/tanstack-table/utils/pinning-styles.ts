@@ -32,7 +32,7 @@ export function getCommonPinningStyles<TData>({
     width: column.getSize(),
     position: isPinned ? 'sticky' : 'relative',
     background: isPinned ? 'hsl(var(--background))' : '',
-    // zIndex: isPinned ? 1 : 0,
+    zIndex: isPinned ? 1 : 0,
     textWrap: 'nowrap',
   };
 }
