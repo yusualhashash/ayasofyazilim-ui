@@ -38,6 +38,9 @@ export const EmailInputWidget = (props: WidgetProps) => {
         setEmail(val);
         onChange(val);
       }}
+      onBlur={
+        props.onBlur && ((event) => props.onBlur(props.id, event.target.value))
+      }
       defaultValue={defaultValue}
       readOnly={readOnly}
       placeholder={props.placeholder || "Try typing 'john@gmail.com'"}
@@ -77,6 +80,7 @@ export const EmailInputWidgetOld = (props: WidgetProps) => {
       type="email"
       id={id}
       className={cn('h-10', className)}
+      onBlur={props.onBlur && ((event) => props.onBlur(id, event.target.value))}
       required={required}
       onChange={(event) => {
         if (event.target.value === '') {

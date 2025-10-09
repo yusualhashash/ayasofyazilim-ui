@@ -32,6 +32,7 @@ export const PasswordInputWidget = (props: WidgetProps) => {
     <PasswordInput
       id={id}
       data-testid={id}
+      onBlur={props.onBlur && ((event) => props.onBlur(id, event.target.value))}
       className={cn('h-10', className)}
       required={required}
       onChange={(event) => {
