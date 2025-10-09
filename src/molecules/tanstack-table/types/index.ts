@@ -25,6 +25,7 @@ export type EditableTanstackTableProps<TData> = {
 };
 export type TanstackBaseProps<TData, TValue> = {
   title?: string;
+  resizeable?: boolean;
   columns: ColumnDef<TData, TValue>[];
   columnOrder?: (keyof TData)[];
   data: TData[];
@@ -56,6 +57,8 @@ export type TanstackBaseProps<TData, TValue> = {
 };
 export type TanstackTablePropsType<TData, TValue> = {
   title?: string;
+  resizeable?: boolean;
+
   data: TData[];
   columns: ColumnDef<TData, TValue>[];
   fillerColumn?: keyof TData;

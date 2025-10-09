@@ -3,7 +3,9 @@ import {
   flexRender,
   Table as TableType,
 } from '@tanstack/react-table';
+import { UnfoldHorizontal } from 'lucide-react';
 import { Fragment } from 'react';
+import { cn } from '@/lib/utils';
 import {
   Table,
   TableBody,
@@ -12,14 +14,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { cn } from '@/lib/utils';
 import { getCommonPinningStyles } from '../utils';
 
 export function TanstackTablePlainTable<TData, TValue>({
   table,
   columns,
-  fillerColumn,
   editable,
+  resizeable,
   expandedRowComponent,
 }: {
   columns: ColumnDef<TData, TValue>[];
@@ -28,82 +29,135 @@ export function TanstackTablePlainTable<TData, TValue>({
     row: TData,
     toggleExpanded: () => void
   ) => JSX.Element;
-  fillerColumn?: keyof TData;
   table: TableType<TData>;
+  resizeable?: boolean;
 }) {
   return (
-    <Table>
-      <TableHeader>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow key={headerGroup.id}>
-            {headerGroup.headers.map((header) => {
-              if (header.id === 'actions') return null;
-              return (
-                <TableHead
-                  key={header.id}
-                  style={getCommonPinningStyles({
-                    column: header.column,
-                    withBorder: true,
-                    fillerColumn,
-                  })}
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </TableHead>
-              );
-            })}
-          </TableRow>
-        ))}
-      </TableHeader>
-      <TableBody>
-        {table.getRowModel().rows?.length ? (
-          table.getRowModel().rows.map((row) => (
-            <Fragment key={row.id}>
-              <TableRow
-                data-state={row.getIsSelected() && 'selected'}
-                className={cn(editable && '[&>td:last-child]:border-r-0')}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
+    <div className="overflow-x-auto">
+      <Table
+        style={{
+          width: table.getCenterTotalSize(),
+          minWidth: '100%',
+        }}
+      >
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id} className="group">
+              {headerGroup.headers.map((header) => {
+                if (header.id === 'actions') return null;
+                return (
+                  <TableHead
+                    key={header.id}
+                    colSpan={header.colSpan}
                     className={cn(
-                      (editable || cell.column.id === 'actions') &&
-                        'p-0 border border-b-0'
+                      ' relative border-r border-gray-200',
+                      header.column.getIsResizing() &&
+                        'border-dashed border-black border-r-[1px]'
                     )}
-                    style={getCommonPinningStyles({
-                      column: cell.column,
-                      withBorder: true,
-                      fillerColumn,
-                    })}
+                    style={{
+                      ...getCommonPinningStyles({
+                        column: header.column,
+                        withBorder: true,
+                      }),
+                    }}
                   >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-              {row.getIsExpanded() && expandedRowComponent && (
-                <TableRow>
-                  <TableCell colSpan={row.getAllCells().length}>
-                    {expandedRowComponent(
-                      row.original,
-                      row.getToggleExpandedHandler()
+                    <div
+                      className={cn(
+                        header.column.getIsResizing() && 'resizing',
+                        'group-has-[.resizing]:pointer-events-none group-has-[.resizing]:select-none'
+                      )}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </div>
+                    {resizeable && (
+                      <div
+                        onDoubleClick={() => header.column.resetSize()}
+                        onMouseDown={header.getResizeHandler()}
+                        onTouchStart={header.getResizeHandler()}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            header.column.resetSize();
+                          }
+                        }}
+                        role="button"
+                        tabIndex={0}
+                        aria-label="Resize column"
+                        className={`resizer absolute -right-2 w-4 top-0 h-10 flex items-center cursor-pointer select-none touch-none'
+                        }`}
+                      >
+                        <UnfoldHorizontal
+                          className={cn(
+                            'w-4',
+                            header.column.getIsResizing() && 'text-black'
+                          )}
+                        />
+                      </div>
                     )}
-                  </TableCell>
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <Fragment key={row.id}>
+                <TableRow
+                  data-state={row.getIsSelected() && 'selected'}
+                  className={cn(editable && '[&>td:last-child]:border-r-0')}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cn(
+                        (editable || cell.column.id === 'actions') &&
+                          'p-0 border border-b-0'
+                      )}
+                      style={{
+                        ...getCommonPinningStyles({
+                          column: cell.column,
+                          withBorder: true,
+                        }),
+                      }}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              )}
-            </Fragment>
-          ))
-        ) : (
-          <TableRow>
-            <TableCell colSpan={columns.length} className="h-auto text-center">
-              No data results
-            </TableCell>
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+                {row.getIsExpanded() && expandedRowComponent && (
+                  <TableRow>
+                    <TableCell colSpan={row.getAllCells().length}>
+                      {expandedRowComponent(
+                        row.original,
+                        row.getToggleExpandedHandler()
+                      )}
+                    </TableCell>
+                  </TableRow>
+                )}
+              </Fragment>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell
+                colSpan={columns.length}
+                className="h-auto text-center"
+              >
+                No data results
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

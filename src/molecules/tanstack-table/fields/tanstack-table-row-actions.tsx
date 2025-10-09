@@ -143,7 +143,7 @@ function ActionButton<TData>({
       {!action.icon && action.type === 'delete-row' && (
         <Trash2 className="w-4 h-4" />
       )}
-      <span className="ml-2">{action.cta}</span>
+      <span className="md:ml-2 hidden md:block">{action.cta}</span>
     </Button>
   );
 }
