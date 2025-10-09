@@ -28,7 +28,7 @@ function DateTooltip({
   localization: Localization;
 }) {
   const _date = new Date(date);
-  const tenantDateString = _date.toLocaleDateString(localization.locale, {
+  const tenantDateString = _date.toLocaleDateString(localization.lang, {
     ...dateOptions,
     timeZone: localization.timeZone,
   });
@@ -40,7 +40,7 @@ function DateTooltip({
       <TooltipContent className="bg-gray-100 text-gray-900 border border-gray-300 z-[100]">
         <p className="flex justify-between">
           <span className="font-semibold mr-2">UTC:</span>
-          {_date.toLocaleDateString(localization.locale, {
+          {_date.toLocaleDateString(localization.lang, {
             ...dateOptions,
             timeZone: 'UTC',
           })}
@@ -51,7 +51,7 @@ function DateTooltip({
         </p>
         <p className="flex justify-between">
           <span className="font-semibold mr-2">You:</span>
-          {_date.toLocaleDateString(localization.locale, dateOptions)}
+          {_date.toLocaleDateString(localization.lang, dateOptions)}
         </p>
       </TooltipContent>
     </Tooltip>
