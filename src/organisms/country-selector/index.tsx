@@ -18,6 +18,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { cn } from '@/lib/utils';
 
 export const lang = {
   searchText: 'Find',
@@ -237,6 +238,7 @@ type CountrySelectorProps = {
   showLabel?: boolean;
   showFlag?: boolean;
   tooltipText?: string;
+  className?: string;
 };
 
 export function CountrySelector({
@@ -248,6 +250,7 @@ export function CountrySelector({
   showFlag = false,
   countries = [],
   onValueChange,
+  className,
 }: CountrySelectorProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState<string>('');
@@ -259,13 +262,15 @@ export function CountrySelector({
   }
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <Button
-          asChild
           role="combobox"
           variant="ghost"
           aria-expanded={open}
-          className="justify-between border-none bg-transparent px-2 gap-2 rtl:flex-row-reverse min-h-8 bg-red-300"
+          className={cn(
+            'justify-between border-none bg-transparent px-2 gap-2 rtl:flex-row-reverse min-h-8',
+            className
+          )}
         >
           {value ? (
             <SelectedCountry
