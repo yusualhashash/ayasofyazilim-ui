@@ -312,7 +312,6 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       <Form<T, any, FormContext<T>>
         ref={formRef}
         noHtml5Validate
-        // liveValidate
         formContext={formContext}
         extraErrors={extraErrors}
         focusOnFirstError
