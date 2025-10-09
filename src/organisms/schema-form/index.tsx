@@ -4,17 +4,20 @@ import Form from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
 import { customizeValidator } from '@rjsf/validator-ajv8';
 import {
-  memo,
+  createRef,
   Fragment,
+  memo,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import { cn } from '@/lib/utils';
-import { ScrollBar } from '@/components/ui/scroll-area';
+
+import { cloneDeep, get, set } from 'lodash';
 import { Button } from '@/components/ui/button';
+import { ScrollBar } from '@/components/ui/scroll-area';
+import { cn } from '@/lib/utils';
 import ScrollArea from '../../molecules/scroll-area';
 import { StringArrayItem } from './custom/string-array';
 import { FieldErrorTemplate } from './fields';
@@ -50,6 +53,7 @@ import {
   PasswordInputWidget,
 } from './widgets';
 
+const formRef = createRef<any>();
 export { FieldLabel } from './custom/label';
 /**
  * SchemaForm component that renders a form based on the provided schema and options.
@@ -85,6 +89,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
     ...restProps
   } = props;
 
+  const [extraErrors, setExtraErrors] = useState<any>({});
   // Keep track of the current form data for submission
   const currentFormDataRef = useRef<T | undefined>(propsFormData);
 
@@ -254,13 +259,36 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
         setInternalFormData(e.formData);
       }
     },
-    [onChange, useDependency]
+    [useDependency]
   );
+  const handleBlur = useCallback(async (changedField: string) => {
+    const { errorSchema: _errorSchema } = formRef.current.validate(
+      currentFormDataRef.current
+    );
+
+    // changeField is like root_name or root_address_addressLine
+    const path = `${changedField.replace('root_', '').replaceAll('_', '.')}.__errors`;
+    const formValidationErrors = get(formRef.current.state.errorSchema, path);
+    if (formValidationErrors) {
+      setExtraErrors({});
+      return;
+    }
+    const errors = get(_errorSchema, path);
+
+    setExtraErrors((prev: any) => {
+      const newErrors = cloneDeep(prev);
+      if (!errors || errors.length === 0) {
+        return set(newErrors, path.replace('.__errors', ''), undefined);
+      }
+      return set(newErrors, path, errors);
+    });
+  }, []);
 
   // Optimized submit handler
   const handleSubmit = useCallback(
     (data: any, event: any) => {
-      // Use the most recent form data for submission
+      event.preventDefault();
+      setExtraErrors({});
       const latestData = {
         ...data,
         formData: data.formData,
@@ -282,9 +310,10 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
   return (
     <Wrapper {...wrapperProps}>
       <Form<T, any, FormContext<T>>
+        ref={formRef}
         noHtml5Validate
-        liveValidate
         formContext={formContext}
+        extraErrors={extraErrors}
         focusOnFirstError
         showErrorList={showErrorList}
         disabled={disabled}
@@ -303,6 +332,10 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
         uiSchema={processedUiSchema}
         onChange={handleChange}
         onSubmit={handleSubmit}
+        onBlur={handleBlur}
+        onError={() => {
+          setExtraErrors({});
+        }}
       >
         {children}
         {useDefaultSubmit && (

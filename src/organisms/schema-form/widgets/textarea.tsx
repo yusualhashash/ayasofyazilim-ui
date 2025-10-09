@@ -23,6 +23,7 @@ export const CustomTextareaInput = (props: WidgetProps) => {
     <Textarea
       id={id}
       data-testid={id}
+      onBlur={props.onBlur && ((event) => props.onBlur(id, event.target.value))}
       className={cn('min-h-10', className)}
       required={fieldOptions.required}
       onChange={(event) => {
