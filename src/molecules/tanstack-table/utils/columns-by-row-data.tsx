@@ -209,7 +209,7 @@ export function tanstackTableCreateColumnsByRowData<T>(
       size: 64,
       id: 'select',
       header: ({ table }) => (
-        <div className="w-14">
+        <div className="w-full h-9 flex items-center justify-center">
           <Checkbox
             checked={
               table
@@ -243,25 +243,27 @@ export function tanstackTableCreateColumnsByRowData<T>(
       ),
 
       cell: ({ row, table }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => {
-            const selectedRows: T[] = [];
-            table.getSelectedRowModel().rows.forEach((row) => {
-              selectedRows.push(row.original);
-            });
-            if (value) {
-              selectedRows.push(row.original);
-            } else {
-              selectedRows.splice(selectedRows.indexOf(row.original), 1);
-            }
-            row.toggleSelected(!!value);
-            onSelectedRowChange?.(selectedRows);
-          }}
-          disabled={params.disabledRowIds?.some((id) => id === row.id)}
-          aria-label="Select row"
-          className="translate-y-0.5 align-top"
-        />
+        <div className="w-full h-9 flex items-center justify-center">
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => {
+              const selectedRows: T[] = [];
+              table.getSelectedRowModel().rows.forEach((row) => {
+                selectedRows.push(row.original);
+              });
+              if (value) {
+                selectedRows.push(row.original);
+              } else {
+                selectedRows.splice(selectedRows.indexOf(row.original), 1);
+              }
+              row.toggleSelected(!!value);
+              onSelectedRowChange?.(selectedRows);
+            }}
+            disabled={params.disabledRowIds?.some((id) => id === row.id)}
+            aria-label="Select row"
+            className="translate-y-0.5 align-top"
+          />
+        </div>
       ),
       enableSorting: false,
       enableHiding: false,
