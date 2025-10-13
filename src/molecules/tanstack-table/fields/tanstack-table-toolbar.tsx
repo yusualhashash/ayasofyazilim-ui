@@ -65,6 +65,7 @@ export const TanstackTableToolbar = <TData,>({
       router.replace(`${pathname}?${newParams.toString()}`);
     }
   }
+  if (!editable && !tableActions && !title && !filters) return null;
   return (
     <div className="flex w-full items-center justify-between p-px">
       <div className="flex flex-1 h-full flex-wrap items-center gap-x-2">

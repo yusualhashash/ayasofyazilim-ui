@@ -19,11 +19,13 @@ import { getCommonPinningStyles } from '../utils';
 export function TanstackTablePlainTable<TData, TValue>({
   table,
   columns,
+  fillerColumn,
   editable,
   resizeable,
   expandedRowComponent,
 }: {
   columns: ColumnDef<TData, TValue>[];
+  fillerColumn?: keyof TData;
   editable?: boolean;
   expandedRowComponent?: (
     row: TData,
@@ -34,12 +36,7 @@ export function TanstackTablePlainTable<TData, TValue>({
 }) {
   return (
     <div className="overflow-x-auto w-full flex flex-1">
-      <Table
-        style={{
-          width: table.getCenterTotalSize(),
-          minWidth: '100%',
-        }}
-      >
+      <Table style={{ width: table.getCenterTotalSize(), minWidth: '100%' }}>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="group">
@@ -50,7 +47,7 @@ export function TanstackTablePlainTable<TData, TValue>({
                     key={header.id}
                     colSpan={header.colSpan}
                     className={cn(
-                      ' relative border-r border-gray-200',
+                      ' relative group/th border-r border-gray-200',
                       header.column.getIsResizing() &&
                         'border-dashed border-black border-r-[1px]'
                     )}
@@ -58,6 +55,8 @@ export function TanstackTablePlainTable<TData, TValue>({
                       ...getCommonPinningStyles({
                         column: header.column,
                         withBorder: true,
+                        fillerColumn,
+                        resizeable,
                       }),
                     }}
                   >
@@ -79,17 +78,10 @@ export function TanstackTablePlainTable<TData, TValue>({
                         onDoubleClick={() => header.column.resetSize()}
                         onMouseDown={header.getResizeHandler()}
                         onTouchStart={header.getResizeHandler()}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            header.column.resetSize();
-                          }
-                        }}
                         role="button"
                         tabIndex={0}
                         aria-label="Resize column"
-                        className={`resizer absolute -right-2 w-4 top-0 h-10 z-10 flex items-center cursor-pointer select-none touch-none'
-                        }`}
+                        className="resizer group-last/th:right-0 hidden group-hover:flex absolute -right-2 w-4 top-0 h-10 z-10 items-center cursor-pointer select-none touch-none"
                       >
                         <UnfoldHorizontal
                           className={cn(
@@ -123,6 +115,8 @@ export function TanstackTablePlainTable<TData, TValue>({
                       style={{
                         ...getCommonPinningStyles({
                           column: cell.column,
+                          fillerColumn,
+                          resizeable,
                           withBorder: true,
                         }),
                       }}

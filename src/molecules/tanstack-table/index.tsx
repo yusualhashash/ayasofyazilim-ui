@@ -156,6 +156,7 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
           CellWithActions(table, row, rowActions, setRowAction),
       });
     }
+    if (!resizeable) return _columns;
     return _columns.map((col) => ({
       ...col,
       minSize: fillerColumn === col.id ? 600 : undefined,
@@ -226,6 +227,7 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
           columns={tableColumns}
           editable={editable}
           expandedRowComponent={expandedRowComponent}
+          fillerColumn={fillerColumn}
         />
       </div>
       {pagination && showPagination && (
