@@ -22,6 +22,9 @@ export function getCommonPinningStyles<TData>({
     isPinned === 'left' && column.getIsLastColumn('left');
   const isFirstRightPinnedColumn =
     isPinned === 'right' && column.getIsFirstColumn('right');
+
+  const width =
+    !resizeable && fillerColumn === column.id ? '100%' : column.getSize();
   return {
     boxShadow: withBorder
       ? isLastLeftPinnedColumn
@@ -33,11 +36,11 @@ export function getCommonPinningStyles<TData>({
     left: isPinned === 'left' ? `${column.getStart('left')}px` : undefined,
     right: isPinned === 'right' ? `${column.getAfter('right')}px` : undefined,
     opacity: isPinned ? 0.97 : 1,
-    width:
-      !resizeable && fillerColumn === column.id ? '100%' : column.getSize(),
+    width,
     position: isPinned ? 'sticky' : 'relative',
     background: isPinned ? 'hsl(var(--background))' : '',
     zIndex: isPinned ? 1 : 0,
     textWrap: 'nowrap',
+    ...(column.id === 'select' && { minWidth: '40px', padding: 0 }),
   };
 }
