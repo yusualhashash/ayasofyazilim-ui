@@ -142,7 +142,7 @@ export default function FilterComponent({
         <Card
           className={cn(
             'shadow-none',
-            !filterGuidanceContent && 'mx-auto md:w-1/2',
+            !filterGuidanceContent && 'mx-auto',
             cardClassName
           )}
         >
