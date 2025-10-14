@@ -274,7 +274,6 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       return;
     }
     const errors = get(_errorSchema, path);
-
     setExtraErrors((prev: any) => {
       const newErrors = cloneDeep(prev);
       if (!errors || errors.length === 0) {
@@ -291,7 +290,7 @@ export function SchemaForm<T = unknown>({ ...props }: SchemaFormProps<T>) {
       setExtraErrors({});
       const latestData = {
         ...data,
-        formData: data.formData,
+        formData: currentFormDataRef.current,
       };
 
       if (onSubmit) {
@@ -367,7 +366,7 @@ export const SchemaFormSubmit = memo(
   }) => {
     const submitClassName = useMemo(
       () =>
-        cn('py-4 sticky bottom-0 bg-white flex justify-end z-50', className),
+        cn('py-4 sticky bottom-0 bg-white flex justify-end z-40', className),
       [className]
     );
 
