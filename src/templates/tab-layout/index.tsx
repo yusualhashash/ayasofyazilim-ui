@@ -94,7 +94,7 @@ const tabContentVariants = cva('', {
     },
     orientation: {
       horizontal: 'h-full my-2 overflow-auto',
-      vertical: 'mx-2 my-0 w-full h-full overflow-auto flex-1',
+      vertical: 'md:mx-2 my-0 w-full h-full overflow-auto flex-1',
     },
   },
   defaultVariants: {
