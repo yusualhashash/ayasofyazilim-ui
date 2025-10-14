@@ -1,8 +1,9 @@
 'use client';
 
 import { Circle, CircleCheckBig } from 'lucide-react';
-import { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 const variants = {
   default:
@@ -53,11 +54,12 @@ const SelectTabsContext = createContext<IContextProps>({
   onChange: () => {},
 });
 interface ISelectTabsProps {
-  children?: JSX.Element[];
+  children?: React.ReactNode;
   deselect?: boolean;
   disabled?: boolean;
   onValueChange?: (value: string) => void;
   value?: string;
+  className?: string;
 }
 
 /**
@@ -77,6 +79,7 @@ export default function SelectTabs({
   value = '',
   onValueChange,
   disabled,
+  className,
 }: ISelectTabsProps) {
   const [activeTab, setActiveTab] = useState(value);
   const contextValue = useMemo(() => ({ activeTab, onChange }), [activeTab]);
@@ -94,7 +97,7 @@ export default function SelectTabs({
 
   return (
     <SelectTabsContext.Provider value={contextValue}>
-      <div className="w-full flex flex-row gap-3">{children}</div>
+      <div className={cn('w-full grid gap-3', className)}>{children}</div>
     </SelectTabsContext.Provider>
   );
 }
