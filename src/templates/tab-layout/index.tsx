@@ -94,7 +94,7 @@ const tabContentVariants = cva('', {
     },
     orientation: {
       horizontal: 'h-full my-2 overflow-auto',
-      vertical: 'md:mx-2 my-0 w-full h-full overflow-auto flex-1',
+      vertical: 'my-0 w-full h-full overflow-auto flex-1',
     },
   },
   defaultVariants: {
@@ -161,7 +161,7 @@ export function TabLayout({
       className={cn(
         tabsClassNames,
         classNames?.[orientation]?.tabs,
-        'overflow-clip md:overflow-hidden block'
+        'overflow-clip md:overflow-hidden block gap-2'
       )}
       role="tabpanel"
     >
