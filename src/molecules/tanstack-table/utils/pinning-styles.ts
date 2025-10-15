@@ -23,8 +23,19 @@ export function getCommonPinningStyles<TData>({
   const isFirstRightPinnedColumn =
     isPinned === 'right' && column.getIsFirstColumn('right');
 
-  const width =
-    !resizeable && fillerColumn === column.id ? '100%' : column.getSize();
+  let width: string | number = column.getSize();
+  if (resizeable) {
+    if (fillerColumn === column.id) {
+      width = 2000;
+    } else {
+      width = column.getSize();
+    }
+  } else if (fillerColumn === column.id) {
+    width = '100%';
+  } else {
+    width = column.getSize();
+  }
+
   return {
     boxShadow: withBorder
       ? isLastLeftPinnedColumn

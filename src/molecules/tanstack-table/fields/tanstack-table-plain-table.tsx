@@ -3,7 +3,6 @@ import {
   flexRender,
   Table as TableType,
 } from '@tanstack/react-table';
-import { UnfoldHorizontal } from 'lucide-react';
 import { Fragment } from 'react';
 import { cn } from '@/lib/utils';
 import {
@@ -81,15 +80,8 @@ export function TanstackTablePlainTable<TData, TValue>({
                         role="button"
                         tabIndex={0}
                         aria-label="Resize column"
-                        className="resizer group-last/th:right-0 hidden group-hover:flex absolute -right-2 w-4 top-0 h-10 z-10 items-center cursor-pointer select-none touch-none"
-                      >
-                        <UnfoldHorizontal
-                          className={cn(
-                            'w-4',
-                            header.column.getIsResizing() && 'text-black'
-                          )}
-                        />
-                      </div>
+                        className="resizer w-[2px] hidden group-hover:flex absolute right-0 bg-muted-foreground top-0 h-10 z-10 items-center cursor-col-resize select-none touch-none"
+                      />
                     )}
                   </TableHead>
                 );
