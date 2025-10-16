@@ -10,7 +10,6 @@
     "baseUrl": "./",
     "lib": ["ES2021"],
     "paths": {
-      "@tiptap-location/*": ["./tiptap/*"],
       "@/*": ["@/*", "./src/*"]
     }
   }
