@@ -7,7 +7,6 @@ module.exports = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
     './@/**/*.{ts,tsx}',
-    './tiptap/**/*.{ts,tsx}',
   ],
   prefix: '',
   theme: {
