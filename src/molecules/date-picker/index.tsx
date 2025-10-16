@@ -109,6 +109,7 @@ export function DatePicker({
             <>
               <Separator orientation="vertical" />
               <TimeField
+                aria-label="Time"
                 value={timeValue}
                 onChange={(time) => {
                   if (time) {
