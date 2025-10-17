@@ -99,7 +99,7 @@ export function Combobox<T>(props: ComboboxProps<T>) {
         >
           <span
             className={cn(
-              'overflow-hidden text-ellipsis has-[role=dialog]:max-w-xs',
+              'overflow-hidden truncate has-[role=dialog]:max-w-xs',
               classNames?.trigger?.label
             )}
           >
@@ -132,7 +132,9 @@ export function Combobox<T>(props: ComboboxProps<T>) {
             classNames?.trigger?.button
           )}
         >
-          <span className={cn(classNames?.trigger?.label)}>{fieldValue}</span>
+          <span className={cn('truncate', classNames?.trigger?.label)}>
+            {fieldValue}
+          </span>
           <CaretSortIcon
             className={cn(
               'ml-2 h-4 w-4 shrink-0 opacity-50',
