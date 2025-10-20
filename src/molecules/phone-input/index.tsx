@@ -6,12 +6,14 @@ import PhoneInputWithCountrySelect, {
   Country,
   FlagProps,
   getCountryCallingCode,
+  isValidPhoneNumber,
   parsePhoneNumber,
 } from 'react-phone-number-input';
 import flags from 'react-phone-number-input/flags';
 
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { FieldErrorTemplate } from '../../organisms/schema-form/fields/error';
 
 export function PhoneInput({
   id,
@@ -38,35 +40,42 @@ export function PhoneInput({
   required?: boolean;
 }) {
   const [value, setValue] = useState(initialValue || defaultValue || '');
+  const [isPhoneValid, setIsPhoneValid] = useState(true);
   const defaultCountry = useMemo(
     () => localStorage.getItem('countryCode2')?.toUpperCase() as Country,
     []
   );
   return (
-    <PhoneInputWithCountrySelect
-      className={cn('flex rounded-md shadow-xs', className)}
-      international
-      flagComponent={FlagComponent}
-      defaultCountry={defaultCountry}
-      countrySelectComponent={(props) => CountrySelect({ ...props, id })}
-      inputComponent={_PhoneInput}
-      id={id}
-      required={required}
-      data-testid={id}
-      disabled={disabled}
-      name={name}
-      placeholder={placeholder}
-      value={value}
-      onChange={(newValue) => {
-        setValue(newValue ?? '');
-        if (onChange) {
-          onChange({
-            value: newValue ?? undefined,
-            parsed: parsePhoneNumber(newValue || ''),
-          });
-        }
-      }}
-    />
+    <>
+      <PhoneInputWithCountrySelect
+        className={cn('flex rounded-md shadow-xs', className)}
+        international
+        flagComponent={FlagComponent}
+        defaultCountry={defaultCountry}
+        countrySelectComponent={(props) => CountrySelect({ ...props, id })}
+        inputComponent={_PhoneInput}
+        id={id}
+        required={required}
+        data-testid={id}
+        disabled={disabled}
+        name={name}
+        placeholder={placeholder}
+        value={value}
+        onChange={(newValue) => {
+          setValue(newValue ?? '');
+          if (onChange) {
+            onChange({
+              value: newValue ?? undefined,
+              parsed: parsePhoneNumber(newValue || ''),
+            });
+          }
+          setIsPhoneValid(isValidPhoneNumber(newValue || ''));
+        }}
+      />
+      {!isPhoneValid && (
+        <FieldErrorTemplate errors={['Please enter a valid phone number.']} />
+      )}
+    </>
   );
 }
 

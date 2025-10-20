@@ -1,80 +1,41 @@
 'use client';
 
-import { ErrorSchema, WidgetProps } from '@rjsf/utils';
-import { PhoneNumberUtil } from 'google-libphonenumber';
+import { WidgetProps } from '@rjsf/utils';
 import { PhoneInput as RIP } from 'react-international-phone';
 import { cn } from '@/lib/utils';
 import 'react-international-phone/style.css';
 import { PhoneInput } from '../../../molecules/phone-input';
 import { FormContext } from '../types';
 
-const phoneUtil = PhoneNumberUtil.getInstance();
-
-export const CustomPhoneField = function <T>(
+export const CustomPhoneField = function CustomPhoneField<T>(
   props: WidgetProps<T, any, FormContext<T>>
 ) {
-  const { value, onChange, name, className, id, formContext } = props;
+  const { value, onChange, name, className, formContext } = props;
   const defaultCountryCode =
     formContext?.locale ||
     (typeof window !== 'undefined' && localStorage.getItem('countryCode2')) ||
     'en';
-
-  const handlePhoneChange = (val: string) => {
-    let raiseError: ErrorSchema<T> | undefined;
-    try {
-      const parsedNumber = phoneUtil.parseAndKeepRawInput(
-        val,
-        formContext?.locale || 'en'
-      );
-      if (!phoneUtil.isValidNumber(parsedNumber)) {
-        raiseError = {
-          __errors: [
-            errorMessage[
-              (formContext?.locale as keyof typeof errorMessage) || 'en'
-            ],
-          ],
-        };
-      } else {
-        raiseError = undefined;
-      }
-    } catch (err) {
-      raiseError = {
-        __errors: [
-          errorMessage[
-            (formContext?.locale as keyof typeof errorMessage) || 'en'
-          ],
-        ],
-      };
-    } finally {
-      onChange(val, raiseError, id);
-    }
-  };
 
   return (
     <RIP
       name={name}
       defaultCountry={defaultCountryCode}
       value={value || ''}
-      onChange={handlePhoneChange}
+      onChange={onChange}
       inputClassName={cn('flex-1 h-10', className)}
       countrySelectorStyleProps={{ flagClassName: 'rounded-md pl-0.5' }}
     />
   );
 };
 
-const errorMessage = {
-  tr: 'Lütfen geçerli bir telefon numarası giriniz.',
-  en: 'Please enter a valid phone number.',
-};
-
-export const CustomPhoneFieldWithParse = function <T>(
+export const CustomPhoneFieldWithParse = function CustomPhoneFieldWithParse<T>(
   props: WidgetProps<T, any, FormContext<T>>
 ) {
   const required = props.required || props.uiSchema?.['ui:required'];
   return <PhoneInput {...props} required={required} defaultValue={undefined} />;
 };
 
-export const CustomPhoneFieldWithValue = function <T>(
+export const CustomPhoneFieldWithValue = function CustomPhoneFieldWithValue<T>(
   props: WidgetProps<T, any, FormContext<T>>
 ) {
   const { onChange, uiSchema } = props;
