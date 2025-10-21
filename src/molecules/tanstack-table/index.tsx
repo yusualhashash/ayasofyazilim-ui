@@ -209,7 +209,7 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
     meta,
   });
   return (
-    <div className="flex flex-col gap-2 size-full min-h-max">
+    <div className="flex flex-col gap-2 size-full flex-1 min-h-max overflow-hidden">
       <TanstackTableToolbar<TData>
         title={title}
         table={table}
@@ -220,7 +220,7 @@ function TanstackBase<TData, TValue>(props: TanstackBaseProps<TData, TValue>) {
         setTableAction={setTableAction}
         editable={editable}
       />
-      <div className="rounded-md border overflow-auto">
+      <div className="rounded-md border overflow-auto flex-1 h-0 max-h-max">
         <TanstackTablePlainTable
           resizeable={resizeable}
           table={table}
