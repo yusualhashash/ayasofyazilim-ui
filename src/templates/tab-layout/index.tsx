@@ -14,8 +14,9 @@ type DeepPartial<T> = T extends object
   : T;
 const defaultClassNames = {
   vertical: {
-    tabs: 'flex h-full ',
-    tabList: 'flex flex-col h-full justify-start max-w-sm overflow-hidden',
+    tabs: 'flex h-full overflow-clip md:overflow-hidden block gap-2',
+    tabList:
+      'flex flex-col h-full justify-start max-w-sm overflow-hidden border-b-2 pb-2 mb-2 md:mb-0 mb:border-b-0',
     tabTrigger: 'justify-start md:max-w-lg overflow-hidden w-full',
     tabContent: 'mx-2 my-0 w-full h-full overflow-auto flex-1',
   },
@@ -158,20 +159,12 @@ export function TabLayout({
 
   return (
     <div
-      className={cn(
-        tabsClassNames,
-        classNames?.[orientation]?.tabs,
-        'overflow-clip md:overflow-hidden block gap-2'
-      )}
+      className={cn(tabsClassNames, classNames?.[orientation]?.tabs)}
       role="tabpanel"
     >
       <div
         role="tablist"
-        className={cn(
-          tabListClassNames,
-          classNames?.[orientation]?.tabList,
-          'border-b-2 pb-2 md:pb-0 mb-2 md:mb-0 mb:border-b-0'
-        )}
+        className={cn(tabListClassNames, classNames?.[orientation]?.tabList)}
         style={{
           scrollbarWidth: 'thin',
         }}
