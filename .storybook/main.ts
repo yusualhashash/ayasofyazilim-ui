@@ -1,7 +1,12 @@
 import type { StorybookConfig } from '@storybook/react-webpack5';
 import path, { dirname, join } from 'path';
 const config: StorybookConfig = {
-  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
+  stories: [
+    '../@/**/*.mdx',
+    '../@/**/*.stories.@(js|jsx|ts|tsx)',
+    '../src/**/*.mdx',
+    '../src/**/*.stories.@(js|jsx|ts|tsx)'
+  ],
   addons: [
     getAbsolutePath('@storybook/addon-links'),
     getAbsolutePath('@storybook/addon-essentials'),
@@ -52,7 +57,7 @@ const config: StorybookConfig = {
     '@chromatic-com/storybook',
   ],
   framework: {
-    name: getAbsolutePath('@storybook/nextjs'),
+    name: getAbsolutePath('@storybook/react-webpack5'),
     options: {
       builder: {
         useSWC: true,
